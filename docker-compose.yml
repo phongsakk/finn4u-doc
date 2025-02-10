@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: finn4udbuser
+      POSTGRES_PASSWORD: nnif4udbpassword
+      POSTGRES_DB: finn4u
+    ports:
+      - "8077:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: golang_backend
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      DB_HOST: postgres
+      DB_USER: finn4udbuser
+      DB_PASSWORD: nnif4udbpassword
+      DB_NAME: finn4u
+      DB_PORT: 8077
+    ports:
+      - "8078:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: nextjs_frontend
+    restart: always
+    ports:
+      - "8079:3000"
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_URL: http://backend:8080
+
+volumes:
+  postgres_data:
