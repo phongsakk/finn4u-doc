@@ -27,7 +27,7 @@ services:
       DB_USER: finn4udbuser
       DB_PASSWORD: nnif4udbpassword
       DB_NAME: finn4u
-      DB_PORT: 8077
+      DB_PORT: 5432
     ports:
       - "8078:8080"
 
