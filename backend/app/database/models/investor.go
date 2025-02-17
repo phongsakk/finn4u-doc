@@ -4,13 +4,13 @@ import "gorm.io/gorm"
 
 type Investor struct {
 	gorm.Model
-	UserId           int     `gorm:"index"`
-	Beneficiary      string  `gorm:"not null"`
-	Relation         string  `gorm:"not null"`
-	DistrictId       int     `gorm:"not null"`
-	AssetTypeId      int     `gorm:"not null"`
-	InvestmentAmount float64 `gorm:"not null"`
-	User             User    `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:UserId"`
-	// District         District  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:DistrictId"`
-	// AssetType        AssetType `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:AssetTypeId"`
+	UserId           int       `json:"user_id" gorm:"index"`
+	Beneficiary      string    `json:"beneficiary" gorm:"not null"`
+	Relation         string    `json:"relation" gorm:"not null"`
+	DistrictId       int       `json:"district_id" gorm:"not null"`
+	AssetTypeId      int       `json:"asset_type_id" gorm:"not null"`
+	InvestmentAmount float64   `json:"investment_amount" gorm:"not null"`
+	User             User      `json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:UserId"`
+	District         District  `json:"district" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:DistrictId"`
+	AssetType        AssetType `json:"asset_type" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:AssetTypeId"`
 }
