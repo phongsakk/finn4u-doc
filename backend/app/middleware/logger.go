@@ -7,23 +7,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Logger() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		t := time.Now()
+var Logger gin.HandlerFunc = func(c *gin.Context) {
+	t := time.Now()
 
-		// Set example variable
-		// c.Set("example", "12345")
+	c.Next()
 
-		// before request
+	latency := time.Since(t)
+	log.Print(latency)
 
-		c.Next()
-
-		// after request
-		latency := time.Since(t)
-		log.Print(latency)
-
-		// access the status we are sending
-		status := c.Writer.Status()
-		log.Println(status)
-	}
+	status := c.Writer.Status()
+	log.Println(status)
 }

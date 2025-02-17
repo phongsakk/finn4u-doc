@@ -7,7 +7,7 @@ import (
 
 	"github.com/phongsakk/finn4u-back/app/bootstrap"
 	con "github.com/phongsakk/finn4u-back/app/controller"
-	"github.com/phongsakk/finn4u-back/app/middleware"
+	mid "github.com/phongsakk/finn4u-back/app/middleware"
 	"github.com/phongsakk/finn4u-back/route"
 )
 
@@ -18,7 +18,8 @@ func main() {
 	}
 	r := gin.Default()
 
-	r.Use(middleware.Logger())
+	r.Use(mid.Logger)
+	r.Use(mid.Cors)
 
 	r.GET("/", con.HealthCheck)
 	route.V1(r.Group("/v1"))
