@@ -44,5 +44,18 @@ services:
     environment:
       NEXT_PUBLIC_API_URL: http://backend:8080
 
+  admin:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    container_name: nextjs_admin
+    restart: always
+    ports:
+      - "8079:3001"
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_URL: http://backend:8080
+
 volumes:
   postgres_data:
