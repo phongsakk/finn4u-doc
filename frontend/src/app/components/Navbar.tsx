@@ -1,5 +1,5 @@
 "use client";
-import {useState} from 'react';
+import React, { useState } from 'react';
 import Link from "next/link"
 import Image from "next/image"
 import Modal from 'react-bootstrap/Modal';
@@ -9,6 +9,13 @@ import Collapse from 'react-bootstrap/Collapse';
 function Navbar() {
 	const [navbarOpen, setNavOpen] = useState(false);
 	const [regisOpen, setRegisOpen] = useState(false);
+
+	const handleSubmit = React.useCallback((e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		console.log('submited');
+
+		setRegisOpen(false)
+	}, [])
 
 	return (
 		<>
@@ -33,7 +40,7 @@ function Navbar() {
 											height: "auto"
 										}
 									}
-									priority/>
+									priority />
 								<span className="font2">เรารักษาข้อมูลของคุณเป็นความลับสูงสุด</span>
 							</div>
 							<div className="list">
@@ -46,7 +53,7 @@ function Navbar() {
 											height: "auto"
 										}
 									}
-									priority/>
+									priority />
 								<span>ระบบรักษาความปลอดภัยที่ธนาคารยอมรับ</span>
 							</div>
 
@@ -60,30 +67,28 @@ function Navbar() {
 											height: "auto"
 										}
 									}
-									priority/>
+									priority />
 							</div>
 						</div>
 					</div>
 					<div className="col-lg-8">
-						<div className="right">
+						<form className="right" onSubmit={handleSubmit}>
 							<h4 className="title">เข้าสู่ระบบ</h4>
 							<div className="mb-3">
 								<label className="form-label font2">อีเมล</label>
-								<input type="email" className="form-control font2" id="form1" aria-describedby="email"/>
+								<input type="email" className="form-control font2" id="form1" aria-describedby="email" />
 							</div>
 							<div className="mb-3">
 								<div className="forgotpass">
 									<label className="form-label font2">รหัสผ่าน</label>
 									<span data-bs-toggle="modal" data-bs-target="#modalforgot">ลืมรหัสผ่าน?</span>
 								</div>
-								<input type="password" className="form-control" id="exampleInputPassword1"/>
+								<input type="password" className="form-control" id="exampleInputPassword1" />
 							</div>
 
-							<Link className="btn btn-primary font2"
-								onClick={
-									() => setRegisOpen(false)
-								}
-								href="/registerseller">เข้าสู่ระบบ</Link>
+							<button className="btn btn-primary font2" type='submit' role='button'>
+								เข้าสู่ระบบ
+							</button>
 
 							<div className="or">
 								<span></span>
@@ -102,7 +107,7 @@ function Navbar() {
 												height: "auto"
 											}
 										}
-										priority/>
+										priority />
 									<span>Facebook</span>
 								</a>
 								<a href="" className="btn btn-secondary">
@@ -115,7 +120,7 @@ function Navbar() {
 												height: "auto"
 											}
 										}
-										priority/>
+										priority />
 									<span>Google</span>
 								</a>
 							</div>
@@ -124,7 +129,7 @@ function Navbar() {
 								<span className="text-secondary">ยังไม่เคยใช้บริการ ?</span>
 								<Link href="/registerseller" className="text-primary">สมัครที่นี่</Link>
 							</div>
-						</div>
+						</form>
 					</div>
 				</div>
 			</Modal>
@@ -142,7 +147,7 @@ function Navbar() {
 									height: "auto"
 								}
 							}
-							priority/>
+							priority />
 					</Link>
 					<Button className="navbar-toggler"
 						onClick={
@@ -192,12 +197,12 @@ function Navbar() {
 											e.preventDefault();
 											setRegisOpen(true);
 										}
-								}>
+									}>
 									<p>เข้าสู่ระบบ</p>
 									<Image src="/register.svg" alt="register"
 										width={26}
 										height={26}
-										priority/>
+										priority />
 								</Link>
 							</div>
 						</div>
