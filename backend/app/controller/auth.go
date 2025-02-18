@@ -1,20 +1,19 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/phongsakk/finn4u-back/app/database"
 	"github.com/phongsakk/finn4u-back/app/database/models"
+	"github.com/phongsakk/finn4u-back/app/request"
 	"github.com/phongsakk/finn4u-back/types"
 	"github.com/phongsakk/finn4u-back/utils"
 )
 
 func Login(c *gin.Context) {
-	var request struct {
-		Email    string `json:"email" validate:"required,email"`
-		Password string `json:"password" validate:"required"`
-	}
+	var request request.Login
 
 	if err := c.ShouldBindBodyWithJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, types.Response{
@@ -23,7 +22,7 @@ func Login(c *gin.Context) {
 		})
 		return
 	}
-	if err := utils.Validate(&request); err != nil {
+	if err := request.Validated(); err != nil {
 		c.JSON(http.StatusBadRequest, types.Response{
 			Code:  http.StatusBadRequest,
 			Error: utils.NullableString(err.Error()),
@@ -86,8 +85,69 @@ func Login(c *gin.Context) {
 }
 
 func RefreshToken(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"message": "Refreshed token successfully",
+	var request request.RefreshToken
+
+	if err := c.ShouldBindBodyWithJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:  http.StatusBadRequest,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	if err := request.Validated(); err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:  http.StatusBadRequest,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+
+	fmt.Println(request)
+
+	var user models.User
+	db, err := database.Conn()
+	defer database.Close(db)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	if err := db.Where("email =?", "user1@email.net").First(&user).Error; err != nil {
+		c.JSON(http.StatusNotFound, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString("User not found"),
+		})
+		return
+	}
+
+	accessToken, errAccess := user.GenerateAccessToken()
+	if errAccess != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(errAccess.Error()),
+		})
+		return
+	}
+	refreshToken, errRefresh := user.GenerateRefreshToken()
+	if errRefresh != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(errRefresh.Error()),
+		})
+		return
+	}
+	c.JSON(200, types.Response{
+		Status:  true,
+		Code:    http.StatusOK,
+		Message: utils.NullableString("Logged in successfully"),
+		Data: map[string]interface{}{
+			"access_token":       accessToken,
+			"refresh_token":      refreshToken,
+			"access_expires_in":  60 * 5,       // 5 minutes
+			"refresh_expires_in": 60 * 60 * 24, // 1 day
+		},
 	})
 }
 
