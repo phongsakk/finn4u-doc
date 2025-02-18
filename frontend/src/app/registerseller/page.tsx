@@ -1,7 +1,28 @@
-import {Button} from "react-bootstrap"
+"use client";
 import Image from "next/image"
+import {useState} from "react";
+import {useRouter} from "next/navigation";
+import {Button} from "react-bootstrap";
+import FormRegister from "./formregister";
+import FormOtp from "./formotp";
+import TermsAndCon from "./termsandcon";
+import VerifyIdcard from "./verifyidcard";
+import UploadDoc from "./uploaddoc";
+import CustomImage from "../components/CustomImage";
 
 function regisseller() {
+	const router = useRouter();
+	const [step, setStep] = useState(1);
+
+	const nextStep = () => setStep((prev) => prev + 1);
+
+	const prevStep = () => setStep((prev) => prev - 1);
+
+	const handleSubmit = (e : React.FormEvent) => {
+		e.preventDefault();
+		router.push("/");
+	};
+
 	return (
 		<>
 			<div className="banner-regis">
@@ -10,7 +31,9 @@ function regisseller() {
 					height={100}
 					sizes="100vm"
 					style={
-						{height: "auto"}
+						{
+							height: "auto"
+						}
 					}
 					priority/>
 			</div>
@@ -27,7 +50,9 @@ function regisseller() {
 										height={100}
 										sizes="100vm"
 										style={
-											{height: "auto"}
+											{
+												height: "auto"
+											}
 										}
 										priority/>
 									<p className="font2 fw-bold">ลงทะเบียน</p>
@@ -38,7 +63,9 @@ function regisseller() {
 										height={100}
 										sizes="100vm"
 										style={
-											{height: "auto"}
+											{
+												height: "auto"
+											}
 										}
 										priority/>
 								</div>
@@ -48,7 +75,9 @@ function regisseller() {
 										height={100}
 										sizes="100vm"
 										style={
-											{height: "auto"}
+											{
+												height: "auto"
+											}
 										}
 										priority/>
 									<p className="font2">ยืนยันตัวตน</p>
@@ -59,7 +88,9 @@ function regisseller() {
 										height={100}
 										sizes="100vm"
 										style={
-											{height: "auto"}
+											{
+												height: "auto"
+											}
 										}
 										priority/>
 								</div>
@@ -69,146 +100,69 @@ function regisseller() {
 										height={100}
 										sizes="100vm"
 										style={
-											{height: "auto"}
+											{
+												height: "auto"
+											}
 										}
 										priority/>
 									<p className="font2">อัพโหลดเอกสาร</p>
 								</div>
 							</div>
 						</div>
+						<form onSubmit={handleSubmit}>
 
-						<form>
-							<div className="row mb-3">
-								<div className="col-lg-4">
-									<div className="mb-3">
-										<label className="form-label font2">คำนำหน้า<span className="text-require font2">*</span>
-										</label>
-										<select id="Select1" className="form-select font2">
-											<option>select</option>
-										</select>
+							{
+							step === 1 && (
+								<FormRegister/>)
+						}
+							{
+							step === 2 && (
+								<FormOtp/>)
+						}
+							{
+							step === 3 && (
+								<TermsAndCon/>)
+						}
+							{
+							step === 4 && (
+								<VerifyIdcard/>)
+						}
+							{
+							step === 5 && (
+								<UploadDoc/>)
+						}
+							{
+							step === 6 && (
+								<>
+									<div className="text-center">
+										<CustomImage src="/reg-step1.png" alt="reg-step1"
+											style={
+												{
+													width: "40%",
+													height: "auto"
+												}
+											}/>
+										<h2 className="text-primary font2">ลงทะเบียนสำเร็จ</h2>
+										<p className="font2">ระบบได้รับข้อมูลการลงทะเบียนของท่านเรียบร้อยแล้ว</p>
+										<p className="font2">จะมีเจ้าหน้าที่ติดต่อกลับภายใน 3-5 วันทำการ</p>
 									</div>
-								</div>
-								<div className="col-lg-4">
-									<div className="mb-3">
-										<label className="form-label font2">ชื่อ<span className="text-require font2">*</span>
-										</label>
-										<input type="text" className="form-control font2" id="form1" aria-describedby="text"/>
-									</div>
-								</div>
-								<div className="col-lg-4">
-									<div className="mb-3">
-										<label className="form-label font2">นามสกุล<span className="text-require font2">*</span>
-										</label>
-										<input type="text" className="form-control font2" id="form1" aria-describedby="text"/>
-									</div>
-								</div>
 
-								<div className="col-lg-4">
-									<div className="mb-3">
-										<label className="form-label font2">เบอร์โทรศัพท์<span className="text-require font2">*</span>
-										</label>
-										<input type="text" className="form-control font2" id="form1" aria-describedby="text"/>
+									<div className="submit-group">
+										<Button variant="primary" type="submit">กลับสู่หน้าหลัก</Button>
 									</div>
+								</>
+							)
+						}
+							{
+							step != 6 && (
+								<div className="submit-group">
+									<Button variant="white"
+										onClick={prevStep}>ย้อนกลับ</Button>
+									<Button variant="primary"
+										onClick={nextStep}>ถัดไป</Button>
 								</div>
-								<div className="col-lg-4">
-									<div className="mb-3">
-										<label className="form-label font2">เวลาที่สะดวกให้ติดต่อกลับ<span className="text-require font2">*</span>
-										</label>
-										<select id="Select1" className="form-select font2">
-											<option>select</option>
-										</select>
-									</div>
-								</div>
-							</div>
-
-							<div className="row mt-5 mb-3">
-								<div className="col-lg-4">
-									<div className="mb-3">
-										<label className="form-label font2">อาชีพ<span className="text-require font2">*</span>
-										</label>
-										<select id="Select1" className="form-select font2">
-											<option>select</option>
-										</select>
-									</div>
-								</div>
-								<div className="col-lg-4">
-									<div className="mb-3">
-										<label className="form-label font2">รายได้ต่อเดือน<span className="text-require font2">*</span>
-										</label>
-										<input type="text" className="form-control font2" id="form1" aria-describedby="text"/>
-									</div>
-								</div>
-							</div>
-
-							<div className="row mt-5">
-								<div className="col-lg-4">
-									<div className="mb-3">
-										<label className="form-label font2">ที่อยู่ปัจจุบัน<span className="text-require font2">*</span>
-										</label>
-										<input type="text" className="form-control font2" id="form1" aria-describedby="text"/>
-									</div>
-								</div>
-								<div className="col-lg-4">
-									<div className="mb-3">
-										<label className="form-label font2">ถนน<span className="text-require font2">*</span>
-										</label>
-										<input type="text" className="form-control font2" id="form1" aria-describedby="text"/>
-									</div>
-								</div>
-							</div>
-
-							<div className="row mb-3">
-								<div className="col-lg-4">
-									<div className="mb-3">
-										<label className="form-label font2">จังหวัด<span className="text-require font2">*</span>
-										</label>
-										<input type="text" className="form-control font2" id="form1" aria-describedby="text"/>
-									</div>
-								</div>
-								<div className="col-lg-4">
-									<div className="mb-3">
-										<label className="form-label font2">อำเภอ/เขต<span className="text-require font2">*</span>
-										</label>
-										<input type="text" className="form-control font2" id="form1" aria-describedby="text"/>
-									</div>
-								</div>
-								<div className="col-lg-4">
-									<div className="mb-3">
-										<label className="form-label font2">ตำบล/แขวง<span className="text-require font2">*</span>
-										</label>
-										<input type="text" className="form-control font2" id="form1" aria-describedby="text"/>
-									</div>
-								</div>
-							</div>
-
-							<div className="row mt-5 mb-3">
-								<div className="col-lg-4">
-									<div className="mb-3">
-										<label className="form-label font2">อีเมล<span className="text-require font2">*</span>
-										</label>
-										<input type="email" className="form-control font2" id="form1" aria-describedby="text"/>
-									</div>
-								</div>
-								<div className="col-lg-4">
-									<div className="mb-3">
-										<label className="form-label font2">รหัสผ่าน<span className="text-require font2">*</span>
-										</label>
-										<input type="text" className="form-control font2" id="form1" aria-describedby="text"/>
-									</div>
-								</div>
-								<div className="col-lg-4">
-									<div className="mb-3">
-										<label className="form-label font2">ยืนยันรหัสผ่าน<span className="text-require font2">*</span>
-										</label>
-										<input type="text" className="form-control font2" id="form1" aria-describedby="text"/>
-									</div>
-								</div>
-							</div>
-							<div className="submit-group">
-								<Button type="submit" variant="white">ย้อนกลับ</Button>
-								<Button type="submit" variant="primary">ถัดไป</Button>
-							</div>
-						</form>
+							)
+						} </form>
 					</div>
 				</div>
 			</div>

@@ -1,5 +1,5 @@
 import Image from "next/image";
-
+import CustomImage from "./CustomImage";
 function Footer() {
 	return (
 		<div className="footer-main">
@@ -51,31 +51,23 @@ function Footer() {
 									<div className="col-lg-12">
 										<div className="group-ad">
 											<div className="d-flex">
-												<Image src="/ad-tel.svg" alt="ad-tel"
-													width={100}
-													height={100}
-													sizes="100vw"
+												<CustomImage src="/ad-tel.svg" alt="ad-tel"
 													style={
 														{
-															width: "30%",
+															width: "10%",
 															height: "auto"
 														}
 													}/>
-
 												<span>02-0777481</span>
 											</div>
 											<div className="d-flex">
-												<Image src="/ad-email.svg" alt="ad-email"
-													width={100}
-													height={100}
-													sizes="100vw"
+												<CustomImage src="/ad-email.svg"
 													style={
 														{
-															width: "30%",
+															width: "10%",
 															height: "auto"
 														}
 													}/>
-
 												<span>info@arrakmit.com</span>
 											</div>
 										</div>
@@ -85,33 +77,24 @@ function Footer() {
 
 							<div className="col-lg-2">
 								<div className="other-link">
-									<Image src="/facebook.svg" alt="facebook"
-										width={100}
-										height={100}
-										sizes="100vw"
+									<CustomImage src="/facebook.svg"
 										style={
 											{
-												width: "80%",
+												width: "50%",
 												height: "auto"
 											}
 										}/>
-									<Image src="/line.svg" alt="line"
-										width={100}
-										height={100}
-										sizes="100vw"
+									<CustomImage src="/line.svg"
 										style={
 											{
-												width: "80%",
+												width: "50%",
 												height: "auto"
 											}
 										}/>
-									<Image src="/youtube.svg" alt="youtube"
-										width={100}
-										height={100}
-										sizes="100vw"
+									<CustomImage src="/youtube.svg"
 										style={
 											{
-												width: "80%",
+												width: "50%",
 												height: "auto"
 											}
 										}/>

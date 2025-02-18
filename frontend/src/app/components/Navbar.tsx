@@ -191,7 +191,7 @@ function Navbar() {
 									<Link className="nav-link" href="#">เช่า</Link>
 								</li>
 								<li className="nav-item">
-									<Link className="nav-link" href="#">ทรัพย์สินขายฝาก</Link>
+									<Link className="nav-link" href="/property-sale">ทรัพย์สินขายฝาก</Link>
 								</li>
 								<li className="nav-item">
 									<Link className="nav-link" href="#">ผู้ขายฝาก</Link>
