@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/phongsakk/finn4u-back/app/database/models/skeletons"
 	"github.com/phongsakk/finn4u-back/types"
-	"gorm.io/gorm"
 )
 
 func (User) TableName() string {
@@ -14,9 +14,9 @@ func (User) TableName() string {
 }
 
 type User struct {
-	gorm.Model
+	skeletons.Model
 	UserRoleID    int64    `json:"id" gorm:"not null"`
-	Email         string   `json:"email" gorm:"size:255;not null;unique"`
+	Email         string   `json:"email" gorm:"size:255;not null;unique;index"`
 	Password      string   `json:"-" gorm:"size:255"`
 	Provider      string   `json:"provider" gorm:"size:126;default:password" validate:"oneof:password facebook email"`
 	ProviderToken string   `json:"-" gorm:"size:255"`
@@ -28,19 +28,20 @@ var secretKeyAccess = []byte("finn4u-secret-access")
 var secretKeyRefresh = []byte("finn4u-secret-refresh")
 
 // creates a new access token for a user
-func (user *User) GenerateAccessToken() (string, error) {
+func (user *User) GenerateAccessToken() (string, *time.Time, error) {
+	expiredAt := time.Now().Add(time.Minute * 5)
 	claims := types.Auth{
 		UserId: user.ID,
 		Email:  user.Email,
-		Exp:    time.Now().Add(time.Minute * 5).Unix(),
+		Exp:    expiredAt.Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	tokenString, err := token.SignedString(secretKeyAccess)
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
-	return tokenString, nil
+	return tokenString, &expiredAt, nil
 }
 
 // Validate and parse the JWT token
@@ -70,17 +71,18 @@ func (user *User) ParseRefreshToken(tokenString string) (*jwt.Token, error) {
 	return token, nil
 }
 
-func (user *User) GenerateRefreshToken() (string, error) {
+func (user *User) GenerateRefreshToken() (string, *time.Time, error) {
+	expiredAt := time.Now().Add(time.Hour * 24)
 	claims := jwt.MapClaims{
 		"user_id": user.ID,
 		"email":   user.Email,
-		"exp":     time.Now().Add(time.Hour * 24).Unix(),
+		"exp":     expiredAt.Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	tokenString, err := token.SignedString(secretKeyRefresh)
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
-	return tokenString, nil
+	return tokenString, &expiredAt, nil
 }

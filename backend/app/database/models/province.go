@@ -4,11 +4,11 @@ import (
 	"github.com/phongsakk/finn4u-back/app/database/models/skeletons"
 )
 
-func (AssetType) TableName() string {
-	return "asset_type"
+func (Province) TableName() string {
+	return "province"
 }
 
-type AssetType struct {
+type Province struct {
 	skeletons.Model
 	skeletons.NameMultiLanguage
 }
