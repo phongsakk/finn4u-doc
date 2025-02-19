@@ -12,7 +12,10 @@ func Migrate() error {
 		return err
 	}
 
-	if err := db.AutoMigrate(&models.User{}); err != nil {
+	if err := db.AutoMigrate(
+		&models.UserRole{},
+		&models.User{},
+	); err != nil {
 		return err
 	}
 

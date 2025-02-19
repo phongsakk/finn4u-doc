@@ -11,6 +11,7 @@ func V1(r *gin.RouterGroup) {
 	auth := r.Group("/auth")
 	{
 		auth.POST("/login", con.Login)
+		auth.POST("/refresh-token", con.RefreshToken)
 		auth.POST("/verify-token", con.VerifyToken)
 		auth.POST("/register", con.Register)
 		auth.POST("/forgot-password", con.ForgotPassword)

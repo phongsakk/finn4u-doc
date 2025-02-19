@@ -15,12 +15,13 @@ func (User) TableName() string {
 
 type User struct {
 	gorm.Model
-	UserRoleID    int64  `json:"id" gorm:"not null"`
-	Email         string `json:"email" gorm:"size:255;not null;unique"`
-	Password      string `json:"-" gorm:"size:255"`
-	Provider      string `json:"provider" gorm:"size:126;default:password" validate:"oneof:password facebook email"`
-	ProviderToken string `json:"-" gorm:"size:255"`
-	Verified      bool   `json:"verified" gorm:"default:false"`
+	UserRoleID    int64    `json:"id" gorm:"not null"`
+	Email         string   `json:"email" gorm:"size:255;not null;unique"`
+	Password      string   `json:"-" gorm:"size:255"`
+	Provider      string   `json:"provider" gorm:"size:126;default:password" validate:"oneof:password facebook email"`
+	ProviderToken string   `json:"-" gorm:"size:255"`
+	Verified      bool     `json:"verified" gorm:"default:false"`
+	UserRole      UserRole `json:"user_role" gorm:"foreignKey:UserRoleID;references:ID"`
 }
 
 var secretKeyAccess = []byte("finn4u-secret-access")
