@@ -17,4 +17,10 @@ func V1(r *gin.RouterGroup) {
 		auth.POST("/forgot-password", con.ForgotPassword)
 		auth.POST("/reset-password", con.ResetPassword)
 	}
+
+	asset := r.Group("/asset")
+	{
+		asset.GET("/", con.GetAsset)
+		asset.POST("/", con.CreateAsset)
+	}
 }

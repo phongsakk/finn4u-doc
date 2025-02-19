@@ -7,14 +7,19 @@ import (
 
 func Migrate() error {
 	db, err := database.Conn()
-	defer database.Close(db)
 	if err != nil {
 		return err
 	}
+	defer database.Close(db)
 
 	if err := db.AutoMigrate(
 		&models.UserRole{},
+		&models.Province{},
+		&models.District{},
 		&models.User{},
+		&models.Profile{},
+		&models.AssetType{},
+		&models.Asset{},
 	); err != nil {
 		return err
 	}
