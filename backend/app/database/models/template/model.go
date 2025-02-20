@@ -1,4 +1,4 @@
-package skeletons
+package template
 
 import (
 	"time"

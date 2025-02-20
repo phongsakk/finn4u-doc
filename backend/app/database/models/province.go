@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/phongsakk/finn4u-back/app/database/models/skeletons"
+	"github.com/phongsakk/finn4u-back/app/database/models/template"
 )
 
 func (Province) TableName() string {
@@ -9,6 +9,6 @@ func (Province) TableName() string {
 }
 
 type Province struct {
-	skeletons.Model
-	skeletons.NameMultiLanguage
+	template.Model
+	template.NameMultiLanguage
 }
