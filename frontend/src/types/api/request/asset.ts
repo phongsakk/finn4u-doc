@@ -1,5 +1,3 @@
-import dayjs from "dayjs";
-
 export type CreateAssetRequest = {
     province_id: number;
     district_id: number;

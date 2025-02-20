@@ -1,4 +1,4 @@
-import { CreateAssetRequest } from "@types/api/request/asset";
+import { CreateAssetRequest } from "@/types/api/request/asset";
 import api from "@utils/api";
 import axios, { AxiosError } from "axios";
 
