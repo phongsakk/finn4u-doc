@@ -4,11 +4,11 @@ import (
 	"github.com/phongsakk/finn4u-back/app/database/models/template"
 )
 
-func (District) TableName() string {
-	return "district"
+func (Province) TableName() string {
+	return "province"
 }
 
-type District struct {
+type Province struct {
 	template.Model
 	template.NameMultiLanguage
 }

@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/phongsakk/finn4u-back/app/database"
@@ -55,7 +56,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	accessToken, errAccess := user.GenerateAccessToken()
+	accessToken, accessTokenExpiresIn, errAccess := user.GenerateAccessToken()
 	if errAccess != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
@@ -63,7 +64,7 @@ func Login(c *gin.Context) {
 		})
 		return
 	}
-	refreshToken, errRefresh := user.GenerateRefreshToken()
+	refreshToken, refreshTokenExpiresIn, errRefresh := user.GenerateRefreshToken()
 	if errRefresh != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
@@ -78,8 +79,8 @@ func Login(c *gin.Context) {
 		Data: map[string]interface{}{
 			"access_token":       accessToken,
 			"refresh_token":      refreshToken,
-			"access_expires_in":  60 * 5,       // 5 minutes
-			"refresh_expires_in": 60 * 60 * 24, // 1 day
+			"access_expires_in":  accessTokenExpiresIn.Format(time.RFC3339),
+			"refresh_expires_in": refreshTokenExpiresIn.Format(time.RFC3339),
 		},
 	})
 }
@@ -122,7 +123,7 @@ func RefreshToken(c *gin.Context) {
 		return
 	}
 
-	accessToken, errAccess := user.GenerateAccessToken()
+	accessToken, accessTokenExpiresIn, errAccess := user.GenerateAccessToken()
 	if errAccess != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
@@ -130,7 +131,7 @@ func RefreshToken(c *gin.Context) {
 		})
 		return
 	}
-	refreshToken, errRefresh := user.GenerateRefreshToken()
+	refreshToken, refreshTokenExpiresIn, errRefresh := user.GenerateRefreshToken()
 	if errRefresh != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
@@ -145,8 +146,8 @@ func RefreshToken(c *gin.Context) {
 		Data: map[string]interface{}{
 			"access_token":       accessToken,
 			"refresh_token":      refreshToken,
-			"access_expires_in":  60 * 5,       // 5 minutes
-			"refresh_expires_in": 60 * 60 * 24, // 1 day
+			"access_expires_in":  accessTokenExpiresIn.Format(time.RFC3339),  // 5 minutes
+			"refresh_expires_in": refreshTokenExpiresIn.Format(time.RFC3339), // 1 day
 		},
 	})
 }
