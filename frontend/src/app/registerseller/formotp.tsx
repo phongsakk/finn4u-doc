@@ -1,0 +1,59 @@
+"use client";
+import {useState} from "react";
+
+export default function FormOtp() {
+	const [otp, setOtp] = useState(Array(6).fill(""));
+	// สร้าง array 6 ช่องว่าง
+
+	// อัปเดตค่าของแต่ละ input
+	const handleChange = (index : number, e : React.ChangeEvent < HTMLInputElement >) => {
+		const value = e.target.value.replace(/\D/g, ""); // กรองเฉพาะตัวเลข
+		const newOtp = [...otp];
+		newOtp[index] = value.slice(-1); // จำกัดให้กรอกได้ทีละตัวเลขเดียว
+		setOtp(newOtp);
+
+		// เลื่อนไปยังช่องถัดไปเมื่อกรอกค่าเสร็จ
+		if (value && index < 5) {
+			document.getElementById(`otp-${
+				index + 1
+			}`) ?. focus();
+		}
+	};
+
+	return (
+		<div className="sec-pass">
+			<h2 className="text-center text-primary font2">รหัสยืนยันถูกส่งไปเรียบร้อยแล้ว</h2>
+
+			<div className="tell">
+				<p className="font2">กรุณากรอกรหัสยืนยันที่ถูกส่งไปยัง</p>
+				<span className="text-primary font2">+66 891234567</span>
+				<span className="font2">เพื่อดำเนินการต่อ</span>
+			</div>
+
+			<fieldset className="otp-password">
+				<div className="d-flex">
+					{
+					otp.map((digit, index) => (
+						<input key={index}
+							id={
+								`otp-${index}`
+							}
+							type="text"
+							className="form-control form-control--otp js-otp-input"
+							value={digit}
+							onChange={
+								(e) => handleChange(index, e)
+							}
+							inputMode="numeric"
+							pattern="[0-9]*"
+							autoComplete="one-time-code"
+							maxLength={1}
+							required/>
+					))
+				} </div>
+			</fieldset>
+
+			<button className="btn-clean font2">ส่งรหัส OTP อีกครั้ง</button>
+		</div>
+	);
+}

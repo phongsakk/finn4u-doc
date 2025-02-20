@@ -1,4 +1,4 @@
-package skeletons
+package template
 
 type NameMultiLanguage struct {
 	Name   string `json:"name" gorm:"type:varchar(128);not null"`

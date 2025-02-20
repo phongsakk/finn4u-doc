@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/phongsakk/finn4u-back/app/database/models/skeletons"
+	"github.com/phongsakk/finn4u-back/app/database/models/template"
 )
 
 func (Profile) TableName() string {
@@ -9,7 +9,7 @@ func (Profile) TableName() string {
 }
 
 type Profile struct {
-	skeletons.Model
+	template.Model
 	UserID         int     `gorm:"unique;not null"`
 	UserPrefixID   int     `gorm:"not null"`
 	Firstname      string  `gorm:"type:varchar(255);not null"`

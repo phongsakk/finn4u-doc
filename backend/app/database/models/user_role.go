@@ -1,11 +1,11 @@
 package models
 
 import (
-	"github.com/phongsakk/finn4u-back/app/database/models/skeletons"
+	"github.com/phongsakk/finn4u-back/app/database/models/template"
 )
 
 type UserRole struct {
-	skeletons.Model
+	template.Model
 
 	Name   string `json:"name" gorm:"type:varchar(128);not null"`
 	NameTh string `json:"name_th" gorm:"type:varchar(128)"`

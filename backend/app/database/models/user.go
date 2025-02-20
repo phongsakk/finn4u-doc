@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt"
-	"github.com/phongsakk/finn4u-back/app/database/models/skeletons"
+	"github.com/phongsakk/finn4u-back/app/database/models/template"
 	"github.com/phongsakk/finn4u-back/types"
 )
 
@@ -14,7 +14,7 @@ func (User) TableName() string {
 }
 
 type User struct {
-	skeletons.Model
+	template.Model
 	UserRoleID    int64    `json:"id" gorm:"not null"`
 	Email         string   `json:"email" gorm:"size:255;not null;unique;index"`
 	Password      string   `json:"-" gorm:"size:255"`

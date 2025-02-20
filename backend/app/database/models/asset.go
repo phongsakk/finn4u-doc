@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/phongsakk/finn4u-back/app/database/models/skeletons"
+	"github.com/phongsakk/finn4u-back/app/database/models/template"
 )
 
 func (Asset) TableName() string {
@@ -11,7 +11,7 @@ func (Asset) TableName() string {
 }
 
 type Asset struct {
-	skeletons.Model
+	template.Model
 	GenID               string     `json:"gen_id" gorm:"type:varchar(64);not null,unique"`
 	ProvinceID          uint       `json:"province_id" gorm:"not null"`
 	DistrictID          uint       `json:"district_id" gorm:"not null"`

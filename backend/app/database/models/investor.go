@@ -1,11 +1,11 @@
 package models
 
 import (
-	"github.com/phongsakk/finn4u-back/app/database/models/skeletons"
+	"github.com/phongsakk/finn4u-back/app/database/models/template"
 )
 
 type Investor struct {
-	skeletons.Model
+	template.Model
 	UserId           int       `json:"user_id" gorm:"index"`
 	Beneficiary      string    `json:"beneficiary" gorm:"not null"`
 	Relation         string    `json:"relation" gorm:"not null"`
