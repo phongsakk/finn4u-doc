@@ -1,5 +1,5 @@
 import {Button} from "react-bootstrap"
-import CustomImage from "../components/CustomImage"
+import CustomImage from "../../components/CustomImage"
 
 function UploadDoc() {
 	return (
@@ -9,7 +9,7 @@ function UploadDoc() {
 					<div className="mb-3">
 						<label className="form-label font2">จังหวัดที่ตั้งทรัพย์สิน<span className="text-require font2">*</span>
 						</label>
-						<select id="Select1" className="form-select font2">
+						<select id="Select3_1" className="form-select font2">
 							<option>select</option>
 						</select>
 					</div>
@@ -18,7 +18,7 @@ function UploadDoc() {
 					<div className="mb-3">
 						<label className="form-label font2">อำเภอ/เขต<span className="text-require font2">*</span>
 						</label>
-						<select id="Select1" className="form-select font2">
+						<select id="Select3_2" className="form-select font2">
 							<option>select</option>
 						</select>
 					</div>
@@ -27,7 +27,7 @@ function UploadDoc() {
 					<div className="mb-3">
 						<label className="form-label font2">ประเภททรัพย์สิน<span className="text-require font2">*</span>
 						</label>
-						<select id="Select1" className="form-select font2">
+						<select id="Select3_3" className="form-select font2">
 							<option>select</option>
 						</select>
 					</div>
@@ -42,7 +42,7 @@ function UploadDoc() {
 					<div className="mb-3">
 						<label className="form-label font2">หน่วยเป็น<span className="text-require font2">*</span>
 						</label>
-						<select id="Select1" className="form-select font2">
+						<select id="Select3_4" className="form-select font2">
 							<option>select</option>
 						</select>
 					</div>

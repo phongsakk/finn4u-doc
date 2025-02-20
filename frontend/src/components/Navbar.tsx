@@ -5,7 +5,6 @@ import Image from "next/image"
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Collapse from 'react-bootstrap/Collapse';
-import api from '../setting/api';
 
 function Navbar() {
 	const [navbarOpen, setNavOpen] = useState(false);
@@ -17,24 +16,6 @@ function Navbar() {
 
 		setRegisOpen(false)
 	}, [])
-
-	React.useEffect(() => {
-		const controller = new AbortController();
-		const main = async (controller: AbortController) => {
-			const response = await fetch(api.base, {
-				signal: controller.signal
-			});
-			const data = await response.json();
-			console.log(data);
-		};
-
-		main(controller)
-			.catch(console.error);
-
-		return () => {
-			controller.abort
-		}
-	}, []);
 
 	return (
 		<>

@@ -1,8 +1,8 @@
 import Link from "next/link";
-import Banner from "./components/Banner";
+import Banner from "../components/Banner";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faCheck, faBook} from "@fortawesome/free-solid-svg-icons";
-import CustomImage from "./components/CustomImage";
+import CustomImage from "../components/CustomImage";
 export default async function Page() {
 
 	return (

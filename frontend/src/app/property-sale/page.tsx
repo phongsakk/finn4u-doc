@@ -1,4 +1,4 @@
-import CustomImage from "../components/CustomImage";
+import CustomImage from "../../components/CustomImage";
 import Link from "next/link";
 import {
 	faMagnifyingGlass,
@@ -24,14 +24,14 @@ function Propertysale() {
 					<div className="row filter">
 						<div className="col-lg-2">
 							<div className="mb-3">
-								<select id="Select1" className="form-select">
+								<select id="Select1_1" className="form-select">
 									<option>select</option>
 								</select>
 							</div>
 						</div>
 						<div className="col-lg-2">
 							<div className="mb-3">
-								<select id="Select1" className="form-select">
+								<select id="Select1_2" className="form-select">
 									<option>select</option>
 								</select>
 							</div>
@@ -39,7 +39,7 @@ function Propertysale() {
 						<div className="col-lg-5"></div>
 						<div className="col-lg-3">
 							<div className="search-group">
-								<select id="Select1" className="form-select">
+								<select id="Select1_3" className="form-select">
 									<option>select</option>
 								</select>
 								<label className="form-label">

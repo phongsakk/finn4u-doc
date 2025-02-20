@@ -9,7 +9,7 @@ function FormRegister() {
 					<div className="mb-3">
 						<label className="form-label font2">คำนำหน้า<span className="text-require font2">*</span>
 						</label>
-						<select id="Select1" className="form-select font2">
+						<select id="Select2_1" className="form-select font2">
 							<option>select</option>
 						</select>
 					</div>
@@ -40,7 +40,7 @@ function FormRegister() {
 					<div className="mb-3">
 						<label className="form-label font2">เวลาที่สะดวกให้ติดต่อกลับ<span className="text-require font2">*</span>
 						</label>
-						<select id="Select1" className="form-select font2">
+						<select id="Select2_2" className="form-select font2">
 							<option>select</option>
 						</select>
 					</div>
@@ -52,7 +52,7 @@ function FormRegister() {
 					<div className="mb-3">
 						<label className="form-label font2">อาชีพ<span className="text-require font2">*</span>
 						</label>
-						<select id="Select1" className="form-select font2">
+						<select id="Select2_3" className="form-select font2">
 							<option>select</option>
 						</select>
 					</div>

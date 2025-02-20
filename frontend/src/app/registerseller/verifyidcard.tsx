@@ -1,4 +1,4 @@
-import CustomImage from "../components/CustomImage"
+import CustomImage from "../../components/CustomImage"
 
 function VerifyIdcard() {
 	return (

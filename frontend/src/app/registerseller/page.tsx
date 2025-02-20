@@ -8,7 +8,7 @@ import FormOtp from "./formotp";
 import TermsAndCon from "./termsandcon";
 import VerifyIdcard from "./verifyidcard";
 import UploadDoc from "./uploaddoc";
-import CustomImage from "../components/CustomImage";
+import CustomImage from "../../components/CustomImage";
 
 function regisseller() {
 	const router = useRouter();
