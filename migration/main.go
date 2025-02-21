@@ -21,7 +21,7 @@ func main() {
 	// 	fmt.Println(err)
 	// 	return
 	// }
-	return
+	fmt.Println("Start Migration")
 }
 
 func SeedDistrict() error {
@@ -84,6 +84,7 @@ func SeedProvince() error {
 	defer Close(db)
 	for _, province := range file.Data {
 		var insert models.Province = models.Province{}
+		insert.ID = uint(province.Id)
 		insert.Name = province.NameTh
 		insert.NameTh = province.NameTh
 		insert.NameEn = province.NameEn
