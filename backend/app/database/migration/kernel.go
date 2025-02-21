@@ -16,6 +16,7 @@ func Migrate() error {
 		&models.UserRole{},
 		&models.Province{},
 		&models.District{},
+		&models.SubDistrict{},
 		&models.User{},
 		&models.Profile{},
 		&models.AssetType{},
