@@ -66,7 +66,7 @@ func GetMasterSubDistrict(ctx *gin.Context) {
 		Code:    200,
 		Status:  true,
 		Data:    model,
-		Message: utils.NullableString("Get master asset type success"),
+		Message: utils.NullableString("Get master sub_district success"),
 	})
 }
 
