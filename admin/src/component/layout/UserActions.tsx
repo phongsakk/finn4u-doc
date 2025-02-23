@@ -6,7 +6,6 @@ import avatar2 from "@/assets/img/avatars/avatar-2.jpg"
 import avatar3 from "@/assets/img/avatars/avatar-3.jpg"
 import avatar4 from "@/assets/img/avatars/avatar-4.jpg"
 import avatar5 from "@/assets/img/avatars/avatar-5.jpg"
-import Dropdown from 'react-bootstrap/Dropdown';
 
 const UserActions = () => {
 	return (
@@ -150,27 +149,17 @@ const UserActions = () => {
 						<input type="text" className="form-control" placeholder="Search" />
 					</div>
 
-					<Dropdown>
-      <Dropdown.Toggle variant="success" id="dropdown-basic">
-        Dropdown Button
-      </Dropdown.Toggle>
+					
 
-      <Dropdown.Menu>
-        <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-        <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-        <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-      </Dropdown.Menu>
-    </Dropdown>
-
-					{/* <Dropdown.Toggle className="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+					<a className="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
 						<Image src={avatar1} className="avatar img-fluid rounded me-1" alt="Charles Hall" />
 						<div>
 							<span className="text-dark">Charles Hall</span>
 							<p className="m-0">Admin</p>
 						</div>
-					</Dropdown.Toggle>
+					</a>
 
-					<DropdownMenu align="end">
+					<div className="dropdown-menu dropdown-menu-end">
 						<a className="dropdown-item" href="pages-profile.html"><i className="align-middle me-1" data-feather="user"></i> Profile</a>
 						<a className="dropdown-item" href="#"><i className="align-middle me-1" data-feather="pie-chart"></i> Analytics</a>
 						<div className="dropdown-divider"></div>
@@ -178,7 +167,7 @@ const UserActions = () => {
 						<a className="dropdown-item" href="#"><i className="align-middle me-1" data-feather="help-circle"></i> Help Center</a>
 						<div className="dropdown-divider"></div>
 						<a className="dropdown-item" href="#">Log out</a>
-					</DropdownMenu> */}
+					</div>
 				</li>
 			</ul>
 		</div>
