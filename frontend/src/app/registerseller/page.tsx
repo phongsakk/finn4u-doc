@@ -14,9 +14,9 @@ function regisseller() {
 	const router = useRouter();
 	const [step, setStep] = useState(1);
 
-	const nextStep = () => setStep((prev) => prev + 1);
+	const nextStep = () => setStep((prev) => prev >= 6 ? 6 : prev + 1);
 
-	const prevStep = () => setStep((prev) => prev - 1);
+	const prevStep = () => setStep((prev) => prev <= 1 ? 1 : prev - 1);
 
 	const handleSubmit = (e : React.FormEvent) => {
 		e.preventDefault();

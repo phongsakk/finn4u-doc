@@ -8,8 +8,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Credentials({
       name: "credentials",
       credentials: {
-        email: {},
-        password: {},
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
       authorize: async ({ email, password }) => {
         try {
@@ -27,11 +27,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           };
         } catch (error) {
           if (error instanceof AxiosError) {
-            console.log(error?.response?.data);
+            const err = error?.response?.data;
+            throw new Error(`-->>>${err.error}`);
           }
-          return { message: "12123" };
+          return null;
         }
       },
     }),
   ],
+  pages: {
+    signIn: "/singin",
+  },
+  session: {
+    strategy: "jwt",
+    maxAge: 60 * 60,
+  },
 });
