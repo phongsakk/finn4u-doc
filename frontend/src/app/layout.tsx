@@ -9,6 +9,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Finn4U",
+  icons:"/logo-icon.svg",
   description: "Property Rental Services",
 };
 

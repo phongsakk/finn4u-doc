@@ -3,16 +3,13 @@ import CustomImage from "@components/CustomImage";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { Button } from "react-bootstrap";
-import { redirect, useSearchParams } from "next/navigation";
+import { redirect } from "next/navigation";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const searchParams = useSearchParams();
-  const errorMessage = searchParams.get("error");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -23,13 +20,13 @@ function Login() {
       password,
       redirect: false,
     });
-    console.log(res);
+    
     if (res?.url) {
       redirect(res.url);
     }
 
     if (res?.error) {
-      setError("User not found.");
+      setError("Invalid email or password.");
     }
 
     setLoading(false);

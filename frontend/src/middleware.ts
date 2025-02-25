@@ -1,9 +1,16 @@
+import { auth } from "@lib/auth";
 import { NextResponse } from "next/server";
 
-export const middleware = (req: Request) => {
-  return NextResponse.redirect(new URL("/", req.url));
-};
+export async function middleware(req: Request) {
+  const session = await auth();
+  if (!session) {
+    const url = new URL("/", req.url);
+    return NextResponse.redirect(url);
+  }
+
+  return NextResponse.next();
+}
 
 export const config = {
-  matcher: ["/test/:path*"],
+  matcher: ["/consignment/:path*"],
 };

@@ -28,7 +28,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         } catch (error) {
           if (error instanceof AxiosError) {
             const err = error?.response?.data;
-            throw new Error(`-->>>${err.error}`);
           }
           return null;
         }
@@ -36,8 +35,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   pages: {
-    signIn: "/singin",
+    signIn: "/",
   },
+  debug:false,
   session: {
     strategy: "jwt",
     maxAge: 60 * 60,
