@@ -1,7 +1,7 @@
 import NextAuth, { User } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import axios, { AxiosError } from "axios";
-import { api, apiLogin } from "@utils/api";
+import { AxiosError } from "axios";
+import { apiLogin } from "@utils/api/external";
 import {
   apiLoginRequestSchema,
   apiLoginResponseSchema,
@@ -59,8 +59,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             accessTokenExpiredAt: dayjs(session.data.access_expires_in),
             refreshTokenExpiredAt: dayjs(session.data.refresh_expires_in),
           };
-
-          console.log("user", user);
 
           return user;
         } catch (error) {

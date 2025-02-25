@@ -22,3 +22,11 @@ export const apiLoginResponseSchema = object({
     refresh_token: string(),
   }),
 });
+
+export const apiRefreshTokenRequestSchema = object({
+  refresh_token: string({ required_error: "Refresh token is required" })
+    .min(1, "Refresh token is required")
+    .max(255, "Refresh token must be less than 255 characters"),
+});
+
+export const apiRefreshTokenResponseSchema = apiLoginResponseSchema;
