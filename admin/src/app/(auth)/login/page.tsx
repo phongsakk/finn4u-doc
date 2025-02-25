@@ -1,32 +1,20 @@
 "use client"
 import Image from 'next/image'
-import React, { useEffect, useState } from 'react'
+import { signIn, SignInOptions } from "next-auth/react";
+import React from 'react'
 import Link from 'next/link'
 import { Button, Col, Container, Form, FormControl, FormGroup, FormLabel, Row } from 'react-bootstrap'
 
 import Finn4ULogo from "@assets/img/finn4u-logo.png"
 
 const page = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("Email:", email);
-    console.log("Password:", password);
-  }
-
-  const set = (props: "email" | "password") => {
-    if (props === "email") {
-      return ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
-        setEmail(value);
-      }
-    } else if (props === "password") {
-      return ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
-        setPassword(value);
-      }
+  const formAction = async (formData: FormData) => {
+    const opts: SignInOptions = {
+      email: formData.get('email'),
+      password: formData.get('password'),
     }
-    return undefined;
+    console.log(opts);
+    await signIn("credentials", opts)
   }
 
   return (
@@ -40,13 +28,12 @@ const page = () => {
               </div>
 
               <div className="m-sm-4">
-                <Form onSubmit={handleSubmit}>
+                <Form action={formAction}>
                   <FormGroup className="mb-3">
                     <FormLabel>อีเมล</FormLabel>
                     <FormControl
                       size='lg' type="email" name="email"
                       placeholder="Enter your email"
-                      defaultValue={email} onChange={set("email")}
                     />
                   </FormGroup>
                   <FormGroup className="mb-3">
@@ -54,7 +41,6 @@ const page = () => {
                     <FormControl
                       size='lg' type="password" name="password"
                       placeholder="Enter your password"
-                      defaultValue={password} onChange={set("password")}
                     />
                     <span className="forgotpass">
                       <Link href="/forget-password">ลืมรหัสผ่าน</Link>

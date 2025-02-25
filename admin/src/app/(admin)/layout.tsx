@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Sidebar from "@/component/layout/Sidebar";
-import "@/assets/css/app.css"
-import "@/assets/css/custom.css"
+import Sidebar from "@component/layout/Sidebar";
+import "@assets/css/app.css"
+import "@assets/css/custom.css"
 
 export const metadata: Metadata = {
   title: "Finn4U Admin",
