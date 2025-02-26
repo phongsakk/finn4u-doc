@@ -8,14 +8,49 @@ import Collapse from "react-bootstrap/Collapse";
 import CustomImage from "@components/CustomImage";
 import {signOut, useSession} from "next-auth/react";
 import Login from "./Login";
+import {usePathname} from "next/navigation";
+
 export default function Navbar() {
 	const [navbarOpen, setNavOpen] = useState(false);
 	const [regisOpen, setRegisOpen] = useState(false);
-
+	const pathname = usePathname();
 	const {data: session, status} = useSession();
 
+	const menuItems = [
+		{
+			label: "หน้าแรก",
+			href: "/"
+		},
+		{
+			label: "ขาย",
+			href: "#"
+		},
+		{
+			label: "เช่า",
+			href: "#"
+		},
+		{
+			label: "ทรัพย์สินขายฝาก",
+			href: "/property-sale"
+		},
+		...(status === "authenticated" ? [{
+				label: "ผู้ขายฝาก",
+				href: "/consignment"
+			},] : []), {
+			label: "นักลงทุน",
+			href: status === "authenticated" ? "/investment": "/investment-register"
+		}, {
+			label: "Finn Tips",
+			href: "#"
+		}, {
+			label: "คำถามที่พบบ่อย",
+			href: "#"
+		},
+	];
+
 	return (
-		<> {
+		<> {" "}
+			{
 			!session && (
 				<Modal className="font2 modallogin" size="lg"
 					show={regisOpen}
@@ -66,8 +101,6 @@ export default function Navbar() {
 				</Modal>
 			)
 		}
-
-
 			<div className="navbar navbar-expand-lg navbar-main">
 				<div className="container-fluid">
 					<Link className="navbar-brand" href="/">
@@ -97,51 +130,25 @@ export default function Navbar() {
 					<Collapse in={navbarOpen}>
 						<div className="navbar-collapse" id="navbarSupportedContent">
 							<ul className="navbar-nav me-auto mb-2 mb-lg-0">
-								<li className="nav-item">
-									<Link className="nav-link active" aria-current="page" href="#">
-										หน้าแรก
-									</Link>
-								</li>
-								<li className="nav-item">
-									<Link className="nav-link" href="#">
-										ขาย
-									</Link>
-								</li>
-								<li className="nav-item">
-									<Link className="nav-link" href="#">
-										เช่า
-									</Link>
-								</li>
-								<li className="nav-item">
-									<Link className="nav-link" href="/property-sale">
-										ทรัพย์สินขายฝาก
-									</Link>
-								</li>
 								{
-								status !== "loading" && status === "authenticated" && (
-									<li className="nav-item">
-										<Link className="nav-link" href="/consignment">
-											ผู้ขายฝาก
-										</Link>
+								menuItems.map((item, index) => (
+									<li className={
+											`nav-item ${
+												pathname === item.href ? "nav-active" : ""
+											}`
+										}
+										key={index}>
+										<Link className="nav-link" aria-current="page"
+											href={
+												item.href
+										}>
+											{
+											item.label
+										}
+											{" "} </Link>
 									</li>
-								)
-							}
-								<li className="nav-item">
-									<Link className="nav-link" href="#">
-										นักลงทุน
-									</Link>
-								</li>
-								<li className="nav-item">
-									<Link className="nav-link" href="#">
-										Finn Tips
-									</Link>
-								</li>
-								<li className="nav-item">
-									<Link className="nav-link" href="#">
-										คำถามที่พบบ่อย
-									</Link>
-								</li>
-							</ul>
+								))
+							} </ul>
 							{
 							status !== "loading" && (status === "authenticated" ? (
 								<div className="d-flex register">
@@ -163,8 +170,12 @@ export default function Navbar() {
 								</div>
 							) : (
 								<div className="d-flex register">
-									<div className="nav-item">
-										<Link className="nav-link" href="#">
+									<div className={
+										`nav-item ${
+											pathname === "/register" ? "nav-active" : ""
+										}`
+									}>
+										<Link className="nav-link" href="/register">
 											ลงทะเบียน
 										</Link>
 									</div>
@@ -174,8 +185,7 @@ export default function Navbar() {
 												e.preventDefault();
 												setRegisOpen(true);
 											}
-									}
-									>
+									}>
 										<p>เข้าสู่ระบบ</p>
 										<Image src="/register.svg" alt="register"
 											width={26}
@@ -184,7 +194,8 @@ export default function Navbar() {
 									</Link>
 								</div>
 							))
-						} </div>
+						}
+							{" "} </div>
 					</Collapse>
 				</div>
 			</div>

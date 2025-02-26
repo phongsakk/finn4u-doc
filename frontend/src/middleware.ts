@@ -10,7 +10,7 @@ export async function middleware(req: Request) {
 
   return NextResponse.next();
 }
-
+ 
 export const config = {
-  matcher: ["/consignment/:path*"],
+  matcher: ["/consignment/:path*","/investment/:path*"],
 };
