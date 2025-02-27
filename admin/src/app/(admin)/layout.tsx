@@ -15,11 +15,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="wrapper">
-      <Sidebar />
-      <div className="main">
-        {children}
+    <>
+      <div className="wrapper">
+        <Sidebar />
+        <div className="main">
+          {children}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

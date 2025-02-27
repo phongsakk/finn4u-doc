@@ -12,8 +12,8 @@ const page = () => {
     const opts: SignInOptions = {
       email: formData.get('email'),
       password: formData.get('password'),
+      redirectTo: "/"
     }
-    console.log(opts);
     await signIn("credentials", opts)
   }
 

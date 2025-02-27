@@ -17,6 +17,10 @@ export const POST = async () => {
   if (!session) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
+
+  if (!session.user || !session.user.refreshToken) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
   try {
 
     const response = await apiRefreshToken({
