@@ -1,5 +1,5 @@
 "use client";
-import React, {useState} from "react";
+import React, {useState,useEffect} from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Modal from "react-bootstrap/Modal";
@@ -14,7 +14,7 @@ export default function Navbar() {
 	const [navbarOpen, setNavOpen] = useState(false);
 	const [regisOpen, setRegisOpen] = useState(false);
 	const pathname = usePathname();
-	const {data: session, status} = useSession();
+	const { data: session, status } = useSession();
 
 	const menuItems = [
 		{
