@@ -1,6 +1,5 @@
 "use client";
 import React from 'react';
-import Image from 'next/image';
 import CustomImage from './CustomImage';
 import {Splide, SplideSlide} from "@splidejs/react-splide";
 import '@splidejs/react-splide/css';
@@ -21,7 +20,7 @@ function Banner() {
 			{
 			[...Array(3)].map((_, i) => (
 				<SplideSlide key={i}>
-					<CustomImage src='/banner-home-emp.png' />
+					<CustomImage src='/banner-home-emp.png' alt='banner-home-emp' key={i} />
 				</SplideSlide>
 			))
 		} </Splide>

@@ -1,16 +1,97 @@
-import Link from "next/link";
-import Banner from "../components/Banner";
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faCheck, faBook} from "@fortawesome/free-solid-svg-icons";
-import CustomImage from "../components/CustomImage";
-export default async function Page() {
+import Banner from "@components/Banner"
+import CustomImage from "@components/CustomImage"
+import {faCheck} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import Link from "next/link"
 
-	return (
-		<main>
+function page() {
+  return (
+    <main>
 			<div className="justify-content-center">
 				<Banner/>
 			</div>
-			
+			<div className="ragister-content">
+				<div className="container">
+					<h4>
+						ขายฝากได้ง่ายกับ&nbsp;
+						<span className="text-primary h2">
+							Finn4U
+						</span>
+					</h4>
+
+					<div className="row">
+						<div className="col-lg-4">
+							<div className="group">
+								<CustomImage src="/menuregis1.png" alt="menuregis1"/>
+								<p>Finn กับการลดภาระดอกเบี้ย</p>
+								<p>ลดภาระดอกเบี้ยขายฝากที่สูง</p>
+								<p>เหลือเพียง 0.75% ต่อเดือน</p>
+							</div>
+						</div>
+						<div className="col-lg-4">
+							<div className="group">
+								<CustomImage src="/menuregis2.png" alt="menuregis2"/>
+								<p>Finn กับการลดภาระดอกเบี้ย</p>
+								<p>ราคารับขายฝากสูงสุดถึง 70%</p>
+							</div>
+						</div>
+						<div className="col-lg-4">
+							<div className="group">
+								<CustomImage src="/menuregis3.png" alt="menuregis3"/>
+								<p>Finn กับการลดภาระดอกเบี้ย</p>
+								<p>เพราะเรารักษาข้อมูลของคุณ</p>
+								<p>เป็นความลับสูงสุด</p>
+							</div>
+						</div>
+					</div>
+
+					<div className="btn-wrap">
+						<Link className="btn btn-primary"
+							href={"/"}>ลงทะเบียนเป็น ผู้ขายฝาก</Link>
+					</div>
+				</div>
+			</div>
+
+			<div className="ragister-content content2">
+				<div className="container">
+					<h4>
+						ขายฝากได้ง่ายกับ&nbsp;
+						<span className="text-primary h2">Finn4U</span>
+					</h4>
+
+					<div className="row">
+						<div className="col-lg-4">
+							<div className="group">
+								<CustomImage src="/menuregis4.png" alt="menuregis4"/>
+								<p>Finn กับการลดภาระดอกเบี้ย</p>
+								<p>ลดภาระดอกเบี้ยขายฝากที่สูง</p>
+								<p>เหลือเพียง 0.75% ต่อเดือน</p>
+							</div>
+						</div>
+						<div className="col-lg-4">
+							<div className="group">
+								<CustomImage src="/menuregis5.png" alt="menuregis5"/>
+								<p>Finn กับราคารับฝากขาย</p>
+								<p>ราคารับขายฝากสูงสุดถึง 70%</p>
+							</div>
+						</div>
+						<div className="col-lg-4">
+							<div className="group">
+								<CustomImage src="/menuregis6.png" alt="menuregis6"/>
+
+								<p>Finn เพราะปลอดภัย</p>
+								<p>เพราะเรารักษาข้อมูลของคุณ</p>
+								<p>เป็นความลับสูงสุด</p>
+							</div>
+						</div>
+					</div>
+
+					<div className="btn-wrap">
+						<a className="btn btn-primary" href="/registerseller">ลงทะเบียนเป็น ผู้ขายฝาก</a>
+					</div>
+				</div>
+			</div>
+
 			<div className="invest">
 				<div className="container">
 					<p className="title-content font2">สินทรัพย์ขายฝากแนะนำ</p>
@@ -283,5 +364,6 @@ export default async function Page() {
 				</div>
 			</div>
 		</main>
-	);
+  )
 }
+export default page
