@@ -1,16 +1,15 @@
 "use client";
-import Image from "next/image";
-import { useState } from "react";
+import CustomImage from "@components/CustomImage";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Button } from "react-bootstrap";
-import FormRegister from "./formregister";
-import FormOtp from "./formotp";
-import TermsAndCon from "./termsandcon";
-import VerifyIdcard from "./verifyidcard";
+import Formregister from "./formregister";
+import Formotp from "./formotp";
+import Termandcon from "./termandcon";
+import Verifyidcard from "./verifyidcard";
 import UploadDoc from "./uploaddoc";
-import CustomImage from "../../components/CustomImage";
 
-function regisseller() {
+function page() {
   const router = useRouter();
   const [step, setStep] = useState(1);
 
@@ -26,17 +25,7 @@ function regisseller() {
   return (
     <>
       <div className="banner-regis">
-        <Image
-          src="/banner_regis1.png"
-          alt="banner_regis1"
-          width={100}
-          height={100}
-          sizes="100vm"
-          style={{
-            height: "auto",
-          }}
-          priority
-        />
+        <CustomImage src="/banner_invester.png" alt="banner_invester" />
       </div>
 
       <div className="register-seller">
@@ -46,82 +35,64 @@ function regisseller() {
               <h4 className="title-main font2">
                 ลงทะเบียนเป็นผู้ขายฝากกับ Finn4U
               </h4>
+
               <div className="step">
                 <div className="child">
-                  <Image
+                  <CustomImage
                     src="/reg-step1.png"
                     alt="reg-step1"
-                    width={100}
-                    height={100}
-                    sizes="100vm"
                     style={{
                       height: "auto",
                     }}
-                    priority
                   />
                   <p className="font2 fw-bold">ลงทะเบียน</p>
                 </div>
                 <div className="polygon">
-                  <Image
+                  <CustomImage
                     src="/Polygon2.png"
                     alt="Polygon2"
-                    width={100}
-                    height={100}
-                    sizes="100vm"
                     style={{
                       height: "auto",
                     }}
-                    priority
                   />
                 </div>
                 <div className="child">
-                  <Image
+                  <CustomImage
                     src="/reg-step2.png"
                     alt="reg-step2"
-                    width={100}
-                    height={100}
-                    sizes="100vm"
                     style={{
                       height: "auto",
                     }}
-                    priority
                   />
                   <p className="font2">ยืนยันตัวตน</p>
                 </div>
                 <div className="polygon">
-                  <Image
+                  <CustomImage
                     src="/Polygon2.png"
                     alt="Polygon2"
-                    width={100}
-                    height={100}
-                    sizes="100vm"
                     style={{
                       height: "auto",
                     }}
-                    priority
                   />
                 </div>
                 <div className="child">
-                  <Image
+                  <CustomImage
                     src="/reg-step3.png"
                     alt="reg-step3"
-                    width={100}
-                    height={100}
-                    sizes="100vm"
                     style={{
                       height: "auto",
                     }}
-                    priority
                   />
                   <p className="font2">อัพโหลดเอกสาร</p>
                 </div>
               </div>
             </div>
+
             <form onSubmit={handleSubmit}>
-              {step === 1 && <FormRegister />}
-              {step === 2 && <FormOtp />}
-              {step === 3 && <TermsAndCon />}
-              {step === 4 && <VerifyIdcard />}
+              {step === 1 && <Formregister />}
+              {step === 2 && <Formotp />}
+              {step === 3 && <Termandcon />}
+              {step === 4 && <Verifyidcard />}
               {step === 5 && <UploadDoc />}
               {step === 6 && (
                 <>
@@ -150,6 +121,7 @@ function regisseller() {
                   </div>
                 </>
               )}
+
               {step != 6 && (
                 <div className="submit-group">
                   <Button variant="white" onClick={prevStep}>
@@ -159,7 +131,7 @@ function regisseller() {
                     ถัดไป
                   </Button>
                 </div>
-              )}{" "}
+              )}
             </form>
           </div>
         </div>
@@ -167,4 +139,4 @@ function regisseller() {
     </>
   );
 }
-export default regisseller;
+export default page;
