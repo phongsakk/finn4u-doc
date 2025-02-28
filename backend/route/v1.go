@@ -23,4 +23,12 @@ func V1(r *gin.RouterGroup) {
 		asset.GET("/", con.GetAsset)
 		asset.POST("/", con.CreateAsset)
 	}
+
+	master := r.Group("/master")
+	{
+		master.GET("/province", con.GetMasterProvince)
+		master.GET("/district", con.GetMasterDistrict)
+		master.GET("/sub-district", con.GetMasterSubDistrict)
+		master.GET("/asset-type", con.GetMasterAssetType)
+	}
 }
