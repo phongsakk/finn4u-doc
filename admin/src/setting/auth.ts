@@ -31,7 +31,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           const { email, password } = apiLoginRequestSchema.parse(credentials);
           const response = await apiLogin({ email: email, password: password });
 
-          const {data} = apiLoginResponseSchema.parse(response.data);
+          const { data } = apiLoginResponseSchema.parse(response.data);
           const accessToken = data.access_token;
           const refreshToken = data.refresh_token;
 
@@ -39,7 +39,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             accessToken,
             refreshToken,
             role: "user",
-            name:  email.split("@").pop(),
+            name: email.split("@").shift(),
             email: email,
           };
         } catch (error) {
