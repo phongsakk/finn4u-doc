@@ -367,7 +367,8 @@ select:disabled {
 [type=reset],
 [type=submit],
 button {
-    -webkit-appearance: button
+    -webkit-appearance: button;
+    appearance: button;
 }
 
 [type=button]:not(:disabled),
@@ -422,6 +423,7 @@ legend+* {
 
 [type=search] {
     -webkit-appearance: textfield;
+    appearance: textfield;
     outline-offset: -2px
 }
 
@@ -2571,6 +2573,7 @@ textarea.form-control-lg {
 
 .form-check-input {
     -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -2579,7 +2582,6 @@ textarea.form-control-lg {
     background-repeat: no-repeat;
     background-size: contain;
     border: 1px solid rgba(0, 0, 0, .25);
-    color-adjust: exact;
     height: 1em;
     margin-top: .25em;
     vertical-align: top;

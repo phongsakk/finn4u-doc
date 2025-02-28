@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "@/assets/css/app.css"
-import "@/assets/css/custom.css"
-import Sidebar from "@/component/layout/Sidebar";
+import "@assets/css/app.css"
+import "@assets/css/custom.css"
+import { SessionProvider } from "next-auth/react";
+import SessionDisplay from "@component/dev/SessionDisplay";
 
 export const metadata: Metadata = {
-  title: "Finn4U Admin",
-  description: "ระบบจัดการหลังบ้าน Finn4U",
+  title: "Login - Finn4U",
+  description: "เข้าใช้งานระบบจัดการหลังบ้าน Finn4U",
 };
 
 export default function RootLayout({
@@ -17,12 +18,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className="wrapper">
-          <Sidebar />
-          <div className="main">
-            {children}
-          </div>
-        </div>
+        <SessionProvider >
+          <SessionDisplay />
+          {children}
+        </SessionProvider>
       </body>
     </html>
   );
