@@ -23,6 +23,7 @@ func Migrate() error {
 		&models.Admin{},
 		&models.AssetType{},
 		&models.Asset{},
+		&models.OTP{},
 	); err != nil {
 		return err
 	}

@@ -11,6 +11,7 @@ import (
 	"github.com/phongsakk/finn4u-back/app/request"
 	"github.com/phongsakk/finn4u-back/types"
 	"github.com/phongsakk/finn4u-back/utils"
+	"gorm.io/gorm"
 )
 
 func Login(c *gin.Context) {
@@ -174,6 +175,108 @@ func VerifyToken(c *gin.Context) {
 
 func Register(c *gin.Context) {
 
+}
+func Enroll(c *gin.Context) {
+
+}
+func Signup(c *gin.Context) {
+	var request request.Signup
+
+	if err := c.ShouldBindBodyWithJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:  http.StatusBadRequest,
+			Error: utils.NullableString(err.Error()),
+		})
+	}
+
+	if err := utils.Validate(request); err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:  http.StatusBadRequest,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+
+	var user models.Congisnor
+	db, err := database.Conn()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	defer database.Close(db)
+	if err := db.Where("email =?", request.Email).First(&user).Error; err == nil {
+		c.JSON(http.StatusConflict, types.Response{
+			Code:  http.StatusConflict,
+			Error: utils.NullableString("Email already registered"),
+		})
+		return
+	}
+
+	if request.Password != request.ConfirmPassword {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:  http.StatusBadRequest,
+			Error: utils.NullableString("Passwords do not match"),
+		})
+		return
+	}
+	hashedPassword, err := utils.Hash(request.Password)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	user.UserRoleID = 2
+	user.Password = hashedPassword
+	user.Email = request.Email
+	user.UserPrefixID = int(request.UserPrefixId)
+	user.Firstname = request.Fisrtname
+	user.Lastname = request.Lastname
+	user.PhoneNumber = request.PhoneNumber
+	user.OnlineRange = request.OnlineRange
+	user.CareerID = request.CareerId
+	user.IncomePerMonth = request.IncomePerMonth
+	user.AddressNumber = request.AddressNumber
+	user.AddressStreet = request.AddressStreet
+	user.ProvinceID = request.ProvinceId
+	user.DistrictID = request.DistrictId
+	user.SubdistrictID = request.SubdistrictId
+	user.Email = request.Email
+
+	db.Transaction(func(tx *gorm.DB) error {
+		if err := db.Create(&user).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, types.Response{
+				Code:  http.StatusInternalServerError,
+				Error: utils.NullableString(err.Error()),
+			})
+			return err
+		}
+
+		var otp models.OTP
+		otp.UserID = user.ID
+		otp.Ref = utils.RandomString(6)
+		otp.UserType = "Congisnor"
+		otp.Code = utils.RandomNumber(6)
+		otp.ExpiredAt = time.Now().Add(time.Minute * 10)
+		if err := db.Create(&otp).Error; err != nil {
+			return err
+		}
+
+		// send OTP here
+
+		return nil
+	})
+
+	c.JSON(http.StatusCreated, types.Response{
+		Code:    http.StatusCreated,
+		Status:  true,
+		Message: utils.NullableString("User registered successfully"),
+		Data:    user,
+	})
 }
 
 func ForgotPassword(c *gin.Context) {
