@@ -18,7 +18,9 @@ func Migrate() error {
 		&models.District{},
 		&models.SubDistrict{},
 		&models.User{},
-		&models.Profile{},
+		&models.Congisnor{},
+		&models.Investor{},
+		&models.Admin{},
 		&models.AssetType{},
 		&models.Asset{},
 	); err != nil {
