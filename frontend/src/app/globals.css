@@ -486,7 +486,8 @@ img {
   column-gap: 32px;
 }
 
-.navbar-nav  > .nav-item.nav-active , .register > .nav-item.nav-active{
+.navbar-nav > .nav-item.nav-active,
+.register > .nav-item.nav-active {
   color: #000;
   font-weight: 600;
 }
@@ -952,7 +953,6 @@ img {
 .property-sale-detail .badegroup {
   display: flex;
   column-gap: 12px;
-  margin-bottom: 4rem;
 
   .badge {
     background-color: #a4a4a4;
@@ -1647,3 +1647,52 @@ img {
 /* .story .card:hover {
   width: 110%;
 } */
+.modal-image-gallery {
+  .modal-content {
+    position: relative;
+    background-color: var(--lightbox);
+    border: none;
+    .modal-body {
+      padding: 5% 5%;
+      .show-image {
+        width: 100%;
+        height: 100%;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+      }
+    }
+  }
+  .modal-header {
+    border: none;
+  }
+}
+
+.checklogin .form-check-input {
+  float: none !important;
+  margin-left: 0 !important;
+}
+
+
+.checklogin .form-check {
+  display: flex !important;
+  padding: 0;
+  column-gap: 20px;
+
+  label {
+    margin-left: 13px;
+  }
+}
+
+.checklogin .form-check-input:checked {
+  background-color: #30B175 !important;
+  border-color: #30B175 !important;
+}
+
+.checklogin .form-check-input:checked {
+  border-color: #30B175;
+  outline: 0;
+  box-shadow: 0 0 0 .25rem rgb(76 175 80 / 15%);
+}
