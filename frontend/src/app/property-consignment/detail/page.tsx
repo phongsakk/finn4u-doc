@@ -17,9 +17,9 @@ function PropertyPage() {
   const [galleryOpen, setGallery] = useState(false);
   const [modalImage, setModalImage] = useState<string>("");
 
-  const handleGallery = (e) => {
+  const handleGallery = (e: React.FormEvent) => {
     e.preventDefault();
-    const clickedImage = e.target;
+    const clickedImage = e.target as HTMLImageElement;
     setModalImage(clickedImage.src);
 
     setGallery(true);
