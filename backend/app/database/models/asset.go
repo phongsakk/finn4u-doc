@@ -30,6 +30,8 @@ type Asset struct {
 	Description         string     `json:"description" gorm:"type:text"`
 	PublishedAt         *time.Time `json:"published_at"`
 	EndedAt             *time.Time `json:"ended_at"`
+	Status              int        `json:"status"`
+	IsPublished         bool       `json:"is_published"`
 	Province            *Province  `json:"province,omitempty" gorm:"foreignKey:ProvinceID;references:ID"`
 	District            *District  `json:"district,omitempty" gorm:"foreignKey:DistrictID;references:ID"`
 	AssetType           *AssetType `json:"asset_type,omitempty" gorm:"foreignKey:AssetTypeID;references:ID"`
