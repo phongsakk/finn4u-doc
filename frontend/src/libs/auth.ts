@@ -19,6 +19,7 @@ declare module "next-auth" {
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  trustHost: true,
   providers: [
     Credentials({
       name: "credentials",
@@ -83,11 +84,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       if (token?.accessTokenExpires) {
         const accessTokenExpire = token.accessTokenExpires as number;
-        log(`Access Token: DateNow("${dayjs(Date.now()).format("DD-MM-YYYY HH:mm:ss")}") - ExpireDate("${dayjs(accessTokenExpire).format("DD-MM-YYYY HH:mm:ss")}")`);
+        log(
+          `Access Token: DateNow("${dayjs(Date.now()).format(
+            "DD-MM-YYYY HH:mm:ss"
+          )}") - ExpireDate("${dayjs(accessTokenExpire).format(
+            "DD-MM-YYYY HH:mm:ss"
+          )}")`
+        );
 
         if (Date.now() < accessTokenExpire) {
           log(
-            `Returning previous token "${dayjs(Date.now()).format("DD-MM-YYYY HH:mm:ss")}" < "${dayjs(accessTokenExpire).format("DD-MM-YYYY HH:mm:ss")}"`
+            `Returning previous token "${dayjs(Date.now()).format(
+              "DD-MM-YYYY HH:mm:ss"
+            )}" < "${dayjs(accessTokenExpire).format("DD-MM-YYYY HH:mm:ss")}"`
           );
           return token;
         }
@@ -107,7 +116,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return session;
     },
   },
-  secret:process.env.NEXT_PUBLIC_AUTH_SECRET ?? "terces-htua-u4nnif"
+  secret: process.env.NEXT_PUBLIC_AUTH_SECRET ?? "terces-htua-u4nnif",
 });
 
 async function refreshAccessToken(token: Jwt | any) {
