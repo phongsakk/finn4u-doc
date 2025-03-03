@@ -43,6 +43,7 @@ services:
       - backend
     environment:
       NEXT_PUBLIC_API_URL: http://backend:8080
+      NEXT_PUBLIC_AUTH_SECRET: terces-htua-u4nnif
 
   admin:
     build:
