@@ -43,10 +43,7 @@ function Login({loginOpen, handleLogin} : {
 	};
 
 	useEffect(() => {
-		if (loginOpen) {
-			setLoginOpen(loginOpen);
-		}
-
+		setLoginOpen(loginOpen);
 	}, [loginOpen])
 	return (
 		<>
@@ -220,8 +217,8 @@ function Login({loginOpen, handleLogin} : {
 									onClick={
 										(e) => {
 											e.preventDefault();
+											handleLogin();
 											setRegisterOpen(true)
-											setLoginOpen(true)
 										}
 									}
 									className="text-primary">
@@ -233,77 +230,98 @@ function Login({loginOpen, handleLogin} : {
 				</div>
 			</Modal>
 
-			<Modal className="modallogin" show={registerOpen}
+			<Modal className="modallogin" id="modalregister"
+				show={registerOpen}
 				onHide={
-					() => setRegisterOpen(false)
-			}>
+					() => {
+						handleLogin();
+						setRegisterOpen(false)
+					}
+				}
+				size="lg"
+				centered>
 				<p className="title">สนใจลงทะเบียนเป็น</p>
 				<div className="row">
 					<div className="col-lg-6">
 						<div className="card">
 							<div className="text-center">
-								<CustomImage src="/deal.png" alt="deal"/>
+								<CustomImage src="/deal.png" alt="deal"
+									style={
+										{
+											height: "auto"
+										}
+									}/>
 							</div>
-
 							<div className="form-check">
-								<FaCheckSquare/>
+								<FaCheckSquare className="form-check-input"/>
 								<label className="form-check-label">
 									ราคารับขายฝากสูงสุดถึง 70%
 								</label>
 							</div>
 							<div className="form-check">
+								<FaCheckSquare className="form-check-input"/>
 								<label className="form-check-label">
 									อัตราผลตอบแทนสูง 9-12% ต่อป
 								</label>
 							</div>
 							<div className="form-check ms">
+								<FaCheckSquare className="form-check-input"/>
 								<label className="form-check-label">
 									ลดภาระดอกเบี้ยขายฝาก 0.75% /เดือน
 								</label>
 							</div>
 
 							<div className="text-center">
-								<a href="#" className="btn btn-primary">ผู้ขายฝาก</a>
+								<Link href="/consignment-register" onClick={()=>{
+									handleLogin();
+									setRegisterOpen(false)
+								}} className="btn btn-primary">ผู้ขายฝาก</Link>
 							</div>
 						</div>
 					</div>
 					<div className="col-lg-6">
 						<div className="card">
 							<div className="text-center">
-								<CustomImage src="/homecare.png" alt="homecare"/>
+								<CustomImage src="/homecare.png" alt="homecare"
+									style={
+										{
+											height: "auto"
+										}
+									}/>
 							</div>
 
 							<div className="form-check">
-								<FaCheckSquare/>
+								<FaCheckSquare className="form-check-input"/>
 								<label className="form-check-label">
 									อัตราผลตอบแทนสูง 9-12% ต่อปี
 								</label>
 							</div>
 							<div className="form-check">
-								<FaCheckSquare/>
+								<FaCheckSquare className="form-check-input"/>
 
 								<label className="form-check-label">
 									อสังหาริมทรัพย์มูลค่าสูงค้ำประกัน
 								</label>
 							</div>
 							<div className="form-check">
-								<FaCheckSquare/>
+								<FaCheckSquare className="form-check-input"/>
 								<label className="form-check-label">
 									ประเมินทรัพย์สินโดยบริษัทประเมิน
-									                                    ที่ได้รับความเห็นชอบจาก ก.ล.ต.
+																											ที่ได้รับความเห็นชอบจาก ก.ล.ต.
 								</label>
 
 								<div className="text-center">
-									<a href="#" className="btn btn-primary">นักลงทุน</a>
+									<Link href="/investment-register" onClick={()=>{
+										handleLogin();
+										setRegisterOpen(false)
+									}} className="btn btn-primary">นักลงทุน</Link>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</Modal>
-
 		</>
-
 
 	);
 }
