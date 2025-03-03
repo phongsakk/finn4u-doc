@@ -1696,3 +1696,39 @@ img {
   outline: 0;
   box-shadow: 0 0 0 .25rem rgb(76 175 80 / 15%);
 }
+
+#modalregister .modal-content {
+  background-image: url(../../public/bg-regis.png);
+  background-repeat: repeat;
+
+  img {
+    width: 88px;
+    padding: 26px 2px;
+  }
+
+  .title {
+    text-align: center;
+    font-size: 32px;
+    color: #fff;
+    margin: 18px 176px;
+    border-bottom: 1px solid #fff;
+  }
+
+  .row {
+    padding: 0 2rem 2rem;
+  }
+
+  .card {
+    padding: 0 22px 18px 22px;
+  }
+
+  .form-check-input {
+    color: #30B175;
+    border-color: #30B175;
+    border: none;
+  }
+}
+
+#modalregister .col-lg-6:first-child .ms{
+  margin-bottom: 25px;
+}
