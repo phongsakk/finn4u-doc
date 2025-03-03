@@ -11,11 +11,17 @@ func V1(r *gin.RouterGroup) {
 	auth := r.Group("/auth")
 	{
 		auth.POST("/login", con.Login)
+		auth.POST("/signin", con.Login)
+		auth.POST("/checkin", con.Login)
+		auth.POST("/connect", con.Connect) // เข้าใช้งาน admin
+
 		auth.POST("/refresh-token", con.RefreshToken)
 		auth.POST("/verify-token", con.VerifyToken)
+
 		auth.POST("/register", con.Register) // ลงทะเบียนผู้ใช้งานทั่วไป
 		auth.POST("/signup", con.Signup)     // ลงทะเบียนผู้ขายฝาก/ฝากขาย
 		auth.POST("/enroll", con.Enroll)     // ลงทะเบียนผู้ลงทุน
+
 		auth.POST("/forgot-password", con.ForgotPassword)
 		auth.POST("/reset-password", con.ResetPassword)
 	}

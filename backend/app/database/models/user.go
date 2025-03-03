@@ -18,9 +18,6 @@ type User struct {
 	template.User
 }
 
-var secretKeyAccess = []byte("finn4u-secret-access")
-var secretKeyRefresh = []byte("finn4u-secret-refresh")
-
 // creates a new access token for a user
 func (user *User) GenerateAccessToken() (string, *time.Time, error) {
 	expiredAt := time.Now().Add(time.Minute * 5)
@@ -31,7 +28,7 @@ func (user *User) GenerateAccessToken() (string, *time.Time, error) {
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	tokenString, err := token.SignedString(secretKeyAccess)
+	tokenString, err := token.SignedString(template.SecretKeyAccess)
 	if err != nil {
 		return "", nil, err
 	}
@@ -44,7 +41,7 @@ func (user *User) ParseAccessToken(tokenString string) (*jwt.Token, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return secretKeyAccess, nil
+		return template.SecretKeyAccess, nil
 	})
 	if err != nil {
 		return nil, err
@@ -57,7 +54,7 @@ func (user *User) ParseRefreshToken(tokenString string) (*jwt.Token, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return secretKeyAccess, nil
+		return template.SecretKeyRefresh, nil
 	})
 	if err != nil {
 		return nil, err
@@ -74,7 +71,7 @@ func (user *User) GenerateRefreshToken() (string, *time.Time, error) {
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	tokenString, err := token.SignedString(secretKeyRefresh)
+	tokenString, err := token.SignedString(template.SecretKeyRefresh)
 	if err != nil {
 		return "", nil, err
 	}

@@ -6,6 +6,9 @@ import (
 	"gorm.io/gorm"
 )
 
+var SecretKeyAccess = []byte("finn4u-secret-access")
+var SecretKeyRefresh = []byte("finn4u-secret-refresh")
+
 type NameMultiLanguage struct {
 	Name   string `json:"name" gorm:"type:varchar(128);not null"`
 	NameTh string `json:"name_th" gorm:"type:varchar(128)"`
