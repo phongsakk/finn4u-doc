@@ -11,6 +11,7 @@ import {
 } from "@libs/validate/auth";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  trustHost: true,
   secret: process.env.NEXT_PUBLIC_AUTH_SECRET ?? "terces-htua-u4nnif",
   pages: {
     signIn: "/auth/login",
