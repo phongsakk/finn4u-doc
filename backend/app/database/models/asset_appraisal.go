@@ -10,3 +10,7 @@ type AssetAppraisal struct {
 	Duration       int     `json:"duration"`
 	Asset          *Asset  `json:"asset" gorm:"foreignKey:AssetID;references:ID"`
 }
+
+func (AssetAppraisal) TableName() string {
+	return "asset_appraisal"
+}

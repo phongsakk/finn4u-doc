@@ -9,3 +9,7 @@ type AssetAppraisalImage struct {
 	ImageName        string          `json:"image_name"`
 	AssetAppraisal   *AssetAppraisal `json:"asset_appraisal" gorm:"foreignKey:AssetAppraisalID;references:ID"`
 }
+
+func (AssetAppraisalImage) TableName() string {
+	return "asset_appraisal_image"
+}
