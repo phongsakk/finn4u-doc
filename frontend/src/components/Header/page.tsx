@@ -93,12 +93,10 @@ export default function Navbar() {
           <Collapse in={navbarOpen}>
             <div className="navbar-collapse" id="navbarSupportedContent">
               <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                {menuItems.map((item, index) => {
-                  const isActive =
-                    pathname === item.href ||
-                    (pathname.startsWith(`${item.href}/`) &&
-                      !item.href.includes("#"));
-
+                {
+				menuItems.map((item, index) => {
+					const isActive = new RegExp(`^${item.href}(/|$)`).test(pathname);
+					
                   return (
                     <li
                       className={`nav-item ${isActive ? "nav-active" : ""}`}
@@ -113,7 +111,8 @@ export default function Navbar() {
                       </Link>
                     </li>
                   );
-                })}
+                })
+				}
               </ul>
               {status !== "loading" &&
                 (status === "authenticated" ? (
