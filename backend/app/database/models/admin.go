@@ -9,17 +9,17 @@ import (
 	"github.com/phongsakk/finn4u-back/types"
 )
 
-func (User) TableName() string {
-	return "user"
-}
-
-type User struct {
+type Admin struct {
 	template.Model
 	template.User
 }
 
+func (Admin) TableName() string {
+	return "admin"
+}
+
 // creates a new access token for a user
-func (user *User) GenerateAccessToken() (string, *time.Time, error) {
+func (user *Admin) GenerateAccessToken() (string, *time.Time, error) {
 	expiredAt := time.Now().Add(time.Minute * 5)
 	claims := types.Auth{
 		UserId: user.ID,
@@ -36,7 +36,7 @@ func (user *User) GenerateAccessToken() (string, *time.Time, error) {
 }
 
 // Validate and parse the JWT token
-func (user *User) ParseAccessToken(tokenString string) (*jwt.Token, error) {
+func (user *Admin) ParseAccessToken(tokenString string) (*jwt.Token, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
@@ -49,7 +49,7 @@ func (user *User) ParseAccessToken(tokenString string) (*jwt.Token, error) {
 	return token, nil
 }
 
-func (user *User) ParseRefreshToken(tokenString string) (*jwt.Token, error) {
+func (user *Admin) ParseRefreshToken(tokenString string) (*jwt.Token, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
@@ -62,7 +62,7 @@ func (user *User) ParseRefreshToken(tokenString string) (*jwt.Token, error) {
 	return token, nil
 }
 
-func (user *User) GenerateRefreshToken() (string, *time.Time, error) {
+func (user *Admin) GenerateRefreshToken() (string, *time.Time, error) {
 	expiredAt := time.Now().Add(time.Hour * 24)
 	claims := jwt.MapClaims{
 		"user_id": user.ID,

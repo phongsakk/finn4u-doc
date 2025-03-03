@@ -39,7 +39,7 @@ func GetAsset(c *gin.Context) {
 	}
 
 	// Fetch assets with pagination
-	if err := db.Offset(offset).Limit(take).Find(&response).Error; err != nil {
+	if err := db.Offset(offset).Limit(take).Order("id").Find(&response).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
 			Error: utils.NullableString(err.Error()),

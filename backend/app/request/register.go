@@ -29,3 +29,50 @@ type Register struct {
 func (r *Register) Validated() error {
 	return utils.Validate(r)
 }
+
+type Signup struct {
+	Email           string  `json:"email" validate:"required,email"`
+	Password        string  `json:"password" validate:"required,min=8"`
+	ConfirmPassword string  `json:"confirm_password" validate:"required"`
+	UserPrefixId    int64   `json:"user_prefix_id" validate:"required"`
+	Fisrtname       string  `json:"firstname" validate:"required"`
+	Lastname        string  `json:"lastname" validate:"required"`
+	PhoneNumber     string  `json:"phone_number" validate:"required,max=32"`
+	OnlineRange     string  `json:"online_range" validate:"required"`
+	CareerId        uint    `json:"career_id" validate:"required"`
+	CareerDesc      string  `json:"career_desc" validate:"omitempty"`
+	IncomePerMonth  float64 `json:"income_per_month" validate:"omitempty"`
+	AddressNumber   string  `json:"address_number" validate:"omitempty"`
+	AddressStreet   string  `json:"address_street" validate:"omitempty"`
+	ProvinceId      uint    `json:"province_id" validate:"omitempty"`
+	DistrictId      uint    `json:"district_id" validate:"omitempty"`
+	SubdistrictId   uint    `json:"subdistrict_id" validate:"omitempty"`
+}
+
+func (r *Signup) Validated() error {
+	return utils.Validate(r)
+}
+
+type Enroll struct {
+	Email              string  `json:"email" validate:"required,email"`
+	Password           string  `json:"password" validate:"required,min=8"`
+	ConfirmPassword    string  `json:"confirm_password" validate:"required"`
+	UserPrefixId       int64   `json:"user_prefix_id" validate:"required"`
+	Fisrtname          string  `json:"firstname" validate:"required"`
+	Lastname           string  `json:"lastname" validate:"required"`
+	PhoneNumber        string  `json:"phone_number" validate:"required,max=32"`
+	OnlineRange        string  `json:"online_range" validate:"required"`
+	CareerId           uint    `json:"career_id" validate:"required"`
+	CareerDesc         string  `json:"career_desc" validate:"omitempty"`
+	IncomePerMonth     float64 `json:"income_per_month" validate:"omitempty"`
+	AddressNumber      string  `json:"address_number" validate:"omitempty"`
+	AddressStreet      string  `json:"address_street" validate:"omitempty"`
+	ProvinceId         uint    `json:"province_id" validate:"omitempty"`
+	DistrictId         uint    `json:"district_id" validate:"omitempty"`
+	SubdistrictId      uint    `json:"subdistrict_id" validate:"omitempty"`
+	Beneficiary        string  `json:"beneficiary" validate:"required"`
+	Relation           string  `json:"relation" validate:"required"`
+	InterestDistrictID uint    `json:"interest_district_id" validate:"omitempty"`
+	AssetTypeId        uint    `json:"asset_type_id" validate:"required"`
+	InvestmentAmount   float64 `json:"investment_amount" validate:"required"`
+}
