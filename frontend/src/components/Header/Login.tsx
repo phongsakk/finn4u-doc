@@ -23,12 +23,15 @@ function Login({loginOpen, handleLogin} : {
 	const [userType, setUserType] = useState("");
 	const [error, setError] = useState("");
 	const [loading, setLoading] = useState(false);
+	if (userType == "") {
+		setUserType("general");
+	}
 
 	const handleSubmit = async (e : React.FormEvent < HTMLFormElement >) => {
 		e.preventDefault();
 		setLoading(true);
 		setError("");
-		const res = await signIn("credentials", {email, password, redirect: false});
+		const res = await signIn("credentials", {email, password, userType, redirect: false});
 
 		if (res ?. url) {
 			handleLogin();
@@ -102,10 +105,14 @@ function Login({loginOpen, handleLogin} : {
 											onChange={
 												(e) => setUserType(e.target.value)
 											}
+											checked={
+												userType === "general"
+											}
 											type="radio"
 											name="usertype"
 											value="general"
-											id="general"/>
+											id="general"
+											required/>
 										<label className="form-check-label" htmlFor="general">
 											ผู้ใช้ทั่วไป
 										</label>
@@ -114,6 +121,9 @@ function Login({loginOpen, handleLogin} : {
 										<input className="form-check-input"
 											onChange={
 												(e) => setUserType(e.target.value)
+											}
+											checked={
+												userType === "consignment"
 											}
 											type="radio"
 											name="usertype"
@@ -127,6 +137,9 @@ function Login({loginOpen, handleLogin} : {
 										<input className="form-check-input"
 											onChange={
 												(e) => setUserType(e.target.value)
+											}
+											checked={
+												userType === "invester"
 											}
 											type="radio"
 											name="usertype"
@@ -179,35 +192,40 @@ function Login({loginOpen, handleLogin} : {
 								disabled={loading}>
 								{
 								loading ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"
-							}
-								{" "} </Button>
+							} </Button>
+							{
+							userType === "general" && (
+								<>
+									<div className="or">
+										<span></span>
+										<small>Or log in with</small>
+										<span></span>
+									</div>
 
-							<div className="or">
-								<span></span>
-								<small>Or log in with</small>
-								<span></span>
-							</div>
+									<div className="link">
+										<a href="#" className="btn btn-secondary">
+											<CustomImage src="/googleee.svg" alt="googleee"
+												style={
+													{
+														height: "auto"
+													}
+												}/>
+											<span>Facebook</span>
+										</a>
+										<a href="#" className="btn btn-secondary">
+											<CustomImage src="/faceeee.svg" alt="faceeee"
+												style={
+													{
+														height: "auto"
+													}
+												}/>
+											<span>Google</span>
+										</a>
+									</div>
+								</>
+							)
+						}
 
-							<div className="link">
-								<a href="#" className="btn btn-secondary">
-									<CustomImage src="/googleee.svg" alt="googleee"
-										style={
-											{
-												height: "auto"
-											}
-										}/>
-									<span>Facebook</span>
-								</a>
-								<a href="#" className="btn btn-secondary">
-									<CustomImage src="/faceeee.svg" alt="faceeee"
-										style={
-											{
-												height: "auto"
-											}
-										}/>
-									<span>Google</span>
-								</a>
-							</div>
 
 							<div className="line"></div>
 
@@ -272,10 +290,14 @@ function Login({loginOpen, handleLogin} : {
 							</div>
 
 							<div className="text-center">
-								<Link href="/consignment-register" onClick={()=>{
-									handleLogin();
-									setRegisterOpen(false)
-								}} className="btn btn-primary">ผู้ขายฝาก</Link>
+								<Link href="/consignment-register"
+									onClick={
+										() => {
+											handleLogin();
+											setRegisterOpen(false)
+										}
+									}
+									className="btn btn-primary">ผู้ขายฝาก</Link>
 							</div>
 						</div>
 					</div>
@@ -311,10 +333,14 @@ function Login({loginOpen, handleLogin} : {
 								</label>
 
 								<div className="text-center">
-									<Link href="/investment-register" onClick={()=>{
-										handleLogin();
-										setRegisterOpen(false)
-									}} className="btn btn-primary">นักลงทุน</Link>
+									<Link href="/investment-register"
+										onClick={
+											() => {
+												handleLogin();
+												setRegisterOpen(false)
+											}
+										}
+										className="btn btn-primary">นักลงทุน</Link>
 								</div>
 							</div>
 						</div>

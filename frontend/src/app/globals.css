@@ -1476,7 +1476,7 @@ img {
 }
 
 .modallogin .right {
-  padding: 16px 16px 0px 16px;
+  padding: 16px 16px 16px 16px;
 
   .title {
     color: #248968;
@@ -1671,6 +1671,8 @@ img {
 }
 
 .checklogin .form-check-input {
+  width: 20px;
+  height: 20px;
   float: none !important;
   margin-left: 0 !important;
 }
@@ -1680,7 +1682,7 @@ img {
   display: flex !important;
   padding: 0;
   column-gap: 20px;
-
+ 
   label {
     margin-left: 13px;
   }
