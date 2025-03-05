@@ -113,14 +113,13 @@ function PropertyPage() {
                 </div>
               </div>
             </div>
-
             <div className="location">
               <h3 className="text-primary font2">ลาดกระบัง, กรุงเทพมหานคร</h3>
               <div className="badge font2">ที่ดินเปล่า</div>
-              <Link href="invest-notice.php" className="float-right font2 mx-2">
+              <Link href="#" className="float-right font2 mx-2">
                 ร่วมลงทุน
               </Link>
-              <Link href="invest-notice.php" className="float-right font2">
+              <Link href="#" className="float-right font2">
                 ลงทุน
               </Link>
             </div>

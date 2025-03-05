@@ -417,7 +417,7 @@ img {
 .upload-btn-group {
   display: flex;
   margin-left: 30px;
-  margin-bottom: 50px;
+  margin-bottom: 15px;
 
   .group {
     display: flex;
@@ -449,6 +449,20 @@ img {
   .csbtn1 {
     padding: 8px 21px;
     border-radius: 8px;
+  }
+
+}
+
+.show-image-upload {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 3px;
+  img { 
+    width: 135px;
+    height: 95px;
+    object-fit: fill;
+    border:#959595 1px solid;
+    border-radius: 5px;
   }
 }
 
@@ -486,8 +500,8 @@ img {
   column-gap: 32px;
 }
 
-.navbar-nav > .nav-item.nav-active,
-.register > .nav-item.nav-active {
+.navbar-nav>.nav-item.nav-active,
+.register>.nav-item.nav-active {
   color: #000;
   font-weight: 600;
 }
@@ -1383,11 +1397,9 @@ img {
 .modallogin {
   .col-lg-4 {
     border-radius: 16px 0px 0px 16px;
-    background: linear-gradient(
-      332deg,
-      rgba(48, 177, 117, 1) 81%,
-      rgba(91, 220, 160, 1) 100%
-    );
+    background: linear-gradient(332deg,
+        rgba(48, 177, 117, 1) 81%,
+        rgba(91, 220, 160, 1) 100%);
   }
 }
 
@@ -1476,7 +1488,7 @@ img {
 }
 
 .modallogin .right {
-  padding: 16px 16px 0px 16px;
+  padding: 16px 16px 16px 16px;
 
   .title {
     color: #248968;
@@ -1608,11 +1620,9 @@ img {
 }
 
 .ragister-content .btn-primary {
-  background: linear-gradient(
-    0deg,
-    rgba(48, 177, 117, 1) 0%,
-    rgba(91, 220, 160, 1) 100%
-  );
+  background: linear-gradient(0deg,
+      rgba(48, 177, 117, 1) 0%,
+      rgba(91, 220, 160, 1) 100%);
   font-size: 28px;
   border-radius: 40px;
   padding: 16px 38px;
@@ -1652,11 +1662,14 @@ img {
     position: relative;
     background-color: var(--lightbox);
     border: none;
+
     .modal-body {
       padding: 5% 5%;
+
       .show-image {
         width: 100%;
         height: 100%;
+
         img {
           width: 100%;
           height: 100%;
@@ -1665,12 +1678,15 @@ img {
       }
     }
   }
+
   .modal-header {
     border: none;
   }
 }
 
 .checklogin .form-check-input {
+  width: 20px;
+  height: 20px;
   float: none !important;
   margin-left: 0 !important;
 }
@@ -1729,6 +1745,6 @@ img {
   }
 }
 
-#modalregister .col-lg-6:first-child .ms{
+#modalregister .col-lg-6:first-child .ms {
   margin-bottom: 25px;
 }

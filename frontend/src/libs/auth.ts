@@ -26,8 +26,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        userType: { label: "User type", type: "text" },
       },
-      authorize: async ({ email, password }) => {
+      authorize: async ({ email, password, userType }) => {
         if (email === null && password === null) {
           return null;
         }
@@ -53,7 +54,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return {
             accessToken,
             refreshToken,
-            role: "user",
+            role: userType || "general",
             name: useInfo.name,
             email: useInfo.email,
           };
@@ -114,6 +115,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
 
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith(baseUrl)) return url;
+      return `${baseUrl}/`;
     },
   },
   secret: process.env.NEXT_PUBLIC_AUTH_SECRET ?? "terces-htua-u4nnif",

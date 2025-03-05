@@ -1,13 +1,14 @@
 import type { NextConfig } from "next";
+const url = new URL(String(process.env.NEXT_PUBLIC_IMAGE_HOST));
 
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: 'localhost',  
-        port: '3000',          
-        pathname: '/_next/image', 
+        protocol: url.protocol.replace(":", "") as "http" | "https",
+        hostname: url.hostname,
+        port: url.port || "",
+        pathname: "/_next/image",
       },
     ],
   },

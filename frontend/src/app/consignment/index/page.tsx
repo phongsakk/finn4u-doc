@@ -1,11 +1,15 @@
 "use client";
 import CustomImage from "@components/CustomImage";
 import Link from "next/link";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import BarChart from "./BarChart";
+import axios from "axios";
+import { apiInternalGet } from "@components/helpers";
+import Modal_interest from "./modal_interest";
+import Modal_infoconsign from "./modal_infoconsign";
 
-type modalParam = {
+export type modalParam = {
   Status: boolean;
   id?: number;
 };
@@ -14,284 +18,37 @@ function Index() {
   const [interestOpen, setInterestOpen] = useState<modalParam>({
     Status: false,
   });
+
   const [detailOpen, setDtilOpen] = useState<modalParam>({ Status: false });
+  const [assets, setAssets] = useState([]);
+
+  const handleHide = () => {
+    setInterestOpen({ Status: false });
+  };
+
+  const handleConHide = () => {
+    setDtilOpen({ Status: false });
+  };
+
+  useEffect(() => {
+    const boot = async () => {
+      const res = await apiInternalGet("/api/asset");
+      if (res != "unknow error") {
+        setAssets(res || []);
+      }
+    };
+    boot();
+  }, []);
 
   return (
     <>
-      <Modal
-        className="font2 modal-main"
-        show={interestOpen.Status}
-        size="xl"
-        onHide={() => setInterestOpen({ Status: false })}
-        centered
-      >
-        <Modal.Header closeButton>
-          <h5 className="modal-title font2">การคำนวณดอกเบี้ย</h5>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="row">
-            <div className="col-lg-4">
-              <h4 className="font2">ดอกเบี้ยของคุณ</h4>
-              <div className="mb-3">
-                <label className="form-label">จำนวนเงินขายฝาก (บาท)</label>
-                <input
-                  type="text"
-                  className="form-control text-center"
-                  id="form1"
-                  aria-describedby="text"
-                  value={"1,450,000"}
-                  onChange={() => {}}
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">ระยะเวลาขายฝาก (ปี)</label>
-                <input
-                  type="text"
-                  className="form-control text-center"
-                  id="form1"
-                  aria-describedby="text"
-                  value={"1"}
-                  onChange={() => {}}
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">ดอกเบี้ย (บาท/ปี)</label>
-                <input
-                  type="text"
-                  className="form-control text-center bg-primary color-white"
-                  id="form1"
-                  aria-describedby="text"
-                  value={"130,500"}
-                  onChange={() => {}}
-                />
-              </div>
-            </div>
-            <div className="col-lg-8">
-              <BarChart />
-            </div>
-          </div>
-          <div className="text-center">
-            <small className="text-primary">
-              อัตราดอกเบี้ยที่คำนวณได้จะถูกนำไปพิจารณากับเงื่อนไขการขายฝาก
-            </small>
-          </div>
-        </Modal.Body>
-      </Modal>
+      <Modal_interest investCalOpen={interestOpen} handleHide={handleHide} />
 
-      <Modal
-        className="modal-main modal-100w"
-        size="xl"
-        show={detailOpen.Status}
-        onHide={() => setDtilOpen({ Status: false })}
-        centered
-      >
-        <Modal.Header closeButton>
-          <h5 className="modal-title font2">ข้อมูลการขายฝาก</h5>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="row mb-3">
-            <div className="col-lg-2">
-              <label className="form-label">ชื่อผู้ขายฝาก</label>
-            </div>
-            <div className="col-lg-4">
-              <input
-                type="text"
-                className="form-control"
-                id="form1"
-                aria-describedby="text"
-              />
-            </div>
-            <div className="col-lg-2">
-              <label className="form-label">นามสกุล</label>
-            </div>
-            <div className="col-lg-4">
-              <input
-                type="text"
-                className="form-control"
-                id="form1"
-                aria-describedby="text"
-              />
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-lg-2">
-              <label className="form-label">เลขที่ฝากขาย</label>
-            </div>
-            <div className="col-lg-4">
-              <input
-                type="text"
-                className="form-control"
-                id="form1"
-                aria-describedby="text"
-              />
-            </div>
-            <div className="col-lg-2">
-              <label className="form-label">ประเภท</label>
-            </div>
-            <div className="col-lg-4">
-              <input
-                type="text"
-                className="form-control"
-                id="form1"
-                aria-describedby="text"
-              />
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-lg-2">
-              <label className="form-label">พื้นที่ขายฝาก</label>
-            </div>
-            <div className="col-lg-2">
-              <label className="form-label">บ้านเลขที่</label>
-            </div>
-            <div className="col-lg-8">
-              <input
-                type="text"
-                className="form-control"
-                id="form1"
-                aria-describedby="text"
-              />
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-lg-2">
-              <label className="form-label">
-                <span></span>
-              </label>
-            </div>
-            <div className="col-lg-2">
-              <label className="form-label">อำเภอ/เขต</label>
-            </div>
-            <div className="col-lg-2">
-              <input
-                type="text"
-                className="form-control"
-                id="form1"
-                aria-describedby="text"
-              />
-            </div>
-            <div className="col-lg-2">
-              <label className="form-label">ตำบล/แขวง</label>
-            </div>
-            <div className="col-lg-2">
-              <input
-                type="text"
-                className="form-control"
-                id="form1"
-                aria-describedby="text"
-              />
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-lg-2">
-              <label className="form-label">
-                <span></span>
-              </label>
-            </div>
-            <div className="col-lg-2">
-              <label className="form-label">รหัสไปรษณีย์</label>
-            </div>
-            <div className="col-lg-2">
-              <input
-                type="text"
-                className="form-control"
-                id="form1"
-                aria-describedby="text"
-              />
-            </div>
-            <div className="col-lg-2">
-              <label className="form-label">จังหวัด</label>
-            </div>
-            <div className="col-lg-2">
-              <input
-                type="text"
-                className="form-control"
-                id="form1"
-                aria-describedby="text"
-              />
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-lg-2">
-              <label className="form-label">
-                <span></span>
-              </label>
-            </div>
-            <div className="col-lg-2">
-              <label className="form-label">พื้นที่</label>
-            </div>
-            <div className="col-lg-2 wrap">
-              <input
-                type="text"
-                className="form-control"
-                id="form1"
-                aria-describedby="text"
-              />
-              <p className="text-secondary">ตารางวา</p>
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-lg-2">
-              <label className="form-label">
-                <span></span>
-              </label>
-            </div>
-            <div className="col-lg-2">
-              <label className="form-label">ราคาขายฝาก</label>
-            </div>
-            <div className="col-lg-2 wrap">
-              <input
-                type="text"
-                className="form-control"
-                id="form1"
-                aria-describedby="text"
-              />
-              <span className="text-secondary">บาท</span>
-            </div>
-            <div className="col-lg-2">
-              <label className="form-label">มูลค่าทรัพย์สิน</label>
-            </div>
-            <div className="col-lg-2 wrap">
-              <input
-                type="text"
-                className="form-control"
-                id="form1"
-                aria-describedby="text"
-              />
-              <span className="text-secondary">บาท</span>
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-lg-2">
-              <label className="form-label">วันที่ลงขายฝาก</label>
-            </div>
-            <div className="col-lg-2">
-              <input
-                type="text"
-                className="form-control"
-                id="form1"
-                aria-describedby="text"
-                placeholder="20 เมษายน 2565"
-              />
-            </div>
-            <div className="col-lg-2">
-              <input id="endDate" className="form-control" type="date" />
-            </div>
-            <div className="col-lg-2">
-              <label className="form-label">ระเวลาขายฝาก</label>
-            </div>
-            <div className="col-lg-2 wrap">
-              <input
-                type="text"
-                className="form-control"
-                id="form1"
-                aria-describedby="text"
-              />
-              <span className="text-secondary">ปี</span>
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal>
+      <Modal_infoconsign
+        detailOpen={detailOpen}
+        handleConHide={handleConHide}
+      />
+
       <div className="consignment-form2">
         <div className="container">
           <div className="card-form-main">
@@ -299,11 +56,18 @@ function Index() {
 
             <div className="container">
               <div className="land-sale-2">
-                {[...Array(3)].map((_, i) => (
-                  <div className="row not-sale mb-3" key={i}>
+                {assets.map((item: any, index) => (
+                  <div className="row not-sale mb-3" key={index}>
                     <div className="col-lg-4">
                       <div className="relative">
-                        <CustomImage src="/land-img1.png" alt="land-img1" />
+                        {item.land_title_deed_image &&
+                          item.land_title_deed_image != "" && (
+                            <CustomImage
+                              src={item.land_title_deed_image}
+                              alt="land-img1"
+                            />
+                          )}
+
                         <span className="badge">รอนักลงทุน</span>
                       </div>
                     </div>
@@ -312,7 +76,13 @@ function Index() {
                         <div className="date">
                           <div className="d-flex">
                             <span>
-                              วันที่ประกาศขายฝาก<span>12 พ.ค. 2565</span>
+                              {item.published_at ? (
+                                <>
+                                  วันที่ประกาศขายฝาก<span>12 พ.ค. 2565</span>
+                                </>
+                              ) : (
+                                "ยังไม่ประกาศขาย"
+                              )}
                             </span>
                           </div>
                           <p>ที่ดินพร้อมสิ่งปลูกสร้าง</p>
@@ -328,7 +98,9 @@ function Index() {
                                   height: "auto",
                                 }}
                               />
-                              <span className="w-100">ดอนเมือง, ปทุมธานี</span>
+                              <span className="w-100">
+                                {item.province && item.province.name}
+                              </span>
                             </div>
 
                             <div className="group-menu">
@@ -369,7 +141,9 @@ function Index() {
                                 height: "auto",
                               }}
                             />
-                            <span>เลขที่ฝากขาย 000012</span>
+                            <span>
+                              เลขที่ฝากขาย {String(item.id).padStart(5, "0")}
+                            </span>
                           </li>
                           <li>
                             <CustomImage
@@ -380,7 +154,14 @@ function Index() {
                                 height: "auto",
                               }}
                             />
-                            <span>1 ไร่ 2 งาน 26 ตารางวา</span>
+                            <span>
+                              {item.aria_size_rai &&
+                                item.aria_size_rai + " ไร่ "}
+                              {item.aria_size_ngan &&
+                                item.aria_size_ngan + " งาน "}
+                              {item.aria_size_square_wa &&
+                                item.aria_size_square_wa + " ตารางวา "}
+                            </span>
                           </li>
                           <li>
                             <CustomImage
@@ -455,7 +236,7 @@ function Index() {
                       </div>
                     </div>
                   </div>
-                ))}{" "}
+                ))}
               </div>
             </div>
             <hr />
