@@ -1,9 +1,11 @@
 "use client";
 import CustomImage from "@components/CustomImage";
 import Link from "next/link";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import BarChart from "./BarChart";
+import axios from "axios";
+import { apiInternalGet } from "@components/helpers";
 
 type modalParam = {
   Status: boolean;
@@ -14,7 +16,19 @@ function Index() {
   const [interestOpen, setInterestOpen] = useState<modalParam>({
     Status: false,
   });
+
   const [detailOpen, setDtilOpen] = useState<modalParam>({ Status: false });
+  const [assets, setAssets] = useState([]);
+
+  useEffect(() => {
+    const boot = async () => {
+      const res = await apiInternalGet("/api/asset");
+      if (res != "unknow error") {
+        setAssets(res.data || []);
+      }
+    };
+    boot();
+  }, []);
 
   return (
     <>
@@ -292,6 +306,7 @@ function Index() {
           </div>
         </Modal.Body>
       </Modal>
+
       <div className="consignment-form2">
         <div className="container">
           <div className="card-form-main">
@@ -299,8 +314,8 @@ function Index() {
 
             <div className="container">
               <div className="land-sale-2">
-                {[...Array(3)].map((_, i) => (
-                  <div className="row not-sale mb-3" key={i}>
+                {assets.map((item: any, index) => (
+                  <div className="row not-sale mb-3" key={index}>
                     <div className="col-lg-4">
                       <div className="relative">
                         <CustomImage src="/land-img1.png" alt="land-img1" />
@@ -455,7 +470,7 @@ function Index() {
                       </div>
                     </div>
                   </div>
-                ))}{" "}
+                ))}
               </div>
             </div>
             <hr />

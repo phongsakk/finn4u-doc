@@ -1,6 +1,6 @@
-import { auth } from "@libs/auth";
+import { api } from "@utils/api/index";
+import axios from "axios";
 import dayjs from "dayjs";
-import { NextResponse } from "next/server";
 
 export const log = (text: string) => {
   console.log(
@@ -8,3 +8,17 @@ export const log = (text: string) => {
   );
 };
 
+export const apiExternalPost = async (url: string, body: object) => {
+   const res = await axios.post(api.external(url), body);
+   return res.data.data;
+};
+
+export const apiExternalGet = async (url: string) => {
+  const res =  await axios.get(api.external(url));
+  return res.data.data;
+};
+
+export const apiInternalGet = async (url: string) => {
+  const res =  await axios.get(api.internal(url));
+  return res.data;
+};
