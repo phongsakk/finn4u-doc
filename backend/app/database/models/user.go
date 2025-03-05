@@ -1,10 +1,13 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
+	"github.com/phongsakk/finn4u-back/app/database"
 	"github.com/phongsakk/finn4u-back/app/database/models/template"
 	"github.com/phongsakk/finn4u-back/types"
 )
@@ -18,13 +21,23 @@ type User struct {
 	template.User
 }
 
-// creates a new access token for a user
-func (user *User) GenerateAccessToken() (string, *time.Time, error) {
-	expiredAt := time.Now().Add(time.Minute * 5)
+func (user *User) GetFromRequest(c *gin.Context) error {
+	auth, ok := c.Get("user")
+	if !ok {
+		return errors.New("failed to get user from request")
+	}
+	_user := auth.(User)
+	*user = _user
+	return nil
+}
+
+func (user *User) GenerateAccessToken() (string, *int64, error) {
+	unix := time.Now().Add(time.Minute * 5).Unix()
+	expiredAt := &unix
 	claims := types.Auth{
 		UserId: user.ID,
 		Email:  user.Email,
-		Exp:    expiredAt.Unix(),
+		Exp:    *expiredAt,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
@@ -32,34 +45,40 @@ func (user *User) GenerateAccessToken() (string, *time.Time, error) {
 	if err != nil {
 		return "", nil, err
 	}
-	return tokenString, &expiredAt, nil
+	return tokenString, expiredAt, nil
 }
 
-// Validate and parse the JWT token
-func (user *User) ParseAccessToken(tokenString string) (*jwt.Token, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+func (user *User) ValidateToken(encodedToken string) error {
+	claims := &types.Auth{}
+
+	decoded, err := jwt.ParseWithClaims(encodedToken, claims, func(token *jwt.Token) (any, error) {
+		if _, isvalid := token.Method.(*jwt.SigningMethodHMAC); !isvalid {
+			return nil, fmt.Errorf("invalid token %v", token.Header["alg"])
 		}
 		return template.SecretKeyAccess, nil
 	})
-	if err != nil {
-		return nil, err
-	}
-	return token, nil
-}
 
-func (user *User) ParseRefreshToken(tokenString string) (*jwt.Token, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-		}
-		return template.SecretKeyRefresh, nil
-	})
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return token, nil
+
+	if !decoded.Valid {
+		return errors.New("token is invalid")
+	}
+
+	user.Email = claims.Email
+	user.ID = claims.UserId
+	db, err := database.Conn()
+	if err != nil {
+		return err
+	}
+	defer database.Close(db)
+
+	if err := db.Where("id = ? AND email = ?", user.ID, user.Email).First(&user).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (user *User) GenerateRefreshToken() (string, *time.Time, error) {

@@ -26,6 +26,7 @@ func Migrate() error {
 		&models.OTP{},
 		&models.AssetAppraisal{},
 		&models.AssetAppraisalImage{},
+		&models.AssetImage{},
 	); err != nil {
 		return err
 	}
