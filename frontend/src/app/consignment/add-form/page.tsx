@@ -4,9 +4,12 @@ import { api } from "@utils/api/index";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { apiInternalGet } from "@components/helpers";
 
 function AddForm() {
+  const router = useRouter();
+
   const [province, setProvince] = useState([]);
   const [province_id, setProvince_id] = useState<number>();
   const [asset_type, setAsset_type] = useState([]);
@@ -18,51 +21,102 @@ function AddForm() {
   const [landplotNumber, setLandplotNumber] = useState<string>();
   const [locataion, setLocation] = useState<string>();
   const [mto_ownership, setMTO_Ownership] = useState<boolean>();
-  const [more_information, setMoreInformation] = useState<string>();
+  const [description, setDescription] = useState<string>();
 
   const [imageLTD, setImageLTD] = useState<string | null>(null);
-  const [fileLTD, setFileLTD] = useState<File | null>(null);
+  const [imagesAsset, setImagesAsset] = useState<string[]>([]);
 
   useEffect(() => {
-    const boot = async (control: AbortController) => {
-      axios
-        .get(api.external("/v1/master/province"), { signal: control.signal })
-        .then(({ data: { data } }) => setProvince(data));
-      axios
-        .get(api.external("/v1/master/asset-type"), { signal: control.signal })
-        .then(({ data: { data } }) => setAsset_type(data));
+    const controller = new AbortController();
+
+    const boot = async () => {
+      const { data: res } = await apiInternalGet("/api/asset-master");
+      if (res) {
+        setProvince(res.province)
+        setAsset_type(res.asset_type)
+      }
     };
-    const control = new AbortController();
-    boot(control);
+    boot();
     return () => {
-      control.abort();
+      controller.abort();
     };
   }, []);
+
+  const imgLTDChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(event)
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.readAsDataURL(selectedFile);
+      reader.onload = () => {
+        setImageLTD(reader.result as string);
+      };
+      reader.onerror = (error) => {
+        console.error("Error Image");
+      };
+    }
+  };
+
+
+  const imgsAssetChang = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = event.target.files;
+    console.log(selectedFiles)
+    if (selectedFiles) {
+      const fileArray = Array.from(selectedFiles);
+
+      const promises = fileArray.map((file) => {
+        return new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = (error) => reject(error);
+        });
+      });
+
+      Promise.all(promises)
+        .then((base64Images) => setImagesAsset(base64Images))
+        .catch((error) => console.error("Error Images"));
+    }
+  }
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formJSON = {
       province_id: province_id,
+      district_id: 1001,
+      collateral:0,
       asset_type_id: asset_type_id,
       aria_size_rai: rai,
       aria_size_Ngan: ngan,
       aria_size_square_wa: square_wa,
       land_title_deed_number: landNumber,
       land_plot_number: landplotNumber,
+      land_title_deed_image: imageLTD,
+      asset_images: imagesAsset,
       locataion: locataion,
-      mto_ownership: mto_ownership,
-      more_information: more_information,
+      is_multiple_holder: mto_ownership,
+      description: description,
     };
+    if (!imageLTD) {
+      alert("กรุณาอัพโหลดโฉนดที่ดิน")
+      return false
+    }
 
+    if (imagesAsset.length < 3) {
+      alert("กรุณาอัพโหลดรูปภาพทรัพย์สิน (อย่างน้อย 3 รูป)")
+      return false
+    }
     try {
       const { data: messege } = await axios.post(
         api.internal("/api/asset"),
         formJSON
       );
       alert("บันทึกข้อมูลสำเร็จ");
-      redirect("/consignment/index");
+      router.push("/consignment/index");
     } catch (error) {
+      console.log(error)
       alert("ตรวจสอบข้อมูลอีกครั้ง");
     }
   };
@@ -89,7 +143,7 @@ function AddForm() {
                       className="form-select"
                       required
                     >
-                      <option value="">กรุณาเลือก</option>
+                      <option className="text-secondary" value="">กรุณาเลือก</option>
                       {province.map((item: any, index: any) => (
                         <option key={index} value={item.id}>
                           {item.name}
@@ -110,7 +164,7 @@ function AddForm() {
                       className="form-select"
                       required
                     >
-                      <option value="">กรุณาเลือก</option>
+                      <option className="text-secondary" value="">กรุณาเลือก</option>
                       {asset_type.map((item: any, index: any) => (
                         <option key={index} value={item.id}>
                           {item.name}
@@ -131,6 +185,7 @@ function AddForm() {
                       name="aria_size_rai"
                       className="form-control"
                       aria-describedby="text"
+                      placeholder="ไร่"
                     />
                   </div>
                 </div>
@@ -144,6 +199,7 @@ function AddForm() {
                       name="aria_size_Ngan"
                       className="form-control"
                       aria-describedby="text"
+                      placeholder="งาน"
                     />
                   </div>
                 </div>
@@ -157,6 +213,7 @@ function AddForm() {
                       name="aria_size_square_wa"
                       className="form-control"
                       aria-describedby="text"
+                      placeholder="ตางรางวา"
                     />
                   </div>
                 </div>
@@ -173,6 +230,7 @@ function AddForm() {
                       name="land_title_deed_number"
                       className="form-control"
                       aria-describedby="text"
+                      placeholder="หมายเลขโฉนดที่ดิน"
                       required
                     />
                   </div>
@@ -189,6 +247,7 @@ function AddForm() {
                       name="land_plot_number"
                       className="form-control"
                       aria-describedby="text"
+                      placeholder="หมายเลขระวาง"
                       required
                     />
                   </div>
@@ -199,26 +258,49 @@ function AddForm() {
                 กรุณาอัพโหลดโฉนดที่ดิน<span className="text-require">*</span>
               </p>
               <div className="upload-btn-group">
-                <button type="submit" className="btn btn-light csbtn1">
+                <input type="file" className="d-none" name="imageLTD" id="imageLTD" onChange={imgLTDChange} />
+                <label role="button" className="btn btn-light csbtn1" htmlFor="imageLTD">
                   <CustomImage src="/upload.svg" alt="upload" />
                   อัพโหลด
-                </button>
+                </label>
               </div>
+              {imageLTD &&
+                <div className="show-image-upload">
+                  <div className="col col-md-auto">
+                    <img src={imageLTD} alt="Preview" className="mt-2 w-32 h-32 object-cover" />
+                  </div>
+                </div>
+              }
+
 
               <p>
                 กรุณาอัพโหลดรูปภาพทรัพย์สิน (อย่างน้อย 3 รูป)
                 <span className="text-require">*</span>
               </p>
               <div className="upload-btn-group">
-                <button type="submit" className="btn btn-light csbtn1">
+
+                <input type="file" className="d-none" name="imagesAsset" id="imagesAsset" multiple onChange={imgsAssetChang} />
+                <label className="btn btn-light csbtn1" htmlFor="imagesAsset">
                   <CustomImage src="/upload.svg" alt="upload" />
                   อัพโหลด
-                </button>
+                </label>
               </div>
+
+
+              <div className="show-image-upload">
+                {imagesAsset.map((image, index) => (
+                  <div className="col col-md-auto" key={index}>
+                    <img src={image} alt={`Preview ${index}`} />
+                  </div>
+                ))}
+              </div>
+
+
+
 
               <div className="col-lg-6">
                 <div className="mb-3">
-                  <label className="form-label text-secondary">
+                  <label className="form-label text-secondary" htmlFor="location">
                     Location on Google Maps
                     <span className="text-require">*</span>
                   </label>
@@ -226,8 +308,10 @@ function AddForm() {
                     onChange={(e) => setLocation(e.target.value)}
                     type="text"
                     className="form-control"
-                    id="form1"
+                    id="location"
                     aria-describedby="text"
+                    placeholder="Location on Google Maps"
+                    required
                   />
                 </div>
               </div>
@@ -238,24 +322,25 @@ function AddForm() {
                   type="checkbox"
                   name="mto_ownership"
                   className="form-check-input"
-                  id="exampleCheck1"
+                  id="mto_ownership"
                 />
-                <label className="form-check-label">
+                <label className="form-check-label" htmlFor="mto_ownership">
                   มีผู้ถือกรรมสิทธิ์มากกว่า 1 คน
                 </label>
               </div>
 
               <div className="mb-3 col-lg-6 mb-5">
                 <label
-                  htmlFor="exampleFormControlTextarea1"
+                  htmlFor="description"
                   className="form-label"
                 >
                   ข้อมูลเพิ่มเติม
                 </label>
                 <textarea
-                  onChange={(e) => setMoreInformation(e.target.value)}
+                  onChange={(e) => setDescription(e.target.value)}
                   className="form-control row-3"
-                  id="exampleFormControlTextarea1"
+                  id="description"
+                  name="description"
                 ></textarea>
               </div>
 
