@@ -25,6 +25,7 @@ type Asset struct {
 	LandTitleDeedNumber string        `json:"land_title_deed_number" gorm:"type:varchar(128);not null"`
 	LandTitleDeedImage  string        `json:"land_title_deed_image" gorm:"type:text;not null"`
 	LandPlotNumber      string        `json:"land_plot_number" gorm:"type:varchar(128);not null"`
+	Description         *string       `json:"description" gorm:"type:text"`
 	Location            *string       `json:"location" gorm:"type:varchar(128)"`
 	LocationX           *string       `json:"location_x" gorm:"type:varchar(128)"`
 	LocationY           *string       `json:"location_y" gorm:"type:varchar(128)"`
