@@ -152,8 +152,8 @@ func Login(c *gin.Context) {
 		Data: map[string]interface{}{
 			"access_token":       accessToken,
 			"refresh_token":      refreshToken,
-			"access_expires_in":  accessTokenExpiresIn.Format(time.RFC3339),
-			"refresh_expires_in": refreshTokenExpiresIn.Format(time.RFC3339),
+			"access_expires_in":  accessTokenExpiresIn,
+			"refresh_expires_in": refreshTokenExpiresIn,
 		},
 	})
 }
@@ -216,11 +216,11 @@ func RefreshToken(c *gin.Context) {
 		Status:  true,
 		Code:    http.StatusOK,
 		Message: utils.NullableString("Logged in successfully"),
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"access_token":       accessToken,
 			"refresh_token":      refreshToken,
-			"access_expires_in":  accessTokenExpiresIn.Format(time.RFC3339),  // 5 minutes
-			"refresh_expires_in": refreshTokenExpiresIn.Format(time.RFC3339), // 1 day
+			"access_expires_in":  accessTokenExpiresIn,  // 5 minutes
+			"refresh_expires_in": refreshTokenExpiresIn, // 1 day
 		},
 	})
 }

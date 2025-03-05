@@ -17,10 +17,13 @@ type CreateAssetRequest struct {
 	ConsignmentPrice    int        `json:"consignment_price" validate:"required"`
 	LandTitleDeedNumber string     `json:"land_title_deed_number" validate:"required"`
 	LandPlotNumber      string     `json:"land_plot_number" validate:"required"`
+	LandPlotImage       string     `json:"land_plot_image" validate:"required"`
+	Location            *string    `json:"location" validate:"omitempty"`
 	LocationX           *string    `json:"location_x" validate:"omitempty"`
 	LocationY           *string    `json:"location_y" validate:"omitempty"`
 	IsMultipleHolder    bool       `json:"is_multiple_holder" validate:"omitempty"`
 	EndedAt             *time.Time `json:"ended_at" validate:"omitempty"`
+	AssetImages         []string   `json:"asset_images"`
 }
 
 func (r *CreateAssetRequest) Validated() error {

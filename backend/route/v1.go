@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	con "github.com/phongsakk/finn4u-back/app/controller"
 	conAdmin "github.com/phongsakk/finn4u-back/app/controller/admin"
+	mid "github.com/phongsakk/finn4u-back/app/middleware"
 )
 
 func V1(r *gin.RouterGroup) {
@@ -29,6 +30,7 @@ func V1(r *gin.RouterGroup) {
 
 	asset := r.Group("/asset")
 	{
+		asset.Use(mid.AuthMiddleware)
 		asset.GET("/", con.GetAsset)
 		asset.POST("/", con.CreateAsset)
 	}
