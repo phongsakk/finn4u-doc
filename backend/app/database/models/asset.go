@@ -29,7 +29,6 @@ type Asset struct {
 	LocationX           *string       `json:"location_x" gorm:"type:varchar(128)"`
 	LocationY           *string       `json:"location_y" gorm:"type:varchar(128)"`
 	IsMultipleHolder    bool          `json:"is_multiple_holder" gorm:"default:false"`
-	Description         *string       `json:"description" gorm:"type:text"`
 	PublishedAt         *time.Time    `json:"published_at"`
 	EndedAt             *time.Time    `json:"ended_at"`
 	Status              int           `json:"status"`
