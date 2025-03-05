@@ -4,9 +4,12 @@ import (
 	"github.com/gin-gonic/gin"
 	con "github.com/phongsakk/finn4u-back/app/controller"
 	conAdmin "github.com/phongsakk/finn4u-back/app/controller/admin"
+	mid "github.com/phongsakk/finn4u-back/app/middleware"
 )
 
 func V1(r *gin.RouterGroup) {
+
+	r.Use(mid.Cors)
 	r.GET("/", con.HealthCheck)
 
 	auth := r.Group("/auth")
