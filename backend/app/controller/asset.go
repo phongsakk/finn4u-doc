@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"math"
 	"net/http"
 
@@ -143,16 +144,18 @@ func CreateAsset(c *gin.Context) {
 
 	if err := db.Transaction(func(t *gorm.DB) error {
 		if err := t.Create(&asset).Error; err != nil {
+			fmt.Println("error assigning asset")
 			return err
 		}
 
 		if len(request.AssetImages) > 0 {
-			for _, v := range request.AssetImages {
+			for idx, v := range request.AssetImages {
 				var image = models.AssetImage{
 					AssetID: asset.ID,
 					Image:   v,
 				}
 				if err := t.Create(&image).Error; err != nil {
+					fmt.Printf("error assigning asset image %d\n", idx)
 					return err
 				}
 			}
@@ -160,14 +163,6 @@ func CreateAsset(c *gin.Context) {
 
 		return nil
 	}); err != nil {
-		c.JSON(http.StatusBadRequest, types.Response{
-			Code:  http.StatusBadRequest,
-			Error: utils.NullableString(err.Error()),
-		})
-		return
-	}
-
-	if err := db.Create(&asset).Error; err != nil {
 		c.JSON(http.StatusBadRequest, types.Response{
 			Code:  http.StatusBadRequest,
 			Error: utils.NullableString(err.Error()),
