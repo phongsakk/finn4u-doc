@@ -10,3 +10,12 @@ type Login struct {
 func (r *Login) Validated() error {
 	return utils.Validate(r)
 }
+
+type Connect struct {
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required"`
+}
+
+func (c *Connect) Validated() error {
+	return utils.Validate(c)
+}
