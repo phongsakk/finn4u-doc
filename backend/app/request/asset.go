@@ -14,7 +14,7 @@ type CreateAssetRequest struct {
 	AriaSizeNgan        uint       `json:"aria_size_ngan" validate:"omitempty"`
 	AriaSizeSquareWa    float64    `json:"aria_size_square_wa" validate:"omitempty"`
 	Collateral          *int       `json:"collateral" validate:"omitempty"`
-	ConsignmentPrice    *int       `json:"consignment_price" validate:"required"`      // ราคาขายฝาก
+	ConsignmentPrice    *int       `json:"consignment_price" validate:"omitempty"`     // ราคาขายฝาก
 	LandTitleDeedNumber string     `json:"land_title_deed_number" validate:"required"` // เลขโฉนด
 	LandTitleDeedImage  string     `json:"land_title_deed_image" validate:"required"`
 	LandPlotNumber      string     `json:"land_plot_number" validate:"required"` // เลขระวาง
