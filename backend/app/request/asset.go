@@ -15,14 +15,16 @@ type CreateAssetRequest struct {
 	AriaSizeSquareWa    float64    `json:"aria_size_square_wa" validate:"omitempty"`
 	Collateral          int        `json:"collateral" validate:"required"`
 	ConsignmentPrice    int        `json:"consignment_price" validate:"required"`
-	LandTitleDeedNumber string     `json:"land_title_deed_number" validate:"required"`
-	LandPlotNumber      string     `json:"land_plot_number" validate:"required"`
+	LandTitleDeedNumber string     `json:"land_title_deed_number" validate:"required"` // เลขโฉนด
+	LandTitleDeedImage  string     `json:"land_title_deed_image" validate:"required"`
+	LandPlotNumber      string     `json:"land_plot_number" validate:"required"` // เลขระวาง
 	LandPlotImage       string     `json:"land_plot_image" validate:"required"`
 	Location            *string    `json:"location" validate:"omitempty"`
 	LocationX           *string    `json:"location_x" validate:"omitempty"`
 	LocationY           *string    `json:"location_y" validate:"omitempty"`
 	IsMultipleHolder    bool       `json:"is_multiple_holder" validate:"omitempty"`
 	EndedAt             *time.Time `json:"ended_at" validate:"omitempty"`
+	Description         *string    `json:"description" validate:"omitempty"` // รายละเอียดของทรัพยากร
 	AssetImages         []string   `json:"asset_images"`
 }
 

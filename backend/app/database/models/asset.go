@@ -23,13 +23,13 @@ type Asset struct {
 	Collateral          int           `json:"collateral"`
 	ConsignmentPrice    int           `json:"consignment_price"`
 	LandTitleDeedNumber string        `json:"land_title_deed_number" gorm:"type:varchar(128);not null"`
+	LandTitleDeedImage  string        `json:"land_title_deed_image" gorm:"type:text;not null"`
 	LandPlotNumber      string        `json:"land_plot_number" gorm:"type:varchar(128);not null"`
-	LandPlotImage       string        `json:"land_plot_image_url" gorm:"type:text;not null"`
 	Location            *string       `json:"location" gorm:"type:varchar(128)"`
 	LocationX           *string       `json:"location_x" gorm:"type:varchar(128)"`
 	LocationY           *string       `json:"location_y" gorm:"type:varchar(128)"`
 	IsMultipleHolder    bool          `json:"is_multiple_holder" gorm:"default:false"`
-	Description         string        `json:"description" gorm:"type:text"`
+	Description         *string       `json:"description" gorm:"type:text"`
 	PublishedAt         *time.Time    `json:"published_at"`
 	EndedAt             *time.Time    `json:"ended_at"`
 	Status              int           `json:"status"`
