@@ -14,13 +14,13 @@ type Asset struct {
 	template.Model
 	GenID               string        `json:"gen_id" gorm:"type:varchar(64);not null,unique"`
 	ProvinceID          uint          `json:"province_id" gorm:"not null"`
-	DistrictID          uint          `json:"district_id" gorm:"not null"`
+	DistrictID          *uint         `json:"district_id"`
 	AssetTypeID         uint          `json:"asset_type_id" gorm:"not null"`
 	OwnerID             uint          `json:"owner_id" gorm:"not null"`
 	AriaSizeRai         uint          `json:"aria_size_rai" gorm:"not null"`
 	AriaSizeNgan        uint          `json:"aria_size_ngan" gorm:"not null"`
 	AriaSizeSquareWa    float64       `json:"aria_size_square_wa" gorm:"type:decimal(18,2);not null"`
-	Collateral          int           `json:"collateral"`
+	Collateral          *int          `json:"collateral"`
 	ConsignmentPrice    int           `json:"consignment_price"`
 	LandTitleDeedNumber string        `json:"land_title_deed_number" gorm:"type:varchar(128);not null"`
 	LandTitleDeedImage  string        `json:"land_title_deed_image" gorm:"type:text;not null"`
