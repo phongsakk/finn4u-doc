@@ -32,6 +32,7 @@ func V1(r *gin.RouterGroup) {
 
 	asset := r.Group("/asset")
 	{
+		asset.Use(mid.AuthMiddleware)
 		asset.GET("/", con.GetAsset)
 		asset.POST("/", con.CreateAsset)
 	}

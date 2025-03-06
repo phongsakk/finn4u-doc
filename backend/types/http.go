@@ -15,7 +15,8 @@ type Response struct {
 }
 
 type Auth struct {
-	jwt.MapClaims
+	// jwt.MapClaims
+	jwt.StandardClaims
 	UserId uint   `json:"user_id"`
 	Email  string `json:"email"`
 	Exp    int64  `json:"exp"`
