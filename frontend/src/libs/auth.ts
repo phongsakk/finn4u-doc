@@ -41,24 +41,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
           const res = await response.data;
 
-          console.log(res);
-
           if (!res) {
             return null;
           }
           const accessToken = res.data.access_token;
           const refreshToken = res.data.refresh_token;
 
-          const useInfo = {
-            name: "test01",
-            email: email as string,
-          };
           return {
             accessToken,
             refreshToken,
             role: userType || "general",
-            name: useInfo.name,
-            email: useInfo.email,
+            name: email as string,
+            email: email as string,
           };
         } catch (error) {
           if (error instanceof AxiosError) {
@@ -121,8 +115,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async redirect({ url, baseUrl }) {
       console.log(`Callback redirect: URL "${url} ${baseUrl}"`);
 
-      return process.env.NEXT_PUBLIC_AUTH_URL ?? 'http://103.22.183.137:8079/'
-      
+      return process.env.NEXT_PUBLIC_AUTH_URL ?? "http://103.22.183.137:8079/";
+
       // if (url.startsWith(baseUrl)) return url;
       // return `${baseUrl}/`;
     },
