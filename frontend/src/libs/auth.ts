@@ -118,12 +118,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       return session;
     },
-    async redirect({ url, baseUrl }) {
-      console.log(`Callback redirect: URL "${url} ${baseUrl}"`);
+    // async redirect({ url, baseUrl }) {
+    //   console.log(`Callback redirect: URL "${url} ${baseUrl}"`);
       
-      if (url.startsWith(baseUrl)) return url;
-      return `${baseUrl}/`;
-    },
+    //   if (url.startsWith(baseUrl)) return url;
+    //   return `${baseUrl}/`;
+    // },
   },
   secret: process.env.NEXT_PUBLIC_AUTH_SECRET ?? "terces-htua-u4nnif",
 });
