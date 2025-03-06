@@ -19,6 +19,14 @@ func GetAsset(c *gin.Context) {
 	var take = 20
 	var offset = utils.Offset(page, take)
 	var response []models.Asset
+	var user models.User
+	if err := user.GetFromRequest(c); err != nil {
+		c.JSON(http.StatusUnauthorized, types.Response{
+			Code:  http.StatusUnauthorized,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
 
 	db, err := database.Conn()
 	if err != nil {
@@ -32,7 +40,7 @@ func GetAsset(c *gin.Context) {
 
 	// Count all assets before applying pagination
 	var totalAssets int64
-	if err := db.Model(&models.Asset{}).Count(&totalAssets).Error; err != nil {
+	if err := db.Model(&models.Asset{}).Where("owner_id = ?", user.ID).Count(&totalAssets).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
 			Error: utils.NullableString(err.Error()),
@@ -41,7 +49,7 @@ func GetAsset(c *gin.Context) {
 	}
 
 	// Fetch assets with pagination
-	if err := db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Offset(offset).Limit(take).Order("id").Find(&response).Error; err != nil {
+	if err := db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Where("owner_id = ?", user.ID).Offset(offset).Limit(take).Order("id").Find(&response).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
 			Error: utils.NullableString(err.Error()),
