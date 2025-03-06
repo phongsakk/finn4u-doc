@@ -41,6 +41,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
           const res = await response.data;
 
+          console.log(res);
+
           if (!res) {
             return null;
           }
@@ -117,8 +119,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return session;
     },
     async redirect({ url, baseUrl }) {
-      if (url.startsWith(baseUrl)) return url;
-      return `${baseUrl}/`;
+      console.log(`Callback redirect: URL "${url} ${baseUrl}"`);
+
+      return process.env.NEXT_PUBLIC_AUTH_URL ?? 'http://103.22.183.137:8079/'
+      
+      // if (url.startsWith(baseUrl)) return url;
+      // return `${baseUrl}/`;
     },
   },
   secret: process.env.NEXT_PUBLIC_AUTH_SECRET ?? "terces-htua-u4nnif",

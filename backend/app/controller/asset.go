@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"math"
 	"net/http"
 
@@ -10,6 +11,7 @@ import (
 	"github.com/phongsakk/finn4u-back/app/request"
 	"github.com/phongsakk/finn4u-back/types"
 	"github.com/phongsakk/finn4u-back/utils"
+	"gorm.io/gorm"
 )
 
 func GetAsset(c *gin.Context) {
@@ -39,7 +41,7 @@ func GetAsset(c *gin.Context) {
 	}
 
 	// Fetch assets with pagination
-	if err := db.Offset(offset).Limit(take).Order("id").Find(&response).Error; err != nil {
+	if err := db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Offset(offset).Limit(take).Order("id").Find(&response).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
 			Error: utils.NullableString(err.Error()),
@@ -62,6 +64,14 @@ func GetAsset(c *gin.Context) {
 
 func CreateAsset(c *gin.Context) {
 	var request request.CreateAssetRequest
+	var user models.User
+	if err := user.GetFromRequest(c); err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:  http.StatusBadRequest,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
 
 	if err := c.ShouldBindBodyWithJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, types.Response{
@@ -97,12 +107,15 @@ func CreateAsset(c *gin.Context) {
 		Collateral:          request.Collateral,
 		ConsignmentPrice:    request.ConsignmentPrice,
 		LandTitleDeedNumber: request.LandTitleDeedNumber,
+		LandTitleDeedImage:  request.LandTitleDeedImage,
 		LandPlotNumber:      request.LandPlotNumber,
+		Description:         request.Description,
+		Location:            request.LocationX,
 		LocationX:           request.LocationX,
 		LocationY:           request.LocationY,
 		IsMultipleHolder:    request.IsMultipleHolder,
 		EndedAt:             request.EndedAt,
-		OwnerID:             3,
+		OwnerID:             user.ID,
 	}
 
 	if err := db.Where("id =?", request.ProvinceID).First(&models.Province{}).Error; err != nil {
@@ -129,7 +142,27 @@ func CreateAsset(c *gin.Context) {
 		return
 	}
 
-	if err := db.Create(&asset).Error; err != nil {
+	if err := db.Transaction(func(t *gorm.DB) error {
+		if err := t.Create(&asset).Error; err != nil {
+			fmt.Println("error assigning asset")
+			return err
+		}
+
+		if len(request.AssetImages) > 0 {
+			for idx, v := range request.AssetImages {
+				var image = models.AssetImage{
+					AssetID: asset.ID,
+					Image:   v,
+				}
+				if err := t.Create(&image).Error; err != nil {
+					fmt.Printf("error assigning asset image %d\n", idx)
+					return err
+				}
+			}
+		}
+
+		return nil
+	}); err != nil {
 		c.JSON(http.StatusBadRequest, types.Response{
 			Code:  http.StatusBadRequest,
 			Error: utils.NullableString(err.Error()),
