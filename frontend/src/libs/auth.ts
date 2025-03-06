@@ -41,6 +41,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
           const res = await response.data;
 
+          console.log(res);
+
           if (!res) {
             return null;
           }
@@ -117,6 +119,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return session;
     },
     async redirect({ url, baseUrl }) {
+      console.log(`Callback redirect: URL "${url} ${baseUrl}"`);
+      
       if (url.startsWith(baseUrl)) return url;
       return `${baseUrl}/`;
     },
