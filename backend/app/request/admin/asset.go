@@ -12,6 +12,7 @@ type DoAppraisal struct {
 	Duration       int       `json:"duration" validate:"required"`
 	Images         *[]string `json:"images" validate:"omitempty"`
 	Tags           *[]uint   `json:"tags" validate:"omitempty"`
+	IsPublished    *bool     `json:"is_published" validate:"omitempty"`
 	Auction        *Auction  `json:"auction" validate:"omitempty"`
 }
 
