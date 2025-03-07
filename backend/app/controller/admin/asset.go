@@ -224,6 +224,13 @@ func DoAppraisal(c *gin.Context) {
 			}
 		}
 
+		if r.IsPublished != nil {
+			asset.IsPublished = *r.IsPublished
+			if err := tx.Save(&asset).Error; err != nil {
+				return err
+			}
+		}
+
 		return nil
 	}); err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
