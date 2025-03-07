@@ -1,29 +1,84 @@
-import Image from 'next/image'
-import React from 'react'
+"use client";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import dayjs from "dayjs";
+import InfoImage from "@/assets/img/info.svg";
+import EditImage from "@/assets/img/edit.svg";
+import Link from "next/link";
+import Navbar from "@component/layout/Navbar";
+import axios from "axios";
+import { api } from "@utils/api";
+import { Button } from "react-bootstrap";
+import { ConsignParam } from "@models/asset";
+import ConModal from "./ConModal";
+dayjs.locale("th");
+const PropertyPage = () => {
+  const [assets, setAssets] = useState([]);
+  const [consignModal, setConModal] = useState<ConsignParam>({
+    id: 0,
+    status: false,
+  });
 
-import InfoImage from "@/assets/img/info.svg"
-import EditImage from "@/assets/img/edit.svg"
-import Link from 'next/link'
-import Navbar from '@component/layout/Navbar'
-import axios from 'axios'
-import { api } from '@utils/api'
+  const ConModalClose = () => {
+    setConModal({ id: 0, status: false });
+  };
 
-const matching = async () => {
-  const response = await axios.get(api.internal("api/asset"))
-  /// add more logic
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const boot = async (controller: AbortController) => {
+      try {
+        const signal = controller.signal;
+        const {
+          data: { data: ass_res },
+        } = await axios.get(api.internal("/api/asset"), { signal });
+
+        if (ass_res) {
+          setAssets(ass_res || []);
+        }
+      } catch (error) {
+        console.error("api assets error!");
+        setAssets([]);
+      }
+    };
+    boot(controller);
+    return () => {
+      controller.abort();
+    };
+  }, []);
+
   return (
     <>
-      <Navbar />
+      <Navbar title="ทรัพย์สินขายฝาก" />
+      <ConModal consignModal={consignModal} ConModalClose={ConModalClose} />
 
       <main className="content">
         <div className="dropdown">
-          <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+          <button
+            className="btn btn-secondary dropdown-toggle"
+            type="button"
+            id="dropdownMenuButton1"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
             เรียงตาม
           </button>
           <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-            <li><Link className="dropdown-item" href="#">Action</Link></li>
-            <li><Link className="dropdown-item" href="#">Another action</Link></li>
-            <li><Link className="dropdown-item" href="#">Something else here</Link></li>
+            <li>
+              <Link className="dropdown-item" href="#">
+                Action
+              </Link>
+            </li>
+            <li>
+              <Link className="dropdown-item" href="#">
+                Another action
+              </Link>
+            </li>
+            <li>
+              <Link className="dropdown-item" href="#">
+                Something else here
+              </Link>
+            </li>
           </ul>
         </div>
 
@@ -35,33 +90,107 @@ const matching = async () => {
                   <th className="text-bold">วัน/เดือน/ปี</th>
                   <th>
                     <div className="dropdown drop-2">
-                      <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                      <button
+                        className="btn dropdown-toggle"
+                        type="button"
+                        id="dropdownMenuButton1"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
                         ที่ตั้งทรัพย์สิน
                       </button>
-                      <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><Link className="dropdown-item" href="#">ทั่วประเทศ</Link></li>
-                        <li><Link className="dropdown-item" href="#">กรุงเทพฯและปริมณฑล</Link></li>
-                        <li><Link className="dropdown-item" href="#">ภาคกลาง</Link></li>
-                        <li><Link className="dropdown-item" href="#">ภาคเหนือ</Link></li>
-                        <li><Link className="dropdown-item" href="#">ภาคอีสาน</Link></li>
-                        <li><Link className="dropdown-item" href="#">ภาคใต้</Link></li>
-                        <li><Link className="dropdown-item" href="#">ภาคตะวันออก</Link></li>
+                      <ul
+                        className="dropdown-menu"
+                        aria-labelledby="dropdownMenuButton1"
+                      >
+                        <li>
+                          <Link className="dropdown-item" href="#">
+                            ทั่วประเทศ
+                          </Link>
+                        </li>
+                        <li>
+                          <Link className="dropdown-item" href="#">
+                            กรุงเทพฯและปริมณฑล
+                          </Link>
+                        </li>
+                        <li>
+                          <Link className="dropdown-item" href="#">
+                            ภาคกลาง
+                          </Link>
+                        </li>
+                        <li>
+                          <Link className="dropdown-item" href="#">
+                            ภาคเหนือ
+                          </Link>
+                        </li>
+                        <li>
+                          <Link className="dropdown-item" href="#">
+                            ภาคอีสาน
+                          </Link>
+                        </li>
+                        <li>
+                          <Link className="dropdown-item" href="#">
+                            ภาคใต้
+                          </Link>
+                        </li>
+                        <li>
+                          <Link className="dropdown-item" href="#">
+                            ภาคตะวันออก
+                          </Link>
+                        </li>
                       </ul>
                     </div>
                   </th>
                   <th>
                     <div className="dropdown drop-2">
-                      <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                      <button
+                        className="btn dropdown-toggle"
+                        type="button"
+                        id="dropdownMenuButton1"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
                         ประเภททรัพย์สิน
                       </button>
-                      <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><Link className="dropdown-item" href="#">ทั่วประเทศ</Link></li>
-                        <li><Link className="dropdown-item" href="#">กรุงเทพฯและปริมณฑล</Link></li>
-                        <li><Link className="dropdown-item" href="#">ภาคกลาง</Link></li>
-                        <li><Link className="dropdown-item" href="#">ภาคเหนือ</Link></li>
-                        <li><Link className="dropdown-item" href="#">ภาคอีสาน</Link></li>
-                        <li><Link className="dropdown-item" href="#">ภาคใต้</Link></li>
-                        <li><Link className="dropdown-item" href="#">ภาคตะวันออก</Link></li>
+                      <ul
+                        className="dropdown-menu"
+                        aria-labelledby="dropdownMenuButton1"
+                      >
+                        <li>
+                          <Link className="dropdown-item" href="#">
+                            ทั่วประเทศ
+                          </Link>
+                        </li>
+                        <li>
+                          <Link className="dropdown-item" href="#">
+                            กรุงเทพฯและปริมณฑล
+                          </Link>
+                        </li>
+                        <li>
+                          <Link className="dropdown-item" href="#">
+                            ภาคกลาง
+                          </Link>
+                        </li>
+                        <li>
+                          <Link className="dropdown-item" href="#">
+                            ภาคเหนือ
+                          </Link>
+                        </li>
+                        <li>
+                          <Link className="dropdown-item" href="#">
+                            ภาคอีสาน
+                          </Link>
+                        </li>
+                        <li>
+                          <Link className="dropdown-item" href="#">
+                            ภาคใต้
+                          </Link>
+                        </li>
+                        <li>
+                          <Link className="dropdown-item" href="#">
+                            ภาคตะวันออก
+                          </Link>
+                        </li>
                       </ul>
                     </div>
                   </th>
@@ -69,23 +198,57 @@ const matching = async () => {
                   <th>ราคาขายฝาก</th>
                   <th>
                     <div className="dropdown drop-2">
-                      <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                      <button
+                        className="btn dropdown-toggle"
+                        type="button"
+                        id="dropdownMenuButton1"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
                         ระยะเวลาขายฝาก
                       </button>
-                      <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><Link className="dropdown-item" href="#">รอยืนยันตัวตน</Link></li>
-                        <li><Link className="dropdown-item" href="#">ยืนยันตัวตนแล้ว</Link></li>
+                      <ul
+                        className="dropdown-menu"
+                        aria-labelledby="dropdownMenuButton1"
+                      >
+                        <li>
+                          <Link className="dropdown-item" href="#">
+                            รอยืนยันตัวตน
+                          </Link>
+                        </li>
+                        <li>
+                          <Link className="dropdown-item" href="#">
+                            ยืนยันตัวตนแล้ว
+                          </Link>
+                        </li>
                       </ul>
                     </div>
                   </th>
                   <th>
                     <div className="dropdown drop-2">
-                      <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                      <button
+                        className="btn dropdown-toggle"
+                        type="button"
+                        id="dropdownMenuButton1"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
                         สถานะ
                       </button>
-                      <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><Link className="dropdown-item" href="#">รอยืนยันตัวตน</Link></li>
-                        <li><Link className="dropdown-item" href="#">ยืนยันตัวตนแล้ว</Link></li>
+                      <ul
+                        className="dropdown-menu"
+                        aria-labelledby="dropdownMenuButton1"
+                      >
+                        <li>
+                          <Link className="dropdown-item" href="#">
+                            รอยืนยันตัวตน
+                          </Link>
+                        </li>
+                        <li>
+                          <Link className="dropdown-item" href="#">
+                            ยืนยันตัวตนแล้ว
+                          </Link>
+                        </li>
                       </ul>
                     </div>
                   </th>
@@ -94,28 +257,40 @@ const matching = async () => {
                 </tr>
               </thead>
               <tbody>
-                {["", "", ""].map((data, index) => (
+                {assets.map((item: any, index) => (
                   <tr key={index}>
-                    <td>16/10/2022 15:33:47</td>
-                    <td>กรุงเทพฯ</td>
-                    <td>คอนโด</td>
-                    <td>0000101</td>
+                    <td>
+                      {dayjs(item.create_at).format("DD/MM/YYYY HH:mm:ss")}
+                    </td>
+                    <td>{item.province ? item.province.name : "-"}</td>
+                    <td>{item.asset_type ? item.asset_type.name : "-"}</td>
+                    <td>{String(item.id).padStart(5, "0")}</td>
                     <td>800000</td>
                     <td>3 ปี</td>
-                    <td><span className="text-success">ขายฝากแล้ว</span></td>
                     <td>
-                      <button className="btn btn-see">
-                        <Image src={InfoImage} className="" alt="" />
-                      </button>
+                      <span className="text-success">ขายฝากแล้ว</span>
                     </td>
                     <td>
-                      <button className="btn btn-see">
+                      <Button
+                        onClick={(e) => e.preventDefault()}
+                        className="btn btn-see"
+                        variant="outline-success"
+                      >
+                        <Image src={InfoImage} alt="" />
+                      </Button>
+                    </td>
+                    <td>
+                      <Button
+                        onClick={() =>
+                          setConModal({ id: item.id, status: true })
+                        }
+                        className="btn btn-see"
+                        variant="outline-success"
+                      >
                         <Image src={EditImage} className="" alt="" />
-                      </button>
+                      </Button>
                     </td>
-
                   </tr>
-
                 ))}
               </tbody>
             </table>
@@ -126,11 +301,21 @@ const matching = async () => {
                     <span aria-hidden="true">&laquo;</span>
                   </Link>
                 </li>
-                <li className="page-item"><Link className="page-link" href="#">1</Link></li>
-                <li className="page-item active" aria-current="page">
-                  <Link className="page-link" href="#">2</Link>
+                <li className="page-item">
+                  <Link className="page-link" href="#">
+                    1
+                  </Link>
                 </li>
-                <li className="page-item"><Link className="page-link" href="#">3</Link></li>
+                <li className="page-item active" aria-current="page">
+                  <Link className="page-link" href="#">
+                    2
+                  </Link>
+                </li>
+                <li className="page-item">
+                  <Link className="page-link" href="#">
+                    3
+                  </Link>
+                </li>
                 <li className="page-item">
                   <Link className="page-link" href="#" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
@@ -139,11 +324,10 @@ const matching = async () => {
               </ul>
             </nav>
           </div>
-
         </div>
       </main>
     </>
-  )
-}
+  );
+};
 
-export default matching
+export default PropertyPage;

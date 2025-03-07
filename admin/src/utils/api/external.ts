@@ -13,7 +13,6 @@ export const apiLogin = async (payload: ApiLoginRequest) => {
 
 export const apiRefreshToken = async (payload: ApiRefreshTokenRequest) => {
   const url = api.external("/v1/auth/refresh-token");
-  console.log("payload", payload);
   const response = await axios.post(url, payload);
   return response;
 };
