@@ -6,7 +6,7 @@ import (
 )
 
 func AssetRouterGroup(r *gin.RouterGroup) {
-	r.GET("/", conAdmin.GetAdminAsset)
-	r.GET("/:asset_id", conAdmin.GetAdminAssetById)
+	r.GET("/", conAdmin.FindAsset)
+	r.GET("/:asset_id", conAdmin.SearchAsset)
 	r.POST("/:asset_id/appraisal", conAdmin.DoAppraisal)
 }
