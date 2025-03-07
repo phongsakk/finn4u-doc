@@ -1,6 +1,7 @@
 package admin
 
 import (
+	"fmt"
 	"math"
 	"net/http"
 
@@ -66,8 +67,9 @@ func FindTag(c *gin.Context) {
 
 func UpdateTag(c *gin.Context) {}
 
-func CreatTag(c *gin.Context) {
+func CreateTag(c *gin.Context) {
 	var req request.CreateTag
+	fmt.Println("reach 1")
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, types.Response{
 			Code:  http.StatusBadRequest,
@@ -75,6 +77,7 @@ func CreatTag(c *gin.Context) {
 		})
 		return
 	}
+	fmt.Println("reach 2")
 	db, err := database.Conn()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
@@ -86,6 +89,7 @@ func CreatTag(c *gin.Context) {
 	defer database.Close(db)
 	var tag models.Tag
 	tag.Name = req.Name
+	fmt.Println("reach 3")
 	if err := db.Create(&tag).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
@@ -93,6 +97,7 @@ func CreatTag(c *gin.Context) {
 		})
 		return
 	}
+	fmt.Println("reach 4")
 	c.JSON(http.StatusOK, types.Response{
 		Code:    http.StatusOK,
 		Status:  true,

@@ -16,4 +16,7 @@ func RouterGroup(r *gin.RouterGroup) {
 
 	asset := auth.Group("/asset")
 	AssetRouterGroup(asset)
+
+	tag := auth.Group("/tag")
+	TagRouterGroup(tag)
 }

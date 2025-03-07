@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -13,7 +12,6 @@ import (
 
 func AuthMiddleware(c *gin.Context) {
 	token := c.GetHeader("Authorization")
-	fmt.Println(token)
 	if token == "" {
 		c.JSON(http.StatusUnauthorized, types.Response{
 			Status:  false,
@@ -43,7 +41,6 @@ func AuthMiddleware(c *gin.Context) {
 
 func AdminAuthMiddleware(c *gin.Context) {
 	token := c.GetHeader("Authorization")
-	fmt.Println(token)
 	if token == "" {
 		c.JSON(http.StatusUnauthorized, types.Response{
 			Status:  false,
