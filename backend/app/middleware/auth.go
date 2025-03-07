@@ -40,3 +40,33 @@ func AuthMiddleware(c *gin.Context) {
 	c.Set("user", user)
 	c.Next()
 }
+
+func AdminAuthMiddleware(c *gin.Context) {
+	token := c.GetHeader("Authorization")
+	fmt.Println(token)
+	if token == "" {
+		c.JSON(http.StatusUnauthorized, types.Response{
+			Status:  false,
+			Code:    http.StatusUnauthorized,
+			Message: utils.NullableString("No token provided"),
+		})
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	var user models.Admin
+	var tokenWithoutBearer = strings.Replace(token, "Bearer ", "", -1)
+	if err := user.ValidateToken(tokenWithoutBearer); err != nil {
+		c.JSON(http.StatusUnauthorized, types.Response{
+			Status:  false,
+			Code:    http.StatusUnauthorized,
+			Message: utils.NullableString("Invalid token"),
+			Error:   utils.NullableString(err.Error()),
+		})
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	c.Set("user", user)
+	c.Next()
+}
