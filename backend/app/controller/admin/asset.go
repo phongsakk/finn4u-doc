@@ -15,7 +15,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetAdminAsset(c *gin.Context) {
+func FindAsset(c *gin.Context) {
 	var page = 1
 	var take = 20
 	var offset = utils.Offset(page, take)
@@ -50,7 +50,7 @@ func GetAdminAsset(c *gin.Context) {
 	}
 
 	// Fetch assets with pagination
-	if err := db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Offset(offset).Limit(take).Order("id").Find(&response).Error; err != nil {
+	if err := db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Offset(offset).Limit(take).Order("id DESC").Find(&response).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
 			Error: utils.NullableString(err.Error()),
@@ -71,7 +71,7 @@ func GetAdminAsset(c *gin.Context) {
 	})
 }
 
-func GetAdminAssetById(c *gin.Context) {
+func SearchAsset(c *gin.Context) {
 	id, e := strconv.Atoi(c.Param("asset_id"))
 	if e != nil {
 		c.JSON(http.StatusBadRequest, types.Response{
