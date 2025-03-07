@@ -8,11 +8,8 @@ export default function Home() {
   return (
     <>
       <Navbar />
-
       <main className="content">
         <div className="container-fluid p-0">
-
-
           <div className="card overview-oa radius-pm">
             <div className="card-body">
               <div className="row">
