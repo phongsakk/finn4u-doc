@@ -1,3 +1,3 @@
 export default {
-    base: process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080'
+    base: process.env.NEXT_PUBLIC_API_URL ?? 'http://103.22.183.137:8076'
 }
