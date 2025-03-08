@@ -15337,7 +15337,6 @@ span.flatpickr-weekday {
 }
 
 .btn-see {
-    background-color: #EBEDEE;
     border-radius: 8px;
 }
 
@@ -15566,4 +15565,110 @@ span.flatpickr-weekday {
 .form-check-input:checked {
     background-color: #00926B;
     border-color: #00926B;
+}
+
+
+#modal-estimate .edit {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    p:hover {
+        cursor: pointer;
+    }
+
+    p {
+        margin-left: 6px;
+        margin-bottom: 0;
+    }
+}
+
+.area-check {
+    display: flex;
+    column-gap: 20px;
+    flex-wrap: wrap;
+    row-gap: 14px;
+}
+
+.area-check .btn-primary {
+    background-color: #EBEDEE;
+    border-color: #EBEDEE;
+    color: #000 !important;
+    font-size: 16px;
+}
+
+
+
+.area-check .btn-primary:has(.btn-check:checked){
+    background-color: #30B175;
+    border-color: #30B175;
+    color: #fff !important;
+    box-shadow: none !important;
+}
+
+#modal-tag {
+    .add-group {
+        display: flex;
+        align-items: center;
+        column-gap: 10px;
+        color: #30B175;
+        cursor: pointer;
+
+        p {
+            margin: 0;
+        }
+    }
+}
+
+#modal-add-tag {
+    .add-group {
+        display: flex;
+        align-items: center;
+        column-gap: 10px;
+        color: #30B175;
+        cursor: pointer;
+
+        p {
+            margin: 0;
+        }
+    }
+}
+
+.content .dropdown .btn-secondary {
+    margin-bottom: 16px;
+    background-color: #fff;
+    color: #000;
+    border: none;
+}
+
+.image-checkbox{
+    position: relative;
+    .img-check{
+        display: none;
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+    .img-responsive{
+        width: 235px !important;
+        height: 140px;
+        object-fit: fill;
+        border: #bbbbbb 1px solid;
+        border-radius: 5px;
+    }
+    .select-image:checked ~ .img-check{
+        display: block;
+    }
+    .select-image:checked ~ .img-responsive{
+        outline: 5px solid #30b175;
+        outline-offset: -5px;
+    }
+}
+
+.btn-place:focus-within,
+.btn-place:focus {
+    background-color: #30B175;
+    border-color: #30B175;
+    color: #fff !important;
+    box-shadow: none !important;
 }
