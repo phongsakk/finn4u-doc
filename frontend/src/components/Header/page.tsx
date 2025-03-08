@@ -1,5 +1,5 @@
 "use client";
-import React, {useState,useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Modal from "react-bootstrap/Modal";
@@ -12,9 +12,13 @@ import {usePathname} from "next/navigation";
 
 export default function Navbar() {
 	const [navbarOpen, setNavOpen] = useState(false);
-	const [regisOpen, setRegisOpen] = useState(false);
+	const [loginOpen, setLoginOpen] = useState(false);
 	const pathname = usePathname();
-	const { data: session, status } = useSession();
+	const {data: session, status} = useSession();
+
+	const handleLogin = () => {
+		setLoginOpen(false);
+	};
 
 	const menuItems = [
 		{
@@ -31,14 +35,13 @@ export default function Navbar() {
 		},
 		{
 			label: "ทรัพย์สินขายฝาก",
-			href: "/property-sale"
-		},
-		...(status === "authenticated" ? [{
-				label: "ผู้ขายฝาก",
-				href: "/consignment"
-			},] : []), {
+			href: "/property-consignment"
+		}, {
+			label: "ผู้ขายฝาก",
+			href: status === "authenticated" ? "/consignment" : "/consignment-register"
+		}, {
 			label: "นักลงทุน",
-			href: status === "authenticated" ? "/investment": "/investment-register"
+			href: status === "authenticated" ? "/investment" : "/investment-register"
 		}, {
 			label: "Finn Tips",
 			href: "#"
@@ -49,57 +52,9 @@ export default function Navbar() {
 	];
 
 	return (
-		<> {" "}
-			{
-			!session && (
-				<Modal className="font2 modallogin" size="lg"
-					show={regisOpen}
-					onHide={
-						() => setRegisOpen(false)
-					}
-					centered>
-					<div className="row">
-						<div className="col-lg-4">
-							<div className="left">
-								<h2 className="font2">เข้าใช้งาน</h2>
-								<h2 className="font2">อย่างไร้กังวล</h2>
-								<div className="list">
-									<CustomImage src="/log1.svg" alt="log1"
-										style={
-											{
-												height: "auto"
-											}
-										}/>
-									<span className="font2">
-										เรารักษาข้อมูลของคุณเป็นความลับสูงสุด
-									</span>
-								</div>
-								<div className="list">
-									<CustomImage src="/safe.svg" alt="safe"
-										style={
-											{
-												height: "auto"
-											}
-										}/>
-									<span>ระบบรักษาความปลอดภัยที่ธนาคารยอมรับ</span>
-								</div>
-
-								<div className="text-center">
-									<CustomImage src="/office.png" alt="office"
-										style={
-											{
-												height: "auto"
-											}
-										}/>
-								</div>
-							</div>
-						</div>
-						<div className="col-lg-8">
-							<Login/>
-						</div>
-					</div>
-				</Modal>
-			)
+		<> {
+			!session && <Login loginOpen={loginOpen}
+				handleLogin={handleLogin}/>
 		}
 			<div className="navbar navbar-expand-lg navbar-main">
 				<div className="container-fluid">
@@ -131,23 +86,28 @@ export default function Navbar() {
 						<div className="navbar-collapse" id="navbarSupportedContent">
 							<ul className="navbar-nav me-auto mb-2 mb-lg-0">
 								{
-								menuItems.map((item, index) => (
-									<li className={
-											`nav-item ${
-												pathname === item.href ? "nav-active" : ""
-											}`
-										}
-										key={index}>
-										<Link className="nav-link" aria-current="page"
-											href={
-												item.href
-										}>
-											{
-											item.label
-										}
-											{" "} </Link>
-									</li>
-								))
+								menuItems.map((item, index) => {
+									const isActive = new RegExp(`^${
+										item.href
+									}(/|$)`).test(pathname);
+
+									return (
+										<li className={
+												`nav-item ${
+													isActive ? "nav-active" : ""
+												}`
+											}
+											key={index}>
+											<Link className="nav-link" aria-current="page"
+												href={
+													item.href
+											}>
+												{
+												item.label
+											} </Link>
+										</li>
+									);
+								})
 							} </ul>
 							{
 							status !== "loading" && (status === "authenticated" ? (
@@ -183,7 +143,7 @@ export default function Navbar() {
 										onClick={
 											(e) => {
 												e.preventDefault();
-												setRegisOpen(true);
+												setLoginOpen(true);
 											}
 									}>
 										<p>เข้าสู่ระบบ</p>
@@ -194,8 +154,7 @@ export default function Navbar() {
 									</Link>
 								</div>
 							))
-						}
-							{" "} </div>
+						} </div>
 					</Collapse>
 				</div>
 			</div>

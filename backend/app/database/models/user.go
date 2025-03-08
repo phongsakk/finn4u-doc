@@ -1,10 +1,13 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
+	"github.com/phongsakk/finn4u-back/app/database"
 	"github.com/phongsakk/finn4u-back/app/database/models/template"
 	"github.com/phongsakk/finn4u-back/types"
 )
@@ -15,60 +18,67 @@ func (User) TableName() string {
 
 type User struct {
 	template.Model
-	UserRoleID    int64    `json:"id" gorm:"not null"`
-	Email         string   `json:"email" gorm:"size:255;not null;unique;index"`
-	Password      string   `json:"-" gorm:"size:255"`
-	Provider      string   `json:"provider" gorm:"size:126;default:password" validate:"oneof:password facebook email"`
-	ProviderToken string   `json:"-" gorm:"size:255"`
-	Verified      bool     `json:"verified" gorm:"default:false"`
-	UserRole      UserRole `json:"user_role" gorm:"foreignKey:UserRoleID;references:ID"`
+	template.User
 }
 
-var secretKeyAccess = []byte("finn4u-secret-access")
-var secretKeyRefresh = []byte("finn4u-secret-refresh")
+func (user *User) GetFromRequest(c *gin.Context) error {
+	auth, ok := c.Get("user")
+	if !ok {
+		return errors.New("failed to get user from request")
+	}
+	_user := auth.(User)
+	*user = _user
+	return nil
+}
 
-// creates a new access token for a user
-func (user *User) GenerateAccessToken() (string, *time.Time, error) {
-	expiredAt := time.Now().Add(time.Minute * 5)
+func (user *User) GenerateAccessToken() (string, *int64, error) {
+	unix := time.Now().Add(time.Minute * 5).Unix()
+	expiredAt := &unix
 	claims := types.Auth{
 		UserId: user.ID,
 		Email:  user.Email,
-		Exp:    expiredAt.Unix(),
+		Exp:    *expiredAt,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	tokenString, err := token.SignedString(secretKeyAccess)
+	tokenString, err := token.SignedString(template.SecretKeyAccess)
 	if err != nil {
 		return "", nil, err
 	}
-	return tokenString, &expiredAt, nil
+	return tokenString, expiredAt, nil
 }
 
-// Validate and parse the JWT token
-func (user *User) ParseAccessToken(tokenString string) (*jwt.Token, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-		}
-		return secretKeyAccess, nil
-	})
-	if err != nil {
-		return nil, err
-	}
-	return token, nil
-}
+func (user *User) ValidateToken(encodedToken string) error {
+	claims := &types.Auth{}
 
-func (user *User) ParseRefreshToken(tokenString string) (*jwt.Token, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+	decoded, err := jwt.ParseWithClaims(encodedToken, claims, func(token *jwt.Token) (any, error) {
+		if _, isvalid := token.Method.(*jwt.SigningMethodHMAC); !isvalid {
+			return nil, fmt.Errorf("invalid token %v", token.Header["alg"])
 		}
-		return secretKeyAccess, nil
+		return template.SecretKeyAccess, nil
 	})
+
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return token, nil
+
+	if !decoded.Valid {
+		return errors.New("token is invalid")
+	}
+
+	user.Email = claims.Email
+	user.ID = claims.UserId
+	db, err := database.Conn()
+	if err != nil {
+		return err
+	}
+	defer database.Close(db)
+
+	if err := db.Where("id = ? AND email = ?", user.ID, user.Email).First(&user).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (user *User) GenerateRefreshToken() (string, *time.Time, error) {
@@ -80,7 +90,7 @@ func (user *User) GenerateRefreshToken() (string, *time.Time, error) {
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	tokenString, err := token.SignedString(secretKeyRefresh)
+	tokenString, err := token.SignedString(template.SecretKeyRefresh)
 	if err != nil {
 		return "", nil, err
 	}

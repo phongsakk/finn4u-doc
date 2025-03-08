@@ -3,32 +3,28 @@ package route
 import (
 	"github.com/gin-gonic/gin"
 	con "github.com/phongsakk/finn4u-back/app/controller"
+	mid "github.com/phongsakk/finn4u-back/app/middleware"
+	"github.com/phongsakk/finn4u-back/route/admin"
+	"github.com/phongsakk/finn4u-back/route/general"
 )
 
 func V1(r *gin.RouterGroup) {
+
+	r.Use(mid.Cors)
 	r.GET("/", con.HealthCheck)
 
-	auth := r.Group("/auth")
-	{
-		auth.POST("/login", con.Login)
-		auth.POST("/refresh-token", con.RefreshToken)
-		auth.POST("/verify-token", con.VerifyToken)
-		auth.POST("/register", con.Register)
-		auth.POST("/forgot-password", con.ForgotPassword)
-		auth.POST("/reset-password", con.ResetPassword)
-	}
+	authRouter := r.Group("/auth")
+	AuthRouterGroup(authRouter)
 
 	asset := r.Group("/asset")
-	{
-		asset.GET("/", con.GetAsset)
-		asset.POST("/", con.CreateAsset)
-	}
+	AssetRouterGroup(asset)
 
-	master := r.Group("/master")
-	{
-		master.GET("/province", con.GetMasterProvince)
-		master.GET("/district", con.GetMasterDistrict)
-		master.GET("/sub-district", con.GetMasterSubDistrict)
-		master.GET("/asset-type", con.GetMasterAssetType)
-	}
+	masterRouter := r.Group("/master")
+	MasterRouterGroup(masterRouter)
+
+	adminRouter := r.Group("/admin")
+	admin.RouterGroup(adminRouter)
+
+	generalRouter := r.Group("/general")
+	general.RouterGroup(generalRouter)
 }

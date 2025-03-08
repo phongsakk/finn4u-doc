@@ -1,12 +1,12 @@
 import Banner from "@components/Banner"
 import CustomImage from "@components/CustomImage"
 import {faCheck} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import Link from "next/link"
 
 function page() {
-  return (
-    <main>
+	return (
+		<main>
 			<div className="justify-content-center">
 				<Banner/>
 			</div>
@@ -31,54 +31,13 @@ function page() {
 						<div className="col-lg-4">
 							<div className="group">
 								<CustomImage src="/menuregis2.png" alt="menuregis2"/>
-								<p>Finn กับการลดภาระดอกเบี้ย</p>
-								<p>ราคารับขายฝากสูงสุดถึง 70%</p>
-							</div>
-						</div>
-						<div className="col-lg-4">
-							<div className="group">
-								<CustomImage src="/menuregis3.png" alt="menuregis3"/>
-								<p>Finn กับการลดภาระดอกเบี้ย</p>
-								<p>เพราะเรารักษาข้อมูลของคุณ</p>
-								<p>เป็นความลับสูงสุด</p>
-							</div>
-						</div>
-					</div>
-
-					<div className="btn-wrap">
-						<Link className="btn btn-primary"
-							href={"/"}>ลงทะเบียนเป็น ผู้ขายฝาก</Link>
-					</div>
-				</div>
-			</div>
-
-			<div className="ragister-content content2">
-				<div className="container">
-					<h4>
-						ขายฝากได้ง่ายกับ&nbsp;
-						<span className="text-primary h2">Finn4U</span>
-					</h4>
-
-					<div className="row">
-						<div className="col-lg-4">
-							<div className="group">
-								<CustomImage src="/menuregis4.png" alt="menuregis4"/>
-								<p>Finn กับการลดภาระดอกเบี้ย</p>
-								<p>ลดภาระดอกเบี้ยขายฝากที่สูง</p>
-								<p>เหลือเพียง 0.75% ต่อเดือน</p>
-							</div>
-						</div>
-						<div className="col-lg-4">
-							<div className="group">
-								<CustomImage src="/menuregis5.png" alt="menuregis5"/>
 								<p>Finn กับราคารับฝากขาย</p>
 								<p>ราคารับขายฝากสูงสุดถึง 70%</p>
 							</div>
 						</div>
 						<div className="col-lg-4">
 							<div className="group">
-								<CustomImage src="/menuregis6.png" alt="menuregis6"/>
-
+								<CustomImage src="/menuregis3.png" alt="menuregis3"/>
 								<p>Finn เพราะปลอดภัย</p>
 								<p>เพราะเรารักษาข้อมูลของคุณ</p>
 								<p>เป็นความลับสูงสุด</p>
@@ -87,7 +46,47 @@ function page() {
 					</div>
 
 					<div className="btn-wrap">
-						<a className="btn btn-primary" href="/registerseller">ลงทะเบียนเป็น ผู้ขายฝาก</a>
+						<Link className="btn btn-primary"
+							href="/consignment-register">ลงทะเบียนเป็น ผู้ขายฝาก</Link>
+					</div>
+				</div>
+			</div>
+
+			<div className="ragister-content content2">
+				<div className="container">
+					<h4>
+						ลงทุนกับ&nbsp;
+						<span className="text-primary h2">Finn4U</span>
+					</h4>
+
+					<div className="row">
+						<div className="col-lg-4">
+							<div className="group">
+								<CustomImage src="/menuregis4.png" alt="menuregis4"/>
+								<p>Finn มีอสังหาฯมูลค่าสูง</p>
+								<p>อสังหาริมทรัพย์มูลค่าสูงค้ำประกัน</p>
+							</div>
+						</div>
+						<div className="col-lg-4">
+							<div className="group">
+								<CustomImage src="/menuregis5.png" alt="menuregis5"/>
+								<p>Finn กับราคารับฝากขาย</p>
+								<p>ด้วยอัตราผลตอบแทนสูง 9-12% ต่อปี</p>
+							</div>
+						</div>
+						<div className="col-lg-4">
+							<div className="group">
+								<CustomImage src="/menuregis6.png" alt="menuregis6"/>
+
+								<p>Finn หายห่วง</p>
+								<p>ประเมินทรัพย์สินโดยบริษัทประเมิน</p>
+								<p>ที่ได้รับความเห็นชอบจาก ก.ล.ต.</p>
+							</div>
+						</div>
+					</div>
+
+					<div className="btn-wrap">
+						<Link className="btn btn-primary" href="/investment-register">ลงทะเบียนเป็น นักลงทุน</Link>
 					</div>
 				</div>
 			</div>
@@ -138,14 +137,14 @@ function page() {
 											<FontAwesomeIcon icon={faCheck}
 												className="fs-4"/>
 											<span className="font2">0 ไร่ 0 งาน 20
-																																																																																																																																																													ตารางวา</span>
+																																																																																																																																																																									ตารางวา</span>
 										</div>
 										<div className="list">
 											<FontAwesomeIcon icon={faCheck}
 												className="fs-4"/>
 											<span className="font2">มูลค่าสินทรัพย์ค้ำประกัน</span>
 											<span className="text-primary font2">3.2
-																																																																																																																																																													ล้านบาท</span>
+																																																																																																																																																																									ล้านบาท</span>
 										</div>
 										<div className="list">
 											<FontAwesomeIcon icon={faCheck}
@@ -158,7 +157,7 @@ function page() {
 											<FontAwesomeIcon icon={faCheck}
 												className="fs-4"/>
 											<span className="font2">11 เมษายน
-																																																																																																																																																													2565</span>
+																																																																																																																																																																									2565</span>
 										</div>
 									</div>
 								</div>
@@ -195,23 +194,23 @@ function page() {
 										<div className="list">
 											<FontAwesomeIcon icon={faCheck}/>
 											<span className="font2">ลาดกระบัง,
-																																																																																																																																																													กรุงเทพมหานคร</span>
+																																																																																																																																																																									กรุงเทพมหานคร</span>
 										</div>
 										<div className="list">
 											<FontAwesomeIcon icon={faCheck}/>
 											<span className="font2">เลขที่ประกาศขาย
-																																																																																																																																																													000023</span>
+																																																																																																																																																																									000023</span>
 										</div>
 										<div className="list">
 											<FontAwesomeIcon icon={faCheck}/>
 											<span className="font2">0 ไร่ 0 งาน 20
-																																																																																																																																																													ตารางวา</span>
+																																																																																																																																																																									ตารางวา</span>
 										</div>
 										<div className="list">
 											<FontAwesomeIcon icon={faCheck}/>
 											<span className="font2">มูลค่าสินทรัพย์ค้ำประกัน</span>
 											<span className="text-primary font2">3.2
-																																																																																																																																																													ล้านบาท</span>
+																																																																																																																																																																									ล้านบาท</span>
 										</div>
 										<div className="list">
 											<FontAwesomeIcon icon={faCheck}/>
@@ -267,7 +266,7 @@ function page() {
 								<p className="name font2">วัตสัน</p>
 								<p className="position font2">นักลงทุน</p>
 								<p className="detail">“เป็นแพลตฟอร์มที่สามารถตอบโจทย์ได้ดี
-																																																																																																																					เพราะทำให้ผู้คนทั่วไปสามารถเข้าถึงแหล่งเงินทุนได้”</p>
+																																																																																																																														เพราะทำให้ผู้คนทั่วไปสามารถเข้าถึงแหล่งเงินทุนได้”</p>
 							</div>
 						</div>
 						<div className="col-lg-3">
@@ -278,7 +277,7 @@ function page() {
 								<p className="name font2">เทเลอร์</p>
 								<p className="position font2">ผู้ขายฝาก</p>
 								<p className="detail">“ไม่คิดว่าจะได้ที่ดินกลับคืนมา ดีใจมากๆ เลยค่ะ ถ้าเราไม่เจอ
-																																																																																																																					ไม่คิดว่าจะมีวันนี้เลยด้วยซ้ำ”</p>
+																																																																																																																														ไม่คิดว่าจะมีวันนี้เลยด้วยซ้ำ”</p>
 							</div>
 						</div>
 					</div>
@@ -306,8 +305,8 @@ function page() {
 									</div>
 									<p>อัตราดอกเบี้ยขายฝากที่ดินตามกฎหมาย</p>
 									<p>ปกติแล้วในการทำธุรกรรมขายฝากที่ดินนั้นอัตราดอก
-																																																																																																																																		เบี้ยขายฝากที่ดินจะถูกกำหนดไว้ตามกฎหมายโดยใช้
-																																																																																																																																		ข้อบังคับของกฎหมายขายฝากคือพระราชบัญญัติ..</p>
+																																																																																																																																												เบี้ยขายฝากที่ดินจะถูกกำหนดไว้ตามกฎหมายโดยใช้
+																																																																																																																																												ข้อบังคับของกฎหมายขายฝากคือพระราชบัญญัติ..</p>
 									<a href="#" className="d-flex justify-content-end">อ่านต่อ</a>
 								</div>
 							</div>
@@ -329,8 +328,8 @@ function page() {
 									</div>
 									<p>อัตราดอกเบี้ยขายฝากที่ดินตามกฎหมาย</p>
 									<p>ปกติแล้วในการทำธุรกรรมขายฝากที่ดินนั้นอัตราดอก
-																																																																																																														เบี้ยขายฝากที่ดินจะถูกกำหนดไว้ตามกฎหมายโดยใช้
-																																																																																																														ข้อบังคับของกฎหมายขายฝากคือพระราชบัญญัติ..</p>
+																																																																																																																								เบี้ยขายฝากที่ดินจะถูกกำหนดไว้ตามกฎหมายโดยใช้
+																																																																																																																								ข้อบังคับของกฎหมายขายฝากคือพระราชบัญญัติ..</p>
 									<a href="#" className="d-flex justify-content-end">อ่านต่อ</a>
 								</div>
 							</div>
@@ -352,8 +351,8 @@ function page() {
 									</div>
 									<p>อัตราดอกเบี้ยขายฝากที่ดินตามกฎหมาย</p>
 									<p>ปกติแล้วในการทำธุรกรรมขายฝากที่ดินนั้นอัตราดอก
-										เบี้ยขายฝากที่ดินจะถูกกำหนดไว้ตามกฎหมายโดยใช้
-										ข้อบังคับของกฎหมายขายฝากคือพระราชบัญญัติ..</p>
+																				เบี้ยขายฝากที่ดินจะถูกกำหนดไว้ตามกฎหมายโดยใช้
+																				ข้อบังคับของกฎหมายขายฝากคือพระราชบัญญัติ..</p>
 									<a href="#" className="d-flex justify-content-end">อ่านต่อ</a>
 								</div>
 							</div>
@@ -364,6 +363,6 @@ function page() {
 				</div>
 			</div>
 		</main>
-  )
+	)
 }
 export default page

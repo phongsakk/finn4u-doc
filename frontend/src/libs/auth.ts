@@ -4,6 +4,8 @@ import axios, { AxiosError } from "axios";
 import api from "@utils/api";
 import { jwtDecode } from "jwt-decode";
 import { Jwt } from "jsonwebtoken";
+import { log } from "@components/helpers";
+import dayjs from "dayjs";
 
 declare module "next-auth" {
   interface User {
@@ -17,14 +19,16 @@ declare module "next-auth" {
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  trustHost: true,
   providers: [
     Credentials({
       name: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        userType: { label: "User type", type: "text" },
       },
-      authorize: async ({ email, password }) => {
+      authorize: async ({ email, password, userType }) => {
         if (email === null && password === null) {
           return null;
         }
@@ -43,20 +47,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           const accessToken = res.data.access_token;
           const refreshToken = res.data.refresh_token;
 
-          const useInfo = {
-            name: "test01",
-            email: email as string,
-          };
           return {
             accessToken,
             refreshToken,
-            role: "user",
-            name: useInfo.name,
-            email: useInfo.email,
+            role: userType || "general",
+            name: email as string,
+            email: email as string,
           };
         } catch (error) {
           if (error instanceof AxiosError) {
-            console.error(`error api login - ${JSON.stringify(error)}`);
+            log(`Error api login: ${JSON.stringify(error)}`);
           }
           return null;
         }
@@ -81,24 +81,28 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       if (token?.accessTokenExpires) {
         const accessTokenExpire = token.accessTokenExpires as number;
-        console.log(
-          `****** Token - have token ${Date.now()},${accessTokenExpire} *******`
+        log(
+          `Access Token: DateNow("${dayjs(Date.now()).format(
+            "DD-MM-YYYY HH:mm:ss"
+          )}") - ExpireDate("${dayjs(accessTokenExpire).format(
+            "DD-MM-YYYY HH:mm:ss"
+          )}")`
         );
 
         if (Date.now() < accessTokenExpire) {
-          console.log(
-            `***** returning previous token ${new Date(
-              Date.now()
-            )} ->>>> ${new Date(accessTokenExpire)} *****`
+          log(
+            `Returning previous token "${dayjs(Date.now()).format(
+              "DD-MM-YYYY HH:mm:ss"
+            )}" < "${dayjs(accessTokenExpire).format("DD-MM-YYYY HH:mm:ss")}"`
           );
           return token;
         }
       }
-      console.log("**** Refresh-Token now ****");
+      log("Refresh-Token now.");
       return refreshAccessToken(token);
     },
     session: async ({ session, token }) => {
-      console.log(`**** callback session - ${JSON.stringify(token)}`);
+      log(`Callback session: User "${token.name}"`);
       if (token) {
         return {
           ...session,
@@ -108,13 +112,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       return session;
     },
+    async redirect({ url, baseUrl }) {
+      console.log(`Callback redirect: URL "${url} ${baseUrl}"`);
+
+      return process.env.NEXT_PUBLIC_AUTH_URL ?? "http://103.22.183.137:8079/";
+
+      // if (url.startsWith(baseUrl)) return url;
+      // return `${baseUrl}/`;
+    },
   },
+  secret: process.env.NEXT_PUBLIC_AUTH_SECRET ?? "terces-htua-u4nnif",
 });
 
 async function refreshAccessToken(token: Jwt | any) {
   try {
     const response = await axios.post(api("/v1/auth/refresh-token"), {
-      refresh_token: token.refreshToken,
+      refresh_token: `${process.env.NEXT_PUBLIC_AUTH_SECRET} ${token.refreshToken}`,
     });
     const new_token = await response.data;
     if (!new_token) {
