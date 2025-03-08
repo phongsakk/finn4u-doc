@@ -50,7 +50,8 @@ func FindAsset(c *gin.Context) {
 	}
 
 	// Fetch assets with pagination
-	if err := db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Offset(offset).Limit(take).Order("id DESC").Find(&response).Error; err != nil {
+	// .Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Preload("AssetTag").Preload("AssetTag.Tag").Preload("AssetAppraisal").Preload("AssetAuction")
+	if err := db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetAppraisal").Offset(offset).Limit(take).Order("id DESC").Find(&response).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
 			Error: utils.NullableString(err.Error()),
