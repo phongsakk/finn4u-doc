@@ -8,7 +8,7 @@ import (
 
 type DoAppraisal struct {
 	PriceAppraisal float64   `json:"price_appraisal" validate:"required"`
-	CollateraPrice string    `json:"collateral_price" validate:"required"`
+	CollateraPrice float64   `json:"collateral_price" validate:"required"`
 	Duration       int       `json:"duration" validate:"required"`
 	Images         *[]string `json:"images" validate:"omitempty"`
 	Tags           *[]uint   `json:"tags" validate:"omitempty"`

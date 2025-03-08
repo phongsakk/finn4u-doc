@@ -6,7 +6,7 @@ type AssetAppraisal struct {
 	template.Model
 	AssetID        uint    `json:"asset_id"`
 	PriceAppraisal float64 `json:"price_appraisal,omitempty"`
-	CollateraPrice string  `json:"collateral_price"`
+	CollateraPrice float64 `json:"collateral_price"`
 	Duration       int     `json:"duration"`
 	Asset          *Asset  `json:"asset" gorm:"foreignKey:AssetID;references:ID"`
 }
