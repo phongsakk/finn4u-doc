@@ -6,15 +6,16 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (
   req: NextRequest,
-  { params }: { params: { id: number } }
+  { params }: { params: Promise<{ id: number }> }
 ) => {
   try {
+    const { id } = await params;
     const body = await req.json();
     const formData = await body.formData;
-    if (!params) {
+
+    if (!id) {
       return NextResponse.json({ error: "No id" }, { status: 401 });
     }
-    const { id } = await params;
     const session = await auth();
     if (!session) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });

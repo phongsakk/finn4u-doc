@@ -7,14 +7,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: number }> }
 ) => {
-  if (!params) {
-    return NextResponse.json({ error: "No id" }, { status: 401 });
-  }
   const { id } = await params;
 
-  if (!id || id == "0") {
+  if (!id) {
     return NextResponse.json({ error: "No id" }, { status: 401 });
   }
   const session = await auth();
@@ -39,7 +36,7 @@ export const GET = async (
         Authorization: "Bearer " + token,
       },
     });
-      const model = {
+    const model = {
       assetMain: {
         id: response_asset.id,
         status: response_asset.status,
