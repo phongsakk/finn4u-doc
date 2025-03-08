@@ -18,5 +18,5 @@ type AssetAuction struct {
 	FromTime string    `json:"from_time" gorm:"not null"` // Store time as HH:MM:SS
 	ToTime   string    `json:"to_time" gorm:"not null"`   // Store time as HH:MM:SS
 	MaxTax   float32   `json:"max_tax" gorm:"not null"`
-	Asset    *Asset    `json:"asset" gorm:"foreignKey:AssetID;constraint:OnDelete:CASCADE"`
+	Asset    *Asset    `json:"asset,omitempty" gorm:"foreignKey:AssetID;constraint:OnDelete:CASCADE"`
 }

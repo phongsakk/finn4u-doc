@@ -41,4 +41,5 @@ type Asset struct {
 	AssetImages         *[]AssetImage   `json:"asset_images,omitempty" gorm:"foreignKey:AssetID;references:ID"`
 	AssetAppraisal      *AssetAppraisal `json:"asset_appraisal,omitempty" gorm:"foreignKey:AssetID;references:ID"`
 	AssetTag            *[]AssetTag     `json:"asset_tag,omitempty" gorm:"foreignKey:AssetID;references:ID"`
+	AssetAuction        *AssetAuction   `json:"asset_auction,omitempty" gorm:"foreignKey:AssetID;references:ID"`
 }

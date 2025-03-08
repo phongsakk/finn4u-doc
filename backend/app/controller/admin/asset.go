@@ -111,7 +111,7 @@ func SearchAsset(c *gin.Context) {
 	}
 	defer database.Close(db)
 
-	if err = db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Preload("AssetTag").Preload("AssetTag.Tag").Preload("AssetAppraisal").Model(&asset).Where("id = ?", id).First(&asset).Error; err != nil {
+	if err = db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Preload("AssetTag").Preload("AssetTag.Tag").Preload("AssetAppraisal").Preload("AssetAuction").Model(&asset).Where("id = ?", id).First(&asset).Error; err != nil {
 		c.JSON(http.StatusNotFound, types.Response{
 			Code:  http.StatusNotFound,
 			Error: utils.NullableString(err.Error()),
