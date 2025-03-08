@@ -19,8 +19,8 @@ type DoAppraisal struct {
 type Auction struct {
 	FromDate time.Time `json:"from_date" validate:"required"`
 	ToDate   time.Time `json:"to_date" validate:"required"`
-	FromTime string    `json:"from_time" validate:"type:time;not null"`
-	ToTime   string    `json:"to_time" validate:"type:time;not null"`
+	FromTime string    `json:"from_time" validate:"not null"`
+	ToTime   string    `json:"to_time" validate:"not null"`
 	MaxTax   float32   `json:"max_tax" validate:"not null"`
 }
 
