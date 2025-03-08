@@ -1,7 +1,6 @@
 package admin
 
 import (
-	"database/sql"
 	"fmt"
 	"math"
 	"net/http"
@@ -182,11 +181,7 @@ func DoAppraisal(c *gin.Context) {
 	if err := db.Transaction(func(tx *gorm.DB) error {
 		var apprisal models.AssetAppraisal
 		apprisal.AssetID = asset.ID
-		if err := tx.Where("asset_id =?", asset.ID).First(&apprisal).Error; err != nil {
-			if err != sql.ErrNoRows {
-				return err
-			}
-		}
+		tx.Where("asset_id =?", asset.ID).First(&apprisal)
 		apprisal.PriceAppraisal = r.PriceAppraisal
 		apprisal.CollateraPrice = r.CollateraPrice
 		apprisal.Duration = r.Duration
