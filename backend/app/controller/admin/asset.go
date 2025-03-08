@@ -1,6 +1,7 @@
 package admin
 
 import (
+	"database/sql"
 	"fmt"
 	"math"
 	"net/http"
@@ -181,6 +182,11 @@ func DoAppraisal(c *gin.Context) {
 	if err := db.Transaction(func(tx *gorm.DB) error {
 		var apprisal models.AssetAppraisal
 		apprisal.AssetID = asset.ID
+		if err := tx.Where("asset_id =?", asset.ID).First(&apprisal).Error; err != nil {
+			if err != sql.ErrNoRows {
+				return err
+			}
+		}
 		apprisal.PriceAppraisal = r.PriceAppraisal
 		apprisal.CollateraPrice = r.CollateraPrice
 		apprisal.Duration = r.Duration
@@ -189,13 +195,26 @@ func DoAppraisal(c *gin.Context) {
 			return err
 		}
 
-		images := *r.Images
-		for _, imageUrl := range images {
+		newImages := *r.NewImages
+		for _, imageUrl := range newImages {
 			var imageModel models.AssetAppraisalImage
 			imageModel.AssetAppraisalID = apprisal.ID
 			imageModel.ImageURL = imageUrl
 
 			if err := tx.Save(&imageModel).Error; err != nil {
+				return err
+			}
+		}
+
+		if r.DisplayImages != nil {
+			// update asset_image set is_display=0 where asset_id=?
+			if err := db.Exec("UPDATE asset_image SET is_display=0 WHERE asset_id=?", asset.ID).Error; err != nil {
+				return err
+			}
+
+			// update asset_image set is_display=1 where id IN?
+			displayImages := r.DisplayImages
+			if err := db.Exec("UPDATE asset_image SET is_display=1 WHERE id IN?", displayImages).Error; err != nil {
 				return err
 			}
 		}

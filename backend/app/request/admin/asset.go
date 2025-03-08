@@ -10,7 +10,8 @@ type DoAppraisal struct {
 	PriceAppraisal float64   `json:"price_appraisal" validate:"required"`
 	CollateraPrice float64   `json:"collateral_price" validate:"required"`
 	Duration       int       `json:"duration" validate:"required"`
-	Images         *[]string `json:"images" validate:"omitempty"`
+	DisplayImages  *[]uint   `json:"display_images" validate:"omitempty"`
+	NewImages      *[]string `json:"new_images" validate:"omitempty"`
 	Tags           *[]uint   `json:"tags" validate:"omitempty"`
 	IsPublished    *bool     `json:"is_published" validate:"omitempty"`
 	Status         *uint     `json:"status" validate:"omitempty"`
