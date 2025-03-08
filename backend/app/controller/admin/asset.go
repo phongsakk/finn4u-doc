@@ -110,7 +110,7 @@ func SearchAsset(c *gin.Context) {
 	}
 	defer database.Close(db)
 
-	if err = db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Model(&asset).Where("id = ?", id).First(&asset).Error; err != nil {
+	if err = db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Preload("AssetTag").Preload("AssetTag.Tag").Preload("AssetAppraisal").Model(&asset).Where("id = ?", id).First(&asset).Error; err != nil {
 		c.JSON(http.StatusNotFound, types.Response{
 			Code:  http.StatusNotFound,
 			Error: utils.NullableString(err.Error()),
@@ -130,6 +130,7 @@ func DoAppraisal(c *gin.Context) {
 	var asset models.Asset
 	var user models.Admin
 	var r request.DoAppraisal
+
 	id, e := strconv.Atoi(c.Param("asset_id"))
 	if e != nil {
 		c.JSON(http.StatusBadRequest, types.Response{
@@ -179,6 +180,7 @@ func DoAppraisal(c *gin.Context) {
 
 	if err := db.Transaction(func(tx *gorm.DB) error {
 		var apprisal models.AssetAppraisal
+		apprisal.AssetID = asset.ID
 		apprisal.PriceAppraisal = r.PriceAppraisal
 		apprisal.CollateraPrice = r.CollateraPrice
 		apprisal.Duration = r.Duration
@@ -231,6 +233,13 @@ func DoAppraisal(c *gin.Context) {
 			}
 		}
 
+		if r.Status != nil {
+			asset.Status = *r.Status
+			if err := tx.Save(&asset).Error; err != nil {
+				return err
+			}
+		}
+
 		return nil
 	}); err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
@@ -240,4 +249,9 @@ func DoAppraisal(c *gin.Context) {
 		return
 	}
 
+	c.JSON(200, types.Response{
+		Code:    http.StatusOK,
+		Status:  true,
+		Message: utils.NullableString("Asset updated successfully"),
+	})
 }

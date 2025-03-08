@@ -32,7 +32,7 @@ type Asset struct {
 	IsMultipleHolder    bool            `json:"is_multiple_holder" gorm:"default:false"`
 	PublishedAt         *time.Time      `json:"published_at"`
 	EndedAt             *time.Time      `json:"ended_at"`
-	Status              int             `json:"status"`
+	Status              uint            `json:"status"`
 	IsPublished         bool            `json:"is_published"`
 	Province            *Province       `json:"province,omitempty" gorm:"foreignKey:ProvinceID;references:ID"`
 	District            *District       `json:"district,omitempty" gorm:"foreignKey:DistrictID;references:ID"`

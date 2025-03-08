@@ -13,15 +13,16 @@ type DoAppraisal struct {
 	Images         *[]string `json:"images" validate:"omitempty"`
 	Tags           *[]uint   `json:"tags" validate:"omitempty"`
 	IsPublished    *bool     `json:"is_published" validate:"omitempty"`
+	Status         *uint     `json:"status" validate:"omitempty"`
 	Auction        *Auction  `json:"auction" validate:"omitempty"`
 }
 
 type Auction struct {
 	FromDate time.Time `json:"from_date" validate:"required"`
 	ToDate   time.Time `json:"to_date" validate:"required"`
-	FromTime string    `json:"from_time" validate:"not null"`
-	ToTime   string    `json:"to_time" validate:"not null"`
-	MaxTax   float32   `json:"max_tax" validate:"not null"`
+	FromTime string    `json:"from_time" validate:"required"`
+	ToTime   string    `json:"to_time" validate:"required"`
+	MaxTax   float32   `json:"max_tax" validate:"required"`
 }
 
 func (r *DoAppraisal) Validated() error {
