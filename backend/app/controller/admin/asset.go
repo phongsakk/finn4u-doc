@@ -195,26 +195,30 @@ func DoAppraisal(c *gin.Context) {
 			return err
 		}
 
-		newImages := *r.NewImages
-		for _, imageUrl := range newImages {
-			var imageModel models.AssetAppraisalImage
-			imageModel.AssetAppraisalID = apprisal.ID
-			imageModel.ImageURL = imageUrl
+		if r.NewImages != nil {
+			newImages := *r.NewImages
+			for _, imageUrl := range newImages {
+				var imageModel models.AssetAppraisalImage
+				imageModel.AssetAppraisalID = apprisal.ID
+				imageModel.ImageURL = imageUrl
 
-			if err := tx.Save(&imageModel).Error; err != nil {
-				return err
+				if err := tx.Save(&imageModel).Error; err != nil {
+					return err
+				}
 			}
 		}
 
 		if r.DisplayImages != nil {
 			// update asset_image set is_display=0 where asset_id=?
-			if err := db.Exec("UPDATE asset_image SET is_display=0 WHERE asset_id=?", asset.ID).Error; err != nil {
+			if err := db.Exec("UPDATE asset_images SET is_display=FALSE WHERE asset_id=?", asset.ID).Error; err != nil {
 				return err
 			}
 
 			// update asset_image set is_display=1 where id IN?
 			displayImages := r.DisplayImages
-			if err := db.Exec("UPDATE asset_image SET is_display=1 WHERE id IN?", displayImages).Error; err != nil {
+			ids := utils.JoinIntSlice(displayImages, ",")
+			query := fmt.Sprintf("UPDATE asset_images SET is_display=TRUE WHERE id IN (%s)", ids)
+			if err := db.Exec(query).Error; err != nil {
 				return err
 			}
 		}
@@ -229,7 +233,6 @@ func DoAppraisal(c *gin.Context) {
 			}
 		}
 
-		//
 		if r.Auction != nil {
 			_auction := r.Auction
 			var auction models.AssetAuction
