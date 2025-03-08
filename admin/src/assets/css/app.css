@@ -15597,17 +15597,14 @@ span.flatpickr-weekday {
     font-size: 16px;
 }
 
-.area-check .btn-check:active+.btn-primary,
-.btn-check:checked+.btn-primary,
-.btn-primary.active,
-.btn-primary:active,
-.show>.btn-primary.dropdown-toggle {
+
+
+.area-check .btn-primary:has(.btn-check:checked){
     background-color: #30B175;
     border-color: #30B175;
     color: #fff !important;
     box-shadow: none !important;
 }
-
 
 #modal-tag {
     .add-group {
@@ -15652,6 +15649,13 @@ span.flatpickr-weekday {
         top: 0;
         right: 0;
     }
+    .img-responsive{
+        width: 235px !important;
+        height: 140px;
+        object-fit: fill;
+        border: #bbbbbb 1px solid;
+        border-radius: 5px;
+    }
     .select-image:checked ~ .img-check{
         display: block;
     }
@@ -15659,4 +15663,12 @@ span.flatpickr-weekday {
         outline: 5px solid #30b175;
         outline-offset: -5px;
     }
+}
+
+.btn-place:focus-within,
+.btn-place:focus {
+    background-color: #30B175;
+    border-color: #30B175;
+    color: #fff !important;
+    box-shadow: none !important;
 }

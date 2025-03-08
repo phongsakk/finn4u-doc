@@ -16,9 +16,7 @@ export const apiLoginResponseSchema = object({
   message: string(),
   code: number().int(),
   data: object({
-    access_expires_in: number().transform(val => dayjs(val)),
     access_token: string(),
-    refresh_expires_in: string().transform(val => dayjs(val)),
     refresh_token: string(),
   }),
 });

@@ -1,4 +1,3 @@
-import { log, logError } from "@component/dev/Helpers";
 import { auth } from "@setting/auth";
 import { api } from "@utils/api";
 import axios, { AxiosError } from "axios";
@@ -11,7 +10,7 @@ export const GET = async () => {
   }
   try {
     const token = session.user?.accessToken ?? "";
-    const response = await axios.get(api.external("/v1/admin/asset"), {
+    const response = await axios.get(api.external("/v1/admin/tag"), {
       headers: {
         Authorization: "Bearer " + token,
       },
@@ -24,7 +23,7 @@ export const GET = async () => {
       return NextResponse.json(
         {
           status: error.response?.status || 500,
-          data:[],
+          data: [],
           message: error.message,
         },
         { status: error.response?.status || 500 }

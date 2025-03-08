@@ -6,7 +6,7 @@ import {
 } from "@/types/api/request/auth";
 
 export const apiLogin = async (payload: ApiLoginRequest) => {
-  const url = api.external("/v1/auth/login");
+  const url = api.external("/v1/admin/login");
   const response = await axios.post(url, payload);
   return response;
 };

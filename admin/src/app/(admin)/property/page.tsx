@@ -11,6 +11,7 @@ import { api } from "@utils/api";
 import { Button } from "react-bootstrap";
 import { ConsignParam } from "@models/asset";
 import ConModal from "./ConModal";
+import { formatNumber, statusColor, statusText } from "@component/dev/Helpers";
 dayjs.locale("th");
 const PropertyPage = () => {
   const [assets, setAssets] = useState([]);
@@ -24,14 +25,11 @@ const PropertyPage = () => {
   };
 
   useEffect(() => {
-    const controller = new AbortController();
-
-    const boot = async (controller: AbortController) => {
+    const boot = async () => {
       try {
-        const signal = controller.signal;
         const {
           data: { data: ass_res },
-        } = await axios.get(api.internal("/api/asset"), { signal });
+        } = await axios.get(api.internal("/api/asset"));
 
         if (ass_res) {
           setAssets(ass_res || []);
@@ -41,16 +39,15 @@ const PropertyPage = () => {
         setAssets([]);
       }
     };
-    boot(controller);
-    return () => {
-      controller.abort();
-    };
+    boot();
   }, []);
 
   return (
     <>
       <Navbar title="ทรัพย์สินขายฝาก" />
-      <ConModal consignModal={consignModal} ConModalClose={ConModalClose} />
+      {consignModal.id !== 0 && (
+        <ConModal consignModal={consignModal} ConModalClose={ConModalClose} />
+      )}
 
       <main className="content">
         <div className="dropdown">
@@ -260,21 +257,33 @@ const PropertyPage = () => {
                 {assets.map((item: any, index) => (
                   <tr key={index}>
                     <td>
-                      {dayjs(item.create_at).format("DD/MM/YYYY HH:mm:ss")}
+                      {dayjs(item.created_at).format("DD/MM/YYYY HH:mm:ss")}
                     </td>
                     <td>{item.province ? item.province.name : "-"}</td>
                     <td>{item.asset_type ? item.asset_type.name : "-"}</td>
                     <td>{String(item.id).padStart(5, "0")}</td>
-                    <td>800000</td>
-                    <td>3 ปี</td>
-                    <td>
-                      <span className="text-success">ขายฝากแล้ว</span>
+                    <td className="text-center">
+                      {formatNumber(item?.asset_appraisal?.price_appraisal)}
+                    </td>
+                    <td className="text-center">
+                      {item?.asset_appraisal
+                        ? item.asset_appraisal.duration + " ปี"
+                        : "-"}
+                    </td>
+                    <td className="text-center">
+                      <span
+                        className=" fw-bold"
+                        style={{ color: statusColor(item.status) }}
+                      >
+                        {statusText(item.status)}
+                      </span>
                     </td>
                     <td>
                       <Button
                         onClick={(e) => e.preventDefault()}
                         className="btn btn-see"
                         variant="outline-success"
+                        disabled
                       >
                         <Image src={InfoImage} alt="" />
                       </Button>
@@ -294,7 +303,7 @@ const PropertyPage = () => {
                 ))}
               </tbody>
             </table>
-            <nav aria-label="Page navigation">
+            {/* <nav aria-label="Page navigation">
               <ul className="pagination">
                 <li className="page-item">
                   <Link className="page-link" href="#" aria-label="Previous">
@@ -322,7 +331,7 @@ const PropertyPage = () => {
                   </Link>
                 </li>
               </ul>
-            </nav>
+            </nav> */}
           </div>
         </div>
       </main>
