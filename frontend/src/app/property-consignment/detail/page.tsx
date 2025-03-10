@@ -115,13 +115,19 @@ function PropertyPage() {
             </div>
             <div className="location">
               <h3 className="text-primary font2">ลาดกระบัง, กรุงเทพมหานคร</h3>
-              <div className="badge font2">ที่ดินเปล่า</div>
-              <Link href="#" className="float-right font2 mx-2">
-                ร่วมลงทุน
-              </Link>
-              <Link href="#" className="float-right font2">
-                ลงทุน
-              </Link>
+              <div className="row">
+                <div className="col row">
+                  <div className="font2 col-auto btn btn-primary">ที่ดินเปล่า</div>
+                </div>
+                <div className="col-sm-4 text-end">
+                  <Link href="#" className="btn btn-primary font2">
+                    ประมูล
+                  </Link>
+                  <Link href="#" className="btn btn-primary font2 mx-2">
+                    ลงทุน
+                  </Link>
+                </div>
+              </div>
             </div>
 
             <div className="detail">
@@ -186,6 +192,10 @@ function PropertyPage() {
               <span className="badge font2">ร้านค้า</span>
               <span className="badge font2">สวนสาธารณะ</span>
             </div>
+          </div>
+          <div className="mt-3 fw-bold">
+            <h4>จะสิ้นสุดการประมูลในอีก :</h4>
+            <span>05:23:59</span>
           </div>
         </section>
 
