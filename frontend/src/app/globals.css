@@ -1230,7 +1230,7 @@ img {
     img {
       position: absolute;
       left: 20px;
-      width: 8%;
+      width: 130px;
       height: auto;
       top: -8px;
     }
@@ -1293,10 +1293,11 @@ img {
 
 .footer-main {
   background-image: url(../../public/bg-footer.png);
+  background-color: #018b68;
   background-repeat: no-repeat;
 
   .wrap {
-    padding: 4rem 22em;
+    padding: 2rem 12%;
     color: #fff;
   }
 
