@@ -2,12 +2,11 @@
 import React, {useState, useEffect} from "react";
 import Link from "next/link";
 import Image from "next/image";
-import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Collapse from "react-bootstrap/Collapse";
-import CustomImage from "@components/CustomImage";
 import {signOut, useSession} from "next-auth/react";
 import Login from "./Login";
+import Imagelogo from "@public/logo1.png";
 import {usePathname} from "next/navigation";
 
 export default function Navbar() {
@@ -58,19 +57,11 @@ export default function Navbar() {
 		}
 			<div className="navbar navbar-expand-lg navbar-main">
 				<div className="container-fluid">
-					<Link className="navbar-brand" href="/">
-						<Image src="/logo1.png" alt="Logo 1"
-							width={100}
-							height={100}
-							quality={100}
-							sizes="100vw"
-							style={
-								{
-									height: "auto"
-								}
-							}
-							priority/>
-					</Link>
+				<Link className="navbar-brand" href="/">
+									<Image src={Imagelogo}
+										alt="logo"
+										priority/>
+								</Link>
 					<Button className="navbar-toggler"
 						onClick={
 							() => setNavOpen(!navbarOpen)
