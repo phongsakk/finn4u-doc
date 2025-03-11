@@ -4,10 +4,10 @@ import stepnotice3 from "@public/step-notice3.png";
 import Polygon2 from "@public/Polygon2.png";
 import Image from "next/image";
 import Banner from "../banner";
+import Link from "next/link";
 function Warning() {
   return (
     <>
-      <Banner />
       <div className="register-seller invest-notice">
         <div className="container">
           <div className="card-form-main ">
@@ -87,13 +87,12 @@ function Warning() {
               </div>
 
               <div className="submit-group">
-                <a
-                  href="register-invester4.php"
-                  type="submit"
+                <Link
+                  href="/property-consignment/contract/upload-doc"
                   className="btn btn-primary font2"
                 >
                   ยืนยันการลงทุน
-                </a>
+                </Link>
               </div>
             </div>
           </div>
