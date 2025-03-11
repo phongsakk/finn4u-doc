@@ -14,7 +14,10 @@ import Banner from "./banner";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button, FormControl, FormSelect } from "react-bootstrap";
+
+
 function Propertysale() {
+
   const [assetTypes, setAsType] = useState([]);
   const [assetTypeSelect, setAsTypeSelect] = useState("");
   const [search, setSearch] = useState("");
@@ -52,7 +55,13 @@ function Propertysale() {
                 >
                   <option value="">ประเภททรัพย์สิน</option>
                   {assetTypes.map(
-                    (item: { id: string; name: string }, index) => (
+                    (
+                      item: {
+                        id: string;
+                        name: string;
+                      },
+                      index
+                    ) => (
                       <option value={item.id} key={index}>
                         {item.name}
                       </option>
@@ -76,7 +85,7 @@ function Propertysale() {
                   onChange={(e) => setSearch(e.target.value)}
                 />
                 <Link href="#" className="form-label">
-                    <FontAwesomeIcon icon={faMagnifyingGlass} />
+                  <FontAwesomeIcon icon={faMagnifyingGlass} />
                 </Link>
               </div>
             </div>
@@ -92,7 +101,7 @@ function Propertysale() {
               href="/property-consignment/detail"
               key={i}
             >
-              <div className="row">
+              <div className="row shadow">
                 <div className="col-lg-7">
                   <div className="relative">
                     <CustomImage src="/land-img1.png" alt="land-img1" />
@@ -111,7 +120,7 @@ function Propertysale() {
                   </div>
                 </div>
                 <div className="col-lg-5">
-                  <div className="locataion">
+                  <div className="locataion p-5">
                     <p className="font2">ลาดกระบัง, กรุงเทพมหานคร</p>
                     <ul>
                       <li>
@@ -193,7 +202,7 @@ function Propertysale() {
           ))}
           {[...Array(3)].map((_, i) => (
             <a className="sale-active mb-5" href="#" key={i}>
-              <div className="row">
+              <div className="row shadow">
                 <div className="col-lg-7">
                   <div className="relative">
                     <CustomImage src="/land-img1.png" alt="land-img1" />
@@ -212,7 +221,7 @@ function Propertysale() {
                   </div>
                 </div>
                 <div className="col-lg-5">
-                  <div className="locataion">
+                  <div className="locataion p-5">
                     <p className="font2">ลาดกระบัง, กรุงเทพมหานคร</p>
                     <ul>
                       <li>
@@ -288,7 +297,7 @@ function Propertysale() {
                 </div>
               </div>
             </a>
-          ))}{" "}
+          ))}
         </div>
         <div className="panigation-main">
           <nav aria-label="Page navigation example">

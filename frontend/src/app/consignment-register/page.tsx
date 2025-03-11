@@ -159,7 +159,7 @@ function regisseller() {
                     ถัดไป
                   </Button>
                 </div>
-              )}{" "}
+              )}
             </form>
           </div>
         </div>
