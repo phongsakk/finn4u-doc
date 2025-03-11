@@ -118,9 +118,12 @@ function UploadDocPage() {
               ))}
             </Accordion>
             <div className="submit-group">
-              <a href="promise-success.php" className="btn btn-primary font2">
+              <Link
+                href="/property-consignment/success"
+                className="btn btn-primary font2"
+              >
                 ถัดไป
-              </a>
+              </Link>
             </div>
           </div>
         </div>
