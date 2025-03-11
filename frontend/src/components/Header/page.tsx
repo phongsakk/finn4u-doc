@@ -34,7 +34,7 @@ export default function Navbar() {
 		},
 		{
 			label: "ทรัพย์สินขายฝาก",
-			href: "/property-consignment"
+			href: status === "authenticated" ? "/property-consignment/notice" : "/property-consignment"
 		}, {
 			label: "ผู้ขายฝาก",
 			href: status === "authenticated" ? "/consignment" : "/consignment-register"
@@ -57,11 +57,11 @@ export default function Navbar() {
 		}
 			<div className="navbar navbar-expand-lg navbar-main">
 				<div className="container-fluid">
-				<Link className="navbar-brand" href="/">
-									<Image src={Imagelogo}
-										alt="logo"
-										priority/>
-								</Link>
+					<Link className="navbar-brand" href="/">
+						<Image src={Imagelogo}
+							alt="logo"
+							priority/>
+					</Link>
 					<Button className="navbar-toggler"
 						onClick={
 							() => setNavOpen(!navbarOpen)
