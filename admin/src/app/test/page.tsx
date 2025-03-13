@@ -25,7 +25,7 @@ function page() {
             let config = {
                 method: 'post',
                 url: 'http://localhost:8078',
-                // url: 'http://103.22.183.137:8078',
+                // url: 'http://203.159.93.236:8078',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -33,7 +33,7 @@ function page() {
             };
             // let config = {
             //     method: 'post',
-            //     url: 'http://103.22.183.137:8078/v1/asset',
+            //     url: 'http://203.159.93.236:8078/v1/asset',
             //     headers: {
             //         'Content-Type': 'application/json'
             //     },
@@ -42,7 +42,7 @@ function page() {
 
             // try {
             //     axios.post('/api/test')
-            //     // axios.get('http://103.22.183.137:8078/v1')
+            //     // axios.get('http://203.159.93.236:8078/v1')
             //         .then((response) => {
             //             setCtn(JSON.stringify(response.data));
             //         })
