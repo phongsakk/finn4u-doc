@@ -3,9 +3,17 @@ import axios from "axios";
 import dayjs from "dayjs";
 dayjs.locale("th");
 
-export const log = (text: string) => {
+export const log = (text: any) => {
   console.log(
-    `\x1b[32m${dayjs().format("DD-MM-YYYY HH:mm:ss")}\x1b[0m -> ${text}`
+    `\x1b[32m${dayjs().format("DD-MM-YYYY HH:mm:ss")}\x1b[0m ->`,
+    text
+  );
+};
+
+export const logError = (text: any) => {
+  console.log(
+    `\x1b[31m${dayjs().format("DD-MM-YYYY HH:mm:ss")}\x1b[0m -> `,
+    text
   );
 };
 

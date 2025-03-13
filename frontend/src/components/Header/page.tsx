@@ -15,8 +15,8 @@ export default function Navbar() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
 
-  const handleLogin = () => {
-    setLoginOpen(false);
+  const handleLogin = (status:boolean = false) => {
+    setLoginOpen(status);
   };
 
   const menuItems = [
