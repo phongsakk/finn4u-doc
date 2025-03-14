@@ -152,7 +152,9 @@ function Index() {
                                     <Image src={imagecosic3} alt="" />
                                   </div>
                                   <div className="col-auto d-flex gap-2 p-0 text-wrap">
-                                    <span className="col-auto">มูลค่าสินทรัพย์ค้ำประกัน</span>
+                                    <span className="col-auto">
+                                      มูลค่าสินทรัพย์ค้ำประกัน
+                                    </span>
                                     <span className="text-primary col-auto">
                                       6.2 ล้านบาท
                                     </span>
@@ -172,8 +174,8 @@ function Index() {
                                   </div>
                                 </div>
                               </div>
-                              <div className="col-lg-5 col-sm-12 d-flex justify-content-lg-end justify-content-sm-center gap-2 row align-items-center">
-                                <div className="col-auto align-self-lg-start justify-content-end ">
+                              <div className="row col-lg-5 col-sm-12 justify-content-lg-end gap-2 align-items-center">
+                                <div className="col-lg-auto d-flex align-self-lg-start justify-content-center">
                                   <div className="group-menu">
                                     <div className="text-center">
                                       <span>
@@ -189,7 +191,7 @@ function Index() {
                                     </div>
                                   </div>
                                 </div>
-                                <div className="group-menu-2 col-auto align-self-end justify-content-end">
+                                <div className="group-menu-2 col-lg-auto align-self-lg-end justify-content-center">
                                   <div
                                     className="group col-auto"
                                     onClick={() =>
