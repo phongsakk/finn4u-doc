@@ -3,7 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react"
 
 function page() {
-    const [ctn, setCtn] = useState<string>("")
+    // const [ctn, setCtn] = useState<string>("")
     useEffect(() => {
         const boot = () => {
 
@@ -25,7 +25,7 @@ function page() {
             let config = {
                 method: 'post',
                 url: 'http://localhost:8078',
-                // url: 'http://103.22.183.137:8078',
+                // url: 'http://203.159.93.236:8078',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -33,26 +33,26 @@ function page() {
             };
             // let config = {
             //     method: 'post',
-            //     url: 'http://103.22.183.137:8078/v1/asset',
+            //     url: 'http://203.159.93.236:8078/v1/asset',
             //     headers: {
             //         'Content-Type': 'application/json'
             //     },
             //     // data: data
             // };
 
-            try {
-                axios.post('/api/test')
-                // axios.get('http://103.22.183.137:8078/v1')
-                    .then((response) => {
-                        setCtn(JSON.stringify(response.data));
-                    })
-                    .catch((error) => {
-                        setCtn(JSON.stringify(error?.response.data));
-                        console.error(error);
-                    });
-            } catch (err) {
-                console.error(err)
-            }
+            // try {
+            //     axios.post('/api/test')
+            //     // axios.get('http://203.159.93.236:8078/v1')
+            //         .then((response) => {
+            //             setCtn(JSON.stringify(response.data));
+            //         })
+            //         .catch((error) => {
+            //             setCtn(JSON.stringify(error?.response.data));
+            //             console.error(error);
+            //         });
+            // } catch (err) {
+            //     console.error(err)
+            // }
 
 
         }
@@ -60,8 +60,7 @@ function page() {
     }, [])
     return (
         <div>page
-
-            <div>{ctn}</div>
+            <div>{process.env.NEXT_PUBLIC_API_URL}</div>
         </div>
     )
 }
