@@ -7,4 +7,4 @@ docker compose up --build -d frontend
 location=$(realpath "$(dirname "$0")")
 
 # รัน script แจ้งเตือนใน Discord
-bash "$location/discord.sh" "# Web is deployed\n[link](http://203.159.93.236:8079)"
+bash "$location/discord.sh" "# Web(Admin) is deployed\n[click here](https://admin.finn4u.com)"
