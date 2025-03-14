@@ -2,8 +2,8 @@
 import { ConsignParam, DoAppraisal } from "@models/asset";
 import { Button, Modal } from "react-bootstrap/";
 import Image from "next/image";
-import checkImage from "@/assets/img/check.png";
-import pencilImage from "@/assets/img/pencil.png";
+import checkImage from "@/public/check.png";
+import pencilImage from "@/public/pencil.png";
 import React, { useEffect, useState } from "react";
 import ImportTagsModal from "./ImportTagsModal";
 import axios from "axios";
