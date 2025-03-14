@@ -102,7 +102,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return session;
     },
     redirect: async () => {
-      return process.env.NEXT_PUBLIC_AUTH_URL ?? "http://103.22.183.137:8076/";
+      return process.env.NEXT_PUBLIC_AUTH_URL ?? "http://203.159.93.236:8076/";
     },
   },
 });

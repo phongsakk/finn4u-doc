@@ -32,6 +32,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv-vault": "^1.26.2",
     "typescript": "^5"
   }
 }

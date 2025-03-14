@@ -115,7 +115,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async redirect({ url, baseUrl }) {
       console.log(`Callback redirect: URL "${url} ${baseUrl}"`);
 
-      return process.env.NEXT_PUBLIC_AUTH_URL ?? "http://103.22.183.137:8079/";
+      return process.env.NEXT_PUBLIC_AUTH_URL ?? "http://203.159.93.236:8079/";
 
       // if (url.startsWith(baseUrl)) return url;
       // return `${baseUrl}/`;

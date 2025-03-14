@@ -3,14 +3,16 @@ import Banner from "../components/Banner";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faCheck, faBook} from "@fortawesome/free-solid-svg-icons";
 import CustomImage from "../components/CustomImage";
+import {auth} from "@libs/auth";
 export default async function Page() {
-
+	const session = await auth();
+	const pathinvest = session ? "/property-consignment/detail" : "/";
 	return (
 		<main>
 			<div className="justify-content-center">
 				<Banner/>
 			</div>
-			
+
 			<div className="invest">
 				<div className="container">
 					<p className="title-content font2">สินทรัพย์ขายฝากแนะนำ</p>
@@ -30,7 +32,8 @@ export default async function Page() {
 										<div className="hover">
 											<div className="d-none">
 												<div className="wrap">
-													<a href="" className="btn btn-primary  font2">ลงทุน</a>
+													<Link href={pathinvest}
+														className="btn btn-primary  font2">ลงทุน</Link>
 													<a href="" className="btn btn-white  font2">ข้อมูลเพิ่มเติม</a>
 													<div className="view-eye">
 														<i className="fa-solid fa-eye fs-1"></i>
@@ -57,14 +60,14 @@ export default async function Page() {
 											<FontAwesomeIcon icon={faCheck}
 												className="fs-4"/>
 											<span className="font2">0 ไร่ 0 งาน 20
-																																																																																																																																																													ตารางวา</span>
+																																																																																																																																																																																					ตารางวา</span>
 										</div>
 										<div className="list">
 											<FontAwesomeIcon icon={faCheck}
 												className="fs-4"/>
 											<span className="font2">มูลค่าสินทรัพย์ค้ำประกัน</span>
 											<span className="text-primary font2">3.2
-																																																																																																																																																													ล้านบาท</span>
+																																																																																																																																																																																					ล้านบาท</span>
 										</div>
 										<div className="list">
 											<FontAwesomeIcon icon={faCheck}
@@ -77,7 +80,7 @@ export default async function Page() {
 											<FontAwesomeIcon icon={faCheck}
 												className="fs-4"/>
 											<span className="font2">11 เมษายน
-																																																																																																																																																													2565</span>
+																																																																																																																																																																																					2565</span>
 										</div>
 									</div>
 								</div>
@@ -114,23 +117,23 @@ export default async function Page() {
 										<div className="list">
 											<FontAwesomeIcon icon={faCheck}/>
 											<span className="font2">ลาดกระบัง,
-																																																																																																																																																													กรุงเทพมหานคร</span>
+																																																																																																																																																																																					กรุงเทพมหานคร</span>
 										</div>
 										<div className="list">
 											<FontAwesomeIcon icon={faCheck}/>
 											<span className="font2">เลขที่ประกาศขาย
-																																																																																																																																																													000023</span>
+																																																																																																																																																																																					000023</span>
 										</div>
 										<div className="list">
 											<FontAwesomeIcon icon={faCheck}/>
 											<span className="font2">0 ไร่ 0 งาน 20
-																																																																																																																																																													ตารางวา</span>
+																																																																																																																																																																																					ตารางวา</span>
 										</div>
 										<div className="list">
 											<FontAwesomeIcon icon={faCheck}/>
 											<span className="font2">มูลค่าสินทรัพย์ค้ำประกัน</span>
 											<span className="text-primary font2">3.2
-																																																																																																																																																													ล้านบาท</span>
+																																																																																																																																																																																					ล้านบาท</span>
 										</div>
 										<div className="list">
 											<FontAwesomeIcon icon={faCheck}/>
@@ -186,7 +189,7 @@ export default async function Page() {
 								<p className="name font2">วัตสัน</p>
 								<p className="position font2">นักลงทุน</p>
 								<p className="detail">“เป็นแพลตฟอร์มที่สามารถตอบโจทย์ได้ดี
-																																																																																																																					เพราะทำให้ผู้คนทั่วไปสามารถเข้าถึงแหล่งเงินทุนได้”</p>
+																																																																																																																																							เพราะทำให้ผู้คนทั่วไปสามารถเข้าถึงแหล่งเงินทุนได้”</p>
 							</div>
 						</div>
 						<div className="col-lg-3">
@@ -197,7 +200,7 @@ export default async function Page() {
 								<p className="name font2">เทเลอร์</p>
 								<p className="position font2">ผู้ขายฝาก</p>
 								<p className="detail">“ไม่คิดว่าจะได้ที่ดินกลับคืนมา ดีใจมากๆ เลยค่ะ ถ้าเราไม่เจอ
-																																																																																																																					ไม่คิดว่าจะมีวันนี้เลยด้วยซ้ำ”</p>
+																																																																																																																																							ไม่คิดว่าจะมีวันนี้เลยด้วยซ้ำ”</p>
 							</div>
 						</div>
 					</div>
@@ -225,8 +228,8 @@ export default async function Page() {
 									</div>
 									<p>อัตราดอกเบี้ยขายฝากที่ดินตามกฎหมาย</p>
 									<p>ปกติแล้วในการทำธุรกรรมขายฝากที่ดินนั้นอัตราดอก
-																																																																																																																																		เบี้ยขายฝากที่ดินจะถูกกำหนดไว้ตามกฎหมายโดยใช้
-																																																																																																																																		ข้อบังคับของกฎหมายขายฝากคือพระราชบัญญัติ..</p>
+																																																																																																																																																						เบี้ยขายฝากที่ดินจะถูกกำหนดไว้ตามกฎหมายโดยใช้
+																																																																																																																																																						ข้อบังคับของกฎหมายขายฝากคือพระราชบัญญัติ..</p>
 									<a href="#" className="d-flex justify-content-end">อ่านต่อ</a>
 								</div>
 							</div>
@@ -248,8 +251,8 @@ export default async function Page() {
 									</div>
 									<p>อัตราดอกเบี้ยขายฝากที่ดินตามกฎหมาย</p>
 									<p>ปกติแล้วในการทำธุรกรรมขายฝากที่ดินนั้นอัตราดอก
-																																																																																																														เบี้ยขายฝากที่ดินจะถูกกำหนดไว้ตามกฎหมายโดยใช้
-																																																																																																														ข้อบังคับของกฎหมายขายฝากคือพระราชบัญญัติ..</p>
+																																																																																																																																		เบี้ยขายฝากที่ดินจะถูกกำหนดไว้ตามกฎหมายโดยใช้
+																																																																																																																																		ข้อบังคับของกฎหมายขายฝากคือพระราชบัญญัติ..</p>
 									<a href="#" className="d-flex justify-content-end">อ่านต่อ</a>
 								</div>
 							</div>
@@ -271,8 +274,8 @@ export default async function Page() {
 									</div>
 									<p>อัตราดอกเบี้ยขายฝากที่ดินตามกฎหมาย</p>
 									<p>ปกติแล้วในการทำธุรกรรมขายฝากที่ดินนั้นอัตราดอก
-										เบี้ยขายฝากที่ดินจะถูกกำหนดไว้ตามกฎหมายโดยใช้
-										ข้อบังคับของกฎหมายขายฝากคือพระราชบัญญัติ..</p>
+																														เบี้ยขายฝากที่ดินจะถูกกำหนดไว้ตามกฎหมายโดยใช้
+																														ข้อบังคับของกฎหมายขายฝากคือพระราชบัญญัติ..</p>
 									<a href="#" className="d-flex justify-content-end">อ่านต่อ</a>
 								</div>
 							</div>

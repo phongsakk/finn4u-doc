@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function middleware(req: Request) {
   const pathname = req.url;
   const authPaths = ["/auth/"];
-  const systems = ["node_modules", "/session", ".ico", ".js", ".css"];
+  const systems = ["node_modules", "/session", "/image", ".ico", ".js", ".css", "/test"];
   const apiPaths = ["/api/"];
 
   const pathGroup = [...authPaths, ...systems, ...apiPaths]
