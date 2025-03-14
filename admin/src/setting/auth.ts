@@ -9,6 +9,8 @@ import {
   apiLoginResponseSchema,
   apiRefreshTokenResponseSchema,
 } from "@libs/validate/auth";
+import { log, logError } from "@component/dev/Helpers";
+import dayjs from "dayjs";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
@@ -39,12 +41,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return {
             accessToken,
             refreshToken,
-            role: "user",
+            role: "admin",
             name: email.split("@").shift(),
             email: email,
           };
         } catch (error) {
-          console.error(`error api login - ${JSON.stringify(error)}`);
+          logError(`Error api login: ${JSON.stringify(error)}`);
           return null;
         }
       },
@@ -68,24 +70,28 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       if (token?.accessTokenExpires) {
         const accessTokenExpire = token.accessTokenExpires as number;
-        console.log(
-          `****** Token - have token ${Date.now()},${accessTokenExpire} *******`
+        log(
+          `Access Token: DateNow("${dayjs(Date.now()).format(
+            "DD-MM-YYYY HH:mm:ss"
+          )}") - ExpireDate("${dayjs(accessTokenExpire).format(
+            "DD-MM-YYYY HH:mm:ss"
+          )}")`
         );
 
         if (Date.now() < accessTokenExpire) {
-          console.log(
-            `***** returning previous token ${new Date(
-              Date.now()
-            )} ->>>> ${new Date(accessTokenExpire)} *****`
+          log(
+            `Returning previous token "${dayjs(Date.now()).format(
+              "DD-MM-YYYY HH:mm:ss"
+            )}" < "${dayjs(accessTokenExpire).format("DD-MM-YYYY HH:mm:ss")}"`
           );
           return token;
         }
       }
-      console.log("**** Refresh-Token now ****");
+      log("Refresh-Token now.");
       return refreshAccessToken(token);
     },
     session: async ({ session, token }) => {
-      console.log(`**** callback session - ${JSON.stringify(token)}`);
+      log(`Callback session: User "${token.name}"`);
       if (token) {
         return {
           ...session,
@@ -95,13 +101,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       return session;
     },
+    redirect: async () => {
+      return process.env.NEXT_PUBLIC_AUTH_URL ?? "http://203.159.93.236:8076/";
+    },
   },
 });
 
 async function refreshAccessToken(token: Jwt | any) {
   try {
     const response = await apiRefreshToken({
-      refresh_token: token.refreshToken,
+      refresh_token: `${process.env.NEXT_PUBLIC_AUTH_SECRET ?? "terces-htua-u4nnif"} ${token.refreshToken}`,
     });
     const { data } = apiRefreshTokenResponseSchema.parse(response.data);
     if (!data) {
@@ -114,7 +123,7 @@ async function refreshAccessToken(token: Jwt | any) {
     };
   } catch (error) {
     if (error instanceof AxiosError) {
-      console.log(`RefresAccessTokenError - ${error.message}`);
+      log(`RefresAccessTokenError: ${error.message}`);
     }
     return null;
   }

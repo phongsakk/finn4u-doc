@@ -278,7 +278,7 @@ img {
   border-radius: 26px 26px 0 0;
 
   .wrap {
-    padding: 0 100px;
+    padding: 0 5%;
   }
 
   .submit-group {
@@ -450,18 +450,17 @@ img {
     padding: 8px 21px;
     border-radius: 8px;
   }
-
 }
 
 .show-image-upload {
   margin-bottom: 20px;
   display: flex;
   gap: 3px;
-  img { 
+  img {
     width: 135px;
     height: 95px;
     object-fit: fill;
-    border:#959595 1px solid;
+    border: #959595 1px solid;
     border-radius: 5px;
   }
 }
@@ -500,8 +499,8 @@ img {
   column-gap: 32px;
 }
 
-.navbar-nav>.nav-item.nav-active,
-.register>.nav-item.nav-active {
+.navbar-nav > .nav-item.nav-active,
+.register > .nav-item.nav-active {
   color: #000;
   font-weight: 600;
 }
@@ -688,16 +687,8 @@ img {
     font-size: 24px;
   }
 
-  a:nth-child(2) {
-    position: absolute;
-    bottom: 154px;
-    left: 50px;
-  }
-
-  a:nth-child(3) {
-    position: absolute;
-    bottom: 154px;
-    right: 50px;
+  .row {
+    bottom: 20%;
   }
 }
 
@@ -737,7 +728,10 @@ img {
 
 .land-sale-2 {
   margin: 3rem 0;
-
+  .property-item {
+    overflow: hidden;
+    border-radius: 15px;
+  }
   .relative {
     position: relative;
   }
@@ -817,11 +811,18 @@ img {
   .row {
     margin-bottom: 30px;
   }
+
+  .item-image {
+    border: #e9e9e9 1px solid;
+    width: 100% !important;
+    height: 377 !important;
+    object-fit: fill;
+    background-color: rgb(176, 176, 176);
+  }
 }
 
 .locataion {
   background-color: #fff;
-  padding: 20px 32px;
   height: 100%;
 
   p {
@@ -1230,7 +1231,7 @@ img {
     img {
       position: absolute;
       left: 20px;
-      width: 8%;
+      width: 130px;
       height: auto;
       top: -8px;
     }
@@ -1293,10 +1294,11 @@ img {
 
 .footer-main {
   background-image: url(../../public/bg-footer.png);
+  background-color: #018b68;
   background-repeat: no-repeat;
 
   .wrap {
-    padding: 4rem 22em;
+    padding: 2rem 12%;
     color: #fff;
   }
 
@@ -1397,9 +1399,11 @@ img {
 .modallogin {
   .col-lg-4 {
     border-radius: 16px 0px 0px 16px;
-    background: linear-gradient(332deg,
-        rgba(48, 177, 117, 1) 81%,
-        rgba(91, 220, 160, 1) 100%);
+    background: linear-gradient(
+      332deg,
+      rgba(48, 177, 117, 1) 81%,
+      rgba(91, 220, 160, 1) 100%
+    );
   }
 }
 
@@ -1620,9 +1624,11 @@ img {
 }
 
 .ragister-content .btn-primary {
-  background: linear-gradient(0deg,
-      rgba(48, 177, 117, 1) 0%,
-      rgba(91, 220, 160, 1) 100%);
+  background: linear-gradient(
+    0deg,
+    rgba(48, 177, 117, 1) 0%,
+    rgba(91, 220, 160, 1) 100%
+  );
   font-size: 28px;
   border-radius: 40px;
   padding: 16px 38px;
@@ -1664,8 +1670,7 @@ img {
     border: none;
 
     .modal-body {
-      padding: 5% 5%;
-
+      padding: 0;
       .show-image {
         width: 100%;
         height: 100%;
@@ -1691,7 +1696,6 @@ img {
   margin-left: 0 !important;
 }
 
-
 .checklogin .form-check {
   display: flex !important;
   padding: 0;
@@ -1703,14 +1707,14 @@ img {
 }
 
 .checklogin .form-check-input:checked {
-  background-color: #30B175 !important;
-  border-color: #30B175 !important;
+  background-color: #30b175 !important;
+  border-color: #30b175 !important;
 }
 
 .checklogin .form-check-input:checked {
-  border-color: #30B175;
+  border-color: #30b175;
   outline: 0;
-  box-shadow: 0 0 0 .25rem rgb(76 175 80 / 15%);
+  box-shadow: 0 0 0 0.25rem rgb(76 175 80 / 15%);
 }
 
 #modalregister .modal-content {
@@ -1726,7 +1730,7 @@ img {
     text-align: center;
     font-size: 32px;
     color: #fff;
-    margin: 18px 176px;
+    padding: 18px;
     border-bottom: 1px solid #fff;
   }
 
@@ -1739,12 +1743,52 @@ img {
   }
 
   .form-check-input {
-    color: #30B175;
-    border-color: #30B175;
+    color: #30b175;
+    border-color: #30b175;
     border: none;
   }
 }
 
 #modalregister .col-lg-6:first-child .ms {
   margin-bottom: 25px;
+}
+
+.promise {
+  .card {
+    border-left: #018b68 4px solid;
+    .card-header {
+      border: none;
+    }
+    .card-body {
+      border: none;
+      .show-file-name {
+        background-color: #ededed;
+      }
+    }
+  }
+}
+
+.gmnoprint {
+  display: none !important;
+}
+.gm-style-cc {
+  display: none;
+}
+
+.loader {
+  padding: 3px;
+  gap: 30px;
+  .load-image {
+    height: 377px;
+  }
+  .load-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    padding: 20px;
+    .load-items {
+      width: 100%;
+      height: 33.5px;
+    }
+  }
 }

@@ -3,6 +3,7 @@ import React from 'react'
 import { useSession } from "next-auth/react";
 
 const SessionDisplay = () => {
+  return null
   if (process.env.NODE_ENV !== "development") return null;
 
   const { data: session } = useSession()

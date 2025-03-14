@@ -39,7 +39,6 @@ export const GET = async () => {
       },
     });
 
-    console.log(response) 
     return NextResponse.json(response);
   } catch (error) {
     if (error instanceof AxiosError) {

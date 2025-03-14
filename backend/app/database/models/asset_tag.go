@@ -10,6 +10,6 @@ type AssetTag struct {
 	template.Model
 	AssetID uint   `json:"asset_id"`
 	TagID   uint   `json:"tag_id"`
-	Asset   *Asset `json:"asset" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:AssetID"`
-	Tag     *Tag   `json:"tag" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:TagID"`
+	Asset   *Asset `json:"asset,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:AssetID"`
+	Tag     *Tag   `json:"tag,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:TagID"`
 }

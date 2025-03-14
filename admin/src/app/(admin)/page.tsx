@@ -7,12 +7,9 @@ import Navbar from "@/component/layout/Navbar";
 export default function Home() {
   return (
     <>
-      <Navbar />
-
+      <Navbar title="Overview" description="Detailed information about  Finn4U"/>
       <main className="content">
         <div className="container-fluid p-0">
-
-
           <div className="card overview-oa radius-pm">
             <div className="card-body">
               <div className="row">

@@ -1,17 +1,20 @@
 import { NextResponse } from "next/server";
-import { log } from "@components/helpers";
+import { log, logError } from "@components/helpers";
 import { AccessAuth } from "@components/auth";
 import axios, { AxiosError } from "axios";
 import { api } from "@utils/api/index";
 export const GET = async () => {
   try {
-    const { data: asset_type } = await axios.get(api.external("/v1/master/asset-type"));
-
-    return NextResponse.json({ data: asset_type.data, status: asset_type.status });
-
+    const { data: asset_type } = await axios.get(
+      api.external("/v1/master/asset-type")
+    );
+    return NextResponse.json({
+      data: asset_type.data,
+      status: asset_type.status,
+    });
   } catch (error) {
     if (error instanceof AxiosError) {
-      console.log(error.response?.data);
+      logError(error.response?.data);
       return NextResponse.json(error.response, {
         status: error.response?.status,
       });

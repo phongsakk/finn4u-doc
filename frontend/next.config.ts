@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 const url = new URL(
-  String(process.env.NEXT_PUBLIC_IMAGE_HOST ?? "http://localhost:8079")
+  String(process.env.NEXT_PUBLIC_AUTH_URL ?? "http://localhost:8079")
 );
 
 const nextConfig: NextConfig = {

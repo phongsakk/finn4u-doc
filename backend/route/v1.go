@@ -5,6 +5,7 @@ import (
 	con "github.com/phongsakk/finn4u-back/app/controller"
 	mid "github.com/phongsakk/finn4u-back/app/middleware"
 	"github.com/phongsakk/finn4u-back/route/admin"
+	"github.com/phongsakk/finn4u-back/route/general"
 )
 
 func V1(r *gin.RouterGroup) {
@@ -23,4 +24,7 @@ func V1(r *gin.RouterGroup) {
 
 	adminRouter := r.Group("/admin")
 	admin.RouterGroup(adminRouter)
+
+	generalRouter := r.Group("/general")
+	general.RouterGroup(generalRouter)
 }
