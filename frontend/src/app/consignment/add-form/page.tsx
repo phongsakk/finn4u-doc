@@ -5,7 +5,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { useRouter } from "next/navigation";
-import { apiInternalGet } from "@components/helpers";
+import { apiInternalGet, handleNumberChange } from "@components/helpers";
+import { Tooltip } from "react-tooltip";
 
 function AddForm() {
   const router = useRouter();
@@ -14,9 +15,12 @@ function AddForm() {
   const [province_id, setProvince_id] = useState<number>();
   const [asset_type, setAsset_type] = useState([]);
   const [asset_type_id, setAsset_type_id] = useState<number>();
-  const [rai, setRai] = useState<number>();
-  const [ngan, setNgan] = useState<number>();
-  const [square_wa, setSquare_wa] = useState<number>();
+
+  const [rai, setRai] = useState<string>();
+  const [ngan, setNgan] = useState<string>();
+  const [square_wa, setSquare_wa] = useState<string>();
+  const [meter, setMeter] = useState<string>();
+
   const [landNumber, setLandNumber] = useState<string>();
   const [landplotNumber, setLandplotNumber] = useState<string>();
   const [locataion, setLocation] = useState<string>();
@@ -32,8 +36,8 @@ function AddForm() {
     const boot = async () => {
       const { data: res } = await apiInternalGet("/api/asset-master");
       if (res) {
-        setProvince(res.province)
-        setAsset_type(res.asset_type)
+        setProvince(res.province);
+        setAsset_type(res.asset_type);
       }
     };
     boot();
@@ -43,7 +47,6 @@ function AddForm() {
   }, []);
 
   const imgLTDChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event)
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
       const reader = new FileReader();
@@ -57,10 +60,9 @@ function AddForm() {
     }
   };
 
-
   const imgsAssetChang = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = event.target.files;
-    console.log(selectedFiles)
+    console.log(selectedFiles);
     if (selectedFiles) {
       const fileArray = Array.from(selectedFiles);
 
@@ -77,8 +79,7 @@ function AddForm() {
         .then((base64Images) => setImagesAsset(base64Images))
         .catch((error) => console.error("Error Images"));
     }
-  }
-
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -86,11 +87,14 @@ function AddForm() {
     const formJSON = {
       province_id: province_id,
       district_id: 1001,
-      collateral:0,
+      collateral: 0,
       asset_type_id: asset_type_id,
-      aria_size_rai: rai,
-      aria_size_Ngan: ngan,
-      aria_size_square_wa: square_wa,
+
+      aria_size_rai: Number(rai) || null,
+      aria_size_Ngan: Number(ngan) || null,
+      aria_size_square_wa: Number(square_wa) || null,
+      aria_size_meter: Number(meter) || null,
+
       land_title_deed_number: landNumber,
       land_plot_number: landplotNumber,
       land_title_deed_image: imageLTD,
@@ -100,13 +104,13 @@ function AddForm() {
       description: description,
     };
     if (!imageLTD) {
-      alert("กรุณาอัพโหลดโฉนดที่ดิน")
-      return false
+      alert("กรุณาอัพโหลดโฉนดที่ดิน");
+      return false;
     }
 
     if (imagesAsset.length < 3) {
-      alert("กรุณาอัพโหลดรูปภาพทรัพย์สิน (อย่างน้อย 3 รูป)")
-      return false
+      alert("กรุณาอัพโหลดรูปภาพทรัพย์สิน (อย่างน้อย 3 รูป)");
+      return false;
     }
     try {
       const { data: messege } = await axios.post(
@@ -116,7 +120,7 @@ function AddForm() {
       alert("บันทึกข้อมูลสำเร็จ");
       router.push("/consignment/index");
     } catch (error) {
-      console.log(error)
+      console.log(error);
       alert("ตรวจสอบข้อมูลอีกครั้ง");
     }
   };
@@ -143,7 +147,9 @@ function AddForm() {
                       className="form-select"
                       required
                     >
-                      <option className="text-secondary" value="">กรุณาเลือก</option>
+                      <option className="text-secondary" value="">
+                        กรุณาเลือก
+                      </option>
                       {province.map((item: any, index: any) => (
                         <option key={index} value={item.id}>
                           {item.name}
@@ -164,7 +170,9 @@ function AddForm() {
                       className="form-select"
                       required
                     >
-                      <option className="text-secondary" value="">กรุณาเลือก</option>
+                      <option className="text-secondary" value="">
+                        กรุณาเลือก
+                      </option>
                       {asset_type.map((item: any, index: any) => (
                         <option key={index} value={item.id}>
                           {item.name}
@@ -180,7 +188,10 @@ function AddForm() {
                   <div className="mb-3">
                     <label className="form-label">ไร่</label>
                     <input
-                      onChange={(e) => setRai(Number(e.target.value))}
+                      onChange={(e) => {
+                        handleNumberChange(e, setRai);
+                      }}
+                      value={rai ?? ""}
                       type="text"
                       name="aria_size_rai"
                       className="form-control"
@@ -194,7 +205,10 @@ function AddForm() {
                   <div className="mb-3">
                     <label className="form-label">งาน</label>
                     <input
-                      onChange={(e) => setNgan(Number(e.target.value))}
+                      onChange={(e) => {
+                        handleNumberChange(e, setNgan);
+                      }}
+                      value={ngan ?? ""}
                       type="text"
                       name="aria_size_Ngan"
                       className="form-control"
@@ -208,7 +222,10 @@ function AddForm() {
                   <div className="mb-3">
                     <label className="form-label">ตารางวา</label>
                     <input
-                      onChange={(e) => setSquare_wa(Number(e.target.value))}
+                      onChange={(e) => {
+                        handleNumberChange(e, setSquare_wa);
+                      }}
+                      value={square_wa ?? ""}
                       type="text"
                       name="aria_size_square_wa"
                       className="form-control"
@@ -217,7 +234,22 @@ function AddForm() {
                     />
                   </div>
                 </div>
-                <div className="col-lg-6"></div>
+                <div className="col-lg-6">
+                  <div className="mb-3">
+                    <label className="form-label">ตารางเมตร</label>
+                    <input
+                      onChange={(e) => {
+                        handleNumberChange(e, setMeter);
+                      }}
+                      value={meter ?? ""}
+                      type="text"
+                      name="aria_size_meter"
+                      className="form-control"
+                      aria-describedby="text"
+                      placeholder="ตารางเมตร"
+                    />
+                  </div>
+                </div>
                 <div className="col-lg-6">
                   <div className="mb-3">
                     <label className="form-label">
@@ -258,34 +290,52 @@ function AddForm() {
                 กรุณาอัพโหลดโฉนดที่ดิน<span className="text-require">*</span>
               </p>
               <div className="upload-btn-group">
-                <input type="file" className="d-none" name="imageLTD" id="imageLTD" onChange={imgLTDChange} />
-                <label role="button" className="btn btn-light csbtn1" htmlFor="imageLTD">
+                <input
+                  type="file"
+                  className="d-none"
+                  name="imageLTD"
+                  id="imageLTD"
+                  onChange={imgLTDChange}
+                />
+                <label
+                  role="button"
+                  className="btn btn-light csbtn1"
+                  htmlFor="imageLTD"
+                >
                   <CustomImage src="/upload.svg" alt="upload" />
                   อัพโหลด
                 </label>
               </div>
-              {imageLTD &&
+              {imageLTD && (
                 <div className="show-image-upload">
                   <div className="col col-md-auto">
-                    <img src={imageLTD} alt="Preview" className="mt-2 w-32 h-32 object-cover" />
+                    <img
+                      src={imageLTD}
+                      alt="Preview"
+                      className="mt-2 w-32 h-32 object-cover"
+                    />
                   </div>
                 </div>
-              }
-
+              )}
 
               <p>
                 กรุณาอัพโหลดรูปภาพทรัพย์สิน (อย่างน้อย 3 รูป)
                 <span className="text-require">*</span>
               </p>
               <div className="upload-btn-group">
-
-                <input type="file" className="d-none" name="imagesAsset" id="imagesAsset" multiple onChange={imgsAssetChang} />
+                <input
+                  type="file"
+                  className="d-none"
+                  name="imagesAsset"
+                  id="imagesAsset"
+                  multiple
+                  onChange={imgsAssetChang}
+                />
                 <label className="btn btn-light csbtn1" htmlFor="imagesAsset">
                   <CustomImage src="/upload.svg" alt="upload" />
                   อัพโหลด
                 </label>
               </div>
-
 
               <div className="show-image-upload">
                 {imagesAsset.map((image, index) => (
@@ -295,12 +345,12 @@ function AddForm() {
                 ))}
               </div>
 
-
-
-
               <div className="col-lg-6">
                 <div className="mb-3">
-                  <label className="form-label text-secondary" htmlFor="location">
+                  <label
+                    className="form-label text-secondary"
+                    htmlFor="location"
+                  >
                     Location on Google Maps
                     <span className="text-require">*</span>
                   </label>
@@ -310,7 +360,7 @@ function AddForm() {
                     className="form-control"
                     id="location"
                     aria-describedby="text"
-                    placeholder="Location on Google Maps"
+                    placeholder="ตัวอย่าง: 13.806xx, 100.5516xxx"
                     required
                   />
                 </div>
@@ -330,10 +380,7 @@ function AddForm() {
               </div>
 
               <div className="mb-3 col-lg-6 mb-5">
-                <label
-                  htmlFor="description"
-                  className="form-label"
-                >
+                <label htmlFor="description" className="form-label">
                   ข้อมูลเพิ่มเติม
                 </label>
                 <textarea
