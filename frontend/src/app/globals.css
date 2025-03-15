@@ -1792,3 +1792,7 @@ img {
     }
   }
 }
+
+.form-control::placeholder{
+  color: #a6a6a6;
+}
