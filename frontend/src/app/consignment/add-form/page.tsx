@@ -334,8 +334,8 @@ function AddForm() {
                   </label>
                 </div>
                 {imageLTD && (
-                  <div className="show-image-upload">
-                    <div className="col col-md-auto">
+                  <div className="show-image-upload row">
+                    <div className="col-auto">
                       <img
                         src={imageLTD}
                         alt="Preview"
@@ -364,9 +364,9 @@ function AddForm() {
                   </label>
                 </div>
 
-                <div className="show-image-upload">
+                <div className="show-image-upload row">
                   {imagesAsset.map((image, index) => (
-                    <div className="col col-md-auto" key={index}>
+                    <div className="col-auto" key={index}>
                       <img src={image} alt={`Preview ${index}`} />
                     </div>
                   ))}
