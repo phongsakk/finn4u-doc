@@ -454,7 +454,6 @@ img {
 
 .show-image-upload {
   margin-bottom: 20px;
-  display: flex;
   gap: 3px;
   img {
     width: 135px;
