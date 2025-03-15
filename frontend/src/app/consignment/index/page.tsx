@@ -30,6 +30,7 @@ function Index() {
   const [detailOpen, setDtilOpen] = useState<modalParam>({ Status: false });
   const [assets, setAssets] = useState([]);
   const [loading, setLoading] = useState(true); // Add loading state
+  const testposition = { lat: 13.8104970155091, lng: 100.56850354191629 };
 
   const handleHide = () => {
     setInterestOpen({ Status: false });
@@ -44,6 +45,7 @@ function Index() {
       setLoading(true);
       try {
         const res = await apiInternalGet("/api/asset");
+        console.log(res);
         if (res !== "unknow error") {
           setAssets(res || []);
         }
@@ -82,7 +84,10 @@ function Index() {
                           <div className="relative">
                             {index === 0 ? (
                               <Map
-                                position="13.8104970155091, 100.56850354191629"
+                                position={{
+                                  lat: item.location_x,
+                                  lng: item.location_y,
+                                }}
                                 style={{
                                   width: "100%",
                                   height: "377px",
