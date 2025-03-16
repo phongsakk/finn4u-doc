@@ -1,9 +1,11 @@
 #!/bin/bash
 
-git fetch && git pull && docker compose up --build -d frontend
+git fetch
+git pull
+docker compose up --build -d frontend
 
 # ใช้ absolute path เพื่อป้องกันปัญหาเกี่ยวกับ relative path
-location=$(realpath "$(dirname "$0")")
+location=$(realpath "$(dirname "$1")")
 
 # รัน script แจ้งเตือนใน Discord
-bash "$location/discord.sh" "# Web is deployed\n[link](http://203.159.93.236:8079)"
+bash "$location/discord.sh" "# Web(User) is deployed\n[link](https://finn4u.com)"

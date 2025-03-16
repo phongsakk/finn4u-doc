@@ -19,7 +19,7 @@ func GetAsset(c *gin.Context) {
 	var take = 20
 	var offset = utils.Offset(page, take)
 	var response []models.Asset
-	var user models.User
+	var user models.Consignor
 	if err := user.GetFromRequest(c); err != nil {
 		c.JSON(http.StatusUnauthorized, types.Response{
 			Code:  http.StatusUnauthorized,
@@ -72,7 +72,7 @@ func GetAsset(c *gin.Context) {
 
 func CreateAsset(c *gin.Context) {
 	var request request.CreateAssetRequest
-	var user models.User
+	var user models.Consignor
 	if err := user.GetFromRequest(c); err != nil {
 		c.JSON(http.StatusBadRequest, types.Response{
 			Code:  http.StatusBadRequest,

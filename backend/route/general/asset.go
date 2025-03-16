@@ -6,5 +6,5 @@ import (
 )
 
 func AssetRouterGroup(r *gin.RouterGroup) {
-	r.GET("/", general.FindAsset)
+	r.GET("", general.FindAsset)
 }
