@@ -88,3 +88,33 @@ export const resizeBase64Image = ({
     img.onerror = (error) => reject(error);
   });
 };
+
+export const selectProvince = (
+  pro_id: number,
+  setProvinceId: (id: number) => void,
+  setDistrict: (
+    districts: { id: number; pro_id: number; name: string }[]
+  ) => void,
+  districts: { id: number; pro_id: number; name: string }[]
+) => {
+  setProvinceId(pro_id);
+
+  const dis = districts.filter((x) => x.pro_id === pro_id) || [];
+
+  setDistrict(dis);
+};
+
+export const selectDistrict = (
+  dis_id: number,
+  setDistrictId: (id: number) => void,
+  setSubDistrict: (
+    subDistricts: { id: number; dis_id: number; name: string }[]
+  ) => void,
+  subDistricts: { id: number; dis_id: number; name: string }[]
+) => {
+  setDistrictId(dis_id);
+
+  const dis = subDistricts.filter((x) => x.dis_id === dis_id) || [];
+
+  setSubDistrict(dis);
+};

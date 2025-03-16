@@ -28,7 +28,7 @@ function Banner() {
 				{
 				status !== "loading" && showConButton == true ? (
 					<div className="col text-center text-nowrap">
-						<Link className="btn btn-white" href="/consignment-register">
+						<Link className="btn btn-white" href="/register/consignment">
 							ลงทะเบียนเป็น ผู้ขายฝาก
 						</Link>
 					</div>

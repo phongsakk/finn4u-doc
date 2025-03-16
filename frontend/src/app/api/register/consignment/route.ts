@@ -1,13 +1,21 @@
-import { logError } from "@components/helpers";
-import { AxiosError } from "axios";
-import { NextResponse } from "next/server";
+import { log, logError } from "@components/helpers";
+import { api } from "@utils/api/index";
+import axios, { AxiosError } from "axios";
+import { NextRequest, NextResponse } from "next/server";
 
-export const POST = async () => {
+export const POST = async (req: NextRequest) => {
   try {
+    const body = await req.json();
+
+    const { data: res_regis } = await axios.post(
+      api.external("/v1/auth/signup"),
+      body
+    );
+    log("signup:", res_regis);
     return NextResponse.json({ data: "success" }, { status: 200 });
   } catch (error) {
     if (error instanceof AxiosError) {
-      logError(error.response?.data);
+      logError("error: ", error.response?.data);
       return NextResponse.json(
         { data: "register error" },
         {
@@ -23,4 +31,8 @@ export const POST = async () => {
       );
     }
   }
+};
+
+export const GET = () => {
+  return NextResponse.json(12345);
 };
