@@ -18,7 +18,7 @@ func Migrate() error {
 		&models.District{},
 		&models.SubDistrict{},
 		&models.User{},
-		&models.Congisnor{},
+		&models.Consignor{},
 		&models.Investor{},
 		&models.Admin{},
 		&models.AssetType{},

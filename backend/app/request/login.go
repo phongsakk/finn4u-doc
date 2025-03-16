@@ -19,3 +19,12 @@ type Connect struct {
 func (c *Connect) Validated() error {
 	return utils.Validate(c)
 }
+
+type SignIn struct {
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required"`
+}
+
+func (c *SignIn) Validated() error {
+	return utils.Validate(c)
+}
