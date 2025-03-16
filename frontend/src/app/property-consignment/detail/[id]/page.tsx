@@ -1,7 +1,7 @@
 "use client";
 import CustomImage from "@components/CustomImage";
 import Link from "next/link";
-import Banner from "../banner";
+import Banner from "../../banner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faEye, faHammer } from "@fortawesome/free-solid-svg-icons";
 import { Button, Modal } from "react-bootstrap";
@@ -14,14 +14,22 @@ import { formatDateThai, handleNumberChange } from "@components/helpers";
 import AlertStatus, { AlertType } from "@components/alert/AlertStatus";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { redirect, useParams, useRouter } from "next/navigation";
 import { Map } from "@components/dev/map";
+import axios from "axios";
+import { api } from "@utils/api/index";
 
 dayjs.extend(customParseFormat);
 dayjs.locale("th");
 
 function PropertyPage() {
+  const params = useParams();
   const router = useRouter();
+
+  if (isNaN(Number(params.id))) {
+    redirect("/property-consignment");
+  }
+  const [asset, setAsset] = useState();
   const [galleryOpen, setGallery] = useState(false);
   const [modalImage, setModalImage] = useState<string>("");
   const [bidPercent, setBidPercent] = useState<string>();
@@ -31,7 +39,7 @@ function PropertyPage() {
   const [alertOpen, setAlertOpen] = useState<AlertType>();
   const testposition = { lat: 13.8104970155091, lng: 100.56850354191629 };
 
-  const { data: session, status, update } = useSession();
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     const fromDate = dayjs(
@@ -45,6 +53,23 @@ function PropertyPage() {
 
     setEndtime(toDate);
   }, [fromDate, toDate]);
+
+  useEffect(() => {
+    const boot = async () => {
+      try {
+        const { data: res_asset } = await axios.get(
+          api.internal(`/api/asset/${params.id}`)
+        );
+        console.log(res_asset);
+      } catch (err) {
+        console.error("get asset:", err);
+      }
+    };
+
+    if (params.id) {
+      boot();
+    }
+  }, [params.id]);
 
   const handleGallery = (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,7 +105,6 @@ function PropertyPage() {
 
   return (
     <>
-      {" "}
       {alertOpen && (
         <AlertStatus
           alertOpen={alertOpen.alertOpen}
@@ -321,7 +345,7 @@ function PropertyPage() {
                   </div>
                 </div>
               </>
-            )}{" "}
+            )}
           </section>
 
           <Modal

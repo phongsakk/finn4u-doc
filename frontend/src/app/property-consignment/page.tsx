@@ -15,25 +15,46 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button, FormControl, FormSelect } from "react-bootstrap";
 import { Map } from "@components/dev/map";
+import { api } from "@utils/api/index";
+import Loading from "@components/dev/loading";
 
 function Propertysale() {
   const [assetTypes, setAsType] = useState([]);
   const [assetTypeSelect, setAsTypeSelect] = useState("");
   const [search, setSearch] = useState("");
+  const [assets, setAssets] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const testposition = { lat: 13.8104970155091, lng: 100.56850354191629 };
 
   useEffect(() => {
-    try {
-      const fetchAsTypes = async () => {
-        const { data: res_astype } = await axios.get("/api/asset-type");
+    const boot = async () => {
+      try {
+        const { data: res_astype } = await axios.get(
+          api.internal("/api/asset-type")
+        );
         if (res_astype.status) {
           setAsType(res_astype.data);
         }
-      };
-      fetchAsTypes();
-    } catch (err) {
-      console.log("Error api: " + JSON.stringify(err));
-    }
+      } catch (err) {
+        console.error("get asset type: ", err);
+      }
+
+      try {
+        setLoading(true);
+        const { data: res_assets } = await axios.get(
+          api.internal("/api/asset")
+        );
+        if (res_assets) {
+          setAssets(res_assets);
+          setLoading(false);
+        }
+      } catch (err) {
+        setLoading(false);
+        console.error("get asset error: ", err);
+      }
+    };
+    boot();
   }, []);
 
   const formAction = async () => {
@@ -95,116 +116,150 @@ function Propertysale() {
 
       <div className="container">
         <div className="land-sale-2">
-          {[...Array(1)].map((_, i) => (
-            <Link
-              className="not-sale mb-5 property-item pe-auto"
-              href="/property-consignment/detail"
-              key={i}
-            >
-              <div className="row shadow">
-                <div className="col-lg-7">
-                  <div className="relative pe-none">
-                    {i === 0 ? (
-                      <Map position={testposition} />
-                    ) : (
-                      <CustomImage src="/land-img1.png" alt="land-img1" />
-                    )}
-                    <span className="badge font2">ที่ดินเปล่า</span>
-                    <button className="btn btn-sold">SOLD</button>
-                    <div className="time">
-                      <div className="text-center">
-                        <p className="font2">รอการลงทุน</p>
-                        <p className="text-warning font2">1 วัน 3.50 ชั่วโมง</p>
-                      </div>
-                      <div className="icon">
-                        <FontAwesomeIcon icon={faClock} />
-                        <i className="fa-solid fa-clock"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-5">
-                  <div className="locataion p-5">
-                    <p className="font2">ลาดกระบัง, กรุงเทพมหานคร</p>
-                    <ul>
-                      <li>
-                        <CustomImage
-                          src="/ic-lo1.svg"
-                          alt="ic-lo1"
-                          style={{
-                            width: "6%",
-                            height: "auto",
+          {loading ? (
+            <Loading />
+          ) : (
+            <>
+              {assets.map((item: any, index) => (
+                <Link
+                  className="not-sale mb-5 property-item pe-auto"
+                  href={`/property-consignment/detail/${item.id}`}
+                  key={index}
+                >
+                  <div className="row shadow">
+                    <div className="col-lg-7">
+                      <div className="relative pe-none">
+                        <Map
+                          position={{
+                            lat: item?.location_x,
+                            lng: item?.locataion_y,
                           }}
                         />
-                        <span className="font2">เลขที่ฝากขาย 000023</span>
-                      </li>
-                      <li>
-                        <CustomImage
-                          src="/ic-lo2.svg"
-                          alt="ic-lo2"
-                          style={{
-                            width: "6%",
-                            height: "auto",
-                          }}
-                        />
-
-                        <span className="font2">0 ไร่ 0 งาน 20 ตารางวา</span>
-                      </li>
-                      <li>
-                        <CustomImage
-                          src="/ic-lo3.svg"
-                          alt="ic-lo3"
-                          style={{
-                            width: "6%",
-                            height: "auto",
-                          }}
-                        />
-
-                        <span className="font2">มูลค่าสินทรัพย์ค้ำประกัน</span>
-                        <span className="text-primary font2">3.2 ล้านบาท</span>
-                      </li>
-                      <li>
-                        <CustomImage
-                          src="/ic-lo4.svg"
-                          alt="ic-lo4"
-                          style={{
-                            width: "6%",
-                            height: "auto",
-                          }}
-                        />
-
-                        <span className="font2">
-                          ราคาขายฝาก
-                          <span className="text-primary font2">1,450,000</span>
-                          บาท
+                        <span className="badge font2">
+                          {item?.province?.name}
                         </span>
-                      </li>
-                      <li>
-                        <CustomImage
-                          src="/ic-lo5.svg"
-                          alt="ic-lo5"
-                          style={{
-                            width: "6%",
-                            height: "auto",
-                          }}
-                        />
-                        <span className="font2">11 เมษายน 2565</span>
-                      </li>
-                    </ul>
-                    <div className="wrap">
-                      <button type="submit" className="btn btn-light">
-                        ข้อมูลเพิ่มเติม
-                      </button>
-                      <button type="submit" className="btn btn-primary">
-                        ลงทุน
-                      </button>
+                        <button className="btn btn-sold">SOLD</button>
+                        <div className="time">
+                          <div className="text-center">
+                            <p className="font2">รอการลงทุน</p>
+                            <p className="text-warning font2">
+                              1 วัน 3.50 ชั่วโมง
+                            </p>
+                          </div>
+                          <div className="icon">
+                            <FontAwesomeIcon icon={faClock} />
+                            <i className="fa-solid fa-clock"></i>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-lg-5">
+                      <div className="locataion p-5">
+                        <p className="font2">
+                          {item?.province && item.province.name}
+                        </p>
+                        <ul>
+                          <li>
+                            <CustomImage
+                              src="/ic-lo1.svg"
+                              alt="ic-lo1"
+                              style={{
+                                width: "6%",
+                                height: "auto",
+                              }}
+                            />
+                            <span className="font2">
+                              <span>เลขที่ฝากขาย</span>
+                              <span className="px-2">
+                                {String(item.id).padStart(5, "0")}
+                              </span>
+                            </span>
+                          </li>
+                          <li>
+                            <CustomImage
+                              src="/ic-lo2.svg"
+                              alt="ic-lo2"
+                              style={{
+                                width: "6%",
+                                height: "auto",
+                              }}
+                            />
+
+                            <span className="font2">
+                              {item.aria_size_rai &&
+                                item.aria_size_rai + " ไร่ "}
+                              {item.aria_size_ngan &&
+                                item.aria_size_ngan + " งาน "}
+                              {item.aria_size_square_wa &&
+                                item.aria_size_square_wa + " ตารางวา"}
+                              {item.aria_size_meter &&
+                                item.aria_size_meter + " ตารางเมตร "}
+                            </span>
+                          </li>
+                          <li>
+                            <CustomImage
+                              src="/ic-lo3.svg"
+                              alt="ic-lo3"
+                              style={{
+                                width: "6%",
+                                height: "auto",
+                              }}
+                            />
+
+                            <span className="font2">
+                              มูลค่าสินทรัพย์ค้ำประกัน
+                            </span>
+                            <span className="text-primary font2">
+                              3.2 ล้านบาท
+                            </span>
+                          </li>
+                          <li>
+                            <CustomImage
+                              src="/ic-lo4.svg"
+                              alt="ic-lo4"
+                              style={{
+                                width: "6%",
+                                height: "auto",
+                              }}
+                            />
+
+                            <span className="font2">
+                              ราคาขายฝาก
+                              <span className="text-primary font2">
+                                1,450,000
+                              </span>
+                              บาท
+                            </span>
+                          </li>
+                          <li>
+                            <CustomImage
+                              src="/ic-lo5.svg"
+                              alt="ic-lo5"
+                              style={{
+                                width: "6%",
+                                height: "auto",
+                              }}
+                            />
+                            <span className="font2">11 เมษายน 2565</span>
+                          </li>
+                        </ul>
+                        <div className="wrap">
+                          <button type="submit" className="btn btn-light">
+                            ข้อมูลเพิ่มเติม
+                          </button>
+                          <button type="submit" className="btn btn-primary">
+                            ลงทุน
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </Link>
-          ))}
-          {[...Array(3)].map((_, i) => (
+                </Link>
+              ))}
+            </>
+          )}
+
+          {/* {[...Array(3)].map((_, i) => (
             <a className="sale-active mb-5" href="#" key={i}>
               <div className="row shadow">
                 <div className="col-lg-7">
@@ -301,7 +356,7 @@ function Propertysale() {
                 </div>
               </div>
             </a>
-          ))}
+          ))} */}
         </div>
         <div className="panigation-main">
           <nav aria-label="Page navigation example">
