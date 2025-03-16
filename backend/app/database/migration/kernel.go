@@ -30,6 +30,7 @@ func Migrate() error {
 		&models.AssetAuction{},
 		&models.Tag{},
 		&models.AssetTag{},
+		&models.UserPrefix{},
 	); err != nil {
 		return err
 	}
