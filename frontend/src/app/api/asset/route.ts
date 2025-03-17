@@ -1,4 +1,4 @@
-import { log } from "@components/helpers";
+import { log, logError } from "@components/helpers";
 import { auth } from "@libs/auth";
 import { api } from "@utils/api/index";
 import axios, { AxiosError } from "axios";
@@ -16,6 +16,7 @@ export const POST = async (req: Request) => {
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
     if (error instanceof AxiosError) {
+
       return NextResponse.json(
         {
           status: error.response?.status || 500,

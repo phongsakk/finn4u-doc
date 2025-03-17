@@ -112,6 +112,7 @@ func CreateAsset(c *gin.Context) {
 		AriaSizeRai:         request.AriaSizeRai,
 		AriaSizeNgan:        request.AriaSizeNgan,
 		AriaSizeSquareWa:    request.AriaSizeSquareWa,
+		AriaSizeSquareMetre: request.AriaSizeSquareMetre,
 		Collateral:          request.Collateral,
 		ConsignmentPrice:    request.ConsignmentPrice,
 		LandTitleDeedNumber: request.LandTitleDeedNumber,

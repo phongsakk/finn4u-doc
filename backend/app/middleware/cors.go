@@ -10,6 +10,8 @@ var Cors = cors.New(cors.Config{
 		"http://203.159.93.236:8079",
 		"http://localhost:8076",
 		"http://203.159.93.236:8076",
+		"https://finn4u.com",
+		"https://admin.finn4u.com",
 		// "*",
 	},
 	// AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},

@@ -47,7 +47,7 @@ function page() {
 
 					<div className="btn-wrap">
 						<Link className="btn btn-primary"
-							href="/consignment-register">ลงทะเบียนเป็น ผู้ขายฝาก</Link>
+							href="/register/consignment">ลงทะเบียนเป็น ผู้ขายฝาก</Link>
 					</div>
 				</div>
 			</div>

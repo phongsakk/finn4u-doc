@@ -1,10 +1,17 @@
 "use client";
 import CustomImage from "@components/CustomImage";
 import Link from "next/link";
-import { useState } from "react";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 function page() {
+  const router = useRouter();
   const [terms, setTerms] = useState<boolean>();
+  const handleAccept = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!terms) return alert("กรุณายอมรับข้อตกลง");
+    router.push("/consignment/add-form");
+  };
   return (
     <div className="consignment-warning">
       <div className="container register-seller">
@@ -117,7 +124,8 @@ function page() {
 
           <div className="text-center">
             <Link
-              href={terms === true ? "/consignment/add-form" : "#"}
+              onClick={handleAccept}
+              href="#"
               className="btn-icon  mt-5 mb-5"
             >
               <span>ยืนยันการขายฝาก</span>

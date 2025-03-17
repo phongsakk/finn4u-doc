@@ -1,5 +1,5 @@
 "use client";
-import axios from "axios";
+// import axios from "axios";
 import { useEffect, useState } from "react"
 
 function page() {
@@ -22,15 +22,15 @@ function page() {
             // });
 
 
-            let config = {
-                method: 'post',
-                url: 'http://localhost:8078',
-                // url: 'http://203.159.93.236:8078',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                // data: data
-            };
+            // let config = {
+            //     method: 'post',
+            //     url: 'http://localhost:8078',
+            //     // url: 'http://203.159.93.236:8078',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     // data: data
+            // };
             // let config = {
             //     method: 'post',
             //     url: 'http://203.159.93.236:8078/v1/asset',
@@ -59,8 +59,12 @@ function page() {
         boot();
     }, [])
     return (
-        <div>page
-            <div>{process.env.NEXT_PUBLIC_API_URL}</div>
+        <div>
+            page
+            <div>process.env.NEXT_PUBLIC_API_URL={process.env.NEXT_PUBLIC_API_URL}</div>
+            <div>process.env.NEXT_PUBLIC_AUTH_SECRET={process.env.NEXT_PUBLIC_AUTH_SECRET}</div>
+            <div>process.env.NEXT_PUBLIC_AUTH_URL={process.env.NEXT_PUBLIC_AUTH_URL}</div>
+            <div>process.env.NEXT_PUBLIC_IMAGE_HOST={process.env.NEXT_PUBLIC_IMAGE_HOST}</div>
         </div>
     )
 }

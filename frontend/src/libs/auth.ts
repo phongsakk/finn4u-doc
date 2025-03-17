@@ -113,12 +113,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return session;
     },
     async redirect({ url, baseUrl }) {
-      console.log(`Callback redirect: URL "${url} ${baseUrl}"`);
+      log(`Callback redirect: URL "${url} ${baseUrl}"`);
 
-      return process.env.NEXT_PUBLIC_AUTH_URL ?? "http://203.159.93.236:8079/";
-
-      // if (url.startsWith(baseUrl)) return url;
-      // return `${baseUrl}/`;
+      return process.env.NEXT_PUBLIC_AUTH_URL ?? "https://finn4u.com/";
     },
   },
   secret: process.env.NEXT_PUBLIC_AUTH_SECRET ?? "terces-htua-u4nnif",

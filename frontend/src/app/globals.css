@@ -454,7 +454,6 @@ img {
 
 .show-image-upload {
   margin-bottom: 20px;
-  display: flex;
   gap: 3px;
   img {
     width: 135px;
@@ -815,7 +814,7 @@ img {
   .item-image {
     border: #e9e9e9 1px solid;
     width: 100% !important;
-    height: 377 !important;
+    height: 377px !important;
     object-fit: fill;
     background-color: rgb(176, 176, 176);
   }
@@ -1791,4 +1790,8 @@ img {
       height: 33.5px;
     }
   }
+}
+
+.form-control::placeholder{
+  color: #a6a6a6;
 }

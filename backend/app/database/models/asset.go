@@ -20,6 +20,7 @@ type Asset struct {
 	AriaSizeRai         uint            `json:"aria_size_rai" gorm:"not null"`
 	AriaSizeNgan        uint            `json:"aria_size_ngan" gorm:"not null"`
 	AriaSizeSquareWa    float64         `json:"aria_size_square_wa" gorm:"type:decimal(18,2);not null"`
+	AriaSizeSquareMetre float64         `json:"aria_size_square_metre" gorm:"type:decimal(18,2);default:0;not null"`
 	Collateral          *int            `json:"collateral"`
 	ConsignmentPrice    *int            `json:"consignment_price"`
 	LandTitleDeedNumber string          `json:"land_title_deed_number" gorm:"type:varchar(128);not null"`

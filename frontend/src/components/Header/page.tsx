@@ -15,7 +15,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
 
-  const handleLogin = (status:boolean = false) => {
+  const handleLogin = (status: boolean = false) => {
     setLoginOpen(status);
   };
 
@@ -39,7 +39,7 @@ export default function Navbar() {
     {
       label: "ผู้ขายฝาก",
       href:
-        status === "authenticated" ? "/consignment" : "/consignment-register",
+        status === "authenticated" ? "/consignment" : "/register/consignment",
     },
     {
       label: "นักลงทุน",

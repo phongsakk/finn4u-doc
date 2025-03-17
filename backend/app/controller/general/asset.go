@@ -37,7 +37,8 @@ func FindAsset(c *gin.Context) {
 	}
 
 	// Fetch assets with pagination
-	if err := db.Model(&models.Asset{}).Where("status > 0").Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Offset(offset).Limit(take).Order("id DESC").Find(&response).Error; err != nil {
+	var AssetModel = db.Model(&models.Asset{}).Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages")
+	if err := AssetModel.Where("status > ?", 0).Where("is_published = ?", true).Offset(offset).Limit(take).Order("id DESC").Find(&response).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
 			Error: utils.NullableString(err.Error()),
