@@ -337,11 +337,8 @@ img {
 }
 
 .register-seller .insert-id-card {
-  padding: 0 100px;
-
   .idcard {
     background-color: #eaf7f1;
-    padding: 4rem 4rem;
     border-radius: 20px;
 
     ul li {
@@ -350,7 +347,7 @@ img {
   }
 
   .import {
-    margin: 44px 0 100px 70px;
+    margin: 44px 0;
 
     .d-flex {
       margin-bottom: 60px;
@@ -378,6 +375,9 @@ img {
 }
 
 .submit-group {
+  .btn-white{
+    margin-bottom: 5px;
+  }
   text-align: center;
 
   button {
@@ -397,7 +397,6 @@ img {
 }
 
 .otp-password {
-  padding: 0 24rem;
   margin-bottom: 40px;
   height: 66px;
   text-align: center;
@@ -406,11 +405,13 @@ img {
     display: flex !important;
     column-gap: 26px;
     height: 100%;
+    justify-content: center;
   }
 
   input {
     text-align: center;
     font-size: 24px;
+    width: 50px;
   }
 }
 
@@ -1792,6 +1793,6 @@ img {
   }
 }
 
-.form-control::placeholder{
+.form-control::placeholder {
   color: #a6a6a6;
 }

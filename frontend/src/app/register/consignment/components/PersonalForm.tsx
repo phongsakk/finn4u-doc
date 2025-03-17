@@ -6,13 +6,8 @@ import {
 } from "@components/helpers";
 import { api } from "@utils/api/index";
 import axios from "axios";
-import React, {
-  ChangeEvent,
-  HtmlHTMLAttributes,
-  useEffect,
-  useState,
-} from "react";
-import { Button, FormSelect } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Button, FormSelect, Spinner } from "react-bootstrap";
 
 type masterData = {
   prefix: [];
@@ -21,7 +16,13 @@ type masterData = {
   subDistrict: [];
 };
 
-function PersonalForm({ setPhone }: { setPhone: (num: string) => void }) {
+function PersonalForm({
+  setPhone,
+  setStep,
+}: {
+  setPhone: (num: string) => void;
+  setStep: (num: number) => void;
+}) {
   const [prefix_id, setPrefixId] = useState<number>(1);
   const [firstname, setFirstname] = useState<string>("");
   const [lastname, setLanstname] = useState<string>("");
@@ -44,6 +45,7 @@ function PersonalForm({ setPhone }: { setPhone: (num: string) => void }) {
 
   const [subDistricts, setSubDistricts] = useState<any[]>();
   const [subDistrict_id, setSubDistrictId] = useState<number>();
+  const [submit, setSubmit] = useState<boolean>(false);
 
   const handlePro = (e: React.ChangeEvent<HTMLSelectElement>) => {
     selectProvince(
@@ -84,7 +86,10 @@ function PersonalForm({ setPhone }: { setPhone: (num: string) => void }) {
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
+    
     e.preventDefault();
+    setSubmit(true);
+
     try {
       const model = {
         email: email,
@@ -106,9 +111,11 @@ function PersonalForm({ setPhone }: { setPhone: (num: string) => void }) {
       );
 
       setPhone(phoneNo as string);
-      console.log(res);
+      setStep(2);
     } catch (error) {
       console.error(error);
+    } finally {
+      setSubmit(false);
     }
   };
 
@@ -366,7 +373,7 @@ function PersonalForm({ setPhone }: { setPhone: (num: string) => void }) {
             </label>
             <input
               onChange={(e) => setPassword(e.target.value)}
-              type="text"
+              type="password"
               className="form-control font2"
               id="password"
               name="password"
@@ -382,7 +389,7 @@ function PersonalForm({ setPhone }: { setPhone: (num: string) => void }) {
             </label>
             <input
               onChange={(e) => setConfirmPassword(e.target.value)}
-              type="text"
+              type="password"
               className="form-control font2"
               id="confirm_password"
               name="confirm_password"
@@ -393,9 +400,24 @@ function PersonalForm({ setPhone }: { setPhone: (num: string) => void }) {
         </div>
       </div>
       <div className="submit-group">
-        <Button variant="white">ย้อนกลับ</Button>
-        <Button variant="primary" type="submit">
-          ถัดไป
+        <Button variant="white" disabled={submit}>
+          ย้อนกลับ
+        </Button>
+        <Button variant="primary" type="submit" disabled={submit}>
+          {submit ? (
+            <>
+              <Spinner
+                as="span"
+                animation="grow"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+              กำลังตรวจสอบข้อมูล
+            </>
+          ) : (
+            "ถัดไป"
+          )}
         </Button>
       </div>
     </form>

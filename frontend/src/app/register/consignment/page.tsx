@@ -7,56 +7,101 @@ import ImagerRegstep2 from "@public/reg-step2.png";
 import ImagerRegstep3 from "@public/reg-step3.png";
 import PersonalForm from "./components/PersonalForm";
 import { useState } from "react";
-import { redirect } from "next/navigation";
+import OTPForm from "./components/OTPForm";
+import TermsAndCon from "./components/TermsAndCon";
+import UploadDocForm from "./components/UploadDocForm";
+import VerifyForm from "./components/VerifyForm";
+import SuccessForm from "./components/SuccessForm";
 
 function ReConsignmentPage() {
-  const [phone, setPhone] = useState<string>();
-  if (phone != undefined) {
-    alert("สมัครามาชิคสำเร็จ");
-    redirect(process.env.NEXT_PUBLIC_AUTH_URL as string);
-  }
+  const [phone, setPhone] = useState<string>("");
+  const [step, setStep] = useState<number>(1);
+
   return (
     <>
-      <div className="banner-regis">
-        <Image
-          src={ImageBannerregis1}
-          alt=""
-          style={{ height: "auto" }}
-          priority
-        />
-      </div>
-      <div className="register-seller">
-        <div className="container">
-          <div className="card-form-main">
-            <div className="wrap">
-              <h4 className="title-main font2">
-                ลงทะเบียนเป็นผู้ขายฝากกับ Finn4U
-              </h4>
-              <div className="step">
-                <div className="child">
-                  <Image src={ImagerRegstep1} alt="" priority />
-                  <p className="font2 fw-bold">ลงทะเบียน</p>
+      {step < 6 ? (
+        <>
+          <div className="banner-regis">
+            <Image
+              src={ImageBannerregis1}
+              alt=""
+              style={{ height: "auto" }}
+              priority
+            />
+          </div>
+          <div className="register-seller">
+            <div className="container">
+              <div className="card-form-main">
+                <div className="wrap">
+                  <h4 className="title-main font2">
+                    ลงทะเบียนเป็นผู้ขายฝากกับ Finn4U
+                  </h4>
+                  <div className="step justify-content-lg-between justify-content-center">
+                    <div
+                      className={`child ${
+                        ![1, 2, 3].includes(step) ? "d-none d-lg-block" : ""
+                      }`}
+                    >
+                      <Image src={ImagerRegstep1} alt="" priority />
+                      <p
+                        className={`font2 ${
+                          [1, 2, 3].includes(step) ? "fw-bold" : ""
+                        }`}
+                      >
+                        ลงทะเบียน
+                      </p>
+                    </div>
+                    <div className="polygon d-none d-lg-block">
+                      <Image src={ImagePolygon2} alt="" priority />
+                    </div>
+                    <div
+                      className={`child ${
+                        ![4].includes(step) ? "d-none d-lg-block" : ""
+                      }`}
+                    >
+                      <Image src={ImagerRegstep2} alt="" priority />
+                      <p
+                        className={`font2 ${
+                          [4].includes(step) ? "fw-bold" : ""
+                        }`}
+                      >
+                        ยืนยันตัวตน
+                      </p>
+                    </div>
+                    <div className="polygon d-none d-lg-block">
+                      <Image src={ImagePolygon2} alt="" priority />
+                    </div>
+                    <div
+                      className={`child ${
+                        ![5].includes(step) ? "d-none d-lg-block" : ""
+                      }`}
+                    >
+                      <Image src={ImagerRegstep3} alt="" priority />
+                      <p
+                        className={`font2 ${
+                          [5].includes(step) ? "fw-bold" : ""
+                        }`}
+                      >
+                        อัพโหลดเอกสาร
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="polygon">
-                  <Image src={ImagePolygon2} alt="" priority />
-                </div>
-                <div className="child">
-                  <Image src={ImagerRegstep2} alt="" priority />
-                  <p className="font2">ยืนยันตัวตน</p>
-                </div>
-                <div className="polygon">
-                  <Image src={ImagePolygon2} alt="" priority />
-                </div>
-                <div className="child">
-                  <Image src={ImagerRegstep3} alt="" priority />
-                  <p className="font2">อัพโหลดเอกสาร</p>
-                </div>
+                {step === 1 && (
+                  <PersonalForm setPhone={setPhone} setStep={setStep} />
+                )}
+
+                {step === 2 && <OTPForm phone={phone} setStep={setStep} />}
+                {step === 3 && <TermsAndCon setStep={setStep} />}
+                {step === 4 && <VerifyForm setStep={setStep} />}
+                {step === 5 && <UploadDocForm setStep={setStep} />}
               </div>
             </div>
-            <PersonalForm setPhone={setPhone} />
           </div>
-        </div>
-      </div>
+        </>
+      ) : (
+        <SuccessForm />
+      )}
     </>
   );
 }
