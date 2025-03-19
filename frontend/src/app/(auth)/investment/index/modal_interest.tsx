@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import BarChart from "./BarChart";
-import { modalParam } from "@app/consignment/index/page";
+import { modalParam } from "@app/(auth)/consignment/index/page";
 
 function Modal_interest({
   investCalOpen,

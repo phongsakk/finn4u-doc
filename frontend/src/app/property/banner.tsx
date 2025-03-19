@@ -24,7 +24,7 @@ function Banner() {
 
 	return (
 		<div className="register-banner">
-			<div className="row gap-5 position-absolute justify-content-between w-100">
+			<div className="row gap-1 position-absolute justify-content-between w-100">
 				{
 				status !== "loading" && showConButton == true ? (
 					<div className="col text-center text-nowrap">
@@ -40,7 +40,7 @@ function Banner() {
 				<div className="col text-center text-nowrap">
 					{
 					status !== "loading" && showInvButton === true && (
-						<Link className="btn btn-white bg-black" href="/investment-register">
+						<Link className="btn btn-white bg-black" href="/register/investment">
 							ลงทะเบียนเป็น นักลงทุน
 						</Link>
 					)

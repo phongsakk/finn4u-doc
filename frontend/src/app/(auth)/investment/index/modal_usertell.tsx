@@ -1,5 +1,5 @@
 "use client";
-import { modalParam } from "@app/consignment/index/page";
+import { modalParam } from "@app/(auth)/consignment/index/page";
 import React from "react";
 import { Modal } from "react-bootstrap";
 import { BsFillTelephoneFill } from "react-icons/bs";

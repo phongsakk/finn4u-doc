@@ -27,7 +27,7 @@ function PropertyPage() {
   const router = useRouter();
 
   if (isNaN(Number(params.id))) {
-    redirect("/property-consignment");
+    redirect("/property");
   }
   const [asset, setAsset] = useState();
   const [galleryOpen, setGallery] = useState(false);
@@ -37,6 +37,7 @@ function PropertyPage() {
   const [toDate, setToDate] = useState<string>();
   const [endtime, setEndtime] = useState<Date>();
   const [alertOpen, setAlertOpen] = useState<AlertType>();
+  console.log(alertOpen)
   const testposition = { lat: 13.8104970155091, lng: 100.56850354191629 };
 
   const { data: session, status } = useSession();
@@ -78,15 +79,12 @@ function PropertyPage() {
 
     setGallery(true);
   };
-  const alertClose = () => {
-    setAlertOpen({ alertOpen: false });
-  };
 
   const handleBid = () => {
     if (!bidPercent) {
       return setAlertOpen({
         alertOpen: true,
-        alertClose,
+        alertClose: handleAlertClose,
         status: "error",
         text: "กรุณากรอกดอกเบี้ยของคุณ",
       });
@@ -94,25 +92,26 @@ function PropertyPage() {
 
     setAlertOpen({
       alertOpen: true,
-      alertClose,
+      alertClose: handleAlertClose,
       status: "success",
       text: `คุณได้ทำการ Bid สำเร็จแล้ว`,
     });
+
     setTimeout(() => {
-      router.push("/property-consignment/contract");
+      router.push("/property/contract");
     }, 3000);
   };
 
+  const handleAlertClose = () => {
+    setAlertOpen({ alertOpen: false })
+  }
+
   return (
     <>
-      {alertOpen && (
-        <AlertStatus
-          alertOpen={alertOpen.alertOpen}
-          alertClose={alertClose}
-          status={alertOpen.status}
-          text={alertOpen.text}
-        />
+      {alertOpen != undefined && (
+        <AlertStatus alertOpen={alertOpen.alertOpen} alertClose={handleAlertClose} status={alertOpen.status} text={alertOpen.text} />
       )}
+
       <div className="property-sale-detail">
         <Banner />
         <div className="container bg-white pb-5">
@@ -120,7 +119,7 @@ function PropertyPage() {
           <section className="photo-gallery">
             <div className="container">
               <div className="row gallery-grid">
-                <div className="col col-12 col-lg-9 col-md-9 col-sm-12 col-xs-12 mb-lg-0 mb-sm-0 mb-3">
+                <div className="col col-12 col-lg-9 mb-md-3 mb-sm-3 col-sm-12 col-xs-12 mb-lg-0 mb-sm-0 mb-3">
                   <div className="gallery-item">
                     <Map
                       position={testposition}
@@ -131,7 +130,7 @@ function PropertyPage() {
                     />
                   </div>
                 </div>
-                <div className="col col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                <div className="col col-lg-3 col-sm-12 col-12 col-xs-12">
                   <Link
                     className="gallery-item"
                     href="#"

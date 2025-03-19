@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
-import { modalParam } from "@app/consignment/index/page";
+import { modalParam } from "@app/(auth)/consignment/index/page";
 import { FaRegCalendarAlt } from "react-icons/fa";
 
 function Modal_infoconsign({

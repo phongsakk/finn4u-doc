@@ -6,7 +6,7 @@ import CustomImage from "../components/CustomImage";
 import {auth} from "@libs/auth";
 export default async function Page() {
 	const session = await auth();
-	const pathinvest = session ? "/property-consignment/detail" : "/";
+	const pathinvest = session ? "/property/detail" : "/";
 	return (
 		<main>
 			<div className="justify-content-center">

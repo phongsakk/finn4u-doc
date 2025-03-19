@@ -3,6 +3,7 @@ import { auth } from "@libs/auth";
 import { api } from "@utils/api/index";
 import axios, { AxiosError } from "axios";
 import { NextResponse } from "next/server";
+import { AssetModel } from "@models/AssetModel";
 
 export const POST = async (req: Request) => {
   try {
@@ -16,7 +17,6 @@ export const POST = async (req: Request) => {
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
     if (error instanceof AxiosError) {
-
       return NextResponse.json(
         {
           status: error.response?.status || 500,
@@ -34,14 +34,44 @@ export const POST = async (req: Request) => {
 export const GET = async () => {
   try {
     const session = await auth();
-    const { data: {data:response} } = await axios.get(api.external("/v1/asset"), {
+    const { data: response } = await axios.get(api.external("/v1/asset"), {
       headers: {
         Authorization: "Bearer " + session?.user?.accessToken,
       },
     });
+    
+    const model = response.data.map(
+      (item: any) =>
+        ({
+          id: item.id,
+          aria_size: `${
+            item?.aria_size_rai ? `${item.aria_size_rai} ไร่` : ""
+          } ${item?.aria_size_ngan ? `${item.aria_size_ngan} งาน` : ""} ${
+            item?.aria_size_square_wa
+              ? `${item.aria_size_square_wa} ตารางวา`
+              : ""
+          } ${
+            item?.aria_size_square_metre ? `${item.aria_size_square_metre} ตารางเมตร` : ""
+          }`.trim(),
+          collateral: item.collateral,
+          consignment_price: item.consignment_price,
+          location_x: item.location_x,
+          location_y: item.location_y,
+          province_name: item?.province?.name,
+          asset_type_name: item?.asset_type?.name,
+          asset_auction: item?.asset_auction && {
+            from_date: item.asset_auction.from_date,
+            from_time: item.asset_auction.from_time,
+            to_date: item.asset_auction.to_date,
+            to_time: item.asset_auctionto_time,
+          },
+        } as AssetModel)
+    );
 
-    return NextResponse.json(response);
+    return NextResponse.json(model);
   } catch (error) {
+    logError("test", error);
+
     if (error instanceof AxiosError) {
       return NextResponse.json(
         {

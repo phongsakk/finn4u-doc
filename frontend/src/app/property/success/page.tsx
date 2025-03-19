@@ -23,7 +23,7 @@ function SuccessPage() {
               </div>
 
               <div className="submit-group">
-                <Link href="/property-consignment/detail" className="btn btn-primary">
+                <Link href="/property/detail" className="btn btn-primary">
                   กลับสู่หน้าหลัก
                 </Link>
               </div>

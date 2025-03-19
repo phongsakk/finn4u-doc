@@ -1,5 +1,5 @@
 "use client";
-import { modalParam } from "@app/consignment/index/page";
+import { modalParam } from "@app/(auth)/consignment/index/page";
 import CustomImage from "@components/CustomImage";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -176,7 +176,7 @@ function IndexPage() {
 
                 <div className="submit-group mt-5 font2">
                   <Link
-                    href="/property-consignment"
+                    href="/property"
                     type="submit"
                     className="btn btn-primary"
                   >

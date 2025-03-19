@@ -729,7 +729,6 @@ img {
 .land-sale-2 {
   margin: 3rem 0;
   .property-item {
-    overflow: hidden;
     border-radius: 15px;
   }
   .relative {

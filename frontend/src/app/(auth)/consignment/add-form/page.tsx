@@ -90,7 +90,7 @@ function AddForm() {
 
       const resizedImages = await Promise.all(
         base64Images.map((base64) =>
-          resizeBase64Image({ base64})
+          resizeBase64Image({ base64 })
         )
       );
 
@@ -104,6 +104,8 @@ function AddForm() {
     e.preventDefault();
 
     setLoadingSubmit(true);
+
+    const marker = locataion?.split(/,|\s+/);
 
     const formJSON = {
       province_id: province_id,
@@ -120,7 +122,8 @@ function AddForm() {
       land_plot_number: landplotNumber,
       land_title_deed_image: imageLTD,
       asset_images: imagesAsset,
-      locataion: locataion,
+      locataion_x: marker && (!isNaN(Number(marker[0])) ? Number(marker[0]) : null),
+      locataion_y: marker && (!isNaN(Number(marker[1])) ? Number(marker[1]) : null),
       is_multiple_holder: mto_ownership,
       description: description,
     };

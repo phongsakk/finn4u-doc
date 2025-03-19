@@ -86,7 +86,7 @@ function page() {
 					</div>
 
 					<div className="btn-wrap">
-						<Link className="btn btn-primary" href="/investment-register">ลงทะเบียนเป็น นักลงทุน</Link>
+						<Link className="btn btn-primary" href="/register/investment">ลงทะเบียนเป็น นักลงทุน</Link>
 					</div>
 				</div>
 			</div>

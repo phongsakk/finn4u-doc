@@ -351,7 +351,7 @@ function Login({
 
                 <div className="text-center">
                   <Link
-                    href="/investment-register"
+                    href="/register/investment"
                     onClick={() => {
                       handleLogin();
                       setRegisterOpen(false);

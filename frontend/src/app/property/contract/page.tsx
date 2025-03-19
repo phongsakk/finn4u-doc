@@ -88,7 +88,7 @@ function Warning() {
 
               <div className="submit-group">
                 <Link
-                  href="/property-consignment/contract/upload-doc"
+                  href="/property/contract/upload-doc"
                   className="btn btn-primary font2"
                 >
                   ยืนยันการลงทุน

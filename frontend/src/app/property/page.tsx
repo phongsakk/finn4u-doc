@@ -17,6 +17,7 @@ import { Button, FormControl, FormSelect } from "react-bootstrap";
 import { Map } from "@components/dev/map";
 import { api } from "@utils/api/index";
 import Loading from "@components/dev/loading";
+import { formatCurrency, formatNumber } from "@components/helpers";
 
 function Propertysale() {
   const [assetTypes, setAsType] = useState([]);
@@ -120,10 +121,9 @@ function Propertysale() {
             <Loading />
           ) : (
             <>
-              {assets.map((item: any, index) => (
-                <Link
+              {assets?.map((item: any, index) => (
+                <div
                   className="not-sale mb-5 property-item pe-auto"
-                  href={`/property-consignment/detail/${item.id}`}
                   key={index}
                 >
                   <div className="row shadow">
@@ -131,12 +131,12 @@ function Propertysale() {
                       <div className="relative pe-none">
                         <Map
                           position={{
-                            lat: item?.location_x,
-                            lng: item?.locataion_y,
+                            lat: item.location_x,
+                            lng: item.locataion_y,
                           }}
                         />
                         <span className="badge font2">
-                          {item?.province?.name}
+                          {item.province_name}
                         </span>
                         <button className="btn btn-sold">SOLD</button>
                         <div className="time">
@@ -156,7 +156,7 @@ function Propertysale() {
                     <div className="col-lg-5">
                       <div className="locataion p-5">
                         <p className="font2">
-                          {item?.province && item.province.name}
+                          {item.province_name}
                         </p>
                         <ul>
                           <li>
@@ -185,34 +185,29 @@ function Propertysale() {
                               }}
                             />
 
-                            <span className="font2">
-                              {item.aria_size_rai &&
-                                item.aria_size_rai + " ไร่ "}
-                              {item.aria_size_ngan &&
-                                item.aria_size_ngan + " งาน "}
-                              {item.aria_size_square_wa &&
-                                item.aria_size_square_wa + " ตารางวา"}
-                              {item.aria_size_meter &&
-                                item.aria_size_meter + " ตารางเมตร "}
+                            <span className="font2">{item.aria_size}
                             </span>
                           </li>
-                          <li>
-                            <CustomImage
-                              src="/ic-lo3.svg"
-                              alt="ic-lo3"
-                              style={{
-                                width: "6%",
-                                height: "auto",
-                              }}
-                            />
+                          {item.collateral ? (
+                            <li>
+                              <CustomImage
+                                src="/ic-lo3.svg"
+                                alt="ic-lo3"
+                                style={{
+                                  width: "6%",
+                                  height: "auto",
+                                }}
+                              />
 
-                            <span className="font2">
-                              มูลค่าสินทรัพย์ค้ำประกัน
-                            </span>
-                            <span className="text-primary font2">
-                              3.2 ล้านบาท
-                            </span>
-                          </li>
+                              <span className="font2">
+                                มูลค่าสินทรัพย์ค้ำประกัน
+                              </span>
+                              <span className="text-primary font2 px-1">
+                                {formatCurrency(item.collateral)}
+                              </span>
+                            </li>
+                          ): null}
+
                           <li>
                             <CustomImage
                               src="/ic-lo4.svg"
@@ -225,8 +220,8 @@ function Propertysale() {
 
                             <span className="font2">
                               ราคาขายฝาก
-                              <span className="text-primary font2">
-                                1,450,000
+                              <span className="text-primary font2 px-1">
+                                {formatNumber(item.consignment_price)}
                               </span>
                               บาท
                             </span>
@@ -244,17 +239,17 @@ function Propertysale() {
                           </li>
                         </ul>
                         <div className="wrap">
-                          <button type="submit" className="btn btn-light">
+                          <Link href={`/property/detail/${item.id}`} role="button" className="btn btn-light">
                             ข้อมูลเพิ่มเติม
-                          </button>
-                          <button type="submit" className="btn btn-primary">
+                          </Link>
+                          <Link href={`/property/detail/${item.id}`} role="button" className="btn btn-primary">
                             ลงทุน
-                          </button>
+                          </Link>
                         </div>
                       </div>
                     </div>
                   </div>
-                </Link>
+                </div>
               ))}
             </>
           )}

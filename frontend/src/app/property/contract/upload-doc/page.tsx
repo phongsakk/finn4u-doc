@@ -119,7 +119,7 @@ function UploadDocPage() {
             </Accordion>
             <div className="submit-group">
               <Link
-                href="/property-consignment/success"
+                href="/property/success"
                 className="btn btn-primary font2"
               >
                 ถัดไป

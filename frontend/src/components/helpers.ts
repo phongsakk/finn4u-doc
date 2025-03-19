@@ -118,3 +118,42 @@ export const selectDistrict = (
 
   setSubDistrict(dis);
 };
+
+export const formatNumber = (
+  value: number,
+  style: string = "decimal",
+  currency?: string
+): string => {
+  if (!value) return "-";
+  const options: Intl.NumberFormatOptions =
+    style === "currency"
+      ? { style: "currency", currency: currency || "USD" }
+      : style === "percent"
+      ? { style: "percent" }
+      : { style: "decimal" };
+
+  return new Intl.NumberFormat("en-US", options).format(value);
+};
+
+export const formatCurrency = (amount: number) => {
+  
+  if(amount === 0){
+    return `-`
+  }
+
+  if (amount >= 1_000_000_000_000_000) {
+    return `${(amount / 1_000_000_000_000_000).toFixed(2)} พันล้านล้านบาท`;
+  } else if (amount >= 1_000_000_000_000) {
+    return `${(amount / 1_000_000_000_000).toFixed(2)} ล้านล้านบาท`;
+  } else if (amount >= 1_000_000_000) {
+    return `${(amount / 1_000_000_000).toFixed(2)} พันล้านบาท`;
+  } else if (amount >= 10_000_000) {
+    return `${(amount / 1_000_000).toFixed(2)} ล้านบาท`;
+  } else if (amount >= 1_000_000) {
+    return `${(amount / 1_000_000).toFixed(2)} ล้านบาท`;
+  } else if (amount >= 100_000) {
+    return `${(amount / 100_000).toFixed(1)} แสนบาท`;
+  } else {
+    return `${amount.toLocaleString()} บาท`;
+  }
+};
