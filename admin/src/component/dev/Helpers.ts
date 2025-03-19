@@ -44,3 +44,19 @@ export const formatNumber = (
 
   return new Intl.NumberFormat("en-US", options).format(value);
 };
+
+
+export const handleNumberChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    inputNum: (value: string) => void
+  ) => {
+    const value = e.target.value;
+
+    const regex = /^(\d+(\.\d*)?|\.\d+)$/;
+
+    if (regex.test(value) || value === "") {
+      inputNum(value);
+    }
+  };
+
+  

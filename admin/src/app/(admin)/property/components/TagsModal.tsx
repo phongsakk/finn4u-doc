@@ -8,32 +8,32 @@ import { BsTrash3 } from "react-icons/bs";
 import { FaPen } from "react-icons/fa";
 import { SlArrowLeft } from "react-icons/sl";
 
-export type PlaceModel = {
-  name: string;
-  status: boolean;
-};
+export type TagModalType = {
+  open: boolean;
+  close?: () => void;
+}
 
 type tags = {
   id: number;
   name: string;
 };
-function ImportTagsModal({
-  editPlace,
-  editPlaceClose,
-}: {
-  editPlace: boolean;
-  editPlaceClose: () => void;
-}) {
+
+
+function ImportTagsModal(TagModal: TagModalType) {
   const [addPlace, setAddPlace] = useState<boolean>(false);
   const [valuePlace, setValuePlace] = useState<string>();
   const [editTagPlace, setEditTagPlace] = useState<boolean>(false);
   const [tags, setTags] = useState<tags[]>([]);
 
+  const handleClose = () => {
+    TagModal.close?.();
+  }
+
   // useEffect(() => {
   //   const boot = async () => {
   //     try {
   //       const { data: tag_res } = await axios.get(api.internal(`/api/tag`));
-  
+
   //       if (Array.isArray(tag_res)) {
   //         setTags(tag_res);
   //       } else {
@@ -43,9 +43,9 @@ function ImportTagsModal({
   //       console.error("API assets error!", error);
   //     }
   //   };
-  
+
   //   boot();
-  // }, [tags]);
+  // }, []);
 
   const test = [
     { name: "ใกล้แหล่งชุมชน" },
@@ -61,9 +61,9 @@ function ImportTagsModal({
   ];
 
   return (
-    <Modal show={editPlace} onHide={() => editPlaceClose()} centered>
+    <Modal show={TagModal.open} onHide={handleClose} centered>
       <Modal.Body>
-        <Button onClick={() => editPlaceClose()} variant="close"></Button>
+        <Button onClick={handleClose} variant="close"></Button>
         <h3>สถานที่สำคัญบริเวณพื้นที่</h3>
         {!addPlace ? (
           <>
@@ -105,19 +105,15 @@ function ImportTagsModal({
               {test?.map((item, index) => (
                 <label
                   className="col-sm-auto btn btn-light btn-primary"
-                  htmlFor={`place_${index}`}
+                  htmlFor={`tag_${index}`}
                   key={index}
-                  tabIndex={0}
-                  onFocus={() => {
-                    setEditTagPlace(true);
-                    setValuePlace(item.name);
-                  }}
                 >
                   <input
-                    name={`tags[${item}]`}
+                    onChange={(e)=>setValuePlace(e.target.value)}
+                    name="tags"
                     value={index}
-                    type="checkbox"
-                    id={`check_${index}`}
+                    type="radio"
+                    id={`tag_${index}`}
                     className="btn-check"
                   />
                   {item.name}
