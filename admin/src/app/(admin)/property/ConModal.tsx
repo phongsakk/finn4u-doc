@@ -37,17 +37,18 @@ function ConModal({
   const [tags, setTags] = useState<any[]>([]);
   const [tagsSeclect, setTagsSelect] = useState<{ [key: number]: number }>([]);
   const [isPublished, setIsPublished] = useState<boolean>(false);
+  const [findInvester, setFindInvester] = useState<boolean>(false);
   const [max_tax, serMaxTax] = useState<string>();
 
-  const [fromDate, setFromDate] = useState<Date | null>(new Date());
-  const [fromTime, setFromTime] = useState<string>("00:00");
-  const [toDate, setToDate] = useState<Date | null>(new Date());
-  const [toTime, setToTime] = useState<string>(dayjs().format("HH:mm"));
+  const [fromDate, setFromDate] = useState<Date | null>();
+  const [fromTime, setFromTime] = useState<string>();
+  const [toDate, setToDate] = useState<Date | null>();
+  const [toTime, setToTime] = useState<string>();
   const [status, setStatus] = useState<number>(0);
   const editPlaceClose = () => {
     setEditPlace(false);
   };
-
+  
   useEffect(() => {
     const boot = async () => {
       if (!consignModal.id) return;
@@ -182,12 +183,13 @@ function ConModal({
       display_images: Object.values(imagesSelect).map((e) => Number(e)),
       tags: Object.values(tagsSeclect),
       is_published: isPublished,
+      find_invester:findInvester,
       status: status,
       auction: {
-        from_date: fromDate,
-        from_time: fromTime,
-        to_date: toDate,
-        to_time: toTime,
+        from_date: fromDate || null,
+        from_time: fromTime || null,
+        to_date: toDate || null,
+        to_time: toTime || null,
         max_tax: Number(max_tax),
       },
     } as DoAppraisal;
@@ -340,6 +342,29 @@ function ConModal({
               </div>
             </div>
 
+            <div className="row mb-3 ">
+              <h4 className="col-auto">การมองเห็นโพสต์</h4>
+              <span className="col-auto text-seccondary">(กรณีต้องการหาผู้ร่วมลงทุน)</span>
+            </div>
+            <div className="form-check mb-3">
+              <div className="d-flex">
+                <input
+                  onChange={(e) => setFindInvester(e.target.checked)}
+                  checked={findInvester}
+                  className="form-check-input"
+                  name="findInvester"
+                  type="checkbox"
+                  id="findInvester"
+                />
+                <label
+                  className="form-check-label cs mx-2"
+                  htmlFor="findInvester"
+                >
+                  หาผู้ร่วมลงทุน
+                </label>
+              </div>
+            </div>
+
             <div className="edit mb-3">
               <h4 className="m-0">สถานที่สำคัญบริเวณพื้นที่</h4>
 
@@ -390,7 +415,7 @@ function ConModal({
                     <TimePicker
                       label="ตั้งแต่เวลา"
                       name="start_time"
-                      value={dayjs(fromTime, "HH:mm")}
+                      value={fromTime ? dayjs(fromTime, "HH:mm") : null}
                       onChange={(newTime) =>
                         setFromTime(newTime ? newTime.format("HH:mm") : "")
                       }
@@ -413,7 +438,7 @@ function ConModal({
                     <TimePicker
                       name="end_time"
                       label="ถึงเวลา"
-                      value={dayjs(toTime, "HH:mm")}
+                      value={toTime ? dayjs(toTime, "HH:mm"):null}
                       onChange={(newTime) =>
                         setToTime(newTime ? newTime.format("HH:mm") : "")
                       }
