@@ -42,17 +42,16 @@ const Map = ({
     ...style,
   };
 
-  // const pos = position.split(/,|\s+/);
   let Marker: defaultMapCenter = {
     lat: 13.617034546998255,
     lng: 100.55214360992782,
   };
 
-  if (!isNaN(Number(position.lat)) && !isNaN(Number(position.lng))) {
+  if ( position.lat != null && position.lng != null && !isNaN(Number(position.lat)) && !isNaN(Number(position.lng))) {
     Marker.lat = Number(position.lat);
     Marker.lng = Number(position.lng);
   }
-  
+
   return (
     <div className="w-full">
       <MapProvider>

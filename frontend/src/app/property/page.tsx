@@ -26,8 +26,6 @@ function Propertysale() {
   const [assets, setAssets] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const testposition = { lat: 13.8104970155091, lng: 100.56850354191629 };
-
   useEffect(() => {
     const boot = async () => {
       try {
@@ -46,13 +44,13 @@ function Propertysale() {
         const { data: res_assets } = await axios.get(
           api.internal("/api/asset")
         );
-        if (res_assets) {
-          setAssets(res_assets);
-          setLoading(false);
+        if (res_assets.status === true) {
+          setAssets(res_assets.data);
         }
       } catch (err) {
-        setLoading(false);
         console.error("get asset error: ", err);
+      } finally {
+        setLoading(false);
       }
     };
     boot();
@@ -136,7 +134,7 @@ function Propertysale() {
                           }}
                         />
                         <span className="badge font2">
-                          {item.province_name}
+                          {item.asset_type_name}
                         </span>
                         <button className="btn btn-sold">SOLD</button>
                         <div className="time">
@@ -155,9 +153,7 @@ function Propertysale() {
                     </div>
                     <div className="col-lg-5">
                       <div className="locataion p-5">
-                        <p className="font2">
-                          {item.province_name}
-                        </p>
+                        <p className="font2">{item.province_name}</p>
                         <ul>
                           <li>
                             <CustomImage
@@ -185,8 +181,7 @@ function Propertysale() {
                               }}
                             />
 
-                            <span className="font2">{item.aria_size}
-                            </span>
+                            <span className="font2">{item.aria_size}</span>
                           </li>
                           {item.collateral ? (
                             <li>
@@ -206,7 +201,7 @@ function Propertysale() {
                                 {formatCurrency(item.collateral)}
                               </span>
                             </li>
-                          ): null}
+                          ) : null}
 
                           <li>
                             <CustomImage
@@ -239,10 +234,18 @@ function Propertysale() {
                           </li>
                         </ul>
                         <div className="wrap">
-                          <Link href={`/property/detail/${item.id}`} role="button" className="btn btn-light">
+                          <Link
+                            href={`/property/detail/${item.id}`}
+                            role="button"
+                            className="btn btn-light"
+                          >
                             ข้อมูลเพิ่มเติม
                           </Link>
-                          <Link href={`/property/detail/${item.id}`} role="button" className="btn btn-primary">
+                          <Link
+                            href={`/property/detail/${item.id}`}
+                            role="button"
+                            className="btn btn-primary"
+                          >
                             ลงทุน
                           </Link>
                         </div>

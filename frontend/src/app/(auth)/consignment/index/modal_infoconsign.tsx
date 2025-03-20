@@ -1,22 +1,18 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
-import { modalParam } from "./page";
+export type InfoConType = {
+  open: boolean;
+  close?: () => void;
+};
 
-function Modal_infoconsign({
-  detailOpen,
-  handleConHide,
-}: {
-  detailOpen: modalParam;
-  handleConHide: () => void;
-}) {
-
+function Modal_infoconsign(InfoConType: InfoConType) {
   return (
     <Modal
       className="modal-main modal-100w"
       size="xl"
-      show={detailOpen.Status}
-      onHide={() => handleConHide()}
+      show={InfoConType.open}
+      onHide={() => InfoConType.close?.()}
       centered
     >
       <Modal.Header closeButton>

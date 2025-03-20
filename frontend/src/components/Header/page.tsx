@@ -14,7 +14,6 @@ export default function Navbar() {
   const [loginOpen, setLoginOpen] = useState(false);
   const pathname = usePathname();
   const { data: session, status } = useSession();
-
   const handleLogin = (status: boolean = false) => {
     setLoginOpen(status);
   };

@@ -39,7 +39,7 @@ export const GET = async () => {
         Authorization: "Bearer " + session?.user?.accessToken,
       },
     });
-    
+
     const model = response.data.map(
       (item: any) =>
         ({
@@ -51,7 +51,9 @@ export const GET = async () => {
               ? `${item.aria_size_square_wa} ตารางวา`
               : ""
           } ${
-            item?.aria_size_square_metre ? `${item.aria_size_square_metre} ตารางเมตร` : ""
+            item?.aria_size_square_metre
+              ? `${item.aria_size_square_metre} ตารางเมตร`
+              : ""
           }`.trim(),
           collateral: item.collateral,
           consignment_price: item.consignment_price,
@@ -68,7 +70,7 @@ export const GET = async () => {
         } as AssetModel)
     );
 
-    return NextResponse.json(model);
+    return NextResponse.json({ status: true, data: model }, { status: 200 });
   } catch (error) {
     logError("test", error);
 

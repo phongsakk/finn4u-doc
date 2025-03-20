@@ -1,27 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import BarChart from "./BarChart";
-import { modalParam } from "./page";
 
-function Modal_interest({
-  investCalOpen,
-  handleHide,
-}: {
-  investCalOpen: modalParam;
-  handleHide: () => void;
-}) {
-//   const [investCal, setInvestOpen] = useState<boolean>();
+export type InterestType = {
+  open: boolean;
+  close?:()=>void
+};
 
-//   useEffect(() => {
-//     setInvestOpen(investCalOpen.Status);
-//   }, [investCalOpen]);
-
+function Modal_interest(InterestType:InterestType) {
   return (
     <Modal
       className="font2 modal-main"
-      show={investCalOpen.Status}
+      show={InterestType.open}
       size="xl"
-      onHide={() => handleHide()}
+      onHide={() => InterestType.close?.()}
       centered
     >
       <Modal.Header closeButton>

@@ -2,9 +2,9 @@
 import CustomImage from "@components/CustomImage";
 import Link from "next/link";
 import { use, useEffect, useState } from "react";
-import { apiInternalGet } from "@components/helpers";
-import Modal_interest from "./modal_interest";
-import Modal_infoconsign from "./modal_infoconsign";
+import { formatCurrency, formatNumber } from "@components/helpers";
+import Modal_interest, { InterestType } from "./modal_interest";
+import Modal_infoconsign, { InfoConType } from "./modal_infoconsign";
 import imagecosic1 from "@public/cos-ic1.svg";
 import imagecosic2 from "@public/cos-ic2.svg";
 import imagecosic3 from "@public/cos-ic3.svg";
@@ -16,40 +16,29 @@ import imagebanner from "@public/banner.svg";
 import Image from "next/image";
 import { Map } from "@components/dev/map";
 import Loading from "@components/dev/loading";
-
-export type modalParam = {
-  Status: boolean;
-  id?: number;
-};
+import axios from "axios";
+import { api } from "@utils/api/index";
 
 function Index() {
-  const [interestOpen, setInterestOpen] = useState<modalParam>({
-    Status: false,
-  });
-
-  const [detailOpen, setDtilOpen] = useState<modalParam>({ Status: false });
   const [assets, setAssets] = useState([]);
+  const [interestOpen, setInterestOpen] = useState<InterestType>({
+    open: false,
+  });
+  const [detailOpen, setDtilOpen] = useState<InfoConType>({ open: false });
   const [loading, setLoading] = useState(true);
-  const testposition = { lat: 13.8104970155091, lng: 100.56850354191629 };
-
-  const handleHide = () => {
-    setInterestOpen({ Status: false });
-  };
-
-  const handleConHide = () => {
-    setDtilOpen({ Status: false });
-  };
 
   useEffect(() => {
     const boot = async () => {
       setLoading(true);
       try {
-        const res = await apiInternalGet("/api/asset");
-        console.log(res);
-        if (res !== "unknow error") {
-          setAssets(res || []);
+        const { data: res_assets } = await axios.get(
+          api.internal("/api/asset")
+        );
+        if (res_assets.status === true) {
+          setAssets(res_assets.data);
         }
       } catch (error) {
+        setAssets([]);
         console.error("Error fetching assets:", error);
       } finally {
         setLoading(false);
@@ -60,11 +49,14 @@ function Index() {
 
   return (
     <>
-      <Modal_interest investCalOpen={interestOpen} handleHide={handleHide} />
+      <Modal_interest
+        open={interestOpen.open}
+        close={() => setInterestOpen({ open: false })}
+      />
 
       <Modal_infoconsign
-        detailOpen={detailOpen}
-        handleConHide={handleConHide}
+        open={detailOpen.open}
+        close={() => setDtilOpen({ open: false })}
       />
 
       <div className="consignment-form2">
@@ -78,24 +70,20 @@ function Index() {
                   <Loading />
                 ) : (
                   <>
-                    {assets.map((item: any, index) => (
+                    {assets?.map((item: any, index) => (
                       <div className="row not-sale mb-3 shadow p-3" key={index}>
                         <div className="col-lg-4">
                           <div className="relative">
-                            {index === 0 ? (
-                              <Map
-                                position={{
-                                  lat: item.location_x,
-                                  lng: item.location_y,
-                                }}
-                                style={{
-                                  width: "100%",
-                                  height: "377px",
-                                }}
-                              />
-                            ) : (
-                              <div className="item-image"></div>
-                            )}
+                            <Map
+                              position={{
+                                lat: item.location_x,
+                                lng: item.location_y,
+                              }}
+                              style={{
+                                width: "100%",
+                                height: "377px",
+                              }}
+                            />
                             <span className="badge shadow-sm">รอนักลงทุน</span>
                           </div>
                         </div>
@@ -111,9 +99,7 @@ function Index() {
                                   "ยังไม่ประกาศขาย"
                                 )}
                               </p>
-                              <p className="col-auto">
-                                ที่ดินพร้อมสิ่งปลูกสร้าง
-                              </p>
+                              <p className="col-auto">{item.asset_type_name}</p>
                             </div>
                             <div className="row">
                               <div className="col-lg-7">
@@ -122,7 +108,7 @@ function Index() {
                                     <Image src={imagecosic1} alt="" />
                                   </div>
                                   <span className="col-auto p-0">
-                                    {item.province && item.province.name}
+                                    {item.province_name}
                                   </span>
                                 </div>
 
@@ -143,30 +129,26 @@ function Index() {
                                     <Image src={imagecosic3} alt="" />
                                   </div>
                                   <span className="col-auto p-0">
-                                    {item.aria_size_rai &&
-                                      item.aria_size_rai + " ไร่ "}
-                                    {item.aria_size_ngan &&
-                                      item.aria_size_ngan + " งาน "}
-                                    {item.aria_size_square_wa &&
-                                      item.aria_size_square_wa + " ตารางวา "}
-                                    {item.aria_size_meter &&
-                                      item.aria_size_meter + " ตารางเมตร "}
+                                    {item.aria_size}
                                   </span>
                                 </div>
-
-                                <div className="d-flex gap-2 row">
-                                  <div className="col-1 col-sm-2 col-lg-2 mx-1 text-center">
-                                    <Image src={imagecosic3} alt="" />
+                                {item.collateral ? (
+                                  <div className="d-flex gap-2 row">
+                                    <div className="col-1 col-sm-2 col-lg-2 mx-1 text-center">
+                                      <Image src={imagecosic3} alt="" />
+                                    </div>
+                                    <div className="col-auto d-flex gap-2 p-0 text-wrap">
+                                      <span className="col-auto">
+                                        มูลค่าสินทรัพย์ค้ำประกัน
+                                      </span>
+                                      <span className="text-primary col-auto">
+                                        {formatCurrency(item.collateral)}
+                                      </span>
+                                    </div>
                                   </div>
-                                  <div className="col-auto d-flex gap-2 p-0 text-wrap">
-                                    <span className="col-auto">
-                                      มูลค่าสินทรัพย์ค้ำประกัน
-                                    </span>
-                                    <span className="text-primary col-auto">
-                                      6.2 ล้านบาท
-                                    </span>
-                                  </div>
-                                </div>
+                                ) : (
+                                  <></>
+                                )}
 
                                 <div className="d-flex gap-2 row">
                                   <div className="col-1 col-sm-2 col-lg-2 mx-1 text-center">
@@ -175,7 +157,7 @@ function Index() {
                                   <div className="col-auto d-flex gap-2 p-0">
                                     <span>ราคาขายฝาก</span>
                                     <span className="text-primary">
-                                      2,000,000
+                                      {formatNumber(item.consignment_price)}
                                     </span>
                                     <span>บาท</span>
                                   </div>
@@ -202,7 +184,9 @@ function Index() {
                                   <div
                                     className="group col-auto"
                                     onClick={() =>
-                                      setInterestOpen({ Status: true })
+                                      setInterestOpen({
+                                        open: true,
+                                      })
                                     }
                                   >
                                     <Image src={imagegraphic} alt="" />
@@ -210,7 +194,9 @@ function Index() {
                                   <div
                                     className="group col-auto"
                                     onClick={() => {
-                                      setDtilOpen({ Status: true });
+                                      setDtilOpen({
+                                        open: true,
+                                      });
                                     }}
                                   >
                                     <Image src={imageinfo} alt="" />
