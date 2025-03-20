@@ -1,14 +1,22 @@
 import dayjs from "dayjs";
 
-export const log = (text: string) => {
+export const log = (text: any, textObject?: any) => {
+  if (textObject === undefined) {
+    textObject = "";
+  }
   console.log(
-    `\x1b[32m${dayjs().format("DD-MM-YYYY HH:mm:ss")}\x1b[0m -> ${text}`
+    `\x1b[32m${dayjs().format("DD-MM-YYYY HH:mm:ss")}\x1b[0m -> ${text}`,
+    textObject
   );
 };
 
-export const logError = (text: string) => {
+export const logError = (text: any, textObject?: any) => {
+  if (textObject === undefined) {
+    textObject = "";
+  }
   console.log(
-    `\x1b[31m${dayjs().format("DD-MM-YYYY HH:mm:ss")}\x1b[0m -> ${text}`
+    `\x1b[31m${dayjs().format("DD-MM-YYYY HH:mm:ss")}\x1b[0m -> ${text}`,
+    textObject
   );
 };
 

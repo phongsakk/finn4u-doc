@@ -215,7 +215,7 @@ function ConModal(ModalOpen: PropertyModal) {
 
   return (
     <>
-      {editTags != undefined ? <ImportTagsModal open={editTags.open} close={handleTagClose} /> : null}
+      {editTags != undefined && editTags.open == true ? <ImportTagsModal open={editTags.open} close={handleTagClose} /> : null}
 
 
       <Modal

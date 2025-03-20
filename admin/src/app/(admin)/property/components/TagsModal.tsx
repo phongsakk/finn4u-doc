@@ -3,7 +3,7 @@ import { api } from "@utils/api";
 import axios from "axios";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Modal, Spinner } from "react-bootstrap";
 import { BsTrash3 } from "react-icons/bs";
 import { FaPen } from "react-icons/fa";
 import { SlArrowLeft } from "react-icons/sl";
@@ -13,80 +13,84 @@ export type TagModalType = {
   close?: () => void;
 }
 
-type tags = {
-  id: number;
-  name: string;
+type EditTag = {
+  editID?: number;
+  value?: string;
+  tags?: []
 };
 
+type AddTag = {
+  open: boolean;
+  value?: string;
+  loading?: boolean;
+}
 
 function ImportTagsModal(TagModal: TagModalType) {
-  const [addPlace, setAddPlace] = useState<boolean>(false);
-  const [valuePlace, setValuePlace] = useState<string>();
-  const [editTagPlace, setEditTagPlace] = useState<boolean>(false);
-  const [tags, setTags] = useState<tags[]>([]);
+  const [tags, setTags] = useState<EditTag>();
+  const [addTag, setAddTag] = useState<AddTag>({ open: false, value: "", loading: false });
+  const [reload, setReload] = useState<boolean>(false);
 
   const handleClose = () => {
     TagModal.close?.();
   }
 
-  // useEffect(() => {
-  //   const boot = async () => {
-  //     try {
-  //       const { data: tag_res } = await axios.get(api.internal(`/api/tag`));
+  useEffect(() => {
+    const boot = async () => {
+      try {
+        const { data: tag_res } = await axios.get(api.internal(`/api/tag`));
+        setTags({ tags: tag_res.data });
+      } catch (error) {
+        setTags({ tags: [] })
+        console.error("API tags error!", error);
+      }
+    };
+    boot();
+  }, [TagModal?.open, reload]);
 
-  //       if (Array.isArray(tag_res)) {
-  //         setTags(tag_res);
-  //       } else {
-  //         setTags([]); 
-  //       }
-  //     } catch (error) {
-  //       console.error("API assets error!", error);
-  //     }
-  //   };
-
-  //   boot();
-  // }, []);
-
-  const test = [
-    { name: "ใกล้แหล่งชุมชน" },
-    { name: "ใกล้ร้านค้า" },
-    { name: "ใกล้สวนสาธารณะ" },
-    { name: "ใกล้ห้างสรรพสินค้า" },
-    { name: "ใกล้โรงเรียน" },
-    { name: "ใกล้วัด" },
-    { name: "ใกล้ทางด่วน" },
-    { name: "ใกล้รถไฟฟ้า" },
-    { name: "ใกล้โรงพยาบาล" },
-    { name: "แหล่งท่องเที่ยวสำคัญ" },
-  ];
+  const addOpen = (x: boolean) => {
+    setAddTag({ open: x })
+  }
+  const handleAdd = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAddTag((prev) => ({ ...prev, loading: true }))
+    if (addTag.value === "" || addTag.value === undefined) return alert("กรุณากรอกข้อมูลพื้นที่")
+    try {
+      const { data: res_addtag } = await axios.post(api.internal("/api/tag"), {
+        new_tag: addTag.value
+      })
+      if (res_addtag.status === true) {
+        setAddTag({ open: false });
+        setReload((prev) => !prev)
+      }
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setAddTag((prev) => ({ ...prev, loading: false }))
+    }
+  }
 
   return (
     <Modal show={TagModal.open} onHide={handleClose} centered>
       <Modal.Body>
         <Button onClick={handleClose} variant="close"></Button>
         <h3>สถานที่สำคัญบริเวณพื้นที่</h3>
-        {!addPlace ? (
+        {addTag?.open === false ? (
           <>
             <div className="row justify-content-between">
-              <Link
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setAddPlace(true);
-                  setValuePlace("");
-                  setEditTagPlace(false);
-                }}
-                className="col text-success pe-auto"
+              <Button
+                onClick={() => addOpen(true)}
+                variant="link"
+                className="col-auto text-success pe-auto"
               >
                 + เพิ่มสถานที่
-              </Link>
-              {editTagPlace && (
+              </Button>
+              <div className="col-auto">
+
+              </div>
+              {tags?.editID != undefined && tags?.editID != 0 ? (
                 <div className="col text-end">
                   <Link
                     href="#"
-                    onClick={() => {
-                      setAddPlace(true);
-                    }}
                     className="text-success gap-2 mx-3"
                   >
                     <FaPen />
@@ -98,22 +102,22 @@ function ImportTagsModal(TagModal: TagModalType) {
                     ลบ
                   </Link>
                 </div>
-              )}
+              ) : (<></>)}
             </div>
 
             <div className="row gap-2 mt-3 area-check">
-              {test?.map((item, index) => (
+              {tags?.tags?.map((item: any, index) => (
                 <label
                   className="col-sm-auto btn btn-light btn-primary"
-                  htmlFor={`tag_${index}`}
+                  htmlFor={`tag_${item.id}`}
                   key={index}
                 >
                   <input
-                    onChange={(e)=>setValuePlace(e.target.value)}
+                    onChange={(e) => setTags((prev) => ({ ...prev, editID: Number(e.target.value), value: item.name }))}
                     name="tags"
-                    value={index}
+                    value={item.id}
                     type="radio"
-                    id={`tag_${index}`}
+                    id={`tag_${item.id}`}
                     className="btn-check"
                   />
                   {item.name}
@@ -122,33 +126,49 @@ function ImportTagsModal(TagModal: TagModalType) {
             </div>
           </>
         ) : (
-          <>
-            <Link
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                setAddPlace(false);
-                setEditTagPlace(false);
-              }}
-              className="text-success"
-            >
-              <SlArrowLeft /> กลับ
-            </Link>
+          <form onSubmit={handleAdd}>
+            <div className="row">
+              <Button
+                onClick={() => addOpen(false)}
+                variant="link"
+                className="col-auto text-success"
+              >
+                <SlArrowLeft /> กลับ
+              </Button>
+            </div>
+
             <div className="form-group mt-2">
               <label className="form-label h2">เพิ่มสถานที่</label>
               <input
                 className="form-control"
                 name="addplace"
-                value={valuePlace}
-                onChange={(e) => setValuePlace(e.target.value)}
+                value={addTag?.value ?? ""}
+                onChange={(e) =>
+                  setAddTag((prev) => ({
+                    ...prev,
+                    value: e.target.value as string,
+                  }))
+                }
+                required
               />
             </div>
             <div className="w-100 d-flex justify-content-end pt-3">
-              <Button variant="success" className="mx-1">
-                บันทึก
+              <Button type="submit" variant="success" disabled={addTag.loading} className="mx-1">
+                {addTag.loading ? (
+                  <>
+                    <Spinner
+                      as="span"
+                      animation="grow"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                    กำลังบันทึกข้อมูล
+                  </>
+                ) : "บันทึก"}
               </Button>
             </div>
-          </>
+          </form>
         )}
       </Modal.Body>
     </Modal>
