@@ -17,13 +17,9 @@ const PropertyPage = () => {
   const [assets, setAssets] = useState([]);
   const [consignModal, setConModal] = useState<PropertyModal>();
 
-  const handleConClose = () => {
-    setConModal({ open: false })
-  }
-
   const handleConOpen = (pro_id: number) => {
-    setConModal({ id: pro_id, open: true, close: handleConClose })
-  }
+    setConModal({ id: pro_id, open: true});
+  };
 
   useEffect(() => {
     const boot = async () => {
@@ -47,7 +43,11 @@ const PropertyPage = () => {
     <>
       <Navbar title="ทรัพย์สินขายฝาก" />
       {consignModal !== undefined && (
-        <ConModal id={consignModal.id} open={consignModal.open} close={handleConClose} />
+        <ConModal
+          id={consignModal.id}
+          open={consignModal.open}
+          close={() => setConModal({ open: false })}
+        />
       )}
 
       <main className="content">
