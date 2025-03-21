@@ -20,7 +20,7 @@ function Modal_infoconsign(InfoConType: InfoConType) {
       </Modal.Header>
       <Modal.Body>
         <div className="row mb-3">
-          <div className="col-lg-2">
+          <div className="col-lg-2 text-lg-end">
             <label className="form-label">ชื่อผู้ขายฝาก</label>
           </div>
           <div className="col-lg-4">
@@ -31,7 +31,7 @@ function Modal_infoconsign(InfoConType: InfoConType) {
               aria-describedby="text"
             />
           </div>
-          <div className="col-lg-2">
+          <div className="col-lg-2 text-lg-end">
             <label className="form-label">นามสกุล</label>
           </div>
           <div className="col-lg-4">
@@ -44,7 +44,7 @@ function Modal_infoconsign(InfoConType: InfoConType) {
           </div>
         </div>
         <div className="row mb-3">
-          <div className="col-lg-2">
+          <div className="col-lg-2 text-lg-end">
             <label className="form-label">เลขที่ฝากขาย</label>
           </div>
           <div className="col-lg-4">
@@ -55,7 +55,7 @@ function Modal_infoconsign(InfoConType: InfoConType) {
               aria-describedby="text"
             />
           </div>
-          <div className="col-lg-2">
+          <div className="col-lg-2 text-lg-end">
             <label className="form-label">ประเภท</label>
           </div>
           <div className="col-lg-4">
@@ -68,10 +68,10 @@ function Modal_infoconsign(InfoConType: InfoConType) {
           </div>
         </div>
         <div className="row mb-3">
-          <div className="col-lg-2">
+          <div className="col-lg-2 text-lg-end">
             <label className="form-label">พื้นที่ขายฝาก</label>
           </div>
-          <div className="col-lg-2">
+          <div className="col-lg-2 text-lg-end">
             <label className="form-label">บ้านเลขที่</label>
           </div>
           <div className="col-lg-8">
@@ -84,12 +84,12 @@ function Modal_infoconsign(InfoConType: InfoConType) {
           </div>
         </div>
         <div className="row mb-3">
-          <div className="col-lg-2">
+          <div className="col-lg-2 text-lg-end">
             <label className="form-label">
               <span></span>
             </label>
           </div>
-          <div className="col-lg-2">
+          <div className="col-lg-2 text-lg-end">
             <label className="form-label">อำเภอ/เขต</label>
           </div>
           <div className="col-lg-2">
@@ -100,7 +100,7 @@ function Modal_infoconsign(InfoConType: InfoConType) {
               aria-describedby="text"
             />
           </div>
-          <div className="col-lg-2">
+          <div className="col-lg-2 text-lg-end">
             <label className="form-label">ตำบล/แขวง</label>
           </div>
           <div className="col-lg-2">
@@ -113,12 +113,12 @@ function Modal_infoconsign(InfoConType: InfoConType) {
           </div>
         </div>
         <div className="row mb-3">
-          <div className="col-lg-2">
+          <div className="col-lg-2 text-lg-end">
             <label className="form-label">
               <span></span>
             </label>
           </div>
-          <div className="col-lg-2">
+          <div className="col-lg-2 text-lg-end">
             <label className="form-label">รหัสไปรษณีย์</label>
           </div>
           <div className="col-lg-2">
@@ -129,7 +129,7 @@ function Modal_infoconsign(InfoConType: InfoConType) {
               aria-describedby="text"
             />
           </div>
-          <div className="col-lg-2">
+          <div className="col-lg-2 text-lg-end">
             <label className="form-label">จังหวัด</label>
           </div>
           <div className="col-lg-2">
@@ -142,12 +142,12 @@ function Modal_infoconsign(InfoConType: InfoConType) {
           </div>
         </div>
         <div className="row mb-3">
-          <div className="col-lg-2">
+          <div className="col-lg-2 text-lg-end">
             <label className="form-label">
               <span></span>
             </label>
           </div>
-          <div className="col-lg-2">
+          <div className="col-lg-2 text-lg-end">
             <label className="form-label">พื้นที่</label>
           </div>
           <div className="col-lg-2 wrap">
@@ -161,12 +161,12 @@ function Modal_infoconsign(InfoConType: InfoConType) {
           </div>
         </div>
         <div className="row mb-3">
-          <div className="col-lg-2">
+          <div className="col-lg-2 text-lg-end">
             <label className="form-label">
               <span></span>
             </label>
           </div>
-          <div className="col-lg-2">
+          <div className="col-lg-2 text-lg-end">
             <label className="form-label">ราคาขายฝาก</label>
           </div>
           <div className="col-lg-2 wrap">
@@ -178,7 +178,7 @@ function Modal_infoconsign(InfoConType: InfoConType) {
             />
             <span className="text-secondary">บาท</span>
           </div>
-          <div className="col-lg-2">
+          <div className="col-lg-2 text-lg-end">
             <label className="form-label">มูลค่าทรัพย์สิน</label>
           </div>
           <div className="col-lg-2 wrap">
@@ -192,7 +192,7 @@ function Modal_infoconsign(InfoConType: InfoConType) {
           </div>
         </div>
         <div className="row mb-3">
-          <div className="col-lg-2">
+          <div className="col-lg-2 text-lg-end">
             <label className="form-label">วันที่ลงขายฝาก</label>
           </div>
           <div className="col-lg-2">
@@ -207,7 +207,7 @@ function Modal_infoconsign(InfoConType: InfoConType) {
           <div className="col-lg-2">
             <input id="endDate" className="form-control" type="date" />
           </div>
-          <div className="col-lg-2">
+          <div className="col-lg-2 text-lg-end">
             <label className="form-label">ระเวลาขายฝาก</label>
           </div>
           <div className="col-lg-2 wrap">

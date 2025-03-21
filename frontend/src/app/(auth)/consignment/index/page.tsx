@@ -3,8 +3,6 @@ import CustomImage from "@components/CustomImage";
 import Link from "next/link";
 import { use, useEffect, useState } from "react";
 import { formatCurrency, formatNumber } from "@components/helpers";
-import Modal_interest, { InterestType } from "./modal_interest";
-import Modal_infoconsign, { InfoConType } from "./modal_infoconsign";
 import imagecosic1 from "@public/cos-ic1.svg";
 import imagecosic2 from "@public/cos-ic2.svg";
 import imagecosic3 from "@public/cos-ic3.svg";
@@ -18,6 +16,8 @@ import { Map } from "@components/dev/map";
 import Loading from "@components/dev/loading";
 import axios from "axios";
 import { api } from "@utils/api/index";
+import Modal_interest, { InterestType } from "../components/modal_interest";
+import Modal_infoconsign, { InfoConType } from "../components/modal_infoconsign";
 
 function Index() {
   const [assets, setAssets] = useState([]);
