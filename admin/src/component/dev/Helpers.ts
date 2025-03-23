@@ -67,4 +67,17 @@ export const handleNumberChange = (
     }
   };
 
+  export const numberChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    updateState: (newData: any) => void,
+    field: keyof any
+  ) => {
+    const value = e.target.value;
+  
+    const regex = /^(\d+(\.\d*)?|\.\d+)$/;
+  
+    if (regex.test(value) || value === "") {
+      updateState({ [field]: value });
+    }
+  };
   

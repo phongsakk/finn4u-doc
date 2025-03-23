@@ -36,6 +36,7 @@ export const GET = async (
         Authorization: "Bearer " + token,
       },
     });
+
     const model = {
       assetMain: {
         id: response_asset.id,
@@ -59,13 +60,20 @@ export const GET = async (
             : false,
         })) || [],
       asset_appraisal: response_asset?.asset_appraisal || null,
-      asset_auction: response_asset?.asset_auction || null,
+      asset_auction: {
+        fromDate: response_asset?.asset_auction?.from_date || null,
+        fromTime: (response_asset?.asset_auction?.from_time as string) || "",
+        toDate: response_asset?.asset_auction?.to_date || null,
+        toTime: (response_asset?.asset_auction?.to_time as string) || "",
+        maxTax: (response_asset?.asset_auction?.max_tax as string) || "",
+      },
     };
 
     return NextResponse.json(model, {
       status: 200,
     });
   } catch (error) {
+    logError("test:", error);
     if (error instanceof AxiosError) {
       return NextResponse.json(
         {
@@ -75,11 +83,7 @@ export const GET = async (
         },
         { status: error.response?.status || 500 }
       );
-    } else {
-      return NextResponse.json(
-        { error: "unknow error", data: null },
-        { status: 500 }
-      );
     }
+    return NextResponse.json({ error: "fail" }, { status: 500 });
   }
 };

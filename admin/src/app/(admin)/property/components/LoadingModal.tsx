@@ -2,7 +2,7 @@ import { Spinner } from "react-bootstrap"
 
 function LoadingModal() {
     return (
-        <div> <Spinner
+        <div className="modal-body"> <Spinner
             as="span"
             animation="grow"
             size="sm"

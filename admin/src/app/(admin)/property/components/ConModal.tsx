@@ -14,22 +14,25 @@ import {
 } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
-import { handleNumberChange } from "@component/dev/Helpers";
+import { handleNumberChange, numberChange } from "@component/dev/Helpers";
 import ImportTagsModal, { TagModalType } from "./TagsModal";
 import LoadingModal from "./LoadingModal";
+import { AuctionInterface, auctionModel } from "@models/property";
+import { loaderModel, loaderType } from "@models/common";
+import ApiError from "@component/dev/ApiStatus";
 
 dayjs().locale("th");
 
 export type PropertyModal = {
-  id?: number,
-  open: boolean,
-  close?: () => void
-}
+  id?: number;
+  open: boolean;
+  close?: () => void;
+};
 
 function ConModal(ModalOpen: PropertyModal) {
-  console.log(ModalOpen)
+  console.log(ModalOpen);
   const [assetmodel, setAssetModel] = useState<any>();
-  const [loadPage, setLoadPage] = useState<boolean>();
+  const [loader, setLoaderModel] = useState<loaderType>(loaderModel);
 
   const [editTags, setEditTags] = useState<TagModalType>();
 
@@ -44,80 +47,75 @@ function ConModal(ModalOpen: PropertyModal) {
   const [tagsSeclect, setTagsSelect] = useState<{ [key: number]: number }>([]);
   const [isPublished, setIsPublished] = useState<boolean>(false);
   const [findInvester, setFindInvester] = useState<boolean>(false);
-  const [max_tax, serMaxTax] = useState<string>();
 
-  const [fromDate, setFromDate] = useState<Date | null>();
-  const [fromTime, setFromTime] = useState<string>();
-  const [toDate, setToDate] = useState<Date | null>();
-  const [toTime, setToTime] = useState<string>();
+  const [auction, setAuction] = useState<AuctionInterface>(auctionModel);
   const [status, setStatus] = useState<number>(0);
-
+  console.log(loader);
   const handleModalClose = () => {
     ModalOpen.close?.();
-    setLoadPage(false);
-  }
+    setLoaderModel({ onload: false });
+  };
 
   const handleTagClose = () => {
     setEditTags({ open: false });
   };
 
+  const handleSetAuction = (newData: Partial<AuctionInterface>) => {
+    setAuction((prev) => ({
+      ...prev,
+      ...newData,
+    }));
+  };
+
   useEffect(() => {
     const boot = async () => {
-      setLoadPage(true)
+      setLoaderModel({ onload: true, loaderr: false });
 
       try {
         const { data: ass_res } = await axios.get(
           api.internal(`/api/asset/${ModalOpen.id}`)
         );
-        console.log(ass_res);
         if (ass_res) {
           setAssetModel(ass_res.assetMain);
+
           if (ass_res.asset_appraisal) {
             setPriceAppr(ass_res.asset_appraisal.price_appraisal);
             setcollPrice(ass_res.asset_appraisal.collateral_price);
             setDuration(ass_res.asset_appraisal.duration);
           }
-          if (ass_res.images) {
-            setImages(ass_res.images || []);
+          setImages(ass_res?.images || []);
+          setImagesSelect(
+            ass_res?.images
+              .filter((item: any) => item.is_display === true)
+              .reduce((acc: { [key: number]: number }, item: any) => {
+                acc[item.id] = item.id;
+                return acc;
+              }, {})
+          );
+          setTags(ass_res?.tags || []);
+          setTagsSelect(
+            ass_res?.tags
+              .filter((item: any) => item.is_check === true)
+              .reduce((acc: { [key: number]: number }, item: any) => {
+                acc[item.id] = item.id;
+                return acc;
+              }, {})
+          );
 
-            setImagesSelect(
-              ass_res.images
-                .filter((item: any) => item.is_display === true)
-                .reduce((acc: { [key: number]: number }, item: any) => {
-                  acc[item.id] = item.id;
-                  return acc;
-                }, {})
-            );
-          }
-
-          if (ass_res.tags) {
-            setTags(ass_res.tags || []);
-
-            setTagsSelect(
-              ass_res.tags
-                .filter((item: any) => item.is_check === true)
-                .reduce((acc: { [key: number]: number }, item: any) => {
-                  acc[item.id] = item.id;
-                  return acc;
-                }, {})
-            );
-          }
-          setIsPublished(ass_res.assetMain.is_published);
-          if (ass_res.asset_auction) {
-            setFromDate(ass_res.asset_auction.from_date);
-            setFromTime(ass_res.asset_auction.from_time);
-            setToDate(ass_res.asset_auction.to_date);
-            setToTime(ass_res.asset_auction.to_time);
-            serMaxTax(ass_res.asset_auction.max_tax);
-          }
+          handleSetAuction(ass_res.asset_auction || auctionModel);
           setStatus(ass_res.assetMain.status);
         }
       } catch (error) {
         console.error("API assets error!", error);
+        setLoaderModel({ loaderr: true });
       } finally {
-        setLoadPage(false);
+        setLoaderModel((prev) => ({
+          ...prev,
+          onload: false,
+        }));
       }
     };
+
     if (ModalOpen.id != undefined) {
       boot();
     }
@@ -171,12 +169,12 @@ function ConModal(ModalOpen: PropertyModal) {
 
   const submitform = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(imagesSelect)
-    if (Object.keys(imagesSelect).length === 0) return alert("กรุณากรอก: เลือกรูปภาพ");
+    console.log(imagesSelect);
+    if (Object.keys(imagesSelect).length === 0)
+      return alert("กรุณากรอก: เลือกรูปภาพ");
     if (!priceAppraisal) return alert("กรุณากรอก: ราคาขายฝากจากการประเมิน");
     if (!collateralPrice) return alert("กรุณากรอก: มูลค่าทรัพย์สินค้ำระกัน");
     if (!duration) return alert("กรุณากรอก: ระยะเวลาขายฝาก");
-    // if (!max_tax) return alert("กรุณากรอก: ระบุดอกเบี้ยสูงสุด (%)");
 
     const formData = {
       price_appraisal: Number(priceAppraisal),
@@ -188,11 +186,11 @@ function ConModal(ModalOpen: PropertyModal) {
       find_invester: findInvester,
       status: status,
       auction: {
-        from_date: fromDate || null,
-        from_time: fromTime || null,
-        to_date: toDate || null,
-        to_time: toTime || null,
-        max_tax: Number(max_tax),
+        from_date: auction.fromDate || null,
+        from_time: auction.fromTime || null,
+        to_date: auction.toDate || null,
+        to_time: auction.toTime || null,
+        max_tax: Number(auction.maxTax) || null,
       },
     } as DoAppraisal;
 
@@ -211,12 +209,11 @@ function ConModal(ModalOpen: PropertyModal) {
     }
   };
 
-
-
   return (
     <>
-      {editTags != undefined && editTags.open == true ? <ImportTagsModal open={editTags.open} close={handleTagClose} /> : null}
-
+      {editTags != undefined && editTags.open == true ? (
+        <ImportTagsModal open={editTags.open} close={handleTagClose} />
+      ) : null}
 
       <Modal
         show={ModalOpen.open}
@@ -224,11 +221,16 @@ function ConModal(ModalOpen: PropertyModal) {
         id="modal-estimate"
         size="lg"
       >
-        {loadPage ? (<>
-          <LoadingModal />
-        </>) : (
+        {loader.loaderr ? (
           <>
-
+            <ApiError number={500} />
+          </>
+        ) : loader.onload ? (
+          <>
+            <LoadingModal />
+          </>
+        ) : (
+          <>
             <form onSubmit={submitform}>
               <Modal.Body>
                 <Button variant="close" onClick={handleModalClose}></Button>
@@ -273,16 +275,20 @@ function ConModal(ModalOpen: PropertyModal) {
                 </div>
 
                 <h4 className="mt-1 mb-3">
-                  เลือกรูปภาพให้แสดง<span className="text-secondary">(3 รูป)</span>
+                  เลือกรูปภาพให้แสดง
+                  <span className="text-secondary">(3 รูป)</span>
                 </h4>
 
                 <div className="row mb-3">
                   {images.map((item: any, index: number) => (
                     <div
-                      className="col-lg-4 col-sm-4 mb-1 nopad text-center"
+                      className="col-lg-4 col-sm-5 mb-1 me-auto d-flex justify-content-center justify-content-lg-start  nopad"
                       key={index}
                     >
-                      <label className="image-checkbox" htmlFor={`images-${index}`}>
+                      <label
+                        className="image-checkbox text-center"
+                        htmlFor={`images-${index}`}
+                      >
                         <input
                           onChange={(e) => handleCheckboxImages(e, item.id)}
                           name="images[]"
@@ -354,7 +360,9 @@ function ConModal(ModalOpen: PropertyModal) {
 
                 <div className="row mb-3 ">
                   <h4 className="col-auto">การมองเห็นโพสต์</h4>
-                  <span className="col-auto text-seccondary">(กรณีต้องการหาผู้ร่วมลงทุน)</span>
+                  <span className="col-auto text-seccondary">
+                    (กรณีต้องการหาผู้ร่วมลงทุน)
+                  </span>
                 </div>
                 <div className="form-check mb-3">
                   <div className="d-flex">
@@ -378,7 +386,12 @@ function ConModal(ModalOpen: PropertyModal) {
                 <div className="edit mb-3">
                   <h4 className="m-0">สถานที่สำคัญบริเวณพื้นที่</h4>
 
-                  <div className="edit" onClick={() => setEditTags({ open: true, close: handleTagClose })}>
+                  <div
+                    className="edit"
+                    onClick={() =>
+                      setEditTags({ open: true, close: handleTagClose })
+                    }
+                  >
                     <Image src={pencilImage} className="" alt="" />
                     <p>แก้ไข</p>
                   </div>
@@ -415,9 +428,13 @@ function ConModal(ModalOpen: PropertyModal) {
                         <DatePicker
                           label="ตั้งแต่วันที่"
                           name="start_date"
-                          value={fromDate ? dayjs(fromDate) : null}
+                          value={
+                            auction?.fromDate ? dayjs(auction?.fromDate) : null
+                          }
                           onChange={(newDate: Dayjs | null) =>
-                            setFromDate(newDate ? newDate.toDate() : null)
+                            handleSetAuction({
+                              fromDate: newDate ? newDate.toDate() : null,
+                            })
                           }
                         />
                       </div>
@@ -425,9 +442,15 @@ function ConModal(ModalOpen: PropertyModal) {
                         <TimePicker
                           label="ตั้งแต่เวลา"
                           name="start_time"
-                          value={fromTime ? dayjs(fromTime, "HH:mm") : null}
+                          value={
+                            auction?.fromTime
+                              ? dayjs(auction?.fromTime, "HH:mm")
+                              : null
+                          }
                           onChange={(newTime) =>
-                            setFromTime(newTime ? newTime.format("HH:mm") : "")
+                            handleSetAuction({
+                              fromTime: newTime ? newTime.format("HH:mm") : "",
+                            })
                           }
                         />
                       </div>
@@ -438,9 +461,13 @@ function ConModal(ModalOpen: PropertyModal) {
                         <DatePicker
                           label="ถึงวันที่"
                           name="end_date"
-                          value={toDate ? dayjs(toDate) : null}
+                          value={
+                            auction?.toDate ? dayjs(auction?.toDate) : null
+                          }
                           onChange={(newDate: Dayjs | null) =>
-                            setToDate(newDate ? newDate.toDate() : null)
+                            handleSetAuction({
+                              toDate: newDate ? newDate.toDate() : null,
+                            })
                           }
                         />
                       </div>
@@ -448,9 +475,15 @@ function ConModal(ModalOpen: PropertyModal) {
                         <TimePicker
                           name="end_time"
                           label="ถึงเวลา"
-                          value={toTime ? dayjs(toTime, "HH:mm") : null}
+                          value={
+                            auction?.toTime
+                              ? dayjs(auction?.toTime, "HH:mm")
+                              : null
+                          }
                           onChange={(newTime) =>
-                            setToTime(newTime ? newTime.format("HH:mm") : "")
+                            handleSetAuction({
+                              toTime: newTime ? newTime.format("HH:mm") : "",
+                            })
                           }
                         />
                       </div>
@@ -463,9 +496,10 @@ function ConModal(ModalOpen: PropertyModal) {
                     <label className="form-label">ระบุดอกเบี้ยสูงสุด (%)</label>
                     <input
                       onChange={(e) => {
-                        handleNumberChange(e, serMaxTax);
+                        // handleNumberChange(e, serMaxTax);
+                        numberChange(e, handleSetAuction, "maxTax");
                       }}
-                      value={max_tax ?? ""}
+                      value={auction?.maxTax ?? ""}
                       className="form-control"
                       name="max_tax"
                     />
@@ -528,7 +562,6 @@ function ConModal(ModalOpen: PropertyModal) {
         )}
       </Modal>
     </>
-
   );
 }
 export default ConModal;

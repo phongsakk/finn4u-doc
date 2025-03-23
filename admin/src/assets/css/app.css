@@ -591,6 +591,10 @@ progress {
     width: 100%
 }
 
+.container-fluid > .card{
+    overflow-x: auto;
+}
+
 @media (min-width:576px) {
 
     .container,
@@ -15473,7 +15477,7 @@ span.flatpickr-weekday {
     margin: 1.75rem auto;
 }
 
-.modal-content {
+.modal-content .modal-body {
     background-color: #fff;
     position: relative;
     padding: 24px;
