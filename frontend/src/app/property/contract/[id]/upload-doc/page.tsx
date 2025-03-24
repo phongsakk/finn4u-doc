@@ -1,10 +1,17 @@
 "use client";
 import Link from "next/link";
+import { redirect, useParams } from "next/navigation";
 import React, { useState } from "react";
 import { Accordion, Button, Card, Collapse } from "react-bootstrap";
 import { LuDownload } from "react-icons/lu";
 
 function UploadDocPage() {
+  const params = useParams();
+
+  if (isNaN(Number(params.id))) {
+    redirect("/property");
+  }
+  console.log(params.id)
   const sections = [
     "หนังสือสัญญา",
     "หนังสือยินยอมคู่สมรส",
@@ -40,7 +47,6 @@ function UploadDocPage() {
     setFileDetails(newFileDetails);
   };
 
-  console.log(fileDetails);
   const handleToggle = (id: string) => {
     setActiveKey(activeKey === id ? null : id); // Toggle the section open/closed
   };
@@ -118,10 +124,7 @@ function UploadDocPage() {
               ))}
             </Accordion>
             <div className="submit-group">
-              <Link
-                href="/property/success"
-                className="btn btn-primary font2"
-              >
+              <Link href="/property/success" className="btn btn-primary font2">
                 ถัดไป
               </Link>
             </div>

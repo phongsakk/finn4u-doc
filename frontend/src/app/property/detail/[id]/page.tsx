@@ -10,7 +10,12 @@ import Countdown from "@components/Countdown";
 import dayjs from "dayjs";
 import "dayjs/locale/th";
 import { Input } from "antd";
-import { formatDateThai, handleNumberChange } from "@components/helpers";
+import {
+  formatCurrency,
+  formatDateThai,
+  formatNumber,
+  handleNumberChange,
+} from "@components/helpers";
 import AlertStatus, { AlertType } from "@components/alert/AlertStatus";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useSession } from "next-auth/react";
@@ -18,6 +23,7 @@ import { redirect, useParams, useRouter } from "next/navigation";
 import { Map } from "@components/dev/map";
 import axios from "axios";
 import { api } from "@utils/api/index";
+import Image from "next/image";
 
 dayjs.extend(customParseFormat);
 dayjs.locale("th");
@@ -29,7 +35,7 @@ function PropertyPage() {
   if (isNaN(Number(params.id))) {
     redirect("/property");
   }
-  const [asset, setAsset] = useState();
+  const [asset, setAsset] = useState<any>();
   const [galleryOpen, setGallery] = useState(false);
   const [modalImage, setModalImage] = useState<string>("");
   const [bidPercent, setBidPercent] = useState<string>();
@@ -37,7 +43,7 @@ function PropertyPage() {
   const [toDate, setToDate] = useState<string>();
   const [endtime, setEndtime] = useState<Date>();
   const [alertOpen, setAlertOpen] = useState<AlertType>();
-  console.log(alertOpen)
+  console.log(asset);
   const testposition = { lat: 13.8104970155091, lng: 100.56850354191629 };
 
   const { data: session, status } = useSession();
@@ -59,9 +65,11 @@ function PropertyPage() {
     const boot = async () => {
       try {
         const { data: res_asset } = await axios.get(
-          api.internal(`/api/asset/${params.id}`)
+          api.internal(`/api/general/asset/${params.id}`)
         );
-        console.log(res_asset);
+        if (res_asset.status) {
+          setAsset(res_asset.data);
+        }
       } catch (err) {
         console.error("get asset:", err);
       }
@@ -80,7 +88,7 @@ function PropertyPage() {
     setGallery(true);
   };
 
-  const handleBid = () => {
+  const handleBid = async () => {
     if (!bidPercent) {
       return setAlertOpen({
         alertOpen: true,
@@ -90,26 +98,49 @@ function PropertyPage() {
       });
     }
 
-    setAlertOpen({
-      alertOpen: true,
-      alertClose: handleAlertClose,
-      status: "success",
-      text: `คุณได้ทำการ Bid สำเร็จแล้ว`,
-    });
+    try {
+      const { data: res_bid } = await axios.post(
+        api.internal(`/api/bid/${params.id}`),
+        {
+          bid: Number(bidPercent),
+        }
+      );
 
-    setTimeout(() => {
-      router.push("/property/contract");
-    }, 3000);
+      setAlertOpen({
+        alertOpen: true,
+        alertClose: handleAlertClose,
+        status: "success",
+        text: `คุณได้ทำการ Bid สำเร็จแล้ว`,
+      });
+      if (res_bid.url) {
+        setTimeout(() => {
+          redirect(res_bid.url);
+        }, 3000);
+      }
+    } catch (error) {
+      console.error(error);
+      setAlertOpen({
+        alertOpen: true,
+        alertClose: handleAlertClose,
+        status: "error",
+        text: "500 - Server disconnected. Please try again.",
+      });
+    }
   };
 
   const handleAlertClose = () => {
-    setAlertOpen({ alertOpen: false })
-  }
+    setAlertOpen({ alertOpen: false });
+  };
 
   return (
     <>
       {alertOpen != undefined && (
-        <AlertStatus alertOpen={alertOpen.alertOpen} alertClose={handleAlertClose} status={alertOpen.status} text={alertOpen.text} />
+        <AlertStatus
+          alertOpen={alertOpen.alertOpen}
+          alertClose={handleAlertClose}
+          status={alertOpen.status}
+          text={alertOpen.text}
+        />
       )}
 
       <div className="property-sale-detail">
@@ -122,7 +153,10 @@ function PropertyPage() {
                 <div className="col col-12 col-lg-9 mb-md-3 mb-sm-3 col-sm-12 col-xs-12 mb-lg-0 mb-sm-0 mb-3">
                   <div className="gallery-item">
                     <Map
-                      position={testposition}
+                      position={{
+                        lat: Number(asset?.location_x),
+                        lng: Number(asset?.locataion_y),
+                      }}
                       style={{
                         width: "100%",
                         height: "541.88px",
@@ -131,39 +165,20 @@ function PropertyPage() {
                   </div>
                 </div>
                 <div className="col col-lg-3 col-sm-12 col-12 col-xs-12">
-                  <Link
-                    className="gallery-item"
-                    href="#"
-                    onClick={handleGallery}
-                  >
-                    <CustomImage
-                      src="/locate2.png"
-                      className="img-fluid object-fit-cover"
-                      alt="locate2"
-                    />
-                  </Link>
-                  <Link
-                    className="gallery-item"
-                    href="/locate3.png"
-                    onClick={handleGallery}
-                  >
-                    <CustomImage
-                      src="/locate3.png"
-                      className="img-fluid object-fit-cover"
-                      alt="locate3"
-                    />
-                  </Link>
-                  <Link
-                    className="gallery-item"
-                    href="/locate4.png"
-                    onClick={handleGallery}
-                  >
-                    <CustomImage
-                      src="/locate4.png"
-                      className="img-fluid object-fit-cover"
-                      alt="locate4"
-                    />
-                  </Link>
+                  {asset?.images.map((item: any, index: number) => (
+                    <Link
+                      className="gallery-item"
+                      href="#"
+                      onClick={handleGallery}
+                      key={index}
+                    >
+                      <img
+                        src={item.image}
+                        alt=""
+                        className="img-fluid object-fit-cover"
+                      />
+                    </Link>
+                  ))}
                 </div>
               </div>
               <div className="time">
@@ -195,11 +210,11 @@ function PropertyPage() {
                 </div>
               </div>
               <div className="location">
-                <h3 className="text-primary font2">ลาดกระบัง, กรุงเทพมหานคร</h3>
+                <h3 className="text-primary font2">{asset?.province_name}</h3>
                 <div className="row">
                   <div className="col row">
                     <div className="font2 col-auto btn btn-primary">
-                      ที่ดินเปล่า
+                      {asset?.asset_type_name}
                     </div>
                   </div>
                   <div className="col-sm-4 text-end">
@@ -234,7 +249,10 @@ function PropertyPage() {
                             height: "auto",
                           }}
                         />
-                        <span className="font2">เลขที่ฝากขาย 000023</span>
+                        <span className="font2">
+                          เลขที่ฝากขาย{" "}
+                          {String(Number(asset?.id)).padStart(5, "0")}
+                        </span>
                       </div>
                       <div className="manage">
                         <FontAwesomeIcon icon={faEye} />
@@ -253,7 +271,7 @@ function PropertyPage() {
                         }}
                       />
 
-                      <span className="font2">0 ไร่ 0 งาน 20 ตารางวา</span>
+                      <span className="font2">{asset?.aria_size}</span>
                     </li>
                     <li>
                       <CustomImage
@@ -264,8 +282,8 @@ function PropertyPage() {
                           height: "auto",
                         }}
                       />
-                      <span className="font2">มูลค่าสินทรัพย์ค้ำประกัน</span>3.2
-                      ล้านบาท
+                      <span className="font2">มูลค่าสินทรัพย์ค้ำประกัน</span>
+                      {formatCurrency(Number(asset?.collateral))}
                     </li>
                     <li>
                       <CustomImage
@@ -276,7 +294,8 @@ function PropertyPage() {
                           height: "auto",
                         }}
                       />
-                      <span className="font2">ราคาขายฝาก</span>1,450,000บาท
+                      <span className="font2">ราคาขายฝาก</span>
+                      {formatNumber(Number(asset?.consignment_price))} บาท
                     </li>
                     <li>
                       <CustomImage

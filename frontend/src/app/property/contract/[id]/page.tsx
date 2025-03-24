@@ -1,11 +1,29 @@
+"use client";
 import stepnotice1 from "@public/step-notice1.png";
 import stepnotice2 from "@public/step-notice2.png";
 import stepnotice3 from "@public/step-notice3.png";
 import Polygon2 from "@public/Polygon2.png";
 import Image from "next/image";
-import Banner from "../banner";
+import Banner from "../../banner";
 import Link from "next/link";
+import { redirect, useParams } from "next/navigation";
+import { useState } from "react";
+import { Button } from "react-bootstrap";
 function Warning() {
+  const [accept, setAccept] = useState(false);
+  const params = useParams();
+  if (isNaN(Number(params.id))) {
+    redirect("/property");
+  }
+
+  const handleAccept = () => {
+    if (accept) {
+      redirect(`/property/contract/${params.id}/upload-doc`);
+    } else {
+      alert("กรุณายอมรับเงื่อนไขและข้อตกลง");
+    }
+  };
+
   return (
     <>
       <div className="register-seller invest-notice">
@@ -75,24 +93,23 @@ function Warning() {
               <div className="mb-3 form-check mt-5">
                 <input
                   type="checkbox"
+                  onChange={(e) => setAccept(e.target.checked)}
                   className="form-check-input mx-3"
-                  id="exampleCheck1"
+                  id="accept"
                 />
-                <label
-                  className="form-check-label font2"
-                  htmlFor="exampleCheck1"
-                >
+                <label className="form-check-label font2" htmlFor="accept">
                   ยอมรับเงื่อนไขและข้อตกลงทั้งหมด
                 </label>
               </div>
 
               <div className="submit-group">
-                <Link
-                  href="/property/contract/upload-doc"
-                  className="btn btn-primary font2"
+                <Button
+                  variant="primary"
+                  onClick={handleAccept}
+                  className="font2"
                 >
                   ยืนยันการลงทุน
-                </Link>
+                </Button>
               </div>
             </div>
           </div>
