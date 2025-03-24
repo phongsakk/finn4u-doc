@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/phongsakk/finn4u-back/app/database"
@@ -13,6 +14,40 @@ import (
 	"github.com/phongsakk/finn4u-back/utils"
 	"gorm.io/gorm"
 )
+
+func Asset(c *gin.Context) {
+	var assetIdStr = c.Param("id")
+	var response []models.Asset
+	assetId, err := strconv.Atoi(assetIdStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:  http.StatusBadRequest,
+			Error: utils.NullableString("Invalid asset ID"),
+		})
+		return
+	}
+	db, err := database.Conn()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	defer database.Close(db)
+	if err := db.Where("id =?", assetId).Preload("Province").Preload("District").Preload("AssetType").Preload("Owner").Preload("AssetImages").Find(&response).Error; err != nil {
+		c.JSON(http.StatusNotFound, types.Response{
+			Code:  http.StatusNotFound,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, types.Response{
+		Message: utils.NullableString("Asset retrieved successfully"),
+		Status:  true,
+		Data:    response,
+	})
+}
 
 func GetAsset(c *gin.Context) {
 	var page = 0
