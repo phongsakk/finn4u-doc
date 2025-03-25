@@ -89,3 +89,23 @@ func GetMasterAssetType(ctx *gin.Context) {
 		Message: utils.NullableString("Get master asset type success"),
 	})
 }
+
+func GetUserPrefix(c *gin.Context) {
+	var model []models.UserPrefix
+	db, err := database.Conn()
+	if err != nil {
+		c.JSON(500, types.Response{
+			Code:  500,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	defer database.Close(db)
+	db.Find(&model)
+	c.JSON(200, types.Response{
+		Code:    200,
+		Status:  true,
+		Data:    model,
+		Message: utils.NullableString("Get master prefix success"),
+	})
+}

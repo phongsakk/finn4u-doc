@@ -15,6 +15,8 @@ import (
 type Consignor struct {
 	template.Model
 	template.User
+
+	UserPrefix *UserPrefix `json:"user_prefix" gorm:"foreignKey:UserPrefixID;references:ID"`
 }
 
 func (Consignor) TableName() string {

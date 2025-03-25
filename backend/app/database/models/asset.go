@@ -38,7 +38,7 @@ type Asset struct {
 	Province            *Province       `json:"province,omitempty" gorm:"foreignKey:ProvinceID;references:ID"`
 	District            *District       `json:"district,omitempty" gorm:"foreignKey:DistrictID;references:ID"`
 	AssetType           *AssetType      `json:"asset_type,omitempty" gorm:"foreignKey:AssetTypeID;references:ID"`
-	Owner               *User           `json:"owner,omitempty" gorm:"foreignKey:OwnerID;references:ID"`
+	Owner               *Consignor      `json:"owner,omitempty" gorm:"foreignKey:OwnerID;references:ID"`
 	AssetImages         *[]AssetImage   `json:"asset_images,omitempty" gorm:"foreignKey:AssetID;references:ID"`
 	AssetAppraisal      *AssetAppraisal `json:"asset_appraisal,omitempty" gorm:"foreignKey:AssetID;references:ID"`
 	AssetTag            *[]AssetTag     `json:"asset_tag,omitempty" gorm:"foreignKey:AssetID;references:ID"`
