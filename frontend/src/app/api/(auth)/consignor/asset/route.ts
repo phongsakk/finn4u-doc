@@ -1,24 +1,20 @@
 import { log, logError } from "@components/helpers";
 import { auth } from "@libs/auth";
-import { AssetModel } from "@models/AssetModel";
 import { api } from "@utils/api/index";
 import axios, { AxiosError } from "axios";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export const GET = async (req: NextRequest) => {
+export const GET = async () => {
   try {
-    const page = Number(req.nextUrl.searchParams.get("page")) || 1;
-
     const session = await auth();
     const { data: response } = await axios.get(
-      api.external("/v1/general/asset"),
+      api.external("/v1/consignor/asset"),
       {
         headers: {
           Authorization: "Bearer " + session?.user?.accessToken,
         },
       }
     );
-
     const model = response.data.map(
       (item: any) =>
         ({
@@ -46,21 +42,10 @@ export const GET = async (req: NextRequest) => {
             to_date: item.asset_auction.to_date,
             to_time: item.asset_auctionto_time,
           },
-        } as AssetModel)
+        })
     );
-    return NextResponse.json(
-      {
-        status: true,
-        data: model,
-        page: {
-          // page: response.page,
-          // total: response.total,
-          page: page,
-          total: 1,
-        },
-      },
-      { status: 200 }
-    );
+
+    return NextResponse.json({ status: true, data: model }, { status: 200 });
   } catch (error) {
     logError("test", error);
 

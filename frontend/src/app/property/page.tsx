@@ -18,44 +18,61 @@ import { Map } from "@components/dev/map";
 import { api } from "@utils/api/index";
 import Loading from "@components/dev/loading";
 import { formatCurrency, formatNumber } from "@components/helpers";
+import Pagination, { PaginationInterface, PaginationModel } from "@components/dev/pagination";
 
 function Propertysale() {
-  const [assetTypes, setAsType] = useState([]);
+  const [assetTypes, setAssetTypes] = useState([]);
   const [assetTypeSelect, setAsTypeSelect] = useState("");
   const [search, setSearch] = useState("");
   const [assets, setAssets] = useState([]);
+  const [page, setPage] = useState({
+    page: 1,
+    total: 1,
+  });
+
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const boot = async () => {
-      try {
-        const { data: res_astype } = await axios.get(
-          api.internal("/api/asset-type")
-        );
-        if (res_astype.status) {
-          setAsType(res_astype.data);
-        }
-      } catch (err) {
-        console.error("get asset type: ", err);
-      }
+  // Function to update page number safely
+  const changePage = (num: number) => {
+    setPage((prev) => ({ ...prev, page: num }));
+  };
 
+  useEffect(() => {
+    const fetchAssets = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
-        const { data: res_assets } = await axios.get(
-          api.internal("/api/general/asset")
-        );
-        if (res_assets.status === true) {
+        const { data: res_assets } = await axios.get(api.internal("/api/general/asset"), {
+          params: { page: page.page },
+        });
+
+        if (res_assets.status) {
           setAssets(res_assets.data);
+          setPage(res_assets.page);
         }
       } catch (err) {
-        console.error("get asset error: ", err);
+        console.error("Error fetching assets:", err);
       } finally {
         setLoading(false);
       }
     };
-    boot();
-  }, []);
 
+    fetchAssets();
+  }, [page.page]); // Runs only when page.page changes
+
+  useEffect(() => {
+    const fetchAssetTypes = async () => {
+      try {
+        const { data: res_astype } = await axios.get(api.internal("/api/asset-type"));
+        if (res_astype.status) {
+          setAssetTypes(res_astype.data);
+        }
+      } catch (err) {
+        console.error("Error fetching asset types:", err);
+      }
+    };
+
+    fetchAssetTypes();
+  }, []); // Runs only on mount
   const formAction = async () => {
     console.log(assetTypeSelect, search);
   };
@@ -136,7 +153,7 @@ function Propertysale() {
                         <span className="badge font2">
                           {item.asset_type_name}
                         </span>
-                        <button className="btn btn-sold">SOLD</button>
+                        <button className="btn btn-sold font2">SOLD</button>
                         <div className="time">
                           <div className="text-center">
                             <p className="font2">รอการลงทุน</p>
@@ -256,147 +273,8 @@ function Propertysale() {
               ))}
             </>
           )}
-
-          {/* {[...Array(3)].map((_, i) => (
-            <a className="sale-active mb-5" href="#" key={i}>
-              <div className="row shadow">
-                <div className="col-lg-7">
-                  <div className="relative">
-                    <CustomImage src="/land-img1.png" alt="land-img1" />
-                    <span className="badge font2">ทาวน์เฮ้าส์</span>
-                    <button className="btn btn-sold font2">SOLD</button>
-                    <div className="time">
-                      <div className="text-center">
-                        <p className="font2">รอการลงทุน</p>
-                        <p className="text-warning font2">1 วัน 3.50 ชั่วโมง</p>
-                      </div>
-                      <div className="icon">
-                        <FontAwesomeIcon icon={faClock} />
-                        <i className="fa-solid fa-clock"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-5">
-                  <div className="locataion p-5">
-                    <p className="font2">ลาดกระบัง, กรุงเทพมหานคร</p>
-                    <ul>
-                      <li>
-                        <CustomImage
-                          src="/ic-lo1.svg"
-                          alt="ic-lo1"
-                          style={{
-                            width: "6%",
-                            height: "auto",
-                          }}
-                        />
-                        <span className="font2">เลขที่ฝากขาย 000023</span>
-                      </li>
-                      <li>
-                        <CustomImage
-                          src="/ic-lo2.svg"
-                          alt="ic-lo2"
-                          style={{
-                            width: "6%",
-                            height: "auto",
-                          }}
-                        />
-                        <span className="font2">0 ไร่ 0 งาน 20 ตารางวา</span>
-                      </li>
-                      <li>
-                        <CustomImage
-                          src="/ic-lo3.svg"
-                          alt="ic-lo3"
-                          style={{
-                            width: "6%",
-                            height: "auto",
-                          }}
-                        />
-                        <span className="font2">มูลค่าสินทรัพย์ค้ำประกัน</span>
-                        <span className="text-primary font2">3.2 ล้านบาท</span>
-                      </li>
-                      <li>
-                        <CustomImage
-                          src="/ic-lo4.svg"
-                          alt="ic-lo4"
-                          style={{
-                            width: "6%",
-                            height: "auto",
-                          }}
-                        />
-                        <span className="font2">
-                          ราคาขายฝาก
-                          <span className="text-primary font2">1,450,000</span>
-                          บาท
-                        </span>
-                      </li>
-                      <li>
-                        <CustomImage
-                          src="/ic-lo5.svg"
-                          alt="ic-lo5"
-                          style={{
-                            width: "6%",
-                            height: "auto",
-                          }}
-                        />
-                        <span className="font2">11 เมษายน 2565</span>
-                      </li>
-                    </ul>
-                    <div className="wrap">
-                      <button type="submit" className="btn btn-light">
-                        ข้อมูลเพิ่มเติม
-                      </button>
-                      <button type="submit" className="btn btn-primary">
-                        ลงทุน
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </a>
-          ))} */}
         </div>
-        <div className="panigation-main">
-          <nav aria-label="Page navigation example">
-            <ul className="pagination">
-              <li className="page-item">
-                <a className="page-link custom" href="#">
-                  <FontAwesomeIcon icon={faAngleLeft} />
-                </a>
-              </li>
-              <li className="page-item">
-                <a className="page-link custom" href="#">
-                  <FontAwesomeIcon icon={faChevronLeft} />
-                </a>
-              </li>
-              <li className="page-item">
-                <a className="page-link active" href="#">
-                  1
-                </a>
-              </li>
-              <li className="page-item">
-                <a className="page-link" href="#">
-                  2
-                </a>
-              </li>
-              <li className="page-item">
-                <a className="page-link" href="#">
-                  3
-                </a>
-              </li>
-              <li className="page-item">
-                <a className="page-link custom" href="#">
-                  <FontAwesomeIcon icon={faChevronRight} />
-                </a>
-              </li>
-              <li className="page-item">
-                <a className="page-link custom" href="#">
-                  <FontAwesomeIcon icon={faAngleRight} />
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div>
+        <Pagination Page={page} change={changePage} />
       </div>
     </div>
   );

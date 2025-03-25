@@ -1,4 +1,4 @@
-function Loading({ num = 3 }: { num?: number }) {
+function Loading({ num = 1 }: { num?: number }) {
 	return (
 		<>
 			{[...Array(num)].map((_, i) => (

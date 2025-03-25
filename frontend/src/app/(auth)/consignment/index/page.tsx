@@ -32,7 +32,7 @@ function Index() {
       setLoading(true);
       try {
         const { data: res_assets } = await axios.get(
-          api.internal("/api/asset")
+          api.internal("/api/consignor/asset")
         );
         if (res_assets.status === true) {
           setAssets(res_assets.data);
