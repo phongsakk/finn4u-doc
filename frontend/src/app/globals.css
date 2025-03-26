@@ -1698,11 +1698,10 @@ img {
 .checklogin .form-check {
   display: flex !important;
   padding: 0;
-  column-gap: 20px;
 
-  label {
+  /* label {
     margin-left: 13px;
-  }
+  } */
 }
 
 .checklogin .form-check-input:checked {

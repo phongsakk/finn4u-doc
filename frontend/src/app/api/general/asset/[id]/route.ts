@@ -46,8 +46,10 @@ export const GET = async (
       province_name: data?.province?.name,
       asset_type_name: data?.asset_type?.name,
       asset_appraisal: {
-        price_appraisal: Number(data?.asset_appraisal?.price_appraisal),
-        collateral_price: Number(data?.asset_appraisal?.collateral_price),
+        price_appraisal: String(data?.asset_appraisal?.price_appraisal) || "-",
+        collateral_price:
+          String(data?.asset_appraisal?.collateral_price) || "-",
+        duration: String(data?.asset_appraisal?.duration) || "-",
       },
       asset_tag:
         data?.asset_tag?.map((item: any, index: number) => ({
@@ -74,6 +76,6 @@ export const GET = async (
 
     return NextResponse.json({ status: true, data: model }, { status: 200 });
   } catch (error) {
-    return NextResponse.json(catchError(error));
+    return NextResponse.json(await catchError(error));
   }
 };

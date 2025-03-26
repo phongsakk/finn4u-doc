@@ -134,17 +134,17 @@ function Propertysale() {
       </div>
 
       <div className="container">
-        <div className="land-sale-2">
+        <div className="land-sale-2 p-2 p-md-3 p-lg-0">
           {loading ? (
             <Loading />
           ) : (
             <>
               {assets?.map((item: any, index) => (
                 <div
-                  className="not-sale mb-5 property-item pe-auto"
+                  className="not-sale mb-5 property-item pe-auto "
                   key={index}
                 >
-                  <div className="row shadow">
+                  <div className="row shadow overflow-hidden rounded">
                     <div className="col-lg-7">
                       <div className="relative pe-none">
                         <Map
@@ -172,7 +172,7 @@ function Propertysale() {
                       </div>
                     </div>
                     <div className="col-lg-5">
-                      <div className="locataion p-5">
+                      <div className="locataion p-1 p-sm-5 p-lg-5">
                         <p className="font2">{item.province_name}</p>
                         <ul>
                           <li>

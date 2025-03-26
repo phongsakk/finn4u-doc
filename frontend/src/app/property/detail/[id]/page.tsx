@@ -51,7 +51,12 @@ function PropertyPage() {
         );
         if (res_asset.status) {
           setAsset(res_asset.data);
-          setEndTime(dayjs(res_asset.data?.asset_auction?.to_date, "DD/MM/YYYY HH:mm:ss").toDate())
+          setEndTime(
+            dayjs(
+              res_asset.data?.asset_auction?.to_date,
+              "DD/MM/YYYY HH:mm:ss"
+            ).toDate()
+          );
         }
       } catch (err) {
         console.error("get asset:", err);
@@ -193,14 +198,21 @@ function PropertyPage() {
                 </div>
               </div>
               <div className="location">
-                <Link href={`https://www.google.com/maps/@${asset?.location_x},${asset?.locataion_y}`} target="_blank" className="text-primary h4 font2">{asset?.province_name}</Link>
-                <div className="row">
-                  <div className="col row">
+                <Link
+                  href={`https://www.google.co.th/maps/place/${asset?.province_name}`}
+                  target="_blank"
+                  className="text-primary h4 font2"
+                  style={{ textDecoration: "" }}
+                >
+                  <ins>{asset?.province_name}</ins>
+                </Link>
+                <div className="row mt-3">
+                  <div className="col">
                     <div className="font2 col-auto btn btn-primary">
                       {asset?.asset_type_name}
                     </div>
                   </div>
-                  <div className="col-sm-4 text-end">
+                  <div className="col-sm-4 col-auto text-end">
                     <Link
                       href="#"
                       onClick={(e) => e.preventDefault()}
@@ -233,7 +245,7 @@ function PropertyPage() {
                           }}
                         />
                         <span className="font2">
-                          เลขที่ฝากขาย{" "}
+                          เลขที่ฝากขาย
                           {String(Number(asset?.id)).padStart(5, "0")}
                         </span>
                       </div>
@@ -289,63 +301,75 @@ function PropertyPage() {
                           height: "auto",
                         }}
                       />
-                      <span className="font2">11 เมษายน 2565</span>
+                      <span className="font2">ระยะเวลาขายฝาก</span>
+                      {formatNumber(Number(asset?.asset_appraisal?.duration))}
+                      ปี
                     </li>
                   </ul>
                 </div>
               </div>
               <div className="badegroup row gap-2">
                 {asset?.asset_tag?.map((item: any, index: number) => (
-                  <span className="badge font2 col-auto" key={index}>{item.name}</span>
+                  <span className="badge font2 col-auto" key={index}>
+                    {item.name}
+                  </span>
                 ))}
               </div>
             </div>
-            {status !== "loading" && status === "authenticated" && asset?.asset_auction && (
-              <>
-                <div className="mt-3 fw-bold">
-                  <h5>จะสิ้นสุดการประมูลในอีก :</h5>
-                  {endTime && <Countdown toDate={endTime} />}
+            {status !== "loading" &&
+              status === "authenticated" &&
+              asset?.asset_auction && (
+                <>
+                  <div className="mt-3 fw-bold">
+                    <h5>จะสิ้นสุดการประมูลในอีก :</h5>
+                    {endTime && <Countdown toDate={endTime} />}
 
-                  <div className="row mt-3">
-                    <div className="col-sm-auto h5">ระยะเวลาการประมูล:</div>
-                    <div className=" row col-lg-6 text-secondary">
-                      <div className="col-auto">{asset.asset_auction.from_date}</div>
-                      <div className="col-auto px-2">-</div>
-                      <div className="col-auto">{asset.asset_auction.to_date}</div>
-                    </div>
-                    <div className="row h5 mt-3">
-                      <label className="col-auto">
-                        เปิดประมูลดอกเบี้ยสูงสุดที่:
-                      </label>
-                      <label className="col-auto">{formatNumber(asset.asset_auction.max_tax)} %</label>
-                    </div>
-                    <h5 className="mt-3">ใส่ดอกเบี้ยของคุณ (%):</h5>
-                    <div className="row justify-content-start gap-2">
-                      <div className="col-auto">
-                        <Input
-                          onChange={(e) => {
-                            handleNumberChange(e, setBidPercent);
-                          }}
-                          value={bidPercent ?? ""}
-                          name="bid-percent"
-                          className="form-control front2"
-                          placeholder="กรุณาใส่ดอกเบี้ย"
-                        />
+                    <div className="row mt-3">
+                      <div className="col-sm-auto h5">ระยะเวลาการประมูล:</div>
+                      <div className=" row col-lg-6 text-secondary">
+                        <div className="col-auto">
+                          {asset.asset_auction.from_date}
+                        </div>
+                        <div className="col-auto px-2">-</div>
+                        <div className="col-auto">
+                          {asset.asset_auction.to_date}
+                        </div>
                       </div>
-                      <div className="col-sm-4">
-                        <Button
-                          variant="success"
-                          onClick={handleBid}
-                          className="px-5 text-nowrap"
-                        >
-                          Bid Now
-                        </Button>
+                      <div className="row h5 mt-3">
+                        <label className="col-auto">
+                          เปิดประมูลดอกเบี้ยสูงสุดที่:
+                        </label>
+                        <label className="col-auto">
+                          {formatNumber(asset.asset_auction.max_tax)} %
+                        </label>
+                      </div>
+                      <h5 className="mt-3">ใส่ดอกเบี้ยของคุณ (%):</h5>
+                      <div className="row justify-content-start gap-2">
+                        <div className="col-auto">
+                          <Input
+                            onChange={(e) => {
+                              handleNumberChange(e, setBidPercent);
+                            }}
+                            value={bidPercent ?? ""}
+                            name="bid-percent"
+                            className="form-control front2"
+                            placeholder="กรุณาใส่ดอกเบี้ย"
+                          />
+                        </div>
+                        <div className="col-sm-4">
+                          <Button
+                            variant="success"
+                            onClick={handleBid}
+                            className="px-5 text-nowrap"
+                          >
+                            Bid Now
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </>
-            )}
+                </>
+              )}
           </section>
 
           <Modal

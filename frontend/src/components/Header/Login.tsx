@@ -111,7 +111,7 @@ function Login({
               <h4 className="title">เข้าสู่ระบบ</h4>
               <div className="checklogin">
                 <div className="form-check">
-                  <div className="group">
+                  <div className="group ms-1 ms-md-2 ms-lg-3">
                     <input
                       className="form-check-input"
                       onChange={(e) => setUserType(e.target.value)}
@@ -122,11 +122,11 @@ function Login({
                       id="general"
                       required
                     />
-                    <label className="form-check-label" htmlFor="general">
+                    <label className="form-check-label ms-1 ms-md-2 ms-lg-3" htmlFor="general">
                       ผู้ใช้ทั่วไป
                     </label>
                   </div>
-                  <div className="group">
+                  <div className="group ms-1 ms-md-2 ms-lg-3">
                     <input
                       className="form-check-input"
                       onChange={(e) => setUserType(e.target.value)}
@@ -136,11 +136,11 @@ function Login({
                       value="consignment"
                       id="consignment"
                     />
-                    <label className="form-check-label" htmlFor="consignment">
+                    <label className="form-check-label ms-1 ms-md-2 ms-lg-3" htmlFor="consignment">
                       ผู้ขายฝาก
                     </label>
                   </div>
-                  <div className="group">
+                  <div className="group ms-1 ms-md-2 ms-lg-3">
                     <input
                       className="form-check-input"
                       onChange={(e) => setUserType(e.target.value)}
@@ -150,7 +150,7 @@ function Login({
                       value="invester"
                       id="invester"
                     />
-                    <label className="form-check-label" htmlFor="invester">
+                    <label className="form-check-label ms-1 ms-md-2 ms-lg-3" htmlFor="invester">
                       นักลงทุน
                     </label>
                   </div>

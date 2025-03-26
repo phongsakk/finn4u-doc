@@ -158,14 +158,19 @@ export const formatCurrency = (amount: number) => {
 };
 
 export const catchError = async (error: any) => {
-  let model = {};
   if (error instanceof AxiosError) {
-    (model = {
-      status: error.response?.status || 500,
+    return {
+      status: false,
+      code: error.response?.status || 500,
       data: error.response?.data || "An error occurred",
       message: error.message,
-    }),
-      { status: error.response?.status || 500 };
+    };
   }
-  return model || [{ error: "Api error" }, { status: 500 }];
+
+  return {
+    status: false,
+    code: 500,
+    data: "Api error",
+    message: "An unexpected error occurred",
+  };
 };

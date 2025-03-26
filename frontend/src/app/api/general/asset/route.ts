@@ -1,4 +1,4 @@
-import { log, logError } from "@components/helpers";
+import { catchError, log, logError } from "@components/helpers";
 import { auth } from "@libs/auth";
 import { AssetModel } from "@models/AssetModel";
 import { api } from "@utils/api/index";
@@ -24,7 +24,7 @@ export const GET = async (req: NextRequest) => {
         },
       }
     );
-    
+
     const model = response.data.map(
       (item: any) =>
         ({
@@ -66,19 +66,6 @@ export const GET = async (req: NextRequest) => {
       { status: 200 }
     );
   } catch (error) {
-    logError("test", error);
-
-    if (error instanceof AxiosError) {
-      return NextResponse.json(
-        {
-          status: error.response?.status || 500,
-          data: error.response?.data || "An error occurred",
-          message: error.message,
-        },
-        { status: error.response?.status || 500 }
-      );
-    } else {
-      return NextResponse.json("unknow error");
-    }
+    return NextResponse.json(await catchError(error));
   }
 };
