@@ -1,5 +1,5 @@
 import { api } from "@utils/api/index";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import dayjs from "dayjs";
 import sharp from "sharp";
 dayjs.locale("th");
@@ -136,9 +136,8 @@ export const formatNumber = (
 };
 
 export const formatCurrency = (amount: number) => {
-  
-  if(amount === 0){
-    return `-`
+  if (amount === 0) {
+    return `-`;
   }
 
   if (amount >= 1_000_000_000_000_000) {
@@ -156,4 +155,17 @@ export const formatCurrency = (amount: number) => {
   } else {
     return `${amount.toLocaleString()} บาท`;
   }
+};
+
+export const catchError = async (error: any) => {
+  let model = {};
+  if (error instanceof AxiosError) {
+    (model = {
+      status: error.response?.status || 500,
+      data: error.response?.data || "An error occurred",
+      message: error.message,
+    }),
+      { status: error.response?.status || 500 };
+  }
+  return model || [{ error: "Api error" }, { status: 500 }];
 };

@@ -36,30 +36,12 @@ function PropertyPage() {
     redirect("/property");
   }
   const [asset, setAsset] = useState<any>();
+  const [endTime, setEndTime] = useState<Date>();
   const [galleryOpen, setGallery] = useState(false);
   const [modalImage, setModalImage] = useState<string>("");
   const [bidPercent, setBidPercent] = useState<string>();
-  const [fromDate, setFromDate] = useState<string>();
-  const [toDate, setToDate] = useState<string>();
-  const [endtime, setEndtime] = useState<Date>();
   const [alertOpen, setAlertOpen] = useState<AlertType>();
-  console.log(asset);
-  const testposition = { lat: 13.8104970155091, lng: 100.56850354191629 };
-
   const { data: session, status } = useSession();
-
-  useEffect(() => {
-    const fromDate = dayjs(
-      "10/03/2025 00:00:00",
-      "DD/MM/YYYY HH:mm:ss"
-    ).toDate();
-    const toDate = dayjs("20/03/2025 23:59:59", "DD/MM/YYYY HH:mm:ss").toDate();
-
-    setFromDate(formatDateThai(fromDate));
-    setToDate(formatDateThai(toDate));
-
-    setEndtime(toDate);
-  }, [fromDate, toDate]);
 
   useEffect(() => {
     const boot = async () => {
@@ -69,6 +51,7 @@ function PropertyPage() {
         );
         if (res_asset.status) {
           setAsset(res_asset.data);
+          setEndTime(dayjs(res_asset.data?.asset_auction?.to_date, "DD/MM/YYYY HH:mm:ss").toDate())
         }
       } catch (err) {
         console.error("get asset:", err);
@@ -210,7 +193,7 @@ function PropertyPage() {
                 </div>
               </div>
               <div className="location">
-                <h3 className="text-primary font2">{asset?.province_name}</h3>
+                <Link href={`https://www.google.com/maps/@${asset?.location_x},${asset?.locataion_y}`} target="_blank" className="text-primary h4 font2">{asset?.province_name}</Link>
                 <div className="row">
                   <div className="col row">
                     <div className="font2 col-auto btn btn-primary">
@@ -312,30 +295,29 @@ function PropertyPage() {
                 </div>
               </div>
               <div className="badegroup row gap-2">
-                <span className="badge font2 col-auto">ใกล้ห้างสรรพสินค้า</span>
-                <span className="badge font2 col-auto">ใกล้แหล่งชุมชน</span>
-                <span className="badge font2 col-auto">ร้านค้า</span>
-                <span className="badge font2 col-auto">สวนสาธารณะ</span>
+                {asset?.asset_tag?.map((item: any, index: number) => (
+                  <span className="badge font2 col-auto" key={index}>{item.name}</span>
+                ))}
               </div>
             </div>
-            {status !== "loading" && status === "authenticated" && (
+            {status !== "loading" && status === "authenticated" && asset?.asset_auction && (
               <>
                 <div className="mt-3 fw-bold">
                   <h5>จะสิ้นสุดการประมูลในอีก :</h5>
-                  {endtime && <Countdown toDate={endtime} />}
+                  {endTime && <Countdown toDate={endTime} />}
 
                   <div className="row mt-3">
                     <div className="col-sm-auto h5">ระยะเวลาการประมูล:</div>
                     <div className=" row col-lg-6 text-secondary">
-                      <div className="col-auto">{fromDate}</div>
+                      <div className="col-auto">{asset.asset_auction.from_date}</div>
                       <div className="col-auto px-2">-</div>
-                      <div className="col-auto">{toDate}</div>
+                      <div className="col-auto">{asset.asset_auction.to_date}</div>
                     </div>
                     <div className="row h5 mt-3">
                       <label className="col-auto">
                         เปิดประมูลดอกเบี้ยสูงสุดที่:
                       </label>
-                      <label className="col-auto">15%</label>
+                      <label className="col-auto">{formatNumber(asset.asset_auction.max_tax)} %</label>
                     </div>
                     <h5 className="mt-3">ใส่ดอกเบี้ยของคุณ (%):</h5>
                     <div className="row justify-content-start gap-2">

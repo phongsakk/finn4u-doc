@@ -8,17 +8,23 @@ import { NextRequest, NextResponse } from "next/server";
 export const GET = async (req: NextRequest) => {
   try {
     const page = Number(req.nextUrl.searchParams.get("page")) || 1;
+    const asset_type =
+      Number(req.nextUrl.searchParams.get("asset_type")) || null;
 
     const session = await auth();
     const { data: response } = await axios.get(
       api.external("/v1/general/asset"),
       {
+        params: {
+          page: page,
+          asset_type: asset_type,
+        },
         headers: {
           Authorization: "Bearer " + session?.user?.accessToken,
         },
       }
     );
-
+    
     const model = response.data.map(
       (item: any) =>
         ({
@@ -53,10 +59,8 @@ export const GET = async (req: NextRequest) => {
         status: true,
         data: model,
         page: {
-          // page: response.page,
-          // total: response.total,
-          page: page,
-          total: 1,
+          page: response.page,
+          total: response.total,
         },
       },
       { status: 200 }

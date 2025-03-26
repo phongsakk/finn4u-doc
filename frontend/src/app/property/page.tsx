@@ -22,7 +22,7 @@ import Pagination, { PaginationInterface, PaginationModel } from "@components/de
 
 function Propertysale() {
   const [assetTypes, setAssetTypes] = useState([]);
-  const [assetTypeSelect, setAsTypeSelect] = useState("");
+  const [assetTypeSelect, setAsTypeSelect] = useState<number>();
   const [search, setSearch] = useState("");
   const [assets, setAssets] = useState([]);
   const [page, setPage] = useState({
@@ -36,13 +36,16 @@ function Propertysale() {
   const changePage = (num: number) => {
     setPage((prev) => ({ ...prev, page: num }));
   };
-
+  console.log(123)
   useEffect(() => {
     const fetchAssets = async () => {
       setLoading(true);
       try {
         const { data: res_assets } = await axios.get(api.internal("/api/general/asset"), {
-          params: { page: page.page },
+          params: {
+            page: page.page,
+            asset_type: assetTypeSelect
+          },
         });
 
         if (res_assets.status) {
@@ -57,7 +60,7 @@ function Propertysale() {
     };
 
     fetchAssets();
-  }, [page.page]); // Runs only when page.page changes
+  }, [page.page, assetTypeSelect]); // Runs only when page.page changes
 
   useEffect(() => {
     const fetchAssetTypes = async () => {
@@ -88,7 +91,7 @@ function Propertysale() {
               <div className="mb-3">
                 <FormSelect
                   name="asset_type"
-                  onChange={(e) => setAsTypeSelect(e.target.value)}
+                  onChange={(e) => setAsTypeSelect(Number(e.target.value))}
                 >
                   <option value="">ประเภททรัพย์สิน</option>
                   {assetTypes.map(
@@ -274,7 +277,7 @@ function Propertysale() {
             </>
           )}
         </div>
-        <Pagination Page={page} change={changePage} />
+        {page && <Pagination Page={page} change={changePage} />}
       </div>
     </div>
   );

@@ -1,9 +1,14 @@
-import { logError } from "@components/helpers";
+import { catchError, formatDateThai, logError } from "@components/helpers";
 import { auth } from "@libs/auth";
 import { AssetModel } from "@models/AssetModel";
 import { api } from "@utils/api/index";
 import axios, { AxiosError } from "axios";
+import dayjs from "dayjs";
+import "dayjs/locale/th";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 import { NextRequest, NextResponse } from "next/server";
+dayjs.extend(customParseFormat);
+dayjs.locale("th");
 
 export const GET = async (
   req: NextRequest,
@@ -21,7 +26,6 @@ export const GET = async (
         },
       }
     );
-    logError("test:", response);
 
     const data = response.data;
     const model = {
@@ -41,32 +45,35 @@ export const GET = async (
       location_y: Number(data.location_y),
       province_name: data?.province?.name,
       asset_type_name: data?.asset_type?.name,
-      images: data?.asset_images.map((item: any) => ({
-        image: item.image,
-      })),
-      asset_auction: data?.asset_auction && {
-        from_date: data.asset_auction.from_date,
-        from_time: data.asset_auction.from_time,
-        to_date: data.asset_auction.to_date,
-        to_time: data.asset_auctionto_time,
+      asset_appraisal: {
+        price_appraisal: Number(data?.asset_appraisal?.price_appraisal),
+        collateral_price: Number(data?.asset_appraisal?.collateral_price),
+      },
+      asset_tag:
+        data?.asset_tag?.map((item: any, index: number) => ({
+          id: item.id,
+          name: item.name,
+        })) || [],
+      images:
+        data?.asset_images?.map((item: any) => ({
+          image: item.image,
+        })) || [],
+      // asset_auction: data?.asset_auction && {
+      //   from_date: data.asset_auction.from_date,
+      //   from_time: data.asset_auction.from_time,
+      //   to_date: data.asset_auction.to_date,
+      //   to_time: data.asset_auctionto_time,
+      //   max_tax: data.asset_auction.max_tax
+      // },
+      asset_auction: {
+        from_date: "10/03/2025 00:00:00",
+        to_date: "31/03/2025 23:59:59",
+        max_tax: 15,
       },
     };
 
     return NextResponse.json({ status: true, data: model }, { status: 200 });
   } catch (error) {
-    logError("test", error);
-
-    if (error instanceof AxiosError) {
-      return NextResponse.json(
-        {
-          status: error.response?.status || 500,
-          data: error.response?.data || "An error occurred",
-          message: error.message,
-        },
-        { status: error.response?.status || 500 }
-      );
-    } else {
-      return NextResponse.json("unknow error");
-    }
+    return NextResponse.json(catchError(error));
   }
 };
