@@ -49,6 +49,25 @@ function AddForm() {
     const selectedFile = event.target.files?.[0];
     if (!selectedFile) return;
 
+    try {
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+
+      const res = await fetch("/api/upload/image", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await res.json();
+      if (res.ok) {
+        console.log("File uploaded:", result.url);
+      } else {
+        console.error("Upload failed:", result.error);
+      }
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+
     const reader = new FileReader();
     reader.readAsDataURL(selectedFile);
 
@@ -89,9 +108,7 @@ function AddForm() {
       );
 
       const resizedImages = await Promise.all(
-        base64Images.map((base64) =>
-          resizeBase64Image({ base64 })
-        )
+        base64Images.map((base64) => resizeBase64Image({ base64 }))
       );
 
       setImagesAsset(resizedImages);
@@ -122,8 +139,10 @@ function AddForm() {
       land_plot_number: landplotNumber,
       land_title_deed_image: imageLTD,
       asset_images: imagesAsset,
-      locataion_x: marker && (!isNaN(Number(marker[0])) ? Number(marker[0]) : null),
-      locataion_y: marker && (!isNaN(Number(marker[1])) ? Number(marker[1]) : null),
+      locataion_x:
+        marker && (!isNaN(Number(marker[0])) ? Number(marker[0]) : null),
+      locataion_y:
+        marker && (!isNaN(Number(marker[1])) ? Number(marker[1]) : null),
       is_multiple_holder: mto_ownership,
       description: description,
     };
