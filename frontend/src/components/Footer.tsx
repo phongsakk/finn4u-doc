@@ -32,14 +32,13 @@ function Footer() {
               <div className="col-lg-10">
                 <div className="row mb-3">
                   <div className="col-lg-12">
-                    <p className="head">บริษัท อารักษ์มิตร จำกัด</p>
+                    <p className="head">บริษัท ฟินน์โฟร์ยู</p>
                   </div>
                 </div>
                 <div className="row mb-3">
                   <div className="col-lg-12">
                     <p>
-                      9/8 หมู่ 5 บางกรวย ซอย 10 ตำบลบางกรวย อำเภอบางกรวย
-                      จังหวัดนนทบุรี 11130
+                      เลขที่ 89 ถนนงามวงศ์วาน แขวงลาดยาว เขตจตุจักร กรุงเทพมหานคร 10900
                     </p>
                   </div>
                 </div>
@@ -48,11 +47,11 @@ function Footer() {
                     <div className="group-ad row gap-3">
                       <div className="d-flex col-sm-auto">
                         <Image src={imageAdtel} alt="ad-tel" />
-                        <span>02-0777481</span>
+                        <span>094-646-4625</span>
                       </div>
                       <div className="d-flex col-sm-auto">
                         <Image src={imageAdemail} alt="ad-email" />
-                        <span className="text-break">info@arrakmit.com</span>
+                        <span className="text-break">finn4uoffice@gmail.com</span>
                       </div>
                     </div>
                   </div>

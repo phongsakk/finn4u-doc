@@ -18,7 +18,6 @@ export const GET = async () => {
     const { data: res_prefix } = await axios.get(
       api.external("/v1/master/user-prefix")
     );
-    console.log(res_prefix.data);
     const masterData = {
       prefix:
         res_prefix.data.map(({ id, name }: { id: number; name: string }) => ({

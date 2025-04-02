@@ -56,6 +56,60 @@ export const formatDateThai = (value: Date) => {
   return dayjs(value).add(543, "year").format("DD/MM/YYYY HH:mm:ss");
 };
 
+export const convertImage = async (objectfile: File): Promise<string> => {
+  try {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(objectfile);
+
+      reader.onload = async () => {
+        if (typeof reader.result === "string") {
+          try {
+            const resizedImage = await resizeBase64Image({ base64: reader.result });
+            resolve(resizedImage || "");
+          } catch (error) {
+            console.error("Error resizing image:", error);
+            resolve("");
+          }
+        } else {
+          resolve("");
+        }
+      };
+
+      reader.onerror = () => {
+        reject(new Error("Error reading file"));
+      };
+    });
+  } catch (error) {
+    console.error("Error in convertImage:", error);
+    return "";
+  }
+};
+
+
+export const convertImage_arr = async (objectfiles: FileList) => {
+  try {
+    const fileArray = Array.from(objectfiles);
+    const base64Images = await Promise.all(
+      fileArray.map((file) => {
+        return new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = (error) => reject(error);
+        });
+      })
+    );
+
+    const resizedImages = await Promise.all(
+      base64Images.map((base64) => resizeBase64Image({ base64 }))
+    );
+    return resizedImages || [];
+  } catch (error) {
+    return [];
+  }
+};
+
 export const resizeBase64Image = ({
   base64,
   newWidth = 529,

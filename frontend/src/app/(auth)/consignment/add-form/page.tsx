@@ -5,8 +5,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Spinner } from "react-bootstrap";
 import { useRouter } from "next/navigation";
-import { apiInternalGet, handleNumberChange } from "@components/helpers";
+import { apiInternalGet, convertImage, convertImage_arr, handleNumberChange } from "@components/helpers";
 import { resizeBase64Image } from "@components/helpers";
+import { UploadFile } from "@components/dev/uploadfile";
 
 function AddForm() {
   const router = useRouter();
@@ -26,7 +27,7 @@ function AddForm() {
   const [mto_ownership, setMTO_Ownership] = useState<boolean>();
   const [description, setDescription] = useState<string>();
 
-  const [imageLTD, setImageLTD] = useState<string | null>(null);
+  const [imageLTD, setImageLTD] = useState<string>("");
   const [imagesAsset, setImagesAsset] = useState<string[]>([]);
 
   useEffect(() => {
@@ -48,73 +49,17 @@ function AddForm() {
   const imgLTDChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (!selectedFile) return;
-
-    try {
-      const formData = new FormData();
-      formData.append("file", selectedFile);
-
-      const res = await fetch("/api/upload/image", {
-        method: "POST",
-        body: formData,
-      });
-
-      const result = await res.json();
-      if (res.ok) {
-        console.log("File uploaded:", result.url);
-      } else {
-        console.error("Upload failed:", result.error);
-      }
-    } catch (error) {
-      console.error("Error uploading file:", error);
-    }
-
-    const reader = new FileReader();
-    reader.readAsDataURL(selectedFile);
-
-    reader.onload = async () => {
-      if (typeof reader.result === "string") {
-        try {
-          const resizedImage = await resizeBase64Image({
-            base64: reader.result,
-          });
-          setImageLTD(resizedImage);
-        } catch (error) {
-          console.error("Error resizing image:", error);
-        }
-      }
-    };
-
-    reader.onerror = () => {
-      console.error("Error reading image file");
-    };
+    
+    const convertedImage = await convertImage(selectedFile) as string;
+    setImageLTD(convertedImage);
   };
 
   const imgsAssetChang = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = event.target.files;
     if (!selectedFiles) return;
 
-    const fileArray = Array.from(selectedFiles);
-
-    try {
-      const base64Images = await Promise.all(
-        fileArray.map((file) => {
-          return new Promise<string>((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result as string);
-            reader.onerror = (error) => reject(error);
-          });
-        })
-      );
-
-      const resizedImages = await Promise.all(
-        base64Images.map((base64) => resizeBase64Image({ base64 }))
-      );
-
-      setImagesAsset(resizedImages);
-    } catch (error) {
-      console.error("Error resizing images:", error);
-    }
+    const convertedImage_arr = await convertImage_arr(selectedFiles);
+    setImagesAsset(convertedImage_arr)
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
