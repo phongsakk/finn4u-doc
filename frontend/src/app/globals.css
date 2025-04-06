@@ -336,6 +336,10 @@ img {
   }
 }
 
+.underline-none {
+  text-decoration: none !important;
+}
+
 .register-seller .insert-id-card {
   .idcard {
     background-color: #eaf7f1;

@@ -33,14 +33,15 @@ function VerifyForm({ setStep }: { setStep: (num: number) => void }) {
         <div className="import">
           <p className="font2">1. ถ่ายรูปหน้าบัตร</p>
           <div className="d-flex">
+            <input type="file" className="d-none" name="license-font" id="license-font" />
             <button type="submit" className="btn btn-primary font2">
               <Image src={ImageCamera} alt="" />
               ถ่ายภาพ
             </button>
-            <button type="submit" className="btn btn-light font2">
-              <Image src={ImageUpload} alt="" />
+            <label htmlFor="license-font" role="button" className="btn btn-light font2 px-5">
+              <Image className="me-2" src={ImageUpload} alt="" />
               อัพโหลด
-            </button>
+            </label>
           </div>
           <p className="font2">2. ถ่ายรูปหลังบัตร</p>
           <div className="d-flex">

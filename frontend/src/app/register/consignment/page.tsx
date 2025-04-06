@@ -14,9 +14,10 @@ import VerifyForm from "./components/VerifyForm";
 import SuccessForm from "./components/SuccessForm";
 
 function ReConsignmentPage() {
-  const [phone, setPhone] = useState<string>("");
-  const [step, setStep] = useState<number>(1);
-
+  const [phone, setPhone] = useState<string>("095564465");
+  const [UserID, setUserID] = useState<number>(11);
+  const [step, setStep] = useState<number>(4); // defult 1
+  console.log(UserID)
   return (
     <>
       {step < 6 ? (
@@ -88,13 +89,25 @@ function ReConsignmentPage() {
                   </div>
                 </div>
                 {step === 1 && (
-                  <PersonalForm setPhone={setPhone} setStep={setStep} />
+                  <PersonalForm
+                    setPhone={setPhone}
+                    setUserID={setUserID}
+                    setStep={setStep}
+                  />
                 )}
 
-                {step === 2 && <OTPForm phone={phone} setStep={setStep} />}
-                {step === 3 && <TermsAndCon setStep={setStep} />}
-                {step === 4 && <VerifyForm setStep={setStep} />}
-                {step === 5 && <UploadDocForm setStep={setStep} />}
+                {step === 2 && UserID !== undefined && (
+                  <OTPForm phone={phone} userID={UserID} setStep={setStep} />
+                )}
+                {step === 3 && UserID !== undefined && (
+                  <TermsAndCon setStep={setStep} />
+                )}
+                {step === 4 && UserID !== undefined && (
+                  <VerifyForm setStep={setStep} />
+                )}
+                {step === 5 && UserID !== undefined && (
+                  <UploadDocForm setStep={setStep} />
+                )}
               </div>
             </div>
           </div>

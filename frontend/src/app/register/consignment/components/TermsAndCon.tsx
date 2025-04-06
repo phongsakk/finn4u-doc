@@ -9,7 +9,7 @@ function TermsAndCon({ setStep }: { setStep: (num: number) => void }) {
     <form>
       <div className="detail-con">
         <h2 className="text-center text-primary mb-5 font2">
-          รหัสยืนยันถูกส่งไปเรียบร้อยแล้ว
+          เงื่อนไขและข้อตกลง
         </h2>
 
         <p className="fw-bold mt-5 font2">

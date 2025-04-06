@@ -18,9 +18,11 @@ type masterData = {
 
 function PersonalForm({
   setPhone,
+  setUserID,
   setStep,
 }: {
   setPhone: (num: string) => void;
+  setUserID: (num: number) => void;
   setStep: (num: number) => void;
 }) {
   const [prefix_id, setPrefixId] = useState<number>(1);
@@ -86,7 +88,6 @@ function PersonalForm({
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    
     e.preventDefault();
     setSubmit(true);
 
@@ -110,7 +111,8 @@ function PersonalForm({
         model
       );
 
-      setPhone(phoneNo as string);
+      setPhone(res.data.PhoneNumber);
+      setUserID(res.data.id);
       setStep(2);
     } catch (error) {
       console.error(error);

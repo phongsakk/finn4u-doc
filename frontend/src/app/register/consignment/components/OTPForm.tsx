@@ -1,18 +1,28 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { api } from "@utils/api/index";
+import axios from "axios";
+import { useState, useRef, useEffect } from "react";
 import { Button, Spinner } from "react-bootstrap";
 
 function OTPForm({
   phone,
+  userID,
   setStep,
 }: {
   phone: string;
+  userID: number;
   setStep: (num: number) => void;
 }) {
   const [submit, setSubmit] = useState<boolean>(false);
+  const [resendLoad, setResendLoad] = useState<boolean>(false);
+  const [errorResend, setErrorResend] = useState<boolean>(false);
   const [otp, setOtp] = useState(Array(6).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  useEffect(() => {
+    handleResendOTP();
+  }, [userID]);
 
   const handleChange = (
     index: number,
@@ -48,12 +58,46 @@ function OTPForm({
     setStep(3);
   };
 
+  const handleResendOTP = async () => {
+    try {
+      setResendLoad(true);
+      setErrorResend(false);
+      const { data: res_resend } = await axios.post(
+        api.internal(`/api/register/consignment/${userID}/resendotp`),
+        {
+          phone: phone,
+        }
+      );
+    } catch (error) {
+      setTimeout(() => {
+        setErrorResend(true);
+      }, 1000);
+    } finally {
+      setTimeout(() => {
+        setResendLoad(false);
+      }, 1000);
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="sec-pass">
-        <h2 className="text-center text-primary font2">
-          รหัสยืนยันถูกส่งไปเรียบร้อยแล้ว
-        </h2>
+        {!errorResend ? (
+          <h2 className="text-center text-primary font2">
+            {!resendLoad
+              ? "รหัสยืนยันถูกส่งไปเรียบร้อยแล้ว"
+              : "กำลังส่งรหัส OTP อีกครั้ง..."}
+          </h2>
+        ) : (
+          <>
+            <h2 className="text-center text-danger font2">
+              ส่งรหัส OTP ไม่สำเร็จ
+              <h4 className="text-center text-danger font2">
+                กรุณาลองอีกครั้ง
+              </h4>
+            </h2>
+          </>
+        )}
 
         <div className="tell">
           <p className="font2">กรุณากรอกรหัสยืนยันที่ถูกส่งไปยัง</p>
@@ -84,8 +128,14 @@ function OTPForm({
             ))}
           </div>
         </fieldset>
-
-        <button className="btn-clean font2">ส่งรหัส OTP อีกครั้ง</button>
+        <Button
+          onClick={handleResendOTP}
+          variant="clean"
+          className="font2"
+          disabled={resendLoad}
+        >
+          ส่งรหัส OTP อีกครั้ง
+        </Button>
       </div>
       <div className="submit-group">
         <Button variant="white" disabled={submit} onClick={() => setStep(1)}>
