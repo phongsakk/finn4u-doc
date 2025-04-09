@@ -12,12 +12,21 @@ import TermsAndCon from "./components/TermsAndCon";
 import UploadDocForm from "./components/UploadDocForm";
 import VerifyForm from "./components/VerifyForm";
 import SuccessForm from "./components/SuccessForm";
+import { regis_personal } from "@models/register/consignor";
 
 function ReConsignmentPage() {
-  const [phone, setPhone] = useState<string>("095564465");
-  const [UserID, setUserID] = useState<number>(11);
-  const [step, setStep] = useState<number>(4); // defult 1
-  console.log(UserID)
+  const [personal, setPersonal] = useState<regis_personal>(
+
+        {
+    UserID:17,
+    Phone:"0321546",
+    Email:"kengker1144+test3@gmail.com",
+    Ref:"tset"
+  }
+  );
+
+  const [step, setStep] = useState<number>(2); // defult 1
+  console.log(personal);
   return (
     <>
       {step < 6 ? (
@@ -89,23 +98,19 @@ function ReConsignmentPage() {
                   </div>
                 </div>
                 {step === 1 && (
-                  <PersonalForm
-                    setPhone={setPhone}
-                    setUserID={setUserID}
-                    setStep={setStep}
-                  />
+                  <PersonalForm setPersonal={setPersonal} setStep={setStep} />
                 )}
 
-                {step === 2 && UserID !== undefined && (
-                  <OTPForm phone={phone} userID={UserID} setStep={setStep} />
+                {step === 2 && personal !== undefined && (
+                  <OTPForm personal={personal} setStep={setStep} />
                 )}
-                {step === 3 && UserID !== undefined && (
+                {step === 3 && personal !== undefined && (
                   <TermsAndCon setStep={setStep} />
                 )}
-                {step === 4 && UserID !== undefined && (
+                {step === 4 && personal !== undefined && (
                   <VerifyForm setStep={setStep} />
                 )}
-                {step === 5 && UserID !== undefined && (
+                {step === 5 && personal !== undefined && (
                   <UploadDocForm setStep={setStep} />
                 )}
               </div>

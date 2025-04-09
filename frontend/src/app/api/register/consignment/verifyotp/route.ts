@@ -1,26 +1,28 @@
 import { catchError, log, logError } from "@components/helpers";
 import { api } from "@utils/api/index";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest) => {
   try {
     const body = await req.json();
 
-    const { data: res_regis } = await axios.post(
-      api.external("/v1/auth/signup"),
+    const { data: res_otp } = await axios.post(
+      api.external(`/v1/auth/consignor/verifyOTP`),
       body
     );
-    log("signup:", res_regis);
+    log("test: ", res_otp);
     return NextResponse.json(
-      { status: true, data: res_regis.data },
-      { status: res_regis.code }
+      // {
+      //   status: true,
+      //   message: res_otp.message,
+      //   data: {
+      //     ref: res_otp.data.ref,
+      //   },
+      // },
+      { status: res_otp.code }
     );
   } catch (error) {
     return NextResponse.json(await catchError(error));
   }
-};
-
-export const GET = () => {
-  return NextResponse.json(12345);
 };

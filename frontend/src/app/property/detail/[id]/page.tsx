@@ -16,7 +16,7 @@ import {
   formatNumber,
   handleNumberChange,
 } from "@components/helpers";
-import AlertStatus, { AlertType } from "@components/alert/AlertStatus";
+
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useSession } from "next-auth/react";
 import { redirect, useParams, useRouter } from "next/navigation";
@@ -24,6 +24,7 @@ import { Map } from "@components/dev/map";
 import axios from "axios";
 import { api } from "@utils/api/index";
 import Image from "next/image";
+import { useAlert } from "@providers/AlertContext";
 
 dayjs.extend(customParseFormat);
 dayjs.locale("th");
@@ -35,12 +36,12 @@ function PropertyPage() {
   if (isNaN(Number(params.id))) {
     redirect("/property");
   }
+  const { showAlert } = useAlert();
   const [asset, setAsset] = useState<any>();
   const [endTime, setEndTime] = useState<Date>();
   const [galleryOpen, setGallery] = useState(false);
   const [modalImage, setModalImage] = useState<string>("");
   const [bidPercent, setBidPercent] = useState<string>();
-  const [alertOpen, setAlertOpen] = useState<AlertType>();
   const { data: session, status } = useSession();
 
   useEffect(() => {
@@ -78,14 +79,8 @@ function PropertyPage() {
 
   const handleBid = async () => {
     if (!bidPercent) {
-      return setAlertOpen({
-        alertOpen: true,
-        alertClose: handleAlertClose,
-        status: "error",
-        text: "กรุณากรอกดอกเบี้ยของคุณ",
-      });
+      return showAlert("กรุณากรอกดอกเบี้ยของคุณ", "error");
     }
-
     try {
       const { data: res_bid } = await axios.post(
         api.internal(`/api/bid/${params.id}`),
@@ -94,12 +89,8 @@ function PropertyPage() {
         }
       );
 
-      setAlertOpen({
-        alertOpen: true,
-        alertClose: handleAlertClose,
-        status: "success",
-        text: `คุณได้ทำการ Bid สำเร็จแล้ว`,
-      });
+      showAlert("คุณได้ทำการ Bid สำเร็จแล้ว", "success");
+
       if (res_bid.url) {
         setTimeout(() => {
           redirect(res_bid.url);
@@ -107,30 +98,12 @@ function PropertyPage() {
       }
     } catch (error) {
       console.error(error);
-      setAlertOpen({
-        alertOpen: true,
-        alertClose: handleAlertClose,
-        status: "error",
-        text: "500 - Server disconnected. Please try again.",
-      });
+      showAlert("500 - Server disconnected. Please try again.", "error");
     }
-  };
-
-  const handleAlertClose = () => {
-    setAlertOpen({ alertOpen: false });
   };
 
   return (
     <>
-      {alertOpen != undefined && (
-        <AlertStatus
-          alertOpen={alertOpen.alertOpen}
-          alertClose={handleAlertClose}
-          status={alertOpen.status}
-          text={alertOpen.text}
-        />
-      )}
-
       <div className="property-sale-detail">
         <Banner />
         <div className="container bg-white pb-5">

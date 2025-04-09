@@ -8,6 +8,8 @@ import { api } from "@utils/api/index";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Button, FormSelect, Spinner } from "react-bootstrap";
+import { regis_personal } from "@models/register/consignor";
+import { useAlert } from "@providers/AlertContext";
 
 type masterData = {
   prefix: [];
@@ -17,14 +19,13 @@ type masterData = {
 };
 
 function PersonalForm({
-  setPhone,
-  setUserID,
+  setPersonal,
   setStep,
 }: {
-  setPhone: (num: string) => void;
-  setUserID: (num: number) => void;
+  setPersonal: (regis_persona: regis_personal) => void;
   setStep: (num: number) => void;
 }) {
+  const { showAlert } = useAlert();
   const [prefix_id, setPrefixId] = useState<number>(1);
   const [firstname, setFirstname] = useState<string>("");
   const [lastname, setLanstname] = useState<string>("");
@@ -110,11 +111,21 @@ function PersonalForm({
         api.internal("/api/register/consignment"),
         model
       );
-
-      setPhone(res.data.PhoneNumber);
-      setUserID(res.data.id);
-      setStep(2);
+      if (res.status) {
+        var PersonalModel = {
+          UserID: res.data.user.id,
+          Phone: res.data.user.PhoneNumber,
+          Email: res.data.user.email,
+          Ref: res.data.ref,
+        };
+        showAlert("บันทึกข้อมูลสำเร็จ", "success");
+        setPersonal(PersonalModel);
+        setStep(2);
+      } else {
+        showAlert("ไม่สามารถบันทึกข้อมูลได้", "error");
+      }
     } catch (error) {
+      showAlert("ไม่สามารถบันทึกข้อมูลได้", "error");
       console.error(error);
     } finally {
       setSubmit(false);
