@@ -9,7 +9,6 @@ import (
 )
 
 func V1(r *gin.RouterGroup) {
-
 	r.Use(mid.Cors)
 	r.GET("/", con.HealthCheck)
 
