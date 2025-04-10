@@ -23,7 +23,7 @@ function PersonalForm({
   setPersonal,
   setStep,
 }: {
-  personal: regis_personal | undefined,
+  personal: regis_personal | undefined;
   setPersonal: (regis_persona: regis_personal) => void;
   setStep: (num: number) => void;
 }) {
@@ -42,39 +42,37 @@ function PersonalForm({
 
   const [masterData, setMasterData] = useState<masterData>();
   const [provinces, setProvinces] = useState<any[]>();
-  const [province_id, setProvinceId] = useState<number>();
+  const [province_id, setProvinceId] = useState<string>();
 
   const [districts, setDistricts] = useState<any[]>();
-  const [district_id, setDistrictId] = useState<number>();
+  const [district_id, setDistrictId] = useState<string>();
 
   const [subDistricts, setSubDistricts] = useState<any[]>();
-  const [subDistrict_id, setSubDistrictId] = useState<number>();
+  const [subDistrict_id, setSubDistrictId] = useState<string>();
   const [submit, setSubmit] = useState<boolean>(false);
 
   const handlePro = (e: React.ChangeEvent<HTMLSelectElement>) => {
     selectProvince(
-      Number(e.target.value),
+      e.target.value,
       setProvinceId,
       setDistricts,
       masterData?.district || []
     );
-    setDistrictId(undefined);
-    setSubDistrictId(undefined);
+    setDistrictId("");
+    setSubDistrictId("");
     setSubDistricts([]);
   };
-
   const handleDis = (e: React.ChangeEvent<HTMLSelectElement>) => {
     selectDistrict(
-      Number(e.target.value),
+      e.target.value,
       setDistrictId,
       setSubDistricts,
       masterData?.subDistrict || []
     );
-    setSubDistrictId(undefined);
+    setSubDistrictId("");
   };
 
   useEffect(() => {
-
     const boot = async () => {
       try {
         const { data: res_masterdata } = await axios.get(
@@ -199,7 +197,11 @@ function PersonalForm({
               เบอร์โทรศัพท์<span className="text-require font2">*</span>
             </label>
             <input
-              onChange={(e) => setPhoneNo(e.target.value)}
+              onChange={(e) => {
+                if (e.target.value.length <= 10) {
+                  setPhoneNo(e.target.value);
+                }
+              }}
               value={phoneNo}
               type="text"
               className="form-control font2"
@@ -348,7 +350,7 @@ function PersonalForm({
             </label>
             <FormSelect
               value={subDistrict_id}
-              onChange={(e) => setSubDistrictId(Number(e.target.value))}
+              onChange={(e) => setSubDistrictId(e.target.value)}
               name="sub-district"
               id="sub-district"
               required
@@ -420,7 +422,7 @@ function PersonalForm({
         <Button variant="white" disabled={submit}>
           ย้อนกลับ
         </Button>
-        {!personal ?
+        {!personal ? (
           <Button variant="primary" type="submit" disabled={submit}>
             {submit ? (
               <>
@@ -436,9 +438,12 @@ function PersonalForm({
             ) : (
               "ถัดไป"
             )}
-          </Button> : <Button variant="primary" onClick={() => setStep(2)}>ถัดไป</Button>
-        }
-
+          </Button>
+        ) : (
+          <Button variant="primary" onClick={() => setStep(2)}>
+            ถัดไป
+          </Button>
+        )}
       </div>
     </form>
   );

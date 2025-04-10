@@ -6,7 +6,7 @@ import { api } from "@utils/api/index";
 import axios from "axios";
 import { useState, useRef, useEffect } from "react";
 import { Button, Spinner } from "react-bootstrap";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 function OTPForm({
   personal,
@@ -21,7 +21,6 @@ function OTPForm({
   const [errorResend, setErrorResend] = useState<boolean>(false);
   const [otp, setOtp] = useState(Array(6).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
   useEffect(() => {
     setRefCode(personal.Ref);
   }, [personal.Ref]);
@@ -30,22 +29,28 @@ function OTPForm({
     index: number,
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
-    if (e.key !== "Backspace") {
-      const value = e.key.replace(/\D/g, "");
-      const newOtp = [...otp];
+    const value = e.key.replace(/\D/g, "");
+    const newOtp = [...otp];
 
-      if (value) {
-        newOtp[index] = value.slice(-1);
-        setOtp(newOtp);
+    if (value) {
+      newOtp[index] = value.slice(-1);
+      setOtp(newOtp);
 
-        if (index < 5) {
-          inputRefs.current[index + 1]?.focus();
-        } else {
-          inputRefs.current[0]?.focus();
-        }
+      if (index < 5) {
+        inputRefs.current[index + 1]?.focus();
       } else {
-        newOtp[index] = "";
-        setOtp(newOtp);
+        inputRefs.current[0]?.focus();
+      }
+    } else {
+      newOtp[index] = "";
+      setOtp(newOtp);
+    }
+
+    if (e.key === "Backspace") {
+      if (index > 0) {
+        inputRefs.current[index - 1]?.focus();
+      } else {
+        inputRefs.current[otp.length - 1]?.focus();
       }
     }
   };
@@ -71,20 +76,6 @@ function OTPForm({
     inputRefs.current[nextIndex]?.focus();
   };
 
-  const handleKeyDown = (
-    index: number,
-    e: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (e.key === "Backspace") {
-      console.log(index)
-      if (index > 0) {
-        inputRefs.current[index - 1]?.focus();
-      } else {
-        inputRefs.current[otp.length - 1]?.focus();
-      }
-    }
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -107,7 +98,6 @@ function OTPForm({
           AlertPrimary(res_send.data.message, "error");
         }
       } catch (error) {
-        console.error(error);
         AlertPrimary("please try again.", "error");
       } finally {
         setSubmit(false);
@@ -130,7 +120,9 @@ function OTPForm({
       if (res_resend.status) {
         setRefCode(res_resend.data.ref);
       } else {
-        setErrorResend(true);
+        setTimeout(() => {
+          setErrorResend(true);
+        }, 1000);
       }
     } catch (error) {
       setTimeout(() => {
@@ -172,7 +164,7 @@ function OTPForm({
           </div>
 
           <fieldset className="otp-password">
-            <div className="d-flex">
+            <div className="d-flex gap-1 gap-md-2 gap-lg-3 gap-sx-4">
               {otp.map((digit, index) => (
                 <input
                   key={index}
@@ -182,10 +174,10 @@ function OTPForm({
                   id={`otp-${index}`}
                   type="text"
                   className="form-control form-control--otp js-otp-input"
-                  value={digit}
+                  value={digit !== undefined && digit !== null ? digit : ""}
+                  onChange={(e) => e.preventDefault()}
                   onKeyUp={(e) => handleChange(index, e)}
                   onPaste={(e) => handlePaste(index, e)}
-                  onKeyDown={(e) => handleKeyDown(index, e)}
                   inputMode="numeric"
                   pattern="[0-9]*"
                   autoComplete="one-time-code"

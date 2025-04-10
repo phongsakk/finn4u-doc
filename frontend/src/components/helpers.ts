@@ -65,7 +65,9 @@ export const convertImage = async (objectfile: File): Promise<string> => {
       reader.onload = async () => {
         if (typeof reader.result === "string") {
           try {
-            const resizedImage = await resizeBase64Image({ base64: reader.result });
+            const resizedImage = await resizeBase64Image({
+              base64: reader.result,
+            });
             resolve(resizedImage || "");
           } catch (error) {
             console.error("Error resizing image:", error);
@@ -85,7 +87,6 @@ export const convertImage = async (objectfile: File): Promise<string> => {
     return "";
   }
 };
-
 
 export const convertImage_arr = async (objectfiles: FileList) => {
   try {
@@ -144,31 +145,32 @@ export const resizeBase64Image = ({
 };
 
 export const selectProvince = (
-  pro_id: number,
-  setProvinceId: (id: number) => void,
+  pro_id: string,
+  setProvinceId: (id: string) => void,
   setDistrict: (
-    districts: { id: number; pro_id: number; name: string }[]
+    districts: { id: string; pro_id: string; name: string }[]
   ) => void,
-  districts: { id: number; pro_id: number; name: string }[]
+  districts: { id: string; pro_id: string; name: string }[]
 ) => {
   setProvinceId(pro_id);
 
-  const dis = districts.filter((x) => x.pro_id === pro_id) || [];
+  const dis = districts.filter((x: any) => x.pro_id === Number(pro_id)) || [];
 
   setDistrict(dis);
 };
 
 export const selectDistrict = (
-  dis_id: number,
-  setDistrictId: (id: number) => void,
+  dis_id: string,
+  setDistrictId: (id: string) => void,
   setSubDistrict: (
-    subDistricts: { id: number; dis_id: number; name: string }[]
+    subDistricts: { id: string; dis_id: string; name: string }[]
   ) => void,
-  subDistricts: { id: number; dis_id: number; name: string }[]
+  subDistricts: { id: string; dis_id: string; name: string }[]
 ) => {
   setDistrictId(dis_id);
 
-  const dis = subDistricts.filter((x) => x.dis_id === dis_id) || [];
+  const dis =
+    subDistricts.filter((x: any) => x.dis_id === Number(dis_id)) || [];
 
   setSubDistrict(dis);
 };

@@ -24,7 +24,7 @@ import { Map } from "@components/dev/map";
 import axios from "axios";
 import { api } from "@utils/api/index";
 import Image from "next/image";
-import { useAlert } from "@providers/AlertContext";
+import { AlertPrimary } from "@components/alert/SwalAlert";
 
 dayjs.extend(customParseFormat);
 dayjs.locale("th");
@@ -36,7 +36,6 @@ function PropertyPage() {
   if (isNaN(Number(params.id))) {
     redirect("/property");
   }
-  const { showAlert } = useAlert();
   const [asset, setAsset] = useState<any>();
   const [endTime, setEndTime] = useState<Date>();
   const [galleryOpen, setGallery] = useState(false);
@@ -79,7 +78,7 @@ function PropertyPage() {
 
   const handleBid = async () => {
     if (!bidPercent) {
-      return showAlert("กรุณากรอกดอกเบี้ยของคุณ", "error");
+      return AlertPrimary("กรุณากรอกดอกเบี้ยของคุณ", "error");
     }
     try {
       const { data: res_bid } = await axios.post(
@@ -89,7 +88,7 @@ function PropertyPage() {
         }
       );
 
-      showAlert("คุณได้ทำการ Bid สำเร็จแล้ว", "success");
+      AlertPrimary("คุณได้ทำการ Bid สำเร็จแล้ว", "success");
 
       if (res_bid.url) {
         setTimeout(() => {
@@ -98,7 +97,7 @@ function PropertyPage() {
       }
     } catch (error) {
       console.error(error);
-      showAlert("500 - Server disconnected. Please try again.", "error");
+      AlertPrimary("500 - Server disconnected. Please try again.", "error");
     }
   };
 

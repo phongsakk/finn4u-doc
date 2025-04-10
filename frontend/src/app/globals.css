@@ -407,7 +407,6 @@ img {
 
   .d-flex {
     display: flex !important;
-    column-gap: 26px;
     height: 100%;
     justify-content: center;
   }

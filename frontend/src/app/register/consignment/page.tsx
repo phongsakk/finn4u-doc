@@ -16,7 +16,6 @@ import { regis_personal } from "@models/register/consignor";
 
 function ReConsignmentPage() {
   const [personal, setPersonal] = useState<regis_personal>(
-
     // {
     //   UserID: 17,
     //   Phone: "0321546",
@@ -26,19 +25,18 @@ function ReConsignmentPage() {
   );
 
   const [step, setStep] = useState<number>(1); // defult 1
-  console.log(personal);
   return (
     <>
       {step < 6 ? (
         <>
-          {/* <div className="banner-regis">
+          <div className="banner-regis">
             <Image
               src={ImageBannerregis1}
               alt=""
               style={{ height: "auto" }}
               priority
             />
-          </div> */}
+          </div>
           <div className="register-seller">
             <div className="container">
               <div className="card-form-main">
