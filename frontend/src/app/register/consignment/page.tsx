@@ -17,28 +17,28 @@ import { regis_personal } from "@models/register/consignor";
 function ReConsignmentPage() {
   const [personal, setPersonal] = useState<regis_personal>(
 
-        {
-    UserID:17,
-    Phone:"0321546",
-    Email:"kengker1144+test3@gmail.com",
-    Ref:"tset"
-  }
+    // {
+    //   UserID: 17,
+    //   Phone: "0321546",
+    //   Email: "kengker1144+test3@gmail.com",
+    //   Ref: "tset"
+    // }
   );
 
-  const [step, setStep] = useState<number>(2); // defult 1
+  const [step, setStep] = useState<number>(1); // defult 1
   console.log(personal);
   return (
     <>
       {step < 6 ? (
         <>
-          <div className="banner-regis">
+          {/* <div className="banner-regis">
             <Image
               src={ImageBannerregis1}
               alt=""
               style={{ height: "auto" }}
               priority
             />
-          </div>
+          </div> */}
           <div className="register-seller">
             <div className="container">
               <div className="card-form-main">
@@ -48,15 +48,13 @@ function ReConsignmentPage() {
                   </h4>
                   <div className="step justify-content-lg-between justify-content-center">
                     <div
-                      className={`child ${
-                        ![1, 2, 3].includes(step) ? "d-none d-lg-block" : ""
-                      }`}
+                      className={`child ${![1, 2, 3].includes(step) ? "d-none d-lg-block" : ""
+                        }`}
                     >
                       <Image src={ImagerRegstep1} alt="" priority />
                       <p
-                        className={`font2 ${
-                          [1, 2, 3].includes(step) ? "fw-bold" : ""
-                        }`}
+                        className={`font2 ${[1, 2, 3].includes(step) ? "fw-bold" : ""
+                          }`}
                       >
                         ลงทะเบียน
                       </p>
@@ -65,15 +63,13 @@ function ReConsignmentPage() {
                       <Image src={ImagePolygon2} alt="" priority />
                     </div>
                     <div
-                      className={`child ${
-                        ![4].includes(step) ? "d-none d-lg-block" : ""
-                      }`}
+                      className={`child ${![4].includes(step) ? "d-none d-lg-block" : ""
+                        }`}
                     >
                       <Image src={ImagerRegstep2} alt="" priority />
                       <p
-                        className={`font2 ${
-                          [4].includes(step) ? "fw-bold" : ""
-                        }`}
+                        className={`font2 ${[4].includes(step) ? "fw-bold" : ""
+                          }`}
                       >
                         ยืนยันตัวตน
                       </p>
@@ -82,15 +78,13 @@ function ReConsignmentPage() {
                       <Image src={ImagePolygon2} alt="" priority />
                     </div>
                     <div
-                      className={`child ${
-                        ![5].includes(step) ? "d-none d-lg-block" : ""
-                      }`}
+                      className={`child ${![5].includes(step) ? "d-none d-lg-block" : ""
+                        }`}
                     >
                       <Image src={ImagerRegstep3} alt="" priority />
                       <p
-                        className={`font2 ${
-                          [5].includes(step) ? "fw-bold" : ""
-                        }`}
+                        className={`font2 ${[5].includes(step) ? "fw-bold" : ""
+                          }`}
                       >
                         อัพโหลดเอกสาร
                       </p>
@@ -98,7 +92,7 @@ function ReConsignmentPage() {
                   </div>
                 </div>
                 {step === 1 && (
-                  <PersonalForm setPersonal={setPersonal} setStep={setStep} />
+                  <PersonalForm personal={personal} setPersonal={setPersonal} setStep={setStep} />
                 )}
 
                 {step === 2 && personal !== undefined && (

@@ -6,7 +6,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "@splidejs/splide/dist/css/splide.min.css";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import "./globals.css";
-import { AlertProvider } from "@providers/AlertContext";
 
 export const metadata: Metadata = {
   title: "Finn4U",
@@ -23,10 +22,8 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <SessionProvider>
-          <AlertProvider>
             <Navbar /> {children}
-            <Footer />
-          </AlertProvider>
+            {/* <Footer /> */}
         </SessionProvider>
       </body>
     </html>

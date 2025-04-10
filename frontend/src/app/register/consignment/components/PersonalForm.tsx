@@ -9,7 +9,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Button, FormSelect, Spinner } from "react-bootstrap";
 import { regis_personal } from "@models/register/consignor";
-import { useAlert } from "@providers/AlertContext";
+import { AlertPrimary } from "@components/alert/SwalAlert";
 
 type masterData = {
   prefix: [];
@@ -19,13 +19,14 @@ type masterData = {
 };
 
 function PersonalForm({
+  personal,
   setPersonal,
   setStep,
 }: {
+  personal: regis_personal | undefined,
   setPersonal: (regis_persona: regis_personal) => void;
   setStep: (num: number) => void;
 }) {
-  const { showAlert } = useAlert();
   const [prefix_id, setPrefixId] = useState<number>(1);
   const [firstname, setFirstname] = useState<string>("");
   const [lastname, setLanstname] = useState<string>("");
@@ -73,6 +74,7 @@ function PersonalForm({
   };
 
   useEffect(() => {
+
     const boot = async () => {
       try {
         const { data: res_masterdata } = await axios.get(
@@ -90,6 +92,7 @@ function PersonalForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     setSubmit(true);
 
     try {
@@ -118,14 +121,15 @@ function PersonalForm({
           Email: res.data.user.email,
           Ref: res.data.ref,
         };
-        showAlert("บันทึกข้อมูลสำเร็จ", "success");
         setPersonal(PersonalModel);
-        setStep(2);
+        AlertPrimary("บันทึกข้อมูลสำเร็จ", "success").then(() => {
+          setStep(2);
+        });
       } else {
-        showAlert("ไม่สามารถบันทึกข้อมูลได้", "error");
+        AlertPrimary("ไม่สามารถบันทึกข้อมูลได้", "error");
       }
     } catch (error) {
-      showAlert("ไม่สามารถบันทึกข้อมูลได้", "error");
+      AlertPrimary("ไม่สามารถบันทึกข้อมูลได้", "error");
       console.error(error);
     } finally {
       setSubmit(false);
@@ -416,22 +420,25 @@ function PersonalForm({
         <Button variant="white" disabled={submit}>
           ย้อนกลับ
         </Button>
-        <Button variant="primary" type="submit" disabled={submit}>
-          {submit ? (
-            <>
-              <Spinner
-                as="span"
-                animation="grow"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-              />
-              กำลังตรวจสอบข้อมูล
-            </>
-          ) : (
-            "ถัดไป"
-          )}
-        </Button>
+        {!personal ?
+          <Button variant="primary" type="submit" disabled={submit}>
+            {submit ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="grow"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+                กำลังตรวจสอบข้อมูล
+              </>
+            ) : (
+              "ถัดไป"
+            )}
+          </Button> : <Button variant="primary" onClick={() => setStep(2)}>ถัดไป</Button>
+        }
+
       </div>
     </form>
   );

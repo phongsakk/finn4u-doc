@@ -1,11 +1,12 @@
 "use client";
 
+import { AlertPrimary } from "@components/alert/SwalAlert";
 import { regis_personal } from "@models/register/consignor";
-import { useAlert } from "@providers/AlertContext";
 import { api } from "@utils/api/index";
 import axios from "axios";
 import { useState, useRef, useEffect } from "react";
 import { Button, Spinner } from "react-bootstrap";
+import Swal from 'sweetalert2';
 
 function OTPForm({
   personal,
@@ -14,7 +15,6 @@ function OTPForm({
   personal: regis_personal;
   setStep: (num: number) => void;
 }) {
-  const { showAlert } = useAlert();
   const [submit, setSubmit] = useState<boolean>(false);
   const [refCode, setRefCode] = useState<string>();
   const [resendLoad, setResendLoad] = useState<boolean>(false);
@@ -28,21 +28,25 @@ function OTPForm({
 
   const handleChange = (
     index: number,
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>
   ) => {
-    const value = e.target.value.replace(/\D/g, "");
-    const newOtp = [...otp];
+    if (e.key !== "Backspace") {
+      const value = e.key.replace(/\D/g, "");
+      const newOtp = [...otp];
 
-    if (value) {
-      newOtp[index] = value.slice(-1);
-      setOtp(newOtp);
+      if (value) {
+        newOtp[index] = value.slice(-1);
+        setOtp(newOtp);
 
-      if (index < 5) {
-        inputRefs.current[index + 1]?.focus();
+        if (index < 5) {
+          inputRefs.current[index + 1]?.focus();
+        } else {
+          inputRefs.current[0]?.focus();
+        }
+      } else {
+        newOtp[index] = "";
+        setOtp(newOtp);
       }
-    } else {
-      newOtp[index] = "";
-      setOtp(newOtp);
     }
   };
 
@@ -57,8 +61,8 @@ function OTPForm({
       .slice(0, otp.length);
     const newOtp = [...otp];
 
-    for (let i = 0; i < paste.length && index + i < otp.length; i++) {
-      newOtp[index + i] = paste[i];
+    for (let i = 0; i < paste.length && i < otp.length; i++) {
+      newOtp[i] = paste[i];
     }
 
     setOtp(newOtp);
@@ -71,8 +75,13 @@ function OTPForm({
     index: number,
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus();
+    if (e.key === "Backspace") {
+      console.log(index)
+      if (index > 0) {
+        inputRefs.current[index - 1]?.focus();
+      } else {
+        inputRefs.current[otp.length - 1]?.focus();
+      }
     }
   };
 
@@ -81,6 +90,7 @@ function OTPForm({
 
     const sendOtp = async () => {
       try {
+        setSubmit(true);
         const mergeOtp = otp.join("");
         const { data: res_send } = await axios.post(
           api.internal(`/api/register/consignment/verifyotp`),
@@ -90,15 +100,17 @@ function OTPForm({
           }
         );
         if (res_send.status) {
-          showAlert("verified successfully", "success");
-          setTimeout(() => {
+          AlertPrimary("verified successfully", "success").then(() => {
             setStep(3);
-          }, 1000);
+          });
         } else {
-          showAlert(res_send.data.message, "error");
+          AlertPrimary(res_send.data.message, "error");
         }
       } catch (error) {
         console.error(error);
+        AlertPrimary("please try again.", "error");
+      } finally {
+        setSubmit(false);
       }
     };
 
@@ -171,7 +183,7 @@ function OTPForm({
                   type="text"
                   className="form-control form-control--otp js-otp-input"
                   value={digit}
-                  onChange={(e) => handleChange(index, e)}
+                  onKeyUp={(e) => handleChange(index, e)}
                   onPaste={(e) => handlePaste(index, e)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
                   inputMode="numeric"

@@ -39,7 +39,7 @@ function Footer() {
                   <div className="col-lg-12">
                     <p>
                       เลขที่ 89 ถนนงามวงศ์วาน แขวงลาดยาว เขตจตุจักร กรุงเทพมหานคร 10900
-                    </p>
+                    </p>  
                   </div>
                 </div>
                 <div className="row mb-3">
