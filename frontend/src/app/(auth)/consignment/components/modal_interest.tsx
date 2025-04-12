@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import BarChart from "./BarChart";
+import { modalParam } from "@models/modalParam";
 
-export type InterestType = {
-  open: boolean;
-  close?:()=>void
-};
-
-function Modal_interest(InterestType:InterestType) {
+function Modal_interest(InterestType:modalParam) {
   return (
     <Modal
       className="font2 modal-main"

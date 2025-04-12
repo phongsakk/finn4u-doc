@@ -16,12 +16,15 @@ import { Map } from "@components/dev/map";
 import Loading from "@components/dev/loading";
 import axios from "axios";
 import { api } from "@utils/api/index";
-import Modal_interest, { InterestType } from "../components/modal_interest";
-import Modal_infoconsign, { InfoConType } from "../components/modal_infoconsign";
+import Modal_interest from "../components/modal_interest";
+import Modal_infoconsign, {
+  InfoConType,
+} from "../components/modal_infoconsign";
+import { modalParam } from "@models/modalParam";
 
 function Index() {
   const [assets, setAssets] = useState([]);
-  const [interestOpen, setInterestOpen] = useState<InterestType>({
+  const [interestOpen, setInterestOpen] = useState<modalParam>({
     open: false,
   });
   const [detailOpen, setDtilOpen] = useState<InfoConType>({ open: false });

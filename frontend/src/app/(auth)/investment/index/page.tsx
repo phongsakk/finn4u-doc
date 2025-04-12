@@ -1,5 +1,5 @@
 "use client";
-import { modalParam } from "@app/(auth)/consignment/index/page";
+import { modalParam } from "@models/modalParam";
 import CustomImage from "@components/CustomImage";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -9,23 +9,23 @@ import Modal_usertell from "./modal_usertell";
 
 function IndexPage() {
   const [interestOpen, setInterestOpen] = useState<modalParam>({
-    Status: false,
+    open: false,
   });
-  const [detailOpen, setDtilOpen] = useState<modalParam>({ Status: false });
+  const [detailOpen, setDtilOpen] = useState<modalParam>({ open: false });
   const [userTellOpen, setUserTallOpen] = useState<modalParam>({
-    Status: false,
+    open: false,
   });
 
   const handleHide = () => {
-    setInterestOpen({ Status: false });
+    setInterestOpen({ open: false });
   };
 
   const handleConHide = () => {
-    setDtilOpen({ Status: false });
+    setDtilOpen({ open: false });
   };
 
   const handleUserTellHide = () => {
-    setUserTallOpen({ Status: false });
+    setUserTallOpen({ open: false });
   };
 
   return (
@@ -134,7 +134,7 @@ function IndexPage() {
                         <div className="group-menu-2">
                           <div
                             className="group"
-                            onClick={() => setInterestOpen({ Status: true })}
+                            onClick={() => setInterestOpen({ open: true })}
                           >
                             <CustomImage
                               width={22}
@@ -146,7 +146,7 @@ function IndexPage() {
                           </div>
                           <div
                             className="group"
-                            onClick={() => setDtilOpen({ Status: true })}
+                            onClick={() => setDtilOpen({ open: true })}
                           >
                             <CustomImage
                               width={22}
@@ -158,7 +158,7 @@ function IndexPage() {
                           </div>
                           <div
                             className="group"
-                            onClick={() => setUserTallOpen({ Status: true })}
+                            onClick={() => setUserTallOpen({ open: true })}
                           >
                             <CustomImage
                               width={22}

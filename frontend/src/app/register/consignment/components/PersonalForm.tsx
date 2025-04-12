@@ -393,6 +393,7 @@ function PersonalForm({
             <input
               onChange={(e) => setPassword(e.target.value)}
               type="password"
+              placeholder="ต้องไม่ต่ำกว่า 9 ตัวอักษร"
               className="form-control font2"
               id="password"
               name="password"
@@ -409,6 +410,7 @@ function PersonalForm({
             <input
               onChange={(e) => setConfirmPassword(e.target.value)}
               type="password"
+              placeholder="ต้องไม่ต่ำกว่า 9 ตัวอักษร"
               className="form-control font2"
               id="confirm_password"
               name="confirm_password"

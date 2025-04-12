@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
-import { modalParam } from "@app/(auth)/consignment/index/page";
+import { modalParam } from "@models/modalParam";
 import { FaRegCalendarAlt } from "react-icons/fa";
 
 function Modal_infoconsign({
@@ -15,7 +15,7 @@ function Modal_infoconsign({
     <Modal
       className="modal-main modal-100w"
       size="xl"
-      show={detailOpen.Status}
+      show={detailOpen.open}
       onHide={() => handleConHide()}
       centered
     >

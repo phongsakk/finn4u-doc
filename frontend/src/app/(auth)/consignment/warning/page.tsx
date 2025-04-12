@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 function page() {
   const router = useRouter();
-  const [terms, setTerms] = useState<boolean>();
+  const [terms, setTerms] = useState<boolean>(false);
   const handleAccept = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!terms) return alert("กรุณายอมรับข้อตกลง");
@@ -111,7 +111,7 @@ function page() {
 
           <div className="mb-3 form-check mt-5">
             <input
-              onChange={() => setTerms(true)}
+              onChange={(e) => setTerms(e.target.checked)}
               type="checkbox"
               className="form-check-input"
               name="terms"

@@ -4,9 +4,16 @@ import { useState } from "react";
 import { Button } from "react-bootstrap";
 
 function TermsAndCon({ setStep }: { setStep: (num: number) => void }) {
-  const [accept, setAccept] = useState<boolean>();
+  const [accept, setAccept] = useState<boolean>(false);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!accept) {
+      return alert("กรุณายอมรับเงื่อนไขและข้อตกลง");
+    }
+    setStep(4);
+  };
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <div className="detail-con">
         <h2 className="text-center text-primary mb-5 font2">
           เงื่อนไขและข้อตกลง
@@ -45,7 +52,7 @@ function TermsAndCon({ setStep }: { setStep: (num: number) => void }) {
         </p>
         <div className="mb-3 form-check">
           <input
-            onChange={(e) => setAccept(Boolean(e.target.value))}
+            onChange={(e) => setAccept(e.target.checked)}
             type="checkbox"
             className="form-check-input"
             id="accept"
@@ -60,15 +67,7 @@ function TermsAndCon({ setStep }: { setStep: (num: number) => void }) {
         <Button variant="white" onClick={() => setStep(2)}>
           ย้อนกลับ
         </Button>
-        <Button
-          variant="primary"
-          type="submit"
-          onClick={(e) => {
-            e.preventDefault();
-            if (!accept) return alert("กรุณายอมรับเงื่อนไขและข้อตกลง");
-            setStep(4);
-          }}
-        >
+        <Button variant="primary" type="submit">
           ถัดไป
         </Button>
       </div>

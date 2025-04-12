@@ -41,12 +41,11 @@ function OTPForm({
       } else {
         inputRefs.current[0]?.focus();
       }
-    } else {
-      newOtp[index] = "";
-      setOtp(newOtp);
     }
 
     if (e.key === "Backspace") {
+      newOtp[index] = "";
+      setOtp(newOtp);
       if (index > 0) {
         inputRefs.current[index - 1]?.focus();
       } else {
@@ -65,11 +64,9 @@ function OTPForm({
       .replace(/\D/g, "")
       .slice(0, otp.length);
     const newOtp = [...otp];
-
     for (let i = 0; i < paste.length && i < otp.length; i++) {
       newOtp[i] = paste[i];
     }
-
     setOtp(newOtp);
 
     const nextIndex = Math.min(index + paste.length, otp.length - 1);
@@ -174,7 +171,7 @@ function OTPForm({
                   id={`otp-${index}`}
                   type="text"
                   className="form-control form-control--otp js-otp-input"
-                  value={digit !== undefined && digit !== null ? digit : ""}
+                  value={digit !== undefined && digit !== null ? digit : "9"}
                   onChange={(e) => e.preventDefault()}
                   onKeyUp={(e) => handleChange(index, e)}
                   onPaste={(e) => handlePaste(index, e)}

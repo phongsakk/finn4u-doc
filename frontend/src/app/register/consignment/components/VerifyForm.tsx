@@ -1,12 +1,34 @@
+"use client";
 import ImageIdCard from "@public/id-card.png";
 import ImageCamera from "@public/camera.svg";
 import ImageUpload from "@public/upload.svg";
 import Image from "next/image";
 import { Button } from "react-bootstrap";
+import { convertImage } from "@components/helpers";
+import { useState } from "react";
+import { FaCheck } from "react-icons/fa";
 
 function VerifyForm({ setStep }: { setStep: (num: number) => void }) {
+  const [licenseFont, setLicenseFont] = useState<string>();
+  const [licenseBack, setLicenseBack] = useState<string>();
+  const [photoWithID, setPhotoWithID] = useState<string>();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!licenseFont || !licenseBack || !photoWithID) {
+      alert(
+        [
+          !licenseFont && "ถ่ายรูปหน้าบัตร",
+          !licenseBack && "ถ่ายรูปหลังบัตร",
+          !photoWithID && "ถ่ายรูปเซลฟี่ผู้ขายฝากคู่กับบัตรประชาชน",
+        ]
+          .filter(Boolean)
+          .join("\n")
+      );
+
+      return false;
+    }
     setStep(5);
   };
 
@@ -31,39 +53,84 @@ function VerifyForm({ setStep }: { setStep: (num: number) => void }) {
           </div>
         </div>
         <div className="import">
-          <p className="font2">1. ถ่ายรูปหน้าบัตร</p>
-          <div className="d-flex">
-            <input type="file" className="d-none" name="license-font" id="license-font" />
-            <button type="submit" className="btn btn-primary font2">
+          <p className="font2">
+            1. ถ่ายรูปหน้าบัตร {licenseFont && CheckImage()}
+          </p>
+          <div className="row gap-3 px-3 mb-5">
+            <input
+              onChange={(e) => imgChange(e, setLicenseFont)}
+              type="file"
+              className="d-none"
+              name="license-font"
+              id="license-font"
+            />
+            <label
+              htmlFor="license-font"
+              className="col-auto btn btn-primary font2 px-3"
+            >
               <Image src={ImageCamera} alt="" />
               ถ่ายภาพ
-            </button>
-            <label htmlFor="license-font" role="button" className="btn btn-light font2 px-5">
+            </label>
+            <label
+              htmlFor="license-font"
+              className="col-auto btn btn-light font2 px-3"
+            >
               <Image className="me-2" src={ImageUpload} alt="" />
               อัพโหลด
             </label>
           </div>
-          <p className="font2">2. ถ่ายรูปหลังบัตร</p>
-          <div className="d-flex">
-            <button type="submit" className="btn btn-primary">
+          <p className="font2">
+            2. ถ่ายรูปหลังบัตร {licenseBack && CheckImage()}
+          </p>
+          <div className="row gap-3 px-3 mb-5">
+            <input
+              type="file"
+              onChange={(e) => imgChange(e, setLicenseBack)}
+              className="d-none"
+              name="license-back"
+              id="license-back"
+            />
+            <label
+              htmlFor="license-back"
+              className="col-auto btn btn-primary font2 px-3"
+            >
               <Image src={ImageCamera} alt="" />
               ถ่ายภาพ
-            </button>
-            <button type="submit" className="btn btn-light">
-              <Image src={ImageUpload} alt="" />
+            </label>
+            <label
+              htmlFor="license-back"
+              className="col-auto btn btn-light font2 px-3"
+            >
+              <Image className="me-2" src={ImageUpload} alt="" />
               อัพโหลด
-            </button>
+            </label>
           </div>
-          <p className="font2">3. ถ่ายรูปเซลฟี่ผู้ขายฝากคู่กับบัตรประชาชน</p>
-          <div className="d-flex">
-            <button type="submit" className="btn btn-primary font2">
+          <p className="font2">
+            3. ถ่ายรูปเซลฟี่ผู้ขายฝากคู่กับบัตรประชาชน{" "}
+            {photoWithID && CheckImage()}
+          </p>
+          <div className="row gap-3 px-3 mb-5">
+            <input
+              onChange={(e) => imgChange(e, setPhotoWithID)}
+              type="file"
+              className="d-none"
+              name="photoId"
+              id="photoId"
+            />
+            <label
+              htmlFor="photoId"
+              className="col-auto btn btn-primary font2 px-3"
+            >
               <Image src={ImageCamera} alt="" />
               ถ่ายภาพ
-            </button>
-            <button type="submit" className="btn btn-light font2">
-              <Image src={ImageUpload} alt="" />
+            </label>
+            <label
+              htmlFor="photoId"
+              className="col-auto btn btn-light font2 px-3"
+            >
+              <Image className="me-2" src={ImageUpload} alt="" />
               อัพโหลด
-            </button>
+            </label>
           </div>
         </div>
       </div>
@@ -79,3 +146,18 @@ function VerifyForm({ setStep }: { setStep: (num: number) => void }) {
   );
 }
 export default VerifyForm;
+
+const imgChange = async (
+  event: React.ChangeEvent<HTMLInputElement>,
+  setImage: (txt: string) => void
+) => {
+  const selectedFile = event.target.files?.[0];
+  if (!selectedFile) return;
+
+  const convertedImage = (await convertImage(selectedFile)) as string;
+  setImage(convertedImage);
+};
+
+const CheckImage = () => {
+  return <FaCheck className="text-primary" />;
+};
