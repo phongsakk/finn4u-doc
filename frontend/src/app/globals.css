@@ -352,13 +352,6 @@ img {
 
   .import {
     margin: 44px 0;
-
-    .d-flex {
-      margin-bottom: 60px;
-      column-gap: 44px;
-      margin-left: 30px;
-    }
-
     button {
       display: flex;
       justify-content: center;
@@ -379,9 +372,6 @@ img {
 }
 
 .submit-group {
-  .btn-white {
-    margin-bottom: 5px;
-  }
   text-align: center;
 
   button {
