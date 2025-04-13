@@ -336,12 +336,13 @@ img {
   }
 }
 
-.register-seller .insert-id-card {
-  padding: 0 100px;
+.underline-none {
+  text-decoration: none !important;
+}
 
+.register-seller .insert-id-card {
   .idcard {
     background-color: #eaf7f1;
-    padding: 4rem 4rem;
     border-radius: 20px;
 
     ul li {
@@ -350,14 +351,7 @@ img {
   }
 
   .import {
-    margin: 44px 0 100px 70px;
-
-    .d-flex {
-      margin-bottom: 60px;
-      column-gap: 44px;
-      margin-left: 30px;
-    }
-
+    margin: 44px 0;
     button {
       display: flex;
       justify-content: center;
@@ -397,20 +391,20 @@ img {
 }
 
 .otp-password {
-  padding: 0 24rem;
   margin-bottom: 40px;
   height: 66px;
   text-align: center;
 
   .d-flex {
     display: flex !important;
-    column-gap: 26px;
     height: 100%;
+    justify-content: center;
   }
 
   input {
     text-align: center;
     font-size: 24px;
+    width: 50px;
   }
 }
 
@@ -728,7 +722,6 @@ img {
 .land-sale-2 {
   margin: 3rem 0;
   .property-item {
-    overflow: hidden;
     border-radius: 15px;
   }
   .relative {
@@ -1698,11 +1691,10 @@ img {
 .checklogin .form-check {
   display: flex !important;
   padding: 0;
-  column-gap: 20px;
 
-  label {
+  /* label {
     margin-left: 13px;
-  }
+  } */
 }
 
 .checklogin .form-check-input:checked {
@@ -1792,6 +1784,6 @@ img {
   }
 }
 
-.form-control::placeholder{
+.form-control::placeholder {
   color: #a6a6a6;
 }

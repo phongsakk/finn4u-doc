@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import BarChart from "./BarChart";
-import { modalParam } from "@app/consignment/index/page";
-
+import { modalParam } from "@models/modalParam";
 function Modal_interest({
   investCalOpen,
   handleHide,
@@ -14,7 +13,7 @@ function Modal_interest({
   return (
     <Modal
       className="font2 modal-main"
-      show={investCalOpen.Status}
+      show={investCalOpen.open}
       size="xl"
       onHide={() => handleHide()}
       centered

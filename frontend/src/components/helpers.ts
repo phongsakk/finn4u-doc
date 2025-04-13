@@ -1,5 +1,5 @@
 import { api } from "@utils/api/index";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import dayjs from "dayjs";
 import sharp from "sharp";
 dayjs.locale("th");
@@ -56,6 +56,61 @@ export const formatDateThai = (value: Date) => {
   return dayjs(value).add(543, "year").format("DD/MM/YYYY HH:mm:ss");
 };
 
+export const convertImage = async (objectfile: File): Promise<string> => {
+  try {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(objectfile);
+
+      reader.onload = async () => {
+        if (typeof reader.result === "string") {
+          try {
+            const resizedImage = await resizeBase64Image({
+              base64: reader.result,
+            });
+            resolve(resizedImage || "");
+          } catch (error) {
+            console.error("Error resizing image:", error);
+            resolve("");
+          }
+        } else {
+          resolve("");
+        }
+      };
+
+      reader.onerror = () => {
+        reject(new Error("Error reading file"));
+      };
+    });
+  } catch (error) {
+    console.error("Error in convertImage:", error);
+    return "";
+  }
+};
+
+export const convertImage_arr = async (objectfiles: FileList) => {
+  try {
+    const fileArray = Array.from(objectfiles);
+    const base64Images = await Promise.all(
+      fileArray.map((file) => {
+        return new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = (error) => reject(error);
+        });
+      })
+    );
+
+    const resizedImages = await Promise.all(
+      base64Images.map((base64) => resizeBase64Image({ base64 }))
+    );
+    return resizedImages || [];
+  } catch (error) {
+    return [];
+  }
+};
+
 export const resizeBase64Image = ({
   base64,
   newWidth = 529,
@@ -87,4 +142,91 @@ export const resizeBase64Image = ({
     };
     img.onerror = (error) => reject(error);
   });
+};
+
+export const selectProvince = (
+  pro_id: string,
+  setProvinceId: (id: string) => void,
+  setDistrict: (
+    districts: { id: string; pro_id: string; name: string }[]
+  ) => void,
+  districts: { id: string; pro_id: string; name: string }[]
+) => {
+  setProvinceId(pro_id);
+
+  const dis = districts.filter((x: any) => x.pro_id === Number(pro_id)) || [];
+
+  setDistrict(dis);
+};
+
+export const selectDistrict = (
+  dis_id: string,
+  setDistrictId: (id: string) => void,
+  setSubDistrict: (
+    subDistricts: { id: string; dis_id: string; name: string }[]
+  ) => void,
+  subDistricts: { id: string; dis_id: string; name: string }[]
+) => {
+  setDistrictId(dis_id);
+
+  const dis =
+    subDistricts.filter((x: any) => x.dis_id === Number(dis_id)) || [];
+
+  setSubDistrict(dis);
+};
+
+export const formatNumber = (
+  value: number,
+  style: string = "decimal",
+  currency?: string
+): string => {
+  if (!value) return "-";
+  const options: Intl.NumberFormatOptions =
+    style === "currency"
+      ? { style: "currency", currency: currency || "USD" }
+      : style === "percent"
+      ? { style: "percent" }
+      : { style: "decimal" };
+
+  return new Intl.NumberFormat("en-US", options).format(value);
+};
+
+export const formatCurrency = (amount: number) => {
+  if (amount === 0) {
+    return `-`;
+  }
+
+  if (amount >= 1_000_000_000_000_000) {
+    return `${(amount / 1_000_000_000_000_000).toFixed(2)} พันล้านล้านบาท`;
+  } else if (amount >= 1_000_000_000_000) {
+    return `${(amount / 1_000_000_000_000).toFixed(2)} ล้านล้านบาท`;
+  } else if (amount >= 1_000_000_000) {
+    return `${(amount / 1_000_000_000).toFixed(2)} พันล้านบาท`;
+  } else if (amount >= 10_000_000) {
+    return `${(amount / 1_000_000).toFixed(2)} ล้านบาท`;
+  } else if (amount >= 1_000_000) {
+    return `${(amount / 1_000_000).toFixed(2)} ล้านบาท`;
+  } else if (amount >= 100_000) {
+    return `${(amount / 100_000).toFixed(1)} แสนบาท`;
+  } else {
+    return `${amount.toLocaleString()} บาท`;
+  }
+};
+
+export const catchError = async (error: any) => {
+  if (error instanceof AxiosError) {
+    return {
+      status: false,
+      code: error.response?.status || 500,
+      data: error.response?.data || "An error occurred",
+      message: error.message,
+    };
+  }
+
+  return {
+    status: false,
+    code: 500,
+    data: "Api error",
+    message: "An unexpected error occurred",
+  };
 };
