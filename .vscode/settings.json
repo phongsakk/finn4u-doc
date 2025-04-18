@@ -18,5 +18,8 @@
         // "titleBar.inactiveBackground": "#360982",
         // "titleBar.inactiveForeground": "#ffffff"
     },
+    "files.exclude": {
+        "frontend/public/uploads": true
+    },
     // "editor.cursorBlinking": "blink"
 }

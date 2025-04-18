@@ -15,7 +15,13 @@ import { resizeBase64Image } from "@components/helpers";
 import { UploadFile } from "@components/dev/uploadfile";
 import { AlertPrimary } from "@components/alert/SwalAlert";
 
-function UploadDocForm({ setStep }: { setStep: (num: number) => void }) {
+function UploadDocForm({
+  setStep,
+  checkStep,
+}: {
+  setStep: (num: number) => void;
+  checkStep: boolean;
+}) {
   const router = useRouter();
   const [loadingSubmit, setLoadingSubmit] = useState<Boolean>(false);
   const [province, setProvince] = useState([]);

@@ -8,7 +8,13 @@ import { convertImage } from "@components/helpers";
 import { useState } from "react";
 import { FaCheck } from "react-icons/fa";
 
-function VerifyForm({ setStep }: { setStep: (num: number) => void }) {
+function VerifyForm({
+  setStep,
+  checkStep,
+}: {
+  setStep: (num: number) => void;
+  checkStep: boolean;
+}) {
   const [licenseFont, setLicenseFont] = useState<string>();
   const [licenseBack, setLicenseBack] = useState<string>();
   const [photoWithID, setPhotoWithID] = useState<string>();

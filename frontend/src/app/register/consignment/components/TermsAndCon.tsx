@@ -2,9 +2,18 @@
 
 import { useState } from "react";
 import { Button } from "react-bootstrap";
+import StepButton from "./button/StepButton";
 
-function TermsAndCon({ setStep }: { setStep: (num: number) => void }) {
+function TermsAndCon({
+  setStep,
+  checkStep,
+}: {
+  setStep: (num: number) => void;
+  checkStep: boolean;
+}) {
+  const thisStep = 3;
   const [accept, setAccept] = useState<boolean>(false);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!accept) {
@@ -67,9 +76,11 @@ function TermsAndCon({ setStep }: { setStep: (num: number) => void }) {
         <Button variant="white" onClick={() => setStep(2)}>
           ย้อนกลับ
         </Button>
-        <Button variant="primary" type="submit">
-          ถัดไป
-        </Button>
+        <StepButton
+          checkStep={checkStep}
+          thisStep={thisStep}
+          setStep={setStep}
+        />
       </div>
     </form>
   );

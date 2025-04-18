@@ -46,4 +46,4 @@ next-env.d.ts
 !.env.vault
 
 # Ignore public/contents directory
-/public/contents
+/public/uploads
