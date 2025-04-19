@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
-import { log, logError } from "@components/helpers";
+import { catchError, log, logError } from "@components/helpers";
 
 export async function POST(req: NextRequest) {
   try {
@@ -9,7 +9,10 @@ export async function POST(req: NextRequest) {
     const file = formData.get("file") as File;
     const path_upload = (formData.get("path") as string) || "";
     if (!file) {
-      return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
+      return NextResponse.json(
+        { status: false, error: "No file uploaded" },
+        { status: 400 }
+      );
     }
 
     const fileExtension = file.name.split(".").pop()?.toLowerCase();
@@ -28,7 +31,7 @@ export async function POST(req: NextRequest) {
     const filename = `${file.name}.jpg`;
     const filepath = path.join(
       process.cwd(),
-      "public/contents",
+      "public/uploads",
       path_upload,
       filename
     );
@@ -46,10 +49,6 @@ export async function POST(req: NextRequest) {
       } ${filename}`,
     });
   } catch (error) {
-    console.error("Upload error:", error);
-    return NextResponse.json(
-      { success: false, error: "Upload failed" },
-      { status: 500 }
-    );
+    return NextResponse.json(await catchError(error));
   }
 }

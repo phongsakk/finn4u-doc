@@ -12,6 +12,7 @@ const StepButton = ({ checkStep, submit = false, NextStep, setStep }: any) => {
                             size="sm"
                             role="status"
                             aria-hidden="true"
+                            className="me-1"
                         />
                         กำลังตรวจสอบข้อมูล
                     </>

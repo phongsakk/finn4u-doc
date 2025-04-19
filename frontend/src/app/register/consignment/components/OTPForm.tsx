@@ -8,6 +8,8 @@ import { useState, useRef, useEffect } from "react";
 import { Button, Spinner } from "react-bootstrap";
 import Swal from "sweetalert2";
 import StepButton from "./button/StepButton";
+import Image from "next/image";
+import iConSuccess from "@public/icon-park-solid_success.png";
 
 function OTPForm({
   personal,
@@ -139,64 +141,82 @@ function OTPForm({
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <div className="sec-pass">
-          {!errorResend ? (
-            <h2 className="text-center text-primary font2">
-              {!resendLoad
-                ? "รหัสยืนยันถูกส่งไปเรียบร้อยแล้ว"
-                : "กำลังส่งรหัส OTP อีกครั้ง..."}
-            </h2>
-          ) : (
-            <>
-              <h2 className="text-center text-danger font2">
-                ส่งรหัส OTP ไม่สำเร็จ
-                <h4 className="text-center text-danger font2">
-                  กรุณาลองอีกครั้ง
-                </h4>
-              </h2>
-            </>
-          )}
-
-          <div className="tell">
-            <p className="font2">กรุณากรอกรหัสยืนยันที่ถูกส่งไปยัง</p>
-            <span className="text-primary font2 px-2">{personal.Email}</span>
-            <span className="font2">เพื่อดำเนินการต่อ</span>
-            <h6 className="font2">Ref: {refCode}</h6>
-          </div>
-
-          <fieldset className="otp-password">
-            <div className="d-flex gap-1 gap-md-2 gap-lg-3 gap-sx-4">
-              {otp.map((digit, index) => (
-                <input
-                  key={index}
-                  ref={(el) => {
-                    inputRefs.current[index] = el;
-                  }}
-                  id={`otp-${index}`}
-                  type="text"
-                  className="form-control form-control--otp js-otp-input"
-                  value={digit !== undefined && digit !== null ? digit : "9"}
-                  onChange={(e) => e.preventDefault()}
-                  onKeyUp={(e) => handleChange(index, e)}
-                  onPaste={(e) => handlePaste(index, e)}
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  autoComplete="one-time-code"
-                  maxLength={1}
-                  required
-                />
-              ))}
-            </div>
-          </fieldset>
-          <Button
-            onClick={handleResendOTP}
-            variant="clean"
-            className="font2"
-            disabled={resendLoad}
+        {checkStep ? (
+          <div
+            className="d-flex flex-column justify-content-center align-items-center"
+            style={{ height: 400 ,width:"auto"}}
           >
-            ส่งรหัส OTP อีกครั้ง
-          </Button>
-        </div>
+            <div className="mb-3">
+              <Image
+                src={iConSuccess}
+                alt=""
+                width={150}
+                height={150}
+                priority
+              />
+            </div>
+            <h3 className="text-success">ยืนยัน OTP สำเร็จ</h3>
+          </div>
+        ) : (
+          <div className="sec-pass">
+            {!errorResend ? (
+              <h2 className="text-center text-primary font2">
+                {!resendLoad
+                  ? "รหัสยืนยันถูกส่งไปเรียบร้อยแล้ว"
+                  : "กำลังส่งรหัส OTP อีกครั้ง..."}
+              </h2>
+            ) : (
+              <>
+                <h2 className="text-center text-danger font2">
+                  ส่งรหัส OTP ไม่สำเร็จ
+                  <h4 className="text-center text-danger font2">
+                    กรุณาลองอีกครั้ง
+                  </h4>
+                </h2>
+              </>
+            )}
+
+            <div className="tell">
+              <p className="font2">กรุณากรอกรหัสยืนยันที่ถูกส่งไปยัง</p>
+              <span className="text-primary font2 px-2">{personal.Email}</span>
+              <span className="font2">เพื่อดำเนินการต่อ</span>
+              <h6 className="font2">Ref: {refCode}</h6>
+            </div>
+
+            <fieldset className="otp-password">
+              <div className="d-flex gap-1 gap-md-2 gap-lg-3 gap-sx-4">
+                {otp.map((digit, index) => (
+                  <input
+                    key={index}
+                    ref={(el) => {
+                      inputRefs.current[index] = el;
+                    }}
+                    id={`otp-${index}`}
+                    type="text"
+                    className="form-control form-control--otp js-otp-input"
+                    value={digit !== undefined && digit !== null ? digit : "9"}
+                    onChange={(e) => e.preventDefault()}
+                    onKeyUp={(e) => handleChange(index, e)}
+                    onPaste={(e) => handlePaste(index, e)}
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    autoComplete="one-time-code"
+                    maxLength={1}
+                    required
+                  />
+                ))}
+              </div>
+            </fieldset>
+            <Button
+              onClick={handleResendOTP}
+              variant="clean"
+              className="font2"
+              disabled={resendLoad}
+            >
+              ส่งรหัส OTP อีกครั้ง
+            </Button>
+          </div>
+        )}
         <div className="submit-group">
           <Button variant="white" disabled={submit} onClick={() => setStep(1)}>
             ย้อนกลับ

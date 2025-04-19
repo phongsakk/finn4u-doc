@@ -73,7 +73,7 @@ function AddForm() {
     try {
       setLoadingSubmit(true);
 
-      const marker = locataion?.split(/,|\s+/);
+      const marker = locataion?.split(/,|\s+/).filter(Boolean);
 
       const formJSON = {
         province_id: province_id,
@@ -97,6 +97,7 @@ function AddForm() {
         is_multiple_holder: mto_ownership,
         description: description,
       };
+      
       if (!imageLTD) {
         AlertPrimary("กรุณาอัพโหลดโฉนดที่ดิน", "error");
         return false;

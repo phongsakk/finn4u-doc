@@ -11,6 +11,7 @@ type FormInputProps = {
   required?: boolean;
   label?: string;
   invalid?: string;
+  disabled?: boolean;
 };
 
 export const FormInput = ({
@@ -24,6 +25,7 @@ export const FormInput = ({
   required = false,
   label,
   invalid,
+  disabled = false,
 }: FormInputProps) => {
   const inputId = id ?? name;
   return (
@@ -43,6 +45,7 @@ export const FormInput = ({
           className={className}
           placeholder={placeholder}
           required={required}
+          disabled={disabled}
         />
         {invalid !== "" && <span className="text-danger">{invalid}</span>}
       </Form.Group>
