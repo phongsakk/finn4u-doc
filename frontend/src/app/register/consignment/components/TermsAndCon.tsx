@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import StepButton from "./button/StepButton";
 
@@ -13,6 +13,10 @@ function TermsAndCon({
 }) {
   const NextStep = 4;
   const [accept, setAccept] = useState<boolean>(false);
+  
+  useEffect(()=>{
+    setAccept(checkStep);
+  },[checkStep])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,6 +65,7 @@ function TermsAndCon({
         </p>
         <div className="mb-3 form-check">
           <input
+            checked={accept}
             onChange={(e) => setAccept(e.target.checked)}
             type="checkbox"
             className="form-check-input"

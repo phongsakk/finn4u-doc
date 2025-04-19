@@ -210,6 +210,7 @@ export const formatCurrency = (amount: number) => {
 
 export const catchError = async (error: any) => {
   if (error instanceof AxiosError) {
+    // logError("testet",error.response)
     return {
       status: false,
       code: error.response?.status || 500,

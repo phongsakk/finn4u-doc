@@ -80,8 +80,8 @@ function UploadDocForm({
     try {
       setSubmit(true);
 
-      const marker = locataion?.split(/,|\s+/);
-
+      const marker = locataion?.split(/,|\s+/).filter(Boolean);
+      
       const formJSON = {
         province_id: province_id,
         district_id: 1001,
@@ -118,7 +118,7 @@ function UploadDocForm({
         formJSON
       );
       if (res_add.status) {
-        AlertPrimary("บันทึกข้อมูลสำเร็จ", "success").then(() =>
+        AlertPrimary("เพิ่มทรัพย์สินสำเร็จ", "success").then(() =>
           setStep(NextStep)
         );
       } else {

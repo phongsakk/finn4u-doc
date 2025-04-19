@@ -9,12 +9,11 @@ export const POST = async (req: Request) => {
   try {
     const session = await auth();
     const body = await req.json();
-    const { data: res } = await axios.post(api.external("/v1/asset"), body, {
+    const { data: res } = await axios.post(api.external("/v1/consignor/asset"), body, {
       headers: {
         Authorization: "Bearer " + session?.user?.accessToken,
       },
     });
-
     return NextResponse.json(
       {
         status: res.status,

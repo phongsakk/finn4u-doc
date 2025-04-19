@@ -46,6 +46,9 @@ function PersonalForm({
   const [subDistricts, setSubDistricts] = useState<any[]>();
   const [submit, setSubmit] = useState<boolean>(false);
 
+  if (checkStep) {
+  }
+
   const handleForm = (e: any) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -189,6 +192,7 @@ function PersonalForm({
                   คำนำหน้า<span className="text-require font2">*</span>
                 </Form.Label>
                 <Form.Select
+                  disabled={checkStep}
                   value={form.user_prefix_id}
                   onChange={handleForm}
                   id="prefix"
@@ -205,6 +209,7 @@ function PersonalForm({
             </div>
 
             <FormInput
+              disabled={checkStep}
               label="ชื่อ"
               name="firstname"
               value={form.firstname}
@@ -212,6 +217,7 @@ function PersonalForm({
               required
             />
             <FormInput
+              disabled={checkStep}
               label="นามสกุล"
               name="lastname"
               value={form.lastname}
@@ -219,6 +225,7 @@ function PersonalForm({
               required
             />
             <FormInput
+              disabled={checkStep}
               label="เบอร์โทรศัพท์"
               name="phone_number"
               value={form.phone_number}
@@ -230,6 +237,7 @@ function PersonalForm({
               required
             />
             <FormInput
+              disabled={checkStep}
               label="เวลาที่สะดวกให้ติดต่อกลับ"
               name="online_range"
               value={form.online_range}
@@ -245,6 +253,7 @@ function PersonalForm({
                   อาชีพ<span className="text-require font2">*</span>
                 </label>
                 <FormSelect
+                  disabled={checkStep}
                   value={form.career_id}
                   onChange={handleForm}
                   name="career_id"
@@ -255,6 +264,7 @@ function PersonalForm({
               </div>
             </div>
             <FormInput
+              disabled={checkStep}
               label="รายได้ต่อเดือน"
               name="salary"
               value={form.salary}
@@ -265,6 +275,7 @@ function PersonalForm({
 
           <Row className="mt-5">
             <FormInput
+              disabled={checkStep}
               label="ที่อยู่ปัจจุบัน"
               name="address"
               value={form.address}
@@ -272,6 +283,7 @@ function PersonalForm({
               required
             />
             <FormInput
+              disabled={checkStep}
               label="ถนน"
               name="street"
               value={form.street}
@@ -287,6 +299,7 @@ function PersonalForm({
                   จังหวัด<span className="text-require font2">*</span>
                 </label>
                 <FormSelect
+                  disabled={checkStep}
                   value={form.province_id}
                   onChange={handleForm}
                   name="province_id"
@@ -310,6 +323,7 @@ function PersonalForm({
                   อำเภอ/เขต<span className="text-require font2">*</span>
                 </label>
                 <FormSelect
+                  disabled={checkStep}
                   value={form.district_id}
                   onChange={handleForm}
                   name="district_id"
@@ -333,6 +347,7 @@ function PersonalForm({
                   ตำบล/แขวง<span className="text-require font2">*</span>
                 </label>
                 <FormSelect
+                  disabled={checkStep}
                   value={form.sub_district_id}
                   onChange={handleForm}
                   name="sub_district_id"
@@ -354,6 +369,7 @@ function PersonalForm({
 
           <Row className="mt-5 mb-3">
             <FormInput
+              disabled={checkStep}
               label="อีเมล"
               type="email"
               name="email"
@@ -362,6 +378,7 @@ function PersonalForm({
               required
             />
             <FormInput
+              disabled={checkStep}
               label="รหัสผ่าน"
               type="password"
               name="password"
@@ -372,6 +389,7 @@ function PersonalForm({
               required
             />
             <FormInput
+              disabled={checkStep}
               label="ยืนยันรหัสผ่าน"
               type="password"
               name="confirm_password"
