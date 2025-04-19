@@ -14,6 +14,7 @@ import {
 import { resizeBase64Image } from "@components/helpers";
 import { UploadFile } from "@components/dev/uploadfile";
 import { AlertPrimary } from "@components/alert/SwalAlert";
+import StepButton from "./button/StepButton";
 
 function UploadDocForm({
   setStep,
@@ -22,8 +23,8 @@ function UploadDocForm({
   setStep: (num: number) => void;
   checkStep: boolean;
 }) {
-  const router = useRouter();
-  const [loadingSubmit, setLoadingSubmit] = useState<Boolean>(false);
+  const NextStep = 6;
+  const [submit, setSubmit] = useState<Boolean>(false);
   const [province, setProvince] = useState([]);
   const [province_id, setProvince_id] = useState<number>();
   const [asset_type, setAsset_type] = useState([]);
@@ -76,55 +77,57 @@ function UploadDocForm({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const marker = locataion?.split(/,|\s+/);
-
-    const formJSON = {
-      province_id: province_id,
-      district_id: 1001,
-      collateral: 0,
-      asset_type_id: asset_type_id,
-
-      aria_size_rai: Number(rai) || null,
-      aria_size_Ngan: Number(ngan) || null,
-      aria_size_square_wa: Number(square_wa) || null,
-      aria_size_meter: Number(meter) || null,
-
-      land_title_deed_number: landNumber,
-      land_plot_number: landplotNumber,
-      land_title_deed_image: imageLTD,
-      asset_images: imagesAsset,
-      locataion_x:
-        marker && (!isNaN(Number(marker[0])) ? Number(marker[0]) : null),
-      locataion_y:
-        marker && (!isNaN(Number(marker[1])) ? Number(marker[1]) : null),
-      is_multiple_holder: mto_ownership,
-      description: description,
-    };
-    if (!imageLTD) {
-      alert("กรุณาอัพโหลดโฉนดที่ดิน");
-      return false;
-    }
-
-    if (imagesAsset.length < 3) {
-      alert("กรุณาอัพโหลดรูปภาพทรัพย์สิน (อย่างน้อย 3 รูป)");
-      return false;
-    }
     try {
-      setLoadingSubmit(true);
+      setSubmit(true);
+
+      const marker = locataion?.split(/,|\s+/);
+
+      const formJSON = {
+        province_id: province_id,
+        district_id: 1001,
+        collateral: 0,
+        asset_type_id: asset_type_id,
+
+        aria_size_rai: Number(rai) || null,
+        aria_size_Ngan: Number(ngan) || null,
+        aria_size_square_wa: Number(square_wa) || null,
+        aria_size_meter: Number(meter) || null,
+
+        land_title_deed_number: landNumber,
+        land_plot_number: landplotNumber,
+        land_title_deed_image: imageLTD,
+        asset_images: imagesAsset,
+        locataion_x:
+          marker && (!isNaN(Number(marker[0])) ? Number(marker[0]) : null),
+        locataion_y:
+          marker && (!isNaN(Number(marker[1])) ? Number(marker[1]) : null),
+        is_multiple_holder: mto_ownership,
+        description: description,
+      };
+      if (!imageLTD) {
+        AlertPrimary("กรุณาอัพโหลดโฉนดที่ดิน", "error");
+        return false;
+      }
+
+      if (imagesAsset.length < 3) {
+        AlertPrimary("กรุณาอัพโหลดรูปภาพทรัพย์สิน (อย่างน้อย 3 รูป)", "error");
+        return false;
+      }
       const { data: res_add } = await axios.post(
         api.internal("/api/asset"),
         formJSON
       );
       if (res_add.status) {
-        AlertPrimary("บันทึกข้อมูลสำเร็จ", "success").then(() => setStep(6));
+        AlertPrimary("บันทึกข้อมูลสำเร็จ", "success").then(() =>
+          setStep(NextStep)
+        );
       } else {
         AlertPrimary("ตรวจสอบข้อมูลอีกครั้ง", "error");
       }
     } catch (error) {
       AlertPrimary("ตรวจสอบข้อมูลอีกครั้ง", "error");
     } finally {
-      setLoadingSubmit(false);
+      setSubmit(false);
     }
   };
 
@@ -393,22 +396,12 @@ function UploadDocForm({
             <Button variant="white" onClick={() => setStep(4)}>
               ย้อนกลับ
             </Button>
-            {loadingSubmit === false ? (
-              <Button type="submit" className="btn btn-primary">
-                ถัดไป
-              </Button>
-            ) : (
-              <Button className="btn btn-primary" disabled>
-                <Spinner
-                  as="span"
-                  animation="grow"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                />
-                <span className="px-2">กำลังตรวจสอบข้อมูล...</span>
-              </Button>
-            )}
+            <StepButton
+              checkStep={checkStep}
+              submit={submit}
+              NextStep={NextStep}
+              setStep={setStep}
+            />
           </div>
         </form>
       </div>

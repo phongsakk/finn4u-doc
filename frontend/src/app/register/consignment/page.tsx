@@ -15,31 +15,32 @@ import SuccessForm from "./components/SuccessForm";
 import { regis_personal } from "@models/register/consignor";
 
 function ReConsignmentPage() {
-  const [personal, setPersonal] = useState<regis_personal>(
-    //   {
-    //   UserID: 24,
-    //   Phone: "0321546",
-    //   Email: "kengker1144+1241504@gmail.com",
-    //   Ref: "tset",
-    // }
-  );
+  const [personal, setPersonal] = useState<regis_personal>();
+  //   {
+  //   UserID: 24,
+  //   Phone: "0321546",
+  //   Email: "kengker1144+1241504@gmail.com",
+  //   Ref: "tset",
+  // }
 
   const [step, setStep] = useState<number>(1); // defult 1
   const [checkstep, setCheckStep] = useState<number>(0);
 
   useEffect(() => {
-    setCheckStep(step - 1);
-  }, [step])
+    if (step > checkstep) {
+      setCheckStep(step - 1);
+    }
+  }, [step]);
 
   return (
     <>
       <div className="banner-regis">
-        {/* <Image
+        <Image
           src={ImageBannerregis1}
           alt=""
           style={{ height: "auto" }}
           priority
-        /> */}
+        />
       </div>
       {step < 6 ? (
         <>
@@ -52,13 +53,15 @@ function ReConsignmentPage() {
                   </h4>
                   <div className="step justify-content-lg-between justify-content-center">
                     <div
-                      className={`child ${![1, 2, 3].includes(step) ? "d-none d-lg-block" : ""
-                        }`}
+                      className={`child ${
+                        ![1, 2, 3].includes(step) ? "d-none d-lg-block" : ""
+                      }`}
                     >
                       <Image src={ImagerRegstep1} alt="" priority />
                       <p
-                        className={`font2 ${[1, 2, 3].includes(step) ? "fw-bold" : ""
-                          }`}
+                        className={`font2 ${
+                          [1, 2, 3].includes(step) ? "fw-bold" : ""
+                        }`}
                       >
                         ลงทะเบียน
                       </p>
@@ -67,13 +70,15 @@ function ReConsignmentPage() {
                       <Image src={ImagePolygon2} alt="" priority />
                     </div>
                     <div
-                      className={`child ${![4].includes(step) ? "d-none d-lg-block" : ""
-                        }`}
+                      className={`child ${
+                        ![4].includes(step) ? "d-none d-lg-block" : ""
+                      }`}
                     >
                       <Image src={ImagerRegstep2} alt="" priority />
                       <p
-                        className={`font2 ${[4].includes(step) ? "fw-bold" : ""
-                          }`}
+                        className={`font2 ${
+                          [4].includes(step) ? "fw-bold" : ""
+                        }`}
                       >
                         ยืนยันตัวตน
                       </p>
@@ -82,13 +87,15 @@ function ReConsignmentPage() {
                       <Image src={ImagePolygon2} alt="" priority />
                     </div>
                     <div
-                      className={`child ${![5].includes(step) ? "d-none d-lg-block" : ""
-                        }`}
+                      className={`child ${
+                        ![5].includes(step) ? "d-none d-lg-block" : ""
+                      }`}
                     >
                       <Image src={ImagerRegstep3} alt="" priority />
                       <p
-                        className={`font2 ${[5].includes(step) ? "fw-bold" : ""
-                          }`}
+                        className={`font2 ${
+                          [5].includes(step) ? "fw-bold" : ""
+                        }`}
                       >
                         อัพโหลดเอกสาร
                       </p>
@@ -97,6 +104,7 @@ function ReConsignmentPage() {
                 </div>
                 {step === 1 && (
                   <PersonalForm
+                    personal={personal}
                     checkStep={checkstep >= 1}
                     setPersonal={setPersonal}
                     setStep={setStep}
@@ -104,10 +112,31 @@ function ReConsignmentPage() {
                 )}
                 {personal !== undefined && (
                   <>
-                    {step === 2 && <OTPForm checkStep={checkstep >= 2} personal={personal} setStep={setStep} />}
-                    {step === 3 && <TermsAndCon checkStep={checkstep >= 3} setStep={setStep} />}
-                    {step === 4 && <VerifyForm checkStep={checkstep >= 4} setStep={setStep} />}
-                    {step === 5 && <UploadDocForm checkStep={checkstep >= 5} setStep={setStep} />}
+                    {step === 2 && (
+                      <OTPForm
+                        checkStep={checkstep >= 2}
+                        personal={personal}
+                        setStep={setStep}
+                      />
+                    )}
+                    {step === 3 && (
+                      <TermsAndCon
+                        checkStep={checkstep >= 3}
+                        setStep={setStep}
+                      />
+                    )}
+                    {step === 4 && (
+                      <VerifyForm
+                        checkStep={checkstep >= 4}
+                        setStep={setStep}
+                      />
+                    )}
+                    {step === 5 && (
+                      <UploadDocForm
+                        checkStep={checkstep >= 5}
+                        setStep={setStep}
+                      />
+                    )}
                   </>
                 )}
               </div>

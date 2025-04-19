@@ -8,7 +8,7 @@ const StepButton = ({ checkStep, submit = false, NextStep, setStep }: any) => {
                     <>
                         <Spinner
                             as="span"
-                            animation="grow"
+                            animation="border"
                             size="sm"
                             role="status"
                             aria-hidden="true"

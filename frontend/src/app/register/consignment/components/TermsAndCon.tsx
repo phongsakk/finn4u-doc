@@ -11,7 +11,7 @@ function TermsAndCon({
   setStep: (num: number) => void;
   checkStep: boolean;
 }) {
-  const thisStep = 3;
+  const NextStep = 4;
   const [accept, setAccept] = useState<boolean>(false);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -78,7 +78,7 @@ function TermsAndCon({
         </Button>
         <StepButton
           checkStep={checkStep}
-          thisStep={thisStep}
+          NextStep={NextStep}
           setStep={setStep}
         />
       </div>

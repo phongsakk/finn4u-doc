@@ -7,6 +7,7 @@ import { Button } from "react-bootstrap";
 import { convertImage } from "@components/helpers";
 import { useState } from "react";
 import { FaCheck } from "react-icons/fa";
+import StepButton from "./button/StepButton";
 
 function VerifyForm({
   setStep,
@@ -15,6 +16,7 @@ function VerifyForm({
   setStep: (num: number) => void;
   checkStep: boolean;
 }) {
+  const NextStep = 5;
   const [licenseFont, setLicenseFont] = useState<string>();
   const [licenseBack, setLicenseBack] = useState<string>();
   const [photoWithID, setPhotoWithID] = useState<string>();
@@ -144,9 +146,11 @@ function VerifyForm({
         <Button variant="white" onClick={() => setStep(3)}>
           ย้อนกลับ
         </Button>
-        <Button variant="primary" type="submit">
-          ถัดไป
-        </Button>
+        <StepButton
+          checkStep={checkStep}
+          NextStep={NextStep}
+          setStep={setStep}
+        />
       </div>
     </form>
   );

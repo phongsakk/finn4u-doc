@@ -1787,3 +1787,14 @@ img {
 .form-control::placeholder {
   color: #a6a6a6;
 }
+
+.register-loader-page {
+  display: flex;
+  height: 650px;
+  justify-content: center;
+  align-items: center;
+  div {
+    width: 100px;
+    height: 100px;
+  }
+}
