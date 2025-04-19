@@ -1,15 +1,13 @@
 "use client";
-import {
-  handleNumberChange,
-  selectDistrict,
-  selectProvince,
-} from "@components/helpers";
+import { selectDistrict, selectProvince } from "@components/helpers";
 import { api } from "@utils/api/index";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Button, FormSelect, Spinner } from "react-bootstrap";
-import { regis_personal } from "@models/register/consignor";
+import { Button, Form, FormSelect, Row, Spinner } from "react-bootstrap";
+import { formRegisterCon, regis_personal } from "@models/register/consignor";
 import { AlertPrimary } from "@components/alert/SwalAlert";
+import StepButton from "./button/StepButton";
+import { FormInput } from "./button/FormInput";
 
 type masterData = {
   prefix: [];
@@ -18,94 +16,140 @@ type masterData = {
   subDistrict: [];
 };
 
+const fetchMaster = async () => {
+  const { data: res_masterdata } = await axios.get(
+    api.internal("/api/address_master")
+  );
+  return res_masterdata;
+};
+
 function PersonalForm({
   personal,
   setPersonal,
   setStep,
+  checkStep,
 }: {
   personal: regis_personal | undefined;
   setPersonal: (regis_persona: regis_personal) => void;
   setStep: (num: number) => void;
+  checkStep: boolean;
 }) {
-  const [prefix_id, setPrefixId] = useState<number>(1);
-  const [firstname, setFirstname] = useState<string>("");
-  const [lastname, setLanstname] = useState<string>("");
-  const [phoneNo, setPhoneNo] = useState<string>("");
-  const [online_range, setOnlineRange] = useState<string>("");
-  const [career_id, setCareerId] = useState<number>(1);
-  const [salary, setSalary] = useState<string>("");
-  const [addressNum, setAddressNum] = useState<string>("");
-  const [streetNum, setStreetNum] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [confirm_password, setConfirmPassword] = useState<string>("");
-
+  const NextStep = 2;
+  const [form, setForm] = useState(formRegisterCon);
+  const [loadingPage, setLoadingPage] = useState(true);
+  const [PasswordValidated, setPasswordValidated] = useState("");
+  const [ConfirmValidated, setConfirmValidated] = useState("");
+  const [validated, setValidated] = useState(false);
   const [masterData, setMasterData] = useState<masterData>();
   const [provinces, setProvinces] = useState<any[]>();
-  const [province_id, setProvinceId] = useState<string>();
-
   const [districts, setDistricts] = useState<any[]>();
-  const [district_id, setDistrictId] = useState<string>();
-
   const [subDistricts, setSubDistricts] = useState<any[]>();
-  const [subDistrict_id, setSubDistrictId] = useState<string>();
   const [submit, setSubmit] = useState<boolean>(false);
 
-  const handlePro = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    selectProvince(
-      e.target.value,
-      setProvinceId,
-      setDistricts,
-      masterData?.district || []
-    );
-    setDistrictId("");
-    setSubDistrictId("");
-    setSubDistricts([]);
-  };
-  const handleDis = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    selectDistrict(
-      e.target.value,
-      setDistrictId,
-      setSubDistricts,
-      masterData?.subDistrict || []
-    );
-    setSubDistrictId("");
+  const handleForm = (e: any) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   useEffect(() => {
     const boot = async () => {
       try {
-        const { data: res_masterdata } = await axios.get(
-          api.internal("/api/address_master")
-        );
-
-        setMasterData(res_masterdata);
-        setProvinces(res_masterdata.province);
+        setLoadingPage(true);
+        const master = await fetchMaster();
+        setMasterData(master);
+        setProvinces(master.province);
       } catch (error) {
-        console.error(error);
+        AlertPrimary("ไม่สามารถโหลดข้อมูลได้ - Please try again!", "error");
+      } finally {
+        setLoadingPage(false);
       }
     };
     boot();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  useEffect(() => {
+    if (!loadingPage && personal !== undefined) {
+      setForm({
+        ...personal.info,
+        user_prefix_id: String(personal.info.user_prefix_id),
+        career_id: String(personal.info.career_id),
+        province_id: String(personal.info.province_id),
+        district_id: String(personal.info.district_id),
+        sub_district_id: String(personal.info.sub_district_id),
+      });
+    }
+  }, [loadingPage]);
+
+  const handleNum = (e: any) => {
+    const { name, value } = e.target;
+    const regex = /^(\d+(\.\d*)?|\.\d+)$/;
+
+    if (regex.test(value) || value === "") {
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  useEffect(() => {
+    if (form.password.length < 8) {
+      setPasswordValidated("Then more 8 characters!");
+    } else {
+      setPasswordValidated("");
+    }
+
+    if (form.password !== form.confirm_password) {
+      setConfirmValidated("Passwords do not match!");
+    } else {
+      setConfirmValidated("");
+    }
+  }, [form.password, form.confirm_password]);
+
+  useEffect(() => {
+    if (!form.province_id) return;
+    selectProvince(form.province_id, setDistricts, masterData?.district || []);
+
+    // รีเซ็ตค่า district และ sub-district เฉพาะเมื่อ province_id เปลี่ยน
+    setForm((prev) => ({
+      ...prev,
+      district_id: String(personal?.info?.district_id) || "",
+      sub_district_id: "",
+    }));
+
+    setSubDistricts([]);
+  }, [form.province_id]);
+
+  useEffect(() => {
+    if (!form.district_id) return;
+
+    selectDistrict(
+      form.district_id,
+      setSubDistricts,
+      masterData?.subDistrict || []
+    );
+
+    // รีเซ็ตค่า sub-district เฉพาะเมื่อ district_id เปลี่ยน
+    setForm((prev) => ({
+      ...prev,
+      sub_district_id: String(personal?.info?.sub_district_id) || "",
+    }));
+  }, [form.district_id]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const event = e.currentTarget;
+    if (event.checkValidity() === false) {
+      e.stopPropagation();
+      setValidated(true);
+      return false;
+    }
 
     setSubmit(true);
-
     try {
       const model = {
-        email: email,
-        password: password,
-        confirm_password: confirm_password,
-        user_prefix_id: prefix_id,
-        firstname: firstname,
-        lastname: lastname,
-        phone_number: phoneNo,
-        online_range: online_range,
-        career_id: career_id,
-        address_number: addressNum,
-        street_number: streetNum,
+        ...form,
+        user_prefix_id: Number(form.user_prefix_id),
+        career_id: Number(form.career_id),
+        province_id: Number(form.province_id),
+        district_id: Number(form.district_id),
+        sub_district_id: Number(form.sub_district_id),
       };
 
       const { data: res } = await axios.post(
@@ -118,336 +162,244 @@ function PersonalForm({
           Phone: res.data.user.PhoneNumber,
           Email: res.data.user.email,
           Ref: res.data.ref,
+          info: model,
         };
         setPersonal(PersonalModel);
         AlertPrimary("บันทึกข้อมูลสำเร็จ", "success").then(() => {
-          setStep(2);
+          setStep(NextStep);
         });
       } else {
-        AlertPrimary("ไม่สามารถบันทึกข้อมูลได้", "error");
+        AlertPrimary(`ไม่สามารถบันทึกข้อมูลได้ - ${res.data.error}`, "error");
       }
     } catch (error) {
       AlertPrimary("ไม่สามารถบันทึกข้อมูลได้", "error");
-      console.error(error);
     } finally {
       setSubmit(false);
     }
   };
 
   return (
-    <form onSubmit={(e) => handleSubmit(e)}>
-      <div className="row mb-3">
-        <div className="col-lg-4">
-          <div className="mb-3">
-            <label className="form-label font2" htmlFor="prefix">
-              คำนำหน้า<span className="text-require font2">*</span>
-            </label>
-            <FormSelect
-              value={prefix_id}
-              onChange={(e) => setPrefixId(Number(e.target.value))}
-              id="prefix"
-              name="prefix_id"
-              required
-            >
-              {masterData?.prefix.map((x: any, index) => (
-                <option value={x.id} key={index}>
-                  {x.name}
-                </option>
-              ))}
-            </FormSelect>
-          </div>
-        </div>
-        <div className="col-lg-4">
-          <div className="mb-3">
-            <label className="form-label font2" htmlFor="firstname">
-              ชื่อ<span className="text-require font2">*</span>
-            </label>
-            <input
-              onChange={(e) => setFirstname(e.target.value)}
-              value={firstname}
-              type="text"
-              className="form-control font2"
-              id="firstname"
-              aria-describedby="text"
-              required
-            />
-          </div>
-        </div>
-        <div className="col-lg-4">
-          <div className="mb-3">
-            <label className="form-label font2" htmlFor="lastname">
-              นามสกุล<span className="text-require font2">*</span>
-            </label>
-            <input
-              onChange={(e) => setLanstname(e.target.value)}
-              value={lastname}
-              type="text"
-              className="form-control font2"
-              name="lastname"
-              id="lastname"
-              aria-describedby="text"
-              required
-            />
-          </div>
-        </div>
+    <>
+      {!loadingPage ? (
+        <Form noValidate validated={validated} onSubmit={handleSubmit}>
+          <Row className="mb-3">
+            <div className="col-lg-4">
+              <Form.Group className="mb-3">
+                <Form.Label className="form-label font2" htmlFor="prefix">
+                  คำนำหน้า<span className="text-require font2">*</span>
+                </Form.Label>
+                <Form.Select
+                  value={form.user_prefix_id}
+                  onChange={handleForm}
+                  id="prefix"
+                  name="user_prefix_id"
+                  required
+                >
+                  {masterData?.prefix.map((x: any, index) => (
+                    <option value={x.id} key={index}>
+                      {x.name}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            </div>
 
-        <div className="col-lg-4">
-          <div className="mb-3">
-            <label className="form-label font2" htmlFor="phone_number">
-              เบอร์โทรศัพท์<span className="text-require font2">*</span>
-            </label>
-            <input
+            <FormInput
+              label="ชื่อ"
+              name="firstname"
+              value={form.firstname}
+              onChange={handleForm}
+              required
+            />
+            <FormInput
+              label="นามสกุล"
+              name="lastname"
+              value={form.lastname}
+              onChange={handleForm}
+              required
+            />
+            <FormInput
+              label="เบอร์โทรศัพท์"
+              name="phone_number"
+              value={form.phone_number}
               onChange={(e) => {
                 if (e.target.value.length <= 10) {
-                  setPhoneNo(e.target.value);
+                  handleForm(e);
                 }
               }}
-              value={phoneNo}
-              type="text"
-              className="form-control font2"
-              id="phone_number"
-              aria-describedby="text"
               required
             />
-          </div>
-        </div>
-        <div className="col-lg-4">
-          <div className="mb-3">
-            <label className="form-label font2" htmlFor="online_range">
-              เวลาที่สะดวกให้ติดต่อกลับ
-              <span className="text-require font2">*</span>
-            </label>
-            <input
-              onChange={(e) => setOnlineRange(e.target.value)}
-              value={online_range}
-              type="text"
-              className="form-control font2"
+            <FormInput
+              label="เวลาที่สะดวกให้ติดต่อกลับ"
+              name="online_range"
+              value={form.online_range}
+              onChange={handleForm}
               required
             />
-          </div>
-        </div>
-      </div>
+          </Row>
 
-      <div className="row mt-5 mb-3">
-        <div className="col-lg-4">
-          <div className="mb-3">
-            <label className="form-label font2" htmlFor="career">
-              อาชีพ<span className="text-require font2">*</span>
-            </label>
-            <FormSelect
-              onChange={(e) => setCareerId(Number(e.target.value))}
-              name="career"
-              required
-            >
-              <option value={1}>พนักงาน</option>
-            </FormSelect>
-          </div>
-        </div>
-        <div className="col-lg-4">
-          <div className="mb-3">
-            <label className="form-label font2">
-              รายได้ต่อเดือน<span className="text-require font2">*</span>
-            </label>
-            <input
-              onChange={(e) => handleNumberChange(e, setSalary)}
-              value={salary}
-              type="text"
-              className="form-control font2"
-              id="salary"
+          <Row className="mt-5 mb-3">
+            <div className="col-lg-4">
+              <div className="mb-3">
+                <label className="form-label font2" htmlFor="career">
+                  อาชีพ<span className="text-require font2">*</span>
+                </label>
+                <FormSelect
+                  value={form.career_id}
+                  onChange={handleForm}
+                  name="career_id"
+                  required
+                >
+                  <option value="1">พนักงาน</option>
+                </FormSelect>
+              </div>
+            </div>
+            <FormInput
+              label="รายได้ต่อเดือน"
               name="salary"
+              value={form.salary}
+              onChange={handleNum}
               required
             />
-          </div>
-        </div>
-      </div>
+          </Row>
 
-      <div className="row mt-5">
-        <div className="col-lg-4">
-          <div className="mb-3">
-            <label className="form-label font2" htmlFor="address">
-              ที่อยู่ปัจจุบัน<span className="text-require font2">*</span>
-            </label>
-            <input
-              onChange={(e) => setAddressNum(e.target.value)}
-              value={addressNum}
-              type="text"
-              className="form-control font2"
-              id="address"
+          <Row className="mt-5">
+            <FormInput
+              label="ที่อยู่ปัจจุบัน"
               name="address"
+              value={form.address}
+              onChange={handleForm}
               required
             />
-          </div>
-        </div>
-        <div className="col-lg-4">
-          <div className="mb-3">
-            <label className="form-label font2">
-              ถนน<span className="text-require font2">*</span>
-            </label>
-            <input
-              onChange={(e) => setStreetNum(e.target.value)}
-              value={streetNum}
-              type="text"
-              className="form-control font2"
-              id="street"
+            <FormInput
+              label="ถนน"
               name="street"
+              value={form.street}
+              onChange={handleForm}
               required
             />
-          </div>
-        </div>
-      </div>
+          </Row>
 
-      <div className="row mb-3">
-        <div className="col-lg-4">
-          <div className="mb-3">
-            <label className="form-label font2" htmlFor="province">
-              จังหวัด<span className="text-require font2">*</span>
-            </label>
-            <FormSelect
-              value={province_id}
-              onChange={(e) => handlePro(e)}
-              name="province"
-              id="province"
-              required
-            >
-              <option value="" className="text-secondary">
-                เลือกจังหวัด
-              </option>
-              {provinces?.map((x: any, index) => (
-                <option value={x.id} key={index}>
-                  {x.name}
-                </option>
-              ))}
-            </FormSelect>
-          </div>
-        </div>
-        <div className="col-lg-4">
-          <div className="mb-3">
-            <label className="form-label font2" htmlFor="district">
-              อำเภอ/เขต<span className="text-require font2">*</span>
-            </label>
-            <FormSelect
-              value={district_id}
-              onChange={(e) => handleDis(e)}
-              name="district"
-              id="district"
-              required
-            >
-              <option value="" className="text-secondary">
-                เลือกอำเภอ/เขต
-              </option>
-              {districts?.map((x: any, index) => (
-                <option value={x.id} key={index}>
-                  {x.name}
-                </option>
-              ))}
-            </FormSelect>
-          </div>
-        </div>
-        <div className="col-lg-4">
-          <div className="mb-3">
-            <label className="form-label font2">
-              ตำบล/แขวง<span className="text-require font2">*</span>
-            </label>
-            <FormSelect
-              value={subDistrict_id}
-              onChange={(e) => setSubDistrictId(e.target.value)}
-              name="sub-district"
-              id="sub-district"
-              required
-            >
-              <option value="" className="text-secondary">
-                เลือกตำบล/แขวง
-              </option>
-              {subDistricts?.map((x: any, index) => (
-                <option value={x.id} key={index}>
-                  {x.name}
-                </option>
-              ))}
-            </FormSelect>
-          </div>
-        </div>
-      </div>
+          <Row className="mb-3">
+            <div className="col-lg-4">
+              <div className="mb-3">
+                <label className="form-label font2" htmlFor="province">
+                  จังหวัด<span className="text-require font2">*</span>
+                </label>
+                <FormSelect
+                  value={form.province_id}
+                  onChange={handleForm}
+                  name="province_id"
+                  id="province_id"
+                  required
+                >
+                  <option value="" className="text-secondary">
+                    เลือกจังหวัด
+                  </option>
+                  {provinces?.map((x: any, index) => (
+                    <option value={x.id} key={index}>
+                      {x.name}
+                    </option>
+                  ))}
+                </FormSelect>
+              </div>
+            </div>
+            <div className="col-lg-4">
+              <div className="mb-3">
+                <label className="form-label font2" htmlFor="district">
+                  อำเภอ/เขต<span className="text-require font2">*</span>
+                </label>
+                <FormSelect
+                  value={form.district_id}
+                  onChange={handleForm}
+                  name="district_id"
+                  id="district_id"
+                  required
+                >
+                  <option value="" className="text-secondary">
+                    เลือกอำเภอ/เขต
+                  </option>
+                  {districts?.map((x: any, index) => (
+                    <option value={x.id} key={index}>
+                      {x.name}
+                    </option>
+                  ))}
+                </FormSelect>
+              </div>
+            </div>
+            <div className="col-lg-4">
+              <div className="mb-3">
+                <label className="form-label font2">
+                  ตำบล/แขวง<span className="text-require font2">*</span>
+                </label>
+                <FormSelect
+                  value={form.sub_district_id}
+                  onChange={handleForm}
+                  name="sub_district_id"
+                  id="sub_district_id"
+                  required
+                >
+                  <option value="" className="text-secondary">
+                    เลือกตำบล/แขวง
+                  </option>
+                  {subDistricts?.map((x: any, index) => (
+                    <option value={x.id} key={index}>
+                      {x.name}
+                    </option>
+                  ))}
+                </FormSelect>
+              </div>
+            </div>
+          </Row>
 
-      <div className="row mt-5 mb-3">
-        <div className="col-lg-4">
-          <div className="mb-3">
-            <label className="form-label font2" htmlFor="email">
-              อีเมล<span className="text-require font2">*</span>
-            </label>
-            <input
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
+          <Row className="mt-5 mb-3">
+            <FormInput
+              label="อีเมล"
               type="email"
-              className="form-control font2"
-              id="email"
               name="email"
+              value={form.email}
+              onChange={handleForm}
               required
             />
-          </div>
-        </div>
-        <div className="col-lg-4">
-          <div className="mb-3">
-            <label className="form-label font2" htmlFor="password">
-              รหัสผ่าน<span className="text-require font2">*</span>
-            </label>
-            <input
-              onChange={(e) => setPassword(e.target.value)}
+            <FormInput
+              label="รหัสผ่าน"
               type="password"
-              placeholder="ต้องไม่ต่ำกว่า 9 ตัวอักษร"
-              className="form-control font2"
-              id="password"
               name="password"
-              aria-describedby="text"
+              value={form.password}
+              onChange={handleForm}
+              invalid={PasswordValidated}
+              placeholder="ต้องไม่ต่ำกว่า 8 ตัวอักษร"
               required
             />
-          </div>
-        </div>
-        <div className="col-lg-4">
-          <div className="mb-3">
-            <label className="form-label font2" htmlFor="confirm_password">
-              ยืนยันรหัสผ่าน<span className="text-require font2">*</span>
-            </label>
-            <input
-              onChange={(e) => setConfirmPassword(e.target.value)}
+            <FormInput
+              label="ยืนยันรหัสผ่าน"
               type="password"
-              placeholder="ต้องไม่ต่ำกว่า 9 ตัวอักษร"
-              className="form-control font2"
-              id="confirm_password"
               name="confirm_password"
-              aria-describedby="text"
+              value={form.confirm_password}
+              onChange={handleForm}
+              invalid={ConfirmValidated}
+              placeholder="ต้องไม่ต่ำกว่า 8 ตัวอักษร"
               required
             />
+          </Row>
+          <div className="submit-group">
+            <Button variant="white" disabled={submit}>
+              ย้อนกลับ
+            </Button>
+            <StepButton
+              checkStep={checkStep}
+              submit={submit}
+              NextStep={NextStep}
+              setStep={setStep}
+            />
           </div>
+        </Form>
+      ) : (
+        <div className="register-loader-page">
+          <Spinner animation="border" variant="success" />
         </div>
-      </div>
-      <div className="submit-group">
-        <Button variant="white" disabled={submit}>
-          ย้อนกลับ
-        </Button>
-        {!personal ? (
-          <Button variant="primary" type="submit" disabled={submit}>
-            {submit ? (
-              <>
-                <Spinner
-                  as="span"
-                  animation="grow"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                />
-                กำลังตรวจสอบข้อมูล
-              </>
-            ) : (
-              "ถัดไป"
-            )}
-          </Button>
-        ) : (
-          <Button variant="primary" onClick={() => setStep(2)}>
-            ถัดไป
-          </Button>
-        )}
-      </div>
-    </form>
+      )}
+    </>
   );
 }
 

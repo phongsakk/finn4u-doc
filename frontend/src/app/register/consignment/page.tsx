@@ -6,7 +6,7 @@ import ImagerRegstep1 from "@public/reg-step1.png";
 import ImagerRegstep2 from "@public/reg-step2.png";
 import ImagerRegstep3 from "@public/reg-step3.png";
 import PersonalForm from "./components/PersonalForm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import OTPForm from "./components/OTPForm";
 import TermsAndCon from "./components/TermsAndCon";
 import UploadDocForm from "./components/UploadDocForm";
@@ -15,16 +15,23 @@ import SuccessForm from "./components/SuccessForm";
 import { regis_personal } from "@models/register/consignor";
 
 function ReConsignmentPage() {
-  const [personal, setPersonal] = useState<regis_personal>(
+  const [personal, setPersonal] = useState<regis_personal>();
   //   {
   //   UserID: 24,
   //   Phone: "0321546",
   //   Email: "kengker1144+1241504@gmail.com",
   //   Ref: "tset",
   // }
-);
 
   const [step, setStep] = useState<number>(1); // defult 1
+  const [checkstep, setCheckStep] = useState<number>(0);
+
+  useEffect(() => {
+    if (step > checkstep) {
+      setCheckStep(step - 1);
+    }
+  }, [step]);
+
   return (
     <>
       <div className="banner-regis">
@@ -98,22 +105,39 @@ function ReConsignmentPage() {
                 {step === 1 && (
                   <PersonalForm
                     personal={personal}
+                    checkStep={checkstep >= 1}
                     setPersonal={setPersonal}
                     setStep={setStep}
                   />
                 )}
-
-                {step === 2 && personal !== undefined && (
-                  <OTPForm personal={personal} setStep={setStep} />
-                )}
-                {step === 3 && personal !== undefined && (
-                  <TermsAndCon setStep={setStep} />
-                )}
-                {step === 4 && personal !== undefined && (
-                  <VerifyForm setStep={setStep} />
-                )}
-                {step === 5 && personal !== undefined && (
-                  <UploadDocForm setStep={setStep} />
+                {personal !== undefined && (
+                  <>
+                    {step === 2 && (
+                      <OTPForm
+                        checkStep={checkstep >= 2}
+                        personal={personal}
+                        setStep={setStep}
+                      />
+                    )}
+                    {step === 3 && (
+                      <TermsAndCon
+                        checkStep={checkstep >= 3}
+                        setStep={setStep}
+                      />
+                    )}
+                    {step === 4 && (
+                      <VerifyForm
+                        checkStep={checkstep >= 4}
+                        setStep={setStep}
+                      />
+                    )}
+                    {step === 5 && (
+                      <UploadDocForm
+                        checkStep={checkstep >= 5}
+                        setStep={setStep}
+                      />
+                    )}
+                  </>
                 )}
               </div>
             </div>
