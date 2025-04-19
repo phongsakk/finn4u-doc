@@ -1,7 +1,7 @@
 import Image from "next/image";
-import grupic1 from "@/assets/img/grupic-1.png"
-import grupic2 from "@/assets/img/grupic-2.png"
-import grupic3 from "@/assets/img/grupic-3.png"
+import grupic1 from "@/public/grupic-1.png"
+import grupic2 from "@/public/grupic-2.png"
+import grupic3 from "@/public/grupic-3.png"
 import Navbar from "@/component/layout/Navbar";
 
 export default function Home() {

@@ -2,8 +2,8 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import InfoImage from "@/assets/img/info.svg";
-import EditImage from "@/assets/img/edit.svg";
+import InfoImage from "@/public/info.svg";
+import EditImage from "@/public/edit.svg";
 import Link from "next/link";
 import Navbar from "@component/layout/Navbar";
 import axios from "axios";

@@ -1,11 +1,11 @@
 import Image from 'next/image'
 import React from 'react'
 
-import avatar1 from "@/assets/img/avatars/avatar.jpg"
-import avatar2 from "@/assets/img/avatars/avatar-2.jpg"
-import avatar3 from "@/assets/img/avatars/avatar-3.jpg"
-import avatar4 from "@/assets/img/avatars/avatar-4.jpg"
-import avatar5 from "@/assets/img/avatars/avatar-5.jpg"
+import avatar1 from "@/public/avatars/avatar.jpg"
+import avatar2 from "@/public/avatars/avatar-2.jpg"
+import avatar3 from "@/public/avatars/avatar-3.jpg"
+import avatar4 from "@/public/avatars/avatar-4.jpg"
+import avatar5 from "@/public/avatars/avatar-5.jpg"
 
 const UserActions = () => {
 	return (

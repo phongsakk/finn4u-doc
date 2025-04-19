@@ -1,10 +1,9 @@
 "use client";
-import { modalParam } from "@app/consignment/index/page";
 import React from "react";
 import { Modal } from "react-bootstrap";
 import { BsFillTelephoneFill } from "react-icons/bs";
 import { AiFillMail } from "react-icons/ai";
-
+import { modalParam } from "@models/modalParam";
 function Modal_usertell({
   userTellOpen,
   handleUserTellHide,
@@ -14,7 +13,7 @@ function Modal_usertell({
 }) {
   return (
     <Modal
-      show={userTellOpen.Status}
+      show={userTellOpen.open}
       onHide={() => handleUserTellHide()}
       size="lg"
       centered

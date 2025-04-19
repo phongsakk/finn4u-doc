@@ -5,7 +5,6 @@ import {Button} from "react-bootstrap";
 function Countdown({toDate} : {
 	toDate : Date
 }) {
-
 	const calculateTimeLeft = () => {
 		const now = new Date();
 		const difference = toDate.getTime() - now.getTime();
