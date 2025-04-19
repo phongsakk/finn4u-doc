@@ -14,7 +14,6 @@ export const POST = async (req: Request) => {
         Authorization: "Bearer " + session?.user?.accessToken,
       },
     });
-
     return NextResponse.json(
       {
         status: res.status,

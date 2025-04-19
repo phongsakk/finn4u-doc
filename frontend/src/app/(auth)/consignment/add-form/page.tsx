@@ -106,13 +106,17 @@ function AddForm() {
         AlertPrimary("กรุณาอัพโหลดรูปภาพทรัพย์สิน (อย่างน้อย 3 รูป)", "error");
         return false;
       }
-      const { data: messege } = await axios.post(
+      const { data: res_asset } = await axios.post(
         api.internal("/api/asset"),
         formJSON
       );
-      AlertPrimary("เพิ่มทรัพย์สินสำเร็จ", "success").then(() => {
-        router.push("/consignment/index");
-      });
+      if (res_asset.status) {
+        AlertPrimary("เพิ่มทรัพย์สินสำเร็จ", "success").then(() => {
+          router.push("/consignment/index");
+        });
+      } else {
+        AlertPrimary("กรุณาลองใหม่อีกครั้ง", "error");
+      }
     } catch (error) {
       AlertPrimary("กรุณาลองใหม่อีกครั้ง", "error");
     } finally {
