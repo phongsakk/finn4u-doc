@@ -5,9 +5,15 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Spinner } from "react-bootstrap";
 import { useRouter } from "next/navigation";
-import { apiInternalGet, convertImage, convertImage_arr, handleNumberChange } from "@components/helpers";
+import {
+  apiInternalGet,
+  convertImage,
+  convertImage_arr,
+  handleNumberChange,
+} from "@components/helpers";
 import { resizeBase64Image } from "@components/helpers";
 import { UploadFile } from "@components/dev/uploadfile";
+import { AlertPrimary } from "@components/alert/SwalAlert";
 
 function AddForm() {
   const router = useRouter();
@@ -49,8 +55,8 @@ function AddForm() {
   const imgLTDChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (!selectedFile) return;
-    
-    const convertedImage = await convertImage(selectedFile) as string;
+
+    const convertedImage = (await convertImage(selectedFile)) as string;
     setImageLTD(convertedImage);
   };
 
@@ -59,57 +65,57 @@ function AddForm() {
     if (!selectedFiles) return;
 
     const convertedImage_arr = await convertImage_arr(selectedFiles);
-    setImagesAsset(convertedImage_arr)
+    setImagesAsset(convertedImage_arr);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    setLoadingSubmit(true);
-
-    const marker = locataion?.split(/,|\s+/);
-
-    const formJSON = {
-      province_id: province_id,
-      district_id: 1001,
-      collateral: 0,
-      asset_type_id: asset_type_id,
-
-      aria_size_rai: Number(rai) || null,
-      aria_size_Ngan: Number(ngan) || null,
-      aria_size_square_wa: Number(square_wa) || null,
-      aria_size_meter: Number(meter) || null,
-
-      land_title_deed_number: landNumber,
-      land_plot_number: landplotNumber,
-      land_title_deed_image: imageLTD,
-      asset_images: imagesAsset,
-      locataion_x:
-        marker && (!isNaN(Number(marker[0])) ? Number(marker[0]) : null),
-      locataion_y:
-        marker && (!isNaN(Number(marker[1])) ? Number(marker[1]) : null),
-      is_multiple_holder: mto_ownership,
-      description: description,
-    };
-    if (!imageLTD) {
-      alert("กรุณาอัพโหลดโฉนดที่ดิน");
-      return false;
-    }
-
-    if (imagesAsset.length < 3) {
-      alert("กรุณาอัพโหลดรูปภาพทรัพย์สิน (อย่างน้อย 3 รูป)");
-      return false;
-    }
     try {
+      setLoadingSubmit(true);
+
+      const marker = locataion?.split(/,|\s+/);
+
+      const formJSON = {
+        province_id: province_id,
+        district_id: 1001,
+        collateral: 0,
+        asset_type_id: asset_type_id,
+
+        aria_size_rai: Number(rai) || null,
+        aria_size_Ngan: Number(ngan) || null,
+        aria_size_square_wa: Number(square_wa) || null,
+        aria_size_meter: Number(meter) || null,
+
+        land_title_deed_number: landNumber,
+        land_plot_number: landplotNumber,
+        land_title_deed_image: imageLTD,
+        asset_images: imagesAsset,
+        locataion_x:
+          marker && (!isNaN(Number(marker[0])) ? Number(marker[0]) : null),
+        locataion_y:
+          marker && (!isNaN(Number(marker[1])) ? Number(marker[1]) : null),
+        is_multiple_holder: mto_ownership,
+        description: description,
+      };
+      if (!imageLTD) {
+        AlertPrimary("กรุณาอัพโหลดโฉนดที่ดิน", "error");
+        return false;
+      }
+
+      if (imagesAsset.length < 3) {
+        AlertPrimary("กรุณาอัพโหลดรูปภาพทรัพย์สิน (อย่างน้อย 3 รูป)", "error");
+        return false;
+      }
       const { data: messege } = await axios.post(
         api.internal("/api/asset"),
         formJSON
       );
-      alert("บันทึกข้อมูลสำเร็จ");
-      router.push("/consignment/index");
+      AlertPrimary("เพิ่มทรัพย์สินสำเร็จ", "success").then(() => {
+        router.push("/consignment/index");
+      });
     } catch (error) {
-      console.log(error);
-      alert("ตรวจสอบข้อมูลอีกครั้ง");
+      AlertPrimary("กรุณาลองใหม่อีกครั้ง", "error");
+    } finally {
       setLoadingSubmit(false);
     }
   };
@@ -394,7 +400,7 @@ function AddForm() {
                     <Button className="btn btn-primary" disabled>
                       <Spinner
                         as="span"
-                        animation="grow"
+                        animation="border"
                         size="sm"
                         role="status"
                         aria-hidden="true"

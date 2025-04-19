@@ -7,14 +7,18 @@ import axios from "axios";
 import { useState, useRef, useEffect } from "react";
 import { Button, Spinner } from "react-bootstrap";
 import Swal from "sweetalert2";
+import StepButton from "./button/StepButton";
 
 function OTPForm({
   personal,
   setStep,
+  checkStep,
 }: {
   personal: regis_personal;
   setStep: (num: number) => void;
+  checkStep: boolean;
 }) {
+  const NextStep = 3;
   const [submit, setSubmit] = useState<boolean>(false);
   const [refCode, setRefCode] = useState<string>();
   const [resendLoad, setResendLoad] = useState<boolean>(false);
@@ -89,7 +93,7 @@ function OTPForm({
         );
         if (res_send.status) {
           AlertPrimary("verified successfully", "success").then(() => {
-            setStep(3);
+            setStep(NextStep);
           });
         } else {
           AlertPrimary(res_send.data.message, "error");
@@ -197,22 +201,12 @@ function OTPForm({
           <Button variant="white" disabled={submit} onClick={() => setStep(1)}>
             ย้อนกลับ
           </Button>
-          <Button variant="primary" type="submit" disabled={submit}>
-            {submit ? (
-              <>
-                <Spinner
-                  as="span"
-                  animation="grow"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                />
-                กำลังตรวจสอบข้อมูล
-              </>
-            ) : (
-              "ถัดไป"
-            )}
-          </Button>
+          <StepButton
+            checkStep={checkStep}
+            submit={submit}
+            NextStep={NextStep}
+            setStep={setStep}
+          />
         </div>
       </form>
     </>

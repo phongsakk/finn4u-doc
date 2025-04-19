@@ -52,6 +52,7 @@ export const handleNumberChange = (
   }
 };
 
+
 export const formatDateThai = (value: Date) => {
   return dayjs(value).add(543, "year").format("DD/MM/YYYY HH:mm:ss");
 };
@@ -146,14 +147,11 @@ export const resizeBase64Image = ({
 
 export const selectProvince = (
   pro_id: string,
-  setProvinceId: (id: string) => void,
   setDistrict: (
     districts: { id: string; pro_id: string; name: string }[]
   ) => void,
   districts: { id: string; pro_id: string; name: string }[]
 ) => {
-  setProvinceId(pro_id);
-
   const dis = districts.filter((x: any) => x.pro_id === Number(pro_id)) || [];
 
   setDistrict(dis);
@@ -161,14 +159,11 @@ export const selectProvince = (
 
 export const selectDistrict = (
   dis_id: string,
-  setDistrictId: (id: string) => void,
   setSubDistrict: (
     subDistricts: { id: string; dis_id: string; name: string }[]
   ) => void,
   subDistricts: { id: string; dis_id: string; name: string }[]
 ) => {
-  setDistrictId(dis_id);
-
   const dis =
     subDistricts.filter((x: any) => x.dis_id === Number(dis_id)) || [];
 
