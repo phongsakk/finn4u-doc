@@ -22,6 +22,34 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
   providers: [
     Credentials({
+      id: "credentialsRegister",
+      name: "credentialsRegister",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        accessToken: { label: "accessToken", type: "text" },
+        refreshToken: { label: "refreshToken", type: "text" },
+        userType: { label: "userType", type: "text" },
+      },
+      authorize: async ({ email, accessToken, refreshToken, userType }) => {
+        if (!email && !accessToken && !refreshToken) {
+          return null;
+        }
+        try {
+          return {
+            accessToken: accessToken as string,
+            refreshToken: refreshToken as string,
+            role: userType || "general",
+            name: email as string,
+            email: email as string,
+          };
+        } catch (error) {
+          logError("bypass login error: ", error);
+          return null;
+        }
+      },
+    }),
+    Credentials({
+      id: "credentials",
       name: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },

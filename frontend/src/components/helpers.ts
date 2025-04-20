@@ -209,6 +209,8 @@ export const formatCurrency = (amount: number) => {
 };
 
 export const catchError = async (error: any) => {
+  // logError("testet",error)
+
   if (error instanceof AxiosError) {
     // logError("testet",error.response)
     return {

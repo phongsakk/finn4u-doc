@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import StepButton from "./button/StepButton";
 import Image from "next/image";
 import iConSuccess from "@public/icon-park-solid_success.png";
+import { signIn } from "next-auth/react";
 
 function OTPForm({
   personal,
@@ -93,10 +94,22 @@ function OTPForm({
             code: otp.join(""),
           }
         );
+        
         if (res_send.status) {
-          AlertPrimary("verified successfully", "success").then(() => {
-            setStep(NextStep);
+          const login = await signIn("credentialsRegister", {
+            email: res_send.data.email,
+            accessToken: res_send.data.accessToken,
+            refreshToken: res_send.data.refreshToken,
+            userType: "consignment",
+            redirect: false,
           });
+          if (login?.url) {
+            AlertPrimary("verified successfully", "success").then(() => {
+              setStep(NextStep);
+            });
+          } else {
+            AlertPrimary("please try again.", "error");
+          }
         } else {
           AlertPrimary(res_send.data.message, "error");
         }
@@ -144,7 +157,7 @@ function OTPForm({
         {checkStep ? (
           <div
             className="d-flex flex-column justify-content-center align-items-center"
-            style={{ height: 400 ,width:"auto"}}
+            style={{ height: 400, width: "auto" }}
           >
             <div className="mb-3">
               <Image
