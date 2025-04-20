@@ -180,6 +180,7 @@ func CreateAsset(c *gin.Context) {
 	}
 
 	c.JSON(201, types.Response{
+		Status:  true,
 		Code:    http.StatusCreated,
 		Message: utils.NullableString("Asset created successfully"),
 		Data:    asset,
