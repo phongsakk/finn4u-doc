@@ -20,7 +20,7 @@ export const POST = async (req: Request) => {
         code: res.code,
         data: res.data,
       },
-      { status: res.status }
+      { status: res.code }
     );
   } catch (error) {
     return NextResponse.json(await catchError(error));
