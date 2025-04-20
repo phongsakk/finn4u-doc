@@ -654,12 +654,32 @@ func ConsignorVerifyOTP(c *gin.Context) {
 
 	db.Model(&user).UpdateColumn("verified", true)
 	db.Delete(&otp)
+
+	accessToken, accessTokenExpiresIn, errAccess := user.GenerateAccessToken()
+	if errAccess != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(errAccess.Error()),
+		})
+		return
+	}
+	refreshToken, refreshTokenExpiresIn, errRefresh := user.GenerateRefreshToken()
+	if errRefresh != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(errRefresh.Error()),
+		})
+		return
+	}
 	c.JSON(http.StatusCreated, types.Response{
 		Code:    http.StatusCreated,
 		Status:  true,
 		Message: utils.NullableString("Consignor verified successfully"),
-		Data: map[string]string{
-			"email": user.Email,
+		Data: types.AuthResponse{
+			AccessToken:      accessToken,
+			RefreshToken:     refreshToken,
+			ExpiresIn:        accessTokenExpiresIn.Unix(),
+			RefreshExpiresIn: refreshTokenExpiresIn.Unix(),
 		},
 	})
 }
