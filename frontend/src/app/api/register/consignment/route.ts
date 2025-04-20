@@ -10,7 +10,7 @@ export const POST = async (req: NextRequest) => {
       api.external("/v1/auth/signup"),
       body
     );
-    log("signup:", res_regis);
+    
     return NextResponse.json(
       { status: true, data: res_regis.data },
       { status: res_regis.code }

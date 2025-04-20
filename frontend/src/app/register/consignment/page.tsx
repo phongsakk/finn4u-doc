@@ -13,6 +13,7 @@ import VerifyForm from "./components/VerifyForm";
 import SuccessForm from "./components/SuccessForm";
 import { regis_personal } from "@models/register/consignor";
 import AddAsset from "./components/AddAsset";
+import { signIn } from "next-auth/react";
 
 function ReConsignmentPage() {
   const [personal, setPersonal] = useState<regis_personal>();
