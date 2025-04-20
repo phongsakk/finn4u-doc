@@ -7,4 +7,6 @@ import (
 
 func AssetRouterGroup(r *gin.RouterGroup) {
 	r.GET("", controller.GetAsset)
+	r.POST("", controller.CreateAsset)
+	// r.GET("", controller.GetAsset)
 }
