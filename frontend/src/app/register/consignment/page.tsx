@@ -9,22 +9,16 @@ import PersonalForm from "./components/PersonalForm";
 import { useEffect, useState } from "react";
 import OTPForm from "./components/OTPForm";
 import TermsAndCon from "./components/TermsAndCon";
-import UploadDocForm from "./components/UploadDocForm";
 import VerifyForm from "./components/VerifyForm";
 import SuccessForm from "./components/SuccessForm";
 import { regis_personal } from "@models/register/consignor";
+import AddAsset from "./components/AddAsset";
 
 function ReConsignmentPage() {
   const [personal, setPersonal] = useState<regis_personal>();
-  //   {
-  //   UserID: 24,
-  //   Phone: "0321546",
-  //   Email: "kengker1144+1241504@gmail.com",
-  //   Ref: "tset",
-  // }
 
   const [step, setStep] = useState<number>(1); // defult 1
-  const [checkstep, setCheckStep] = useState<number>(0);
+  const [checkstep, setCheckStep] = useState<number>(0); //defult 0
 
   useEffect(() => {
     if (step > checkstep) {
@@ -132,10 +126,7 @@ function ReConsignmentPage() {
                       />
                     )}
                     {step === 5 && (
-                      <UploadDocForm
-                        checkStep={checkstep >= 5}
-                        setStep={setStep}
-                      />
+                      <AddAsset checkStep={checkstep >= 5} setStep={setStep} />
                     )}
                   </>
                 )}

@@ -8,6 +8,7 @@ import { formRegisterCon, regis_personal } from "@models/register/consignor";
 import { AlertPrimary } from "@components/alert/SwalAlert";
 import StepButton from "./button/StepButton";
 import { FormInput } from "./button/FormInput";
+import { LoadPage } from "@components/dev/LoadPage";
 
 type masterData = {
   prefix: [];
@@ -45,9 +46,6 @@ function PersonalForm({
   const [districts, setDistricts] = useState<any[]>();
   const [subDistricts, setSubDistricts] = useState<any[]>();
   const [submit, setSubmit] = useState<boolean>(false);
-
-  if (checkStep) {
-  }
 
   const handleForm = (e: any) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -137,15 +135,15 @@ function PersonalForm({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const event = e.currentTarget;
-    if (event.checkValidity() === false) {
-      e.stopPropagation();
-      setValidated(true);
-      return false;
-    }
-
-    setSubmit(true);
     try {
+      setSubmit(true);
+      const event = e.currentTarget;
+      if (event.checkValidity() === false) {
+        e.stopPropagation();
+        setValidated(true);
+        return false;
+      }
+
       const model = {
         ...form,
         user_prefix_id: Number(form.user_prefix_id),
@@ -273,7 +271,7 @@ function PersonalForm({
             />
           </Row>
 
-          <Row className="mt-5">
+          <Row className="mt-5 mb-3">
             <FormInput
               disabled={checkStep}
               label="ที่อยู่ปัจจุบัน"
@@ -413,9 +411,7 @@ function PersonalForm({
           </div>
         </Form>
       ) : (
-        <div className="register-loader-page">
-          <Spinner animation="border" variant="success" />
-        </div>
+        <LoadPage />
       )}
     </>
   );
