@@ -7,7 +7,7 @@ import { Button, Form, FormSelect, Row, Spinner } from "react-bootstrap";
 import { formRegisterCon, regis_personal } from "@models/register/consignor";
 import { AlertPrimary } from "@components/alert/SwalAlert";
 import StepButton from "./button/StepButton";
-import { FormInput } from "./button/FormInput";
+import { FormInput } from "@components/FormCustom/FormInput";
 import { LoadPage } from "@components/dev/LoadPage";
 
 type masterData = {
@@ -104,7 +104,6 @@ function PersonalForm({
   }, [form.password, form.confirm_password]);
 
   useEffect(() => {
-    if (!form.province_id) return;
     selectProvince(form.province_id, setDistricts, masterData?.district || []);
 
     // รีเซ็ตค่า district และ sub-district เฉพาะเมื่อ province_id เปลี่ยน
@@ -118,8 +117,6 @@ function PersonalForm({
   }, [form.province_id]);
 
   useEffect(() => {
-    if (!form.district_id) return;
-
     selectDistrict(
       form.district_id,
       setSubDistricts,

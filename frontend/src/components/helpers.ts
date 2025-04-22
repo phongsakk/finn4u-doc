@@ -52,7 +52,6 @@ export const handleNumberChange = (
   }
 };
 
-
 export const formatDateThai = (value: Date) => {
   return dayjs(value).add(543, "year").format("DD/MM/YYYY HH:mm:ss");
 };
@@ -166,7 +165,6 @@ export const selectDistrict = (
 ) => {
   const dis =
     subDistricts.filter((x: any) => x.dis_id === Number(dis_id)) || [];
-
   setSubDistrict(dis);
 };
 

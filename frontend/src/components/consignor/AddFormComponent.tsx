@@ -8,7 +8,7 @@ import { api } from "@utils/api/index";
 import { AlertPrimary } from "@components/alert/SwalAlert";
 import { LoadPage } from "@components/dev/LoadPage";
 import { useRouter } from "next/navigation";
-import { FormInput } from "@app/register/consignment/components/button/FormInput";
+import { FormInput } from "@components/FormCustom/FormInput";
 import SubmitButton from "@components/dev/SubmitButton";
 import StepButton from "@app/register/consignment/components/button/StepButton";
 
