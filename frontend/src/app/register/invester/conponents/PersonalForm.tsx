@@ -1,9 +1,9 @@
 "use client";
-import StepButton from "@app/register/consignment/components/button/StepButton";
 import { AlertPrimary } from "@components/alert/SwalAlert";
 import { LoadPage } from "@components/dev/LoadPage";
 import { FormInput } from "@components/FormCustom/FormInput";
 import { FormSelectCustom } from "@components/FormCustom/FormSelectCustom";
+import StepButton from "@components/FormCustom/StepButton";
 import { selectDistrict, selectProvince } from "@components/helpers";
 import {
   formRegisterInvest,
@@ -56,7 +56,7 @@ function PersonalForm({
       name: "พนักงาน",
     },
   ];
-
+  //==================== on loading
   useEffect(() => {
     const boot = async () => {
       try {
@@ -72,6 +72,20 @@ function PersonalForm({
     };
     boot();
   }, []);
+
+  useEffect(() => {
+    if (!loadingPage && personal !== undefined) {
+      setForm({
+        ...personal.info,
+        user_prefix_id: String(personal.info.user_prefix_id),
+        career_id: String(personal.info.career_id),
+        province_id: String(personal.info.province_id),
+        district_id: String(personal.info.district_id),
+        sub_district_id: String(personal.info.sub_district_id),
+      });
+    }
+  }, [loadingPage]);
+  //============================= end loading
 
   const handleForm = (e: any) => {
     const { name, value } = e.target;
@@ -142,15 +156,43 @@ function PersonalForm({
         return false;
       }
 
-      AlertPrimary("success", "success").then(() => {
-        setStep(NextStep);
-      });
+      const model = {
+        ...form,
+        user_prefix_id: Number(form.user_prefix_id),
+        career_id: Number(form.career_id),
+        province_id: Number(form.province_id),
+        district_id: Number(form.district_id),
+        sub_district_id: Number(form.sub_district_id),
+      };
+
+      const { data: res } = await axios.post(
+        api.internal("/api/register/invenster"),
+        model
+      );
+
+
+      if (res.status) {
+        var PersonalModel = {
+          UserID: res.data.user.id,
+          Phone: res.data.user.PhoneNumber,
+          Email: res.data.user.email,
+          Ref: res.data.ref,
+          info: model,
+        };
+        setPersonal(PersonalModel);
+        AlertPrimary("บันทึกข้อมูลสำเร็จ", "success").then(() => {
+          setStep(NextStep);
+        });
+      } else {
+        AlertPrimary(`ไม่สามารถบันทึกข้อมูลได้ - ${res.data.error}`, "error");
+      }
     } catch (error) {
       AlertPrimary("ไม่สามารถบันทึกข้อมูลได้", "error");
     } finally {
       setSubmit(false);
     }
   };
+
   return (
     <>
       {!loadingPage ? (

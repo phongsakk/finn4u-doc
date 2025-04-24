@@ -305,7 +305,7 @@ function Login({
 
               <div className="text-center">
                 <Link
-                  href="/register/consignment"
+                  href="/register/consignor"
                   onClick={() => {
                     handleLogin();
                     setRegisterOpen(false);
@@ -351,7 +351,7 @@ function Login({
 
                 <div className="text-center">
                   <Link
-                    href="/register/investment"
+                    href="/register/invester"
                     onClick={() => {
                       handleLogin();
                       setRegisterOpen(false);

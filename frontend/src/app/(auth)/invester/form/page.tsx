@@ -147,7 +147,7 @@ function FormPage() {
                     </div>
 
                     <div className="text-center">
-                        <Link href="/investment/index" className="btn-icon  mt-5 mb-5">
+                        <Link href="/invester/index" className="btn-icon  mt-5 mb-5">
                             <span>Update ข้อมูล</span>
                         </Link>
                     </div>

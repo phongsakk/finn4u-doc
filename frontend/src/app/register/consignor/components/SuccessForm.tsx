@@ -13,13 +13,15 @@ function SuccessForm() {
           style={{ width: "40%", height: "auto" }}
         />
         <h2 className="text-primary font2">ลงทะเบียนสำเร็จ</h2>
-        <p className="font2">ลงทะเบียนเป็นนักลงทุนกับ Finn4U</p>
+        <p className="font2">
+          ระบบได้รับข้อมูลการลงทะเบียนของท่านเรียบร้อยแล้ว
+        </p>
         <p className="font2">จะมีเจ้าหน้าที่ติดต่อกลับภายใน 3-5 วันทำการ</p>
       </div>
 
       <div className="submit-group">
         <Link
-          href="/consignment/index"
+          href="/consignor/index"
           className="btn btn-primary"
           role="buttom"
           type="submit"

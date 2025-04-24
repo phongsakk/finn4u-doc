@@ -1,8 +1,8 @@
 "use client";
 
+import StepButton from "@components/FormCustom/StepButton";
 import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
-import StepButton from "./button/StepButton";
 
 function TermsAndCon({
   setStep,

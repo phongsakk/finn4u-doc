@@ -14,7 +14,7 @@ import {
 import { resizeBase64Image } from "@components/helpers";
 import { UploadFile } from "@components/dev/uploadfile";
 import { AlertPrimary } from "@components/alert/SwalAlert";
-import StepButton from "./button/StepButton";
+import StepButton from "@components/FormCustom/StepButton";
 
 function UploadDocForm({
   setStep,

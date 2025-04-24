@@ -10,7 +10,7 @@ import { LoadPage } from "@components/dev/LoadPage";
 import { useRouter } from "next/navigation";
 import { FormInput } from "@components/FormCustom/FormInput";
 import SubmitButton from "@components/dev/SubmitButton";
-import StepButton from "@app/register/consignment/components/button/StepButton";
+import StepButton from "@components/FormCustom/StepButton";
 
 type masterData = {
   province: [];
@@ -112,7 +112,7 @@ function AddFormComponent({ typeform, setStep, checkStep }: AddFormType) {
       if (res_asset.status) {
         AlertPrimary("เพิ่มทรัพย์สินสำเร็จ", "success").then(() => {
           if (typeform === "auth") {
-            router.push("/consignment/index");
+            router.push("/consignor/index");
           } else if (typeform === "register" && setStep) {
             setStep(NextStep);
           }

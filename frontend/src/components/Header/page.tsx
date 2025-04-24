@@ -37,12 +37,11 @@ export default function Navbar() {
     },
     {
       label: "ผู้ขายฝาก",
-      href:
-        status === "authenticated" ? "/consignment" : "/register/consignment",
+      href: status === "authenticated" ? "/consignor" : "/register/consignor",
     },
     {
       label: "นักลงทุน",
-      href: status === "authenticated" ? "/investment" : "/register/investment",
+      href: status === "authenticated" ? "/invester" : "/register/invester",
     },
     {
       label: "Finn Tips",
@@ -121,8 +120,9 @@ export default function Navbar() {
                 ) : (
                   <div className="d-flex register">
                     <div
-                      className={`nav-item ${pathname === "/register" ? "nav-active" : ""
-                        }`}
+                      className={`nav-item ${
+                        pathname === "/register" ? "nav-active" : ""
+                      }`}
                     >
                       <Link className="nav-link" href="/register">
                         ลงทะเบียน

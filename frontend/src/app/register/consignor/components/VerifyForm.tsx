@@ -7,7 +7,7 @@ import { Button } from "react-bootstrap";
 import { convertImage } from "@components/helpers";
 import { useState } from "react";
 import { FaCheck } from "react-icons/fa";
-import StepButton from "./button/StepButton";
+import StepButton from "@components/FormCustom/StepButton";
 
 function VerifyForm({
   setStep,

@@ -6,11 +6,10 @@ import { api } from "@utils/api/index";
 import axios from "axios";
 import { useState, useRef, useEffect } from "react";
 import { Button, Spinner } from "react-bootstrap";
-import Swal from "sweetalert2";
-import StepButton from "./button/StepButton";
 import Image from "next/image";
 import iConSuccess from "@public/icon-park-solid_success.png";
 import { signIn } from "next-auth/react";
+import StepButton from "@components/FormCustom/StepButton";
 
 function OTPForm({
   personal,
@@ -88,7 +87,7 @@ function OTPForm({
         setSubmit(true);
         const mergeOtp = otp.join("");
         const { data: res_send } = await axios.post(
-          api.internal(`/api/register/consignment/verifyotp`),
+          api.internal(`/api/register/invester/verifyotp`),
           {
             email: personal.Email,
             code: otp.join(""),
@@ -100,7 +99,7 @@ function OTPForm({
             email: res_send.data.email,
             accessToken: res_send.data.accessToken,
             refreshToken: res_send.data.refreshToken,
-            userType: "consignment",
+            userType: "invester",
             redirect: false,
           });
           if (login?.url) {
@@ -128,7 +127,7 @@ function OTPForm({
       setResendLoad(true);
       setErrorResend(false);
       const { data: res_resend } = await axios.post(
-        api.internal(`/api/register/consignment/resendotp`),
+        api.internal(`/api/register/invester/resendotp`),
         {
           email: personal.Email,
         }

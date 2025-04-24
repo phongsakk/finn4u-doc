@@ -6,9 +6,9 @@ import React, { useEffect, useState } from "react";
 import { Button, Form, FormSelect, Row, Spinner } from "react-bootstrap";
 import { formRegisterCon, regis_personal } from "@models/register/consignor";
 import { AlertPrimary } from "@components/alert/SwalAlert";
-import StepButton from "./button/StepButton";
 import { FormInput } from "@components/FormCustom/FormInput";
 import { LoadPage } from "@components/dev/LoadPage";
+import StepButton from "@components/FormCustom/StepButton";
 
 type masterData = {
   prefix: [];
@@ -151,7 +151,7 @@ function PersonalForm({
       };
 
       const { data: res } = await axios.post(
-        api.internal("/api/register/consignment"),
+        api.internal("/api/register/consignor"),
         model
       );
       if (res.status) {

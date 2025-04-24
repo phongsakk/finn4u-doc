@@ -37,7 +37,7 @@ function Consignment() {
           </div>
 
           <div className="btn-wrap">
-            <Link className="btn btn-primary" href="/consignment/index">
+            <Link className="btn btn-primary" href="/consignor/index">
               ลงขายฝากกับ Finn4U
             </Link>
           </div>

@@ -36,7 +36,7 @@ function Propertysale() {
   const changePage = (num: number) => {
     setPage((prev) => ({ ...prev, page: num }));
   };
-  console.log(123)
+  
   useEffect(() => {
     const fetchAssets = async () => {
       setLoading(true);
