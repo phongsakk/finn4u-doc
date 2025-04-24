@@ -19,10 +19,9 @@ function SuccessForm() {
 
       <div className="submit-group">
         <Link
-          href="/consignor/index"
+          href="/"
           className="btn btn-primary"
           role="buttom"
-          type="submit"
         >
           กลับสู่หน้าหลัก
         </Link>

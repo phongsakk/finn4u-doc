@@ -1,6 +1,10 @@
 "use client";
 import { AlertPrimary } from "@components/alert/SwalAlert";
 import { LoadPage } from "@components/dev/LoadPage";
+import {
+  SelectDistrict,
+  SelectProvince,
+} from "@components/dev/SelectMasterData";
 import { FormInput } from "@components/FormCustom/FormInput";
 import { FormSelectCustom } from "@components/FormCustom/FormSelectCustom";
 import StepButton from "@components/FormCustom/StepButton";
@@ -19,11 +23,12 @@ type masterData = {
   province: [];
   district: [];
   subDistrict: [];
+  assetType: [];
 };
 
 const fetchMaster = async () => {
   const { data: res_masterdata } = await axios.get(
-    api.internal("/api/address_master")
+    api.internal("/api/register/invester/masterdata")
   );
   return res_masterdata;
 };
@@ -46,17 +51,28 @@ function PersonalForm({
   const [PasswordValidated, setPasswordValidated] = useState("");
   const [ConfirmValidated, setConfirmValidated] = useState("");
   const [masterData, setMasterData] = useState<masterData>();
-  const [provinces, setProvinces] = useState<any[]>();
-  const [districts, setDistricts] = useState<any[]>();
-  const [subDistricts, setSubDistricts] = useState<any[]>();
+  const [provinces, setProvinces] = useState<any[]>([]);
+  const [districts, setDistricts] = useState<any[]>([]);
+  const [subDistricts, setSubDistricts] = useState<any[]>([]);
   const [submit, setSubmit] = useState<boolean>(false);
+
   const career = [
     {
       id: 1,
       name: "พนักงาน",
     },
   ];
-  //==================== on loading
+  const interest = [
+    {
+      id: 1,
+      name: "ใกล้โรงเรียน",
+    },
+  ];
+
+  const handleForm = (e: any) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
   useEffect(() => {
     const boot = async () => {
       try {
@@ -85,15 +101,6 @@ function PersonalForm({
       });
     }
   }, [loadingPage]);
-  //============================= end loading
-
-  const handleForm = (e: any) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
 
   const handleNum = (e: any) => {
     const { name, value } = e.target;
@@ -118,32 +125,24 @@ function PersonalForm({
     }
   }, [form.password, form.confirm_password]);
 
-  useEffect(() => {
-    selectProvince(form.province_id, setDistricts, masterData?.district || []);
+  SelectProvince({
+    form,
+    setForm,
+    personal,
+    masterData,
+    setDistricts,
+    setSubDistricts,
+    selectProvince,
+  });
 
-    // รีเซ็ตค่า district และ sub-district เฉพาะเมื่อ province_id เปลี่ยน
-    setForm((prev) => ({
-      ...prev,
-      district_id: "",
-      sub_district_id: "",
-    }));
-
-    setSubDistricts([]);
-  }, [form.province_id]);
-
-  useEffect(() => {
-    selectDistrict(
-      form.district_id,
-      setSubDistricts,
-      masterData?.subDistrict || []
-    );
-
-    // รีเซ็ตค่า sub-district เฉพาะเมื่อ district_id เปลี่ยน
-    setForm((prev) => ({
-      ...prev,
-      sub_district_id: "",
-    }));
-  }, [form.district_id]);
+  SelectDistrict({
+    form,
+    setForm,
+    personal,
+    masterData,
+    setSubDistricts,
+    selectDistrict,
+  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -166,11 +165,9 @@ function PersonalForm({
       };
 
       const { data: res } = await axios.post(
-        api.internal("/api/register/invenster"),
+        api.internal("/api/register/consignor"),
         model
       );
-
-
       if (res.status) {
         var PersonalModel = {
           UserID: res.data.user.id,
@@ -259,15 +256,15 @@ function PersonalForm({
           <Row className="mt-5 mb-1">
             <FormInput
               label="ที่อยู่ปัจจุบัน"
-              name="address"
-              value={form.address}
+              name="address_number"
+              value={form.address_number}
               onChange={handleForm}
               required
             />
             <FormInput
               label="ถนน"
-              name="street"
-              value={form.street}
+              name="street_number"
+              value={form.street_number}
               onChange={handleForm}
               required
             />
@@ -301,41 +298,48 @@ function PersonalForm({
           <Row className="mt-5 mb-3">
             <FormInput
               label="ชื่อผู้ได้รับผลประโยชน์"
-              name="beneficiary"
-              value={form.beneficiary}
+              name="beneficialy"
+              value={form.beneficialy}
               onChange={handleForm}
               required
             />
             <FormInput
               label="เกี่ยวข้องเป็น"
-              name="relationship"
-              value={form.relationship}
+              name="relation"
+              value={form.relation}
               onChange={handleForm}
               required
             />
           </Row>
           <Row className="mb-3">
             <FormSelectCustom
-              data={[]}
-              value={form.area}
+              data={interest as []}
+              value={form.interest_district_id}
               onChange={handleForm}
-              name="area"
+              name="interest_district_id"
               label="บริเวณที่ต้องการลงทุน"
               required
             />
             <FormSelectCustom
-              data={[]}
+              data={masterData?.assetType as []}
               value={form.asset_type_id}
               onChange={handleForm}
               name="asset_type_id"
               label="ประเภทสินทรัพย์"
               required
             />
-            <FormSelectCustom
+            {/* <FormSelectCustom
               data={[]}
-              value={form.amount_id}
+              value={form.investment_amount}
               onChange={handleForm}
-              name="amount_id"
+              name="investment_amount"
+              label="จำนวนเงินที่ต้องการลงทุน"
+              required
+            /> */}
+            <FormInput
+              value={form.investment_amount}
+              onChange={handleNum}
+              name="investment_amount"
               label="จำนวนเงินที่ต้องการลงทุน"
               required
             />

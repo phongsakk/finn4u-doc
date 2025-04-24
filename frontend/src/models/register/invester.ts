@@ -1,30 +1,30 @@
 export type regisPersonalInvester = {
-    UserID: number;
-    Phone: string;
-    Email: string;
-    Ref: string;
-    info: any;
-  };
+  UserID: number;
+  Phone: string;
+  Email: string;
+  Ref: string;
+  info: any;
+};
 
 export const formRegisterInvest = {
+  email: "",
+  password: "",
+  confirm_password: "",
   user_prefix_id: "",
   firstname: "",
   lastname: "",
   phone_number: "",
   online_range: "",
   career_id: "",
-  salary: "",
-  address: "",
-  street: "",
+  salary:"",
+  address_number: "",
+  street_number: "",
   province_id: "",
   district_id: "",
   sub_district_id: "",
-  beneficiary:"",
-  relationship:"",
-  area:"",
-  asset_type_id:"",
-  amount_id:"",
-  email: "",
-  password: "",
-  confirm_password: "",
+  beneficialy: "",
+  relation: "",
+  interest_district_id: "",
+  asset_type_id: "",
+  investment_amount: "",
 };

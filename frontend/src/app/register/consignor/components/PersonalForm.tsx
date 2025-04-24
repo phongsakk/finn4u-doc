@@ -9,6 +9,7 @@ import { AlertPrimary } from "@components/alert/SwalAlert";
 import { FormInput } from "@components/FormCustom/FormInput";
 import { LoadPage } from "@components/dev/LoadPage";
 import StepButton from "@components/FormCustom/StepButton";
+import { SelectDistrict, SelectProvince } from "@components/dev/SelectMasterData";
 
 type masterData = {
   prefix: [];
@@ -103,32 +104,24 @@ function PersonalForm({
     }
   }, [form.password, form.confirm_password]);
 
-  useEffect(() => {
-    selectProvince(form.province_id, setDistricts, masterData?.district || []);
-
-    // รีเซ็ตค่า district และ sub-district เฉพาะเมื่อ province_id เปลี่ยน
-    setForm((prev) => ({
-      ...prev,
-      district_id: String(personal?.info?.district_id) || "",
-      sub_district_id: "",
-    }));
-
-    setSubDistricts([]);
-  }, [form.province_id]);
-
-  useEffect(() => {
-    selectDistrict(
-      form.district_id,
+   SelectProvince({
+      form,
+      setForm,
+      personal,
+      masterData,
+      setDistricts,
       setSubDistricts,
-      masterData?.subDistrict || []
-    );
-
-    // รีเซ็ตค่า sub-district เฉพาะเมื่อ district_id เปลี่ยน
-    setForm((prev) => ({
-      ...prev,
-      sub_district_id: String(personal?.info?.sub_district_id) || "",
-    }));
-  }, [form.district_id]);
+      selectProvince,
+    });
+  
+    SelectDistrict({
+      form,
+      setForm,
+      personal,
+      masterData,
+      setSubDistricts,
+      selectDistrict,
+    });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

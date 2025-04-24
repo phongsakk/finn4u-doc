@@ -10,11 +10,44 @@ import { signIn } from "next-auth/react";
 import SuccessForm from "./conponents/SuccessForm";
 import PersonalForm from "./conponents/PersonalForm";
 import { regisPersonalInvester } from "@models/register/invester";
+import OTPForm from "./conponents/OTPForm";
+import TermsAndCon from "./conponents/TermsAndCon";
+import VerifyForm from "./conponents/VerifyForm";
+import AddDoc from "./conponents/AddDoc";
 
 function ReConsignmentPage() {
   const [personal, setPersonal] = useState<regisPersonalInvester>();
+  //   {
+  //   UserID: 1,
+  //   Phone: "0666666664",
+  //   Email: "kengker1144+test17@gmail.com",
+  //   Ref: "VSGCV",
+  //   info: {
+  //     email: "kengker1144+test17@gmail.com",
+  //     password: "12345678",
+  //     confirm_password: "12345678",
+  //     user_prefix_id: 1,
+  //     firstname: "test02",
+  //     lastname: "test-1",
+  //     phone_number: "0666666664",
+  //     online_range: "15:00",
+  //     career_id: 1,
+  //     salary: "30000",
+  //     address_number: "1",
+  //     street_number: "2",
+  //     province_id: 11,
+  //     district_id: 2009,
+  //     sub_district_id: 200902,
+  //     beneficialy: "ชื่ออออ",
+  //     relation: "เมีย",
+  //     interest_district_id: 1,
+  //     asset_type_id: 7,
+  //     investment_amount: 12312345,
+  //     beneficiary: "ก",
+  //   },
+  // }
   const [step, setStep] = useState<number>(1); // defult 1
-  const [checkstep, setCheckStep] = useState<number>(0); //defult 0
+  const [checkstep, setCheckStep] = useState<number>(2); //defult 0
 
   useEffect(() => {
     if (step > checkstep) {
@@ -101,10 +134,28 @@ function ReConsignmentPage() {
                 )}
                 {personal !== undefined && (
                   <>
-                    {step === 2 && <></>}
-                    {step === 3 && <></>}
-                    {step === 4 && <></>}
-                    {step === 5 && <></>}
+                    {step === 2 && (
+                      <OTPForm
+                        checkStep={checkstep >= 2}
+                        personal={personal}
+                        setStep={setStep}
+                      />
+                    )}
+                    {step === 3 && (
+                      <TermsAndCon
+                        checkStep={checkstep >= 3}
+                        setStep={setStep}
+                      />
+                    )}
+                    {step === 4 && (
+                      <VerifyForm
+                        checkStep={checkstep >= 4}
+                        setStep={setStep}
+                      />
+                    )}
+                    {step === 5 && (
+                      <AddDoc checkStep={checkstep >= 5} setStep={setStep} />
+                    )}
                   </>
                 )}
               </div>
