@@ -25,11 +25,11 @@ export default function Navbar() {
     },
     {
       label: "ขาย",
-      href: "#",
+      href: "/sell",
     },
     {
       label: "เช่า",
-      href: "#",
+      href: "/rent",
     },
     {
       label: "ทรัพย์สินขายฝาก",
@@ -46,11 +46,11 @@ export default function Navbar() {
     },
     {
       label: "Finn Tips",
-      href: "#",
+      href: "/tips",
     },
     {
       label: "คำถามที่พบบ่อย",
-      href: "#",
+      href: "/FAQ",
     },
   ];
 

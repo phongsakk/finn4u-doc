@@ -95,6 +95,8 @@ func CreateAsset(c *gin.Context) {
 		})
 		return
 	}
+	fmt.Println(user)
+	fmt.Println(user.Email, user.ID)
 
 	db, err := database.Conn()
 	if err != nil {

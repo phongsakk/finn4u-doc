@@ -21,7 +21,7 @@ function SuccessForm() {
 
       <div className="submit-group">
         <Link
-          href="/property"
+          href="/consignment/index"
           className="btn btn-primary"
           role="buttom"
           type="submit"

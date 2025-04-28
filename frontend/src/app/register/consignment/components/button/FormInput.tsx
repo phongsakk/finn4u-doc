@@ -1,6 +1,7 @@
 import { Form } from "react-bootstrap";
 
-type FormInputProps = {
+export type FormInputProps = {
+  groupClass?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   value: string;
   type?: string;
@@ -16,6 +17,7 @@ type FormInputProps = {
 
 export const FormInput = ({
   onChange,
+  groupClass = "col-lg-4",
   value,
   type = "text",
   name,
@@ -29,26 +31,24 @@ export const FormInput = ({
 }: FormInputProps) => {
   const inputId = id ?? name;
   return (
-    <div className="col-lg-4">
-      <Form.Group className="mb-3">
-        {label && (
-          <Form.Label className="form-label font2">
-            {label} {required && <span className="text-require font2">*</span>}
-          </Form.Label>
-        )}
-        <Form.Control
-          onChange={onChange}
-          value={value}
-          type={type}
-          name={name}
-          id={inputId}
-          className={className}
-          placeholder={placeholder}
-          required={required}
-          disabled={disabled}
-        />
-        {invalid !== "" && <span className="text-danger">{invalid}</span>}
-      </Form.Group>
-    </div>
+    <Form.Group className={groupClass}>
+      {label && (
+        <Form.Label className="form-label font2">
+          {label} {required && <span className="text-require font2">*</span>}
+        </Form.Label>
+      )}
+      <Form.Control
+        onChange={onChange}
+        value={value}
+        type={type}
+        name={name}
+        id={inputId}
+        className={className}
+        placeholder={placeholder}
+        required={required}
+        disabled={disabled}
+      />
+      {invalid !== "" && <span className="text-danger">{invalid}</span>}
+    </Form.Group>
   );
 };
