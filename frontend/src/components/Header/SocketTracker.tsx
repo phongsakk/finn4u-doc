@@ -37,6 +37,7 @@ const SocketTracker = () => {
       const resp = await axios.get("/api/bid/track");
       const { data } = ResponseSchema.parse(resp.data);
       setListenners([
+        "test",
         data.user_id.toString(),
         ...data.list.map((item) => item.asset_id.toString())
       ]);
