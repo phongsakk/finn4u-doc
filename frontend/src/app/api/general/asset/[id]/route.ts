@@ -28,6 +28,7 @@ export const GET = async (
     );
 
     const data = response.data;
+    
     const model = {
       id: data.id,
       aria_size: `${data?.aria_size_rai ? `${data.aria_size_rai} ไร่` : ""} ${
@@ -54,27 +55,27 @@ export const GET = async (
       asset_tag:
         data?.asset_tag?.map((item: any, index: number) => ({
           id: item.id,
-          name: item.name,
+          name: item.tag.name,
         })) || [],
       images:
         data?.asset_images?.map((item: any) => ({
           image: item.image,
         })) || [],
-      // asset_auction: data?.asset_auction && {
-      //   from_date: data.asset_auction.from_date,
-      //   from_time: data.asset_auction.from_time,
-      //   to_date: data.asset_auction.to_date,
-      //   to_time: data.asset_auctionto_time,
-      //   max_tax: data.asset_auction.max_tax
-      // },
-      asset_auction: {
-        from_date: "10/03/2025 00:00:00",
-        to_date: "31/03/2025 23:59:59",
-        max_tax: 15,
+      asset_auction: data?.asset_auction && {
+        from_date: `${dayjs(data.asset_auction.from_date).format(
+          "DD/MM/YYYY"
+        )} ${data.asset_auction.from_time}:00`,
+        to_date: `${dayjs(data.asset_auction.to_date).format("DD/MM/YYYY")} ${
+          data.asset_auction.to_time
+        }:00`,
+        max_tax: data.asset_auction.max_tax,
       },
     };
 
-    return NextResponse.json({ status: true, data: model }, { status: 200 });
+    return NextResponse.json(
+      { status: data.status, code: data.code, data: model },
+      { status: data.code }
+    );
   } catch (error) {
     return NextResponse.json(await catchError(error));
   }

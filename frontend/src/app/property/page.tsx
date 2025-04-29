@@ -32,7 +32,6 @@ function Propertysale() {
 
   const [loading, setLoading] = useState(true);
 
-  // Function to update page number safely
   const changePage = (num: number) => {
     setPage((prev) => ({ ...prev, page: num }));
   };
@@ -144,7 +143,7 @@ function Propertysale() {
                   className="not-sale mb-5 property-item pe-auto "
                   key={index}
                 >
-                  <div className="row shadow overflow-hidden rounded">
+                  <div className="row shadow ">
                     <div className="col-lg-7">
                       <div className="relative pe-none">
                         <Map

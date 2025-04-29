@@ -1,3 +1,4 @@
+import { catchError } from "@components/helpers";
 import { auth } from "@libs/auth";
 import { api } from "@utils/api/index";
 import axios from "axios";
@@ -52,12 +53,15 @@ export const POST = async (
 
     return NextResponse.json(
       {
-        url: url_redirect,
-        message: cllk_message,
+        status: true,
+        code: 200,
+        data: {
+          message: cllk_message,
+        },
       },
       { status: 200 }
     );
   } catch (error) {
-    return NextResponse.json({ error: "bid error" }, { status: 500 });
+    return NextResponse.json(await catchError(error));
   }
 };

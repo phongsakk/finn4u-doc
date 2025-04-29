@@ -25,6 +25,7 @@ export const GET = async (req: NextRequest) => {
       }
     );
 
+
     const model = response.data.map(
       (item: any) =>
         ({
@@ -54,9 +55,11 @@ export const GET = async (req: NextRequest) => {
           },
         } as AssetModel)
     );
+
     return NextResponse.json(
       {
-        status: true,
+        status: response.status,
+        code: response.code,
         data: model,
         page: {
           page: response.page,
