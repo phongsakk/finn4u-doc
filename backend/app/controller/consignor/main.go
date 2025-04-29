@@ -60,6 +60,7 @@ func GetAsset(c *gin.Context) {
 	total := len(response)
 	totalPage := int64(math.Ceil(float64(totalAssets) / float64(len(response))))
 	c.JSON(200, types.Response{
+		Status:    true,
 		Code:      http.StatusOK,
 		Message:   utils.NullableString("Assets retrieved successfully"),
 		Data:      response,
