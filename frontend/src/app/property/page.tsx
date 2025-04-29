@@ -4,34 +4,31 @@ import Link from "next/link";
 import {
   faMagnifyingGlass,
   faClock,
-  faAngleLeft,
-  faAngleRight,
-  faChevronLeft,
-  faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Banner from "./banner";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, FormControl, FormSelect } from "react-bootstrap";
+import { FormControl, FormSelect } from "react-bootstrap";
 import { Map } from "@components/dev/map";
 import { api } from "@utils/api/index";
 import Loading from "@components/dev/loading";
 import { formatCurrency, formatNumber } from "@components/helpers";
-import Pagination, { PaginationInterface, PaginationModel } from "@components/dev/pagination";
+import Pagination, {  } from "@components/dev/pagination";
 
 function Propertysale() {
   const [assetTypes, setAssetTypes] = useState([]);
   const [assetTypeSelect, setAsTypeSelect] = useState<number>();
   const [search, setSearch] = useState("");
   const [assets, setAssets] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const [page, setPage] = useState({
     page: 1,
     total: 1,
   });
 
-  const [loading, setLoading] = useState(true);
-
+console.log(assets)
   const changePage = (num: number) => {
     setPage((prev) => ({ ...prev, page: num }));
   };

@@ -8,8 +8,6 @@ import { signOut, useSession } from "next-auth/react";
 import Login from "./Login";
 import Imagelogo from "@public/logo1.png";
 import { usePathname } from "next/navigation";
-import SocketTracker from "./SocketTracker";
-import { SocketProvider } from "@hooks/socket";
 
 export default function Navbar() {
   const [navbarOpen, setNavOpen] = useState(false);
@@ -57,9 +55,6 @@ export default function Navbar() {
 
   return (
     <>
-      <SocketProvider>
-        <SocketTracker />
-      </SocketProvider>
       {!session && <Login loginOpen={loginOpen} handleLogin={handleLogin} />}
       <div className="navbar navbar-expand-lg navbar-main">
         <div className="container-fluid">
