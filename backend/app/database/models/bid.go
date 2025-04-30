@@ -72,7 +72,7 @@ func (bid *AssetBidOffer) CreateBidOffer(user *Consignor, assetID int, offer flo
 	// count bid history of asset
 	var count, maxBid int64 = 0, 3
 	db.Model(&AssetBidOffer{}).Where("asset_id = ? AND bidder_id = ?", assetID, user.ID).Count(&count)
-	if count > maxBid {
+	if count >= maxBid {
 		return errors.New("maximum bid limit reached")
 	}
 
