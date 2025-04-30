@@ -14,12 +14,27 @@ import (
 )
 
 func FindAsset(c *gin.Context) {
-	var page = 1
-	var take = 20
-	var offset = utils.Offset(page, take)
 	var response []models.Asset
-	var isAuthorize = true
 	var user models.User
+	isAuthorize := true
+	qpage := c.DefaultQuery("page", "1")
+	page, epage := strconv.Atoi(qpage)
+	qtake := c.DefaultQuery("take", "20")
+	take, etake := strconv.Atoi(qtake)
+	qAssetTypeID := c.DefaultQuery("asset_type_id", "0")
+	assetTypeID, eAssetTypeID := strconv.Atoi(qAssetTypeID)
+	keyword := c.DefaultQuery("keyword", "")
+	offset := utils.Offset(page, take)
+
+	if epage != nil {
+		page = 1
+	}
+	if etake != nil {
+		take = 20
+	}
+	if eAssetTypeID != nil {
+		assetTypeID = 0
+	}
 
 	if err := user.GetFromRequest(c); err != nil {
 		isAuthorize = false
@@ -39,14 +54,22 @@ func FindAsset(c *gin.Context) {
 
 	if isAuthorize {
 		fmt.Println("is auth")
-		if err := db.Model(&models.Asset{}).Where("status > ?", 0).Count(&totalAssets).Error; err != nil {
+		var query = db.Model(&models.Asset{}).Where("status > ?", 0)
+		if keyword != "" {
+			query = query.Where("name LIKE ?", "%"+keyword+"%")
+		}
+		if assetTypeID != 0 {
+			query = query.Where("asset_type_id", assetTypeID)
+		}
+		if err := query.Count(&totalAssets).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, types.Response{
 				Code:  http.StatusInternalServerError,
 				Error: utils.NullableString(err.Error()),
 			})
 			return
 		}
-		if err := db.Model(&models.Asset{}).Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Where("status > ?", 0).Offset(offset).Limit(take).Order("id DESC").Find(&response).Error; err != nil {
+		var preload = query.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages")
+		if err := preload.Offset(offset).Limit(take).Order("id DESC").Find(&response).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, types.Response{
 				Code:  http.StatusInternalServerError,
 				Error: utils.NullableString(err.Error()),
@@ -54,14 +77,22 @@ func FindAsset(c *gin.Context) {
 			return
 		}
 	} else {
-		if err := db.Model(&models.Asset{}).Where("status > ?", 0).Where("is_published=?", true).Count(&totalAssets).Error; err != nil {
+		var query = db.Model(&models.Asset{}).Where("status > ?", 0).Where("is_published=?", true)
+		if keyword != "" {
+			query = query.Where("name LIKE ?", "%"+keyword+"%")
+		}
+		if assetTypeID != 0 {
+			query = query.Where("asset_type_id", assetTypeID)
+		}
+		if err := query.Count(&totalAssets).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, types.Response{
 				Code:  http.StatusInternalServerError,
 				Error: utils.NullableString(err.Error()),
 			})
 			return
 		}
-		if err := db.Model(&models.Asset{}).Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Where("status > ?", 0).Where("is_published=?", true).Offset(offset).Limit(take).Order("id DESC").Find(&response).Error; err != nil {
+		var preload = query.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages")
+		if err := preload.Offset(offset).Limit(take).Order("id DESC").Find(&response).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, types.Response{
 				Code:  http.StatusInternalServerError,
 				Error: utils.NullableString(err.Error()),

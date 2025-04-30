@@ -7,7 +7,7 @@ import (
 
 func AuthRouterGroup(r *gin.RouterGroup) {
 	r.POST("/login", con.Login)
-	r.POST("/signin", con.SignIn)
+	r.POST("/signin", con.SignIn) // consignor
 	r.POST("/checkin", con.Login)
 	// r.POST("/connect", con.Connect) // เข้าใช้งาน admin
 

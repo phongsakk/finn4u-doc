@@ -11,4 +11,6 @@ func RouterGroup(r *gin.RouterGroup) {
 	asset := r.Group("/asset")
 	AssetRouterGroup(asset)
 
+	bid := r.Group("/bid")
+	BidRouterGroup(bid)
 }
