@@ -6,5 +6,9 @@ import (
 )
 
 func BidRouterGroup(r *gin.RouterGroup) {
-	r.POST("", controller.CreateBid)
+	r.GET("/:asset_id", controller.FindBid) // [F]ind
+	r.POST("", controller.CreateBid)        // [C]reate
+	r.GET("", controller.SearchBid)         // [S]earch
+	// r.POST("/:bid_id", controller.CreateBid) // [U]pdate
+	// r.DELETE("", controller.CreateBid)       // [K]ill
 }

@@ -49,12 +49,160 @@ func Asset(c *gin.Context) {
 	})
 }
 
+func GetRecommendedAsset(c *gin.Context) {
+	page, errPage := strconv.Atoi(c.DefaultQuery("page", "1"))
+	if errPage != nil {
+		page = 1
+	}
+
+	take, errTake := strconv.Atoi(c.DefaultQuery("take", "20"))
+	if errTake != nil {
+		take = 20
+	}
+	var offset = utils.Offset(page, take)
+	var response []models.Asset
+
+	db, err := database.Conn()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	defer database.Close(db)
+
+	// Count all assets before applying pagination
+	var totalAssets int64
+	if err := db.Model(&models.Asset{}).Where("status = ? AND is_recommended = ?", 2, true).Count(&totalAssets).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+
+	// Fetch assets with pagination
+	if err := db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Where("status = 2 AND is_recommended = ?", true).Offset(offset).Limit(take).Order("id desc").Find(&response).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+
+	total := len(response)
+	totalPage := int64(math.Ceil(float64(totalAssets) / float64(len(response))))
+	c.JSON(200, types.Response{
+		Code:      http.StatusOK,
+		Message:   utils.NullableString("Assets retrieved successfully"),
+		Data:      response,
+		Page:      &page,
+		Limit:     &take,
+		Total:     &total,
+		TotalPage: &totalPage,
+	})
+}
+
+func GetPublicAsset(c *gin.Context) {
+	page, errPage := strconv.Atoi(c.DefaultQuery("page", "1"))
+	if errPage != nil {
+		page = 1
+	}
+
+	take, errTake := strconv.Atoi(c.DefaultQuery("take", "20"))
+	if errTake != nil {
+		take = 20
+	}
+	var offset = utils.Offset(page, take)
+	var response []models.Asset
+	var user models.Consignor
+	var isLogin = true
+	if err := user.GetFromRequest(c); err != nil {
+		isLogin = false
+	}
+
+	db, err := database.Conn()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	defer database.Close(db)
+
+	if isLogin {
+		// Count all assets before applying pagination
+		var totalAssets int64
+		if err := db.Model(&models.Asset{}).Where("status = ?", 2).Count(&totalAssets).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, types.Response{
+				Code:  http.StatusInternalServerError,
+				Error: utils.NullableString(err.Error()),
+			})
+			return
+		}
+
+		// Fetch assets with pagination
+		if err := db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Where("status = ?", 2).Offset(offset).Limit(take).Order("id").Find(&response).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, types.Response{
+				Code:  http.StatusInternalServerError,
+				Error: utils.NullableString(err.Error()),
+			})
+			return
+		}
+
+		total := len(response)
+		totalPage := int64(math.Ceil(float64(totalAssets) / float64(len(response))))
+		c.JSON(200, types.Response{
+			Code:      http.StatusOK,
+			Message:   utils.NullableString("Assets retrieved successfully"),
+			Data:      response,
+			Page:      &page,
+			Limit:     &take,
+			Total:     &total,
+			TotalPage: &totalPage,
+		})
+	} else {
+		// Count all assets before applying pagination
+		var totalAssets int64
+		if err := db.Model(&models.Asset{}).Where("status = ? AND is_published = ?", 2, true).Count(&totalAssets).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, types.Response{
+				Code:  http.StatusInternalServerError,
+				Error: utils.NullableString(err.Error()),
+			})
+			return
+		}
+
+		// Fetch assets with pagination
+		if err := db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Where("status = ? AND is_published = ?", 2, true).Offset(offset).Limit(take).Order("id").Find(&response).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, types.Response{
+				Code:  http.StatusInternalServerError,
+				Error: utils.NullableString(err.Error()),
+			})
+			return
+		}
+
+		total := len(response)
+		totalPage := int64(math.Ceil(float64(totalAssets) / float64(len(response))))
+		c.JSON(200, types.Response{
+			Code:      http.StatusOK,
+			Message:   utils.NullableString("Assets retrieved successfully"),
+			Data:      response,
+			Page:      &page,
+			Limit:     &take,
+			Total:     &total,
+			TotalPage: &totalPage,
+		})
+	}
+}
+
 func GetAsset(c *gin.Context) {
 	var page = 0
 	var take = 20
 	var offset = utils.Offset(page, take)
 	var response []models.Asset
-	var user models.User
+	var user models.Consignor
 	if err := user.GetFromRequest(c); err != nil {
 		c.JSON(http.StatusUnauthorized, types.Response{
 			Code:  http.StatusUnauthorized,
