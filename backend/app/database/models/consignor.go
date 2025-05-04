@@ -97,3 +97,25 @@ func (user *Consignor) GenerateRefreshToken() (string, *time.Time, error) {
 	}
 	return tokenString, &expiredAt, nil
 }
+
+func (user *Consignor) SearchBidOffer(assets *[]Asset) error {
+	db, dbError := database.Conn()
+	if dbError != nil {
+		return dbError
+	}
+	defer database.Close(db)
+
+	return db.Joins("AssetBidOffer").Where("\"AssetBidOffer\".bidder_id = ?", user.ID).Preload("AssetBidOffer").Find(&assets).Error
+}
+
+func (user Consignor) FindBidOffer(assets *Asset, AssetID int) error {
+	db, dbError := database.Conn()
+	if dbError != nil {
+		return dbError
+	}
+	defer database.Close(db)
+	return db.Joins("AssetBidOffer").
+		Where("asset.id = ? AND AssetBidOffer.bidder_id = ?", AssetID, user.ID).
+		Preload("AssetBidOffer").
+		Find(&assets).Error
+}
