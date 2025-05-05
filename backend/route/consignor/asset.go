@@ -2,7 +2,7 @@ package consignor
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/phongsakk/finn4u-back/app/controller"
+	controller "github.com/phongsakk/finn4u-back/app/controller/consignor"
 )
 
 func AssetRouterGroup(r *gin.RouterGroup) {

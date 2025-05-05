@@ -4,16 +4,19 @@ import { api } from "@utils/api/index";
 import axios, { AxiosError } from "axios";
 import { NextResponse } from "next/server";
 import { AssetModel } from "@models/AssetModel";
+import fs from "node:fs"
+import path from "node:path"
 
 export const POST = async (req: Request) => {
   try {
     const session = await auth();
     const body = await req.json();
-    const { data: res } = await axios.post(api.external("/v1/consignor/asset"), body, {
+    const response = await axios.post(api.external("/v1/consignor/asset"), body, {
       headers: {
         Authorization: "Bearer " + session?.user?.accessToken,
       },
     });
+    const res = response.data;
     return NextResponse.json(
       {
         status: res.status,
