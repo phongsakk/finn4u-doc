@@ -1,14 +1,22 @@
 import dayjs from "dayjs";
 
-export const log = (text: string) => {
+export const log = (text: any, textObject?: any) => {
+  if (textObject === undefined) {
+    textObject = "";
+  }
   console.log(
-    `\x1b[32m${dayjs().format("DD-MM-YYYY HH:mm:ss")}\x1b[0m -> ${text}`
+    `\x1b[32m${dayjs().format("DD-MM-YYYY HH:mm:ss")}\x1b[0m -> ${text}`,
+    textObject
   );
 };
 
-export const logError = (text: string) => {
+export const logError = (text: any, textObject?: any) => {
+  if (textObject === undefined) {
+    textObject = "";
+  }
   console.log(
-    `\x1b[31m${dayjs().format("DD-MM-YYYY HH:mm:ss")}\x1b[0m -> ${text}`
+    `\x1b[31m${dayjs().format("DD-MM-YYYY HH:mm:ss")}\x1b[0m -> ${text}`,
+    textObject
   );
 };
 
@@ -44,3 +52,32 @@ export const formatNumber = (
 
   return new Intl.NumberFormat("en-US", options).format(value);
 };
+
+
+export const handleNumberChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    inputNum: (value: string) => void
+  ) => {
+    const value = e.target.value;
+
+    const regex = /^(\d+(\.\d*)?|\.\d+)$/;
+
+    if (regex.test(value) || value === "") {
+      inputNum(value);
+    }
+  };
+
+  export const numberChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    updateState: (newData: any) => void,
+    field: keyof any
+  ) => {
+    const value = e.target.value;
+  
+    const regex = /^(\d+(\.\d*)?|\.\d+)$/;
+  
+    if (regex.test(value) || value === "") {
+      updateState({ [field]: value });
+    }
+  };
+  
