@@ -25,7 +25,11 @@ function AssetPicture({ images }: { images: any[] }) {
           onClick={handleGallery}
           key={index}
         >
-          <img src={item.image} alt="" className="img-fluid object-fit-cover" />
+          <CustomImage
+            src={`/uploads/property/${item.image}`}
+            className="img-fluid object-fit-cover"
+            style={{width:"100"}}
+          />
         </Link>
       ))}
       <Modal
