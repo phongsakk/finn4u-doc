@@ -20,6 +20,7 @@ import LoadingModal from "./LoadingModal";
 import { AuctionInterface, auctionModel } from "@models/property";
 import { loaderModel, loaderType } from "@models/common";
 import ApiError from "@component/dev/ApiStatus";
+import CustomImage from "./CustomImage";
 
 dayjs().locale("th");
 
@@ -298,10 +299,9 @@ function ConModal(ModalOpen: PropertyModal) {
                           type="checkbox"
                           checked={item.is_display}
                         />
-                        <img
+                        <CustomImage
                           className="img-responsive w-100 object-fit"
-                          src={item.name}
-                          width={100}
+                          src={`/uploads/property/${item.name}`}
                         />
                         <Image className="img-check" src={checkImage} alt="" />
                       </label>
