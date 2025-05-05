@@ -10,7 +10,7 @@ function page() {
   const handleAccept = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!terms) return alert("กรุณายอมรับข้อตกลง");
-    router.push("/consignment/add-form");
+    router.push("/consignor/add-form");
   };
   return (
     <div className="consignment-warning">

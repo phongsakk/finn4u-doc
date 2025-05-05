@@ -205,7 +205,7 @@ function Index() {
                                     <Image src={imageinfo} alt="" />
                                   </div>
                                   <div className="group col-auto">
-                                    <Link href="/consignment/detail">
+                                    <Link href="/consignor/detail">
                                       <Image src={imageusertell} alt="" />
                                     </Link>
                                   </div>
@@ -223,7 +223,7 @@ function Index() {
             <hr />
             <div className="d-flex">
               <Link
-                href="/consignment/warning"
+                href="/consignor/warning"
                 className="btn-icon d-flex align-items-center"
               >
                 <CustomImage

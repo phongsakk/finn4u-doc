@@ -72,12 +72,12 @@ function AddFormComponent({ typeform, setStep, checkStep }: AddFormType) {
       setSubmit(true);
       const event = e.currentTarget;
 
-      if (!formImage.land_title_deed_image) {
+      if (!form.land_title_deed_image) {
         AlertPrimary("กรุณาอัพโหลดโฉนดที่ดิน", "error");
         return false;
       }
 
-      if (formImage.asset_images.length < 3) {
+      if (form.asset_images.length < 3) {
         AlertPrimary("กรุณาอัพโหลดรูปภาพทรัพย์สิน (อย่างน้อย 3 รูป)", "error");
         return false;
       }
@@ -91,14 +91,6 @@ function AddFormComponent({ typeform, setStep, checkStep }: AddFormType) {
 
       const model = {
         ...form,
-        province_id: Number(form.province_id),
-        district_id: Number(form.district_id),
-        asset_type_id: Number(form.asset_type_id),
-        aria_size_rai: Number(form.aria_size_rai),
-        aria_size_Ngan: Number(form.aria_size_Ngan),
-        aria_size_square_wa: Number(form.aria_size_square_wa),
-        land_title_deed_image: formImage.land_title_deed_image,
-        asset_images: formImage.asset_images,
         locataion_x:
           marker && (!isNaN(Number(marker[0])) ? Number(marker[0]) : null),
         locataion_y:
@@ -107,7 +99,12 @@ function AddFormComponent({ typeform, setStep, checkStep }: AddFormType) {
 
       const { data: res_asset } = await axios.post(
         api.internal("/api/asset"),
-        model
+        model,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       if (res_asset.status) {
         AlertPrimary("เพิ่มทรัพย์สินสำเร็จ", "success").then(() => {
@@ -238,7 +235,7 @@ function AddFormComponent({ typeform, setStep, checkStep }: AddFormType) {
               name="land_title_deed_image"
               label="กรุณาอัพโหลดโฉนดที่ดิน"
               onChange={(value) => {
-                setFormImage((prev) => ({
+                setForm((prev) => ({
                   ...prev,
                   land_title_deed_image: value,
                 }));
@@ -250,7 +247,7 @@ function AddFormComponent({ typeform, setStep, checkStep }: AddFormType) {
               label="กรุณาอัพโหลดรูปภาพทรัพย์สิน (อย่างน้อย 3 รูป)"
               multiple
               onChange={(value) => {
-                setFormImage((prev) => ({
+                setForm((prev) => ({
                   ...prev,
                   asset_images: value,
                 }));

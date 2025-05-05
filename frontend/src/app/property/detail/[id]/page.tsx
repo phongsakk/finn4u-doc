@@ -29,6 +29,7 @@ import axios from "axios";
 import { api } from "@utils/api/index";
 import { AlertPrimary } from "@components/alert/SwalAlert";
 import { LoadPage } from "@components/dev/LoadPage";
+import AssetPicture from "@components/dev/property/AssetPicture";
 
 dayjs.extend(customParseFormat);
 dayjs.locale("th");
@@ -41,8 +42,6 @@ function PropertyPage() {
   }
   const [asset, setAsset] = useState<any>();
   const [endTime, setEndTime] = useState<Date>();
-  const [galleryOpen, setGallery] = useState(false);
-  const [modalImage, setModalImage] = useState<string>("");
   const [bidPercent, setBidPercent] = useState<string>();
   const [loading, setLoading] = useState(true);
   const [submit, setSubmit] = useState(false);
@@ -76,14 +75,6 @@ function PropertyPage() {
       boot();
     }
   }, [params.id]);
-
-  const handleGallery = (e: React.FormEvent) => {
-    e.preventDefault();
-    const clickedImage = e.target as HTMLImageElement;
-    setModalImage(clickedImage.src);
-
-    setGallery(true);
-  };
 
   const handleBid = async () => {
     if (!bidPercent) {
@@ -139,20 +130,7 @@ function PropertyPage() {
                     </div>
                   </div>
                   <div className="col col-lg-3 col-sm-12 col-12 col-xs-12">
-                    {asset?.images.map((item: any, index: number) => (
-                      <Link
-                        className="gallery-item"
-                        href="#"
-                        onClick={handleGallery}
-                        key={index}
-                      >
-                        <img
-                          src={item.image}
-                          alt=""
-                          className="img-fluid object-fit-cover"
-                        />
-                      </Link>
-                    ))}
+                    <AssetPicture images={asset?.images} />
                   </div>
                 </div>
                 <div className="time">
@@ -358,25 +336,6 @@ function PropertyPage() {
                   </>
                 )}
             </section>
-            <Modal
-              className="modal-image-gallery"
-              show={galleryOpen}
-              onHide={() => setGallery(false)}
-              size="xl"
-              centered
-            >
-              <Modal.Body>
-                <div className="position-absolute top-0 end-0 p-2 bg-danger rounded-circle">
-                  <Button
-                    variant="close"
-                    onClick={() => setGallery(false)}
-                  ></Button>
-                </div>
-                <div className="show-image">
-                  <CustomImage src={modalImage} alt="Modal Image" style={{}} />
-                </div>
-              </Modal.Body>
-            </Modal>
           </div>
         ) : (
           <LoadPage />
