@@ -121,7 +121,7 @@ func FindAsset(c *gin.Context) {
 
 func SearchAsset(c *gin.Context) {
 	var assetIdStr = c.Param("id")
-	var user models.User
+	var user models.Consignor
 	var isAuthorize = true
 	var response models.Asset
 	assetId, err := strconv.Atoi(assetIdStr)
