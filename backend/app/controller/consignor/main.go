@@ -237,6 +237,7 @@ func GetRecommendedAsset(c *gin.Context) {
 	totalPage := int64(math.Ceil(float64(totalAssets) / float64(len(response))))
 	c.JSON(200, types.Response{
 		Code:      http.StatusOK,
+		Status:    true,
 		Message:   utils.NullableString("Assets retrieved successfully"),
 		Data:      response,
 		Page:      &page,
@@ -247,6 +248,7 @@ func GetRecommendedAsset(c *gin.Context) {
 }
 
 func GetPublicAsset(c *gin.Context) {
+	fmt.Println("GetPublicAsset")
 	page, errPage := strconv.Atoi(c.DefaultQuery("page", "1"))
 	if errPage != nil {
 		page = 1
@@ -297,6 +299,7 @@ func GetPublicAsset(c *gin.Context) {
 		total := len(response)
 		totalPage := int64(math.Ceil(float64(totalAssets) / float64(len(response))))
 		c.JSON(200, types.Response{
+			Status:    true,
 			Code:      http.StatusOK,
 			Message:   utils.NullableString("Assets retrieved successfully"),
 			Data:      response,
@@ -329,6 +332,7 @@ func GetPublicAsset(c *gin.Context) {
 		totalPage := int64(math.Ceil(float64(totalAssets) / float64(len(response))))
 		c.JSON(200, types.Response{
 			Code:      http.StatusOK,
+			Status:    true,
 			Message:   utils.NullableString("Assets retrieved successfully"),
 			Data:      response,
 			Page:      &page,
