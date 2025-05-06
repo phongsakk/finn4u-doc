@@ -7,6 +7,7 @@ export type AssetModel = {
   location_y: number;
   province_name: string;
   asset_type_name: string;
+  asset_image: string;
   asset_auction?: {
     from_date?: Date;
     from_time?: string;

@@ -3,35 +3,67 @@ import CustomImage from "@components/CustomImage";
 import Link from "next/link";
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
+import { GrPrevious, GrNext } from "react-icons/gr";
+
+const galleryModel = {
+  src: "",
+  index: 0,
+  imgPrev: 0,
+  imgNext: 0,
+};
 
 function AssetPicture({ images }: { images: any[] }) {
-  const [modalImage, setModalImage] = useState<string>("");
+  const [modalImage, setModalImage] = useState(galleryModel);
   const [galleryOpen, setGallery] = useState(false);
 
-  const handleGallery = (e: React.FormEvent) => {
-    e.preventDefault();
-    const clickedImage = e.target as HTMLImageElement;
-    setModalImage(clickedImage.src);
-
+  const handleGallery = (index: number) => {
+    setModalImage({
+      src: `/uploads/property/${images[index].image}`,
+      index: index,
+      imgPrev: index === 0 ? images.length - 1 : index - 1,
+      imgNext: index === images.length - 1 ? 0 : index + 1,
+    });
     setGallery(true);
   };
 
   return (
     <>
-      {images.map((item: any, index: number) => (
-        <Link
-          className="gallery-item"
-          href="#"
-          onClick={handleGallery}
-          key={index}
-        >
+      <div className="col col-12 col-lg-9 mb-md-3 mb-sm-3 col-sm-12 col-xs-12 mb-lg-0 mb-sm-0 mb-3">
+        <div className="gallery-item" onClick={() => handleGallery(0)}>
           <CustomImage
-            src={`/uploads/property/${item.image}`}
+            src={`/uploads/property/${images[0].image ?? ""}`}
             className="img-fluid object-fit-cover"
-            style={{width:"100"}}
+            style={{
+              width: "100%",
+              height: "541.88px",
+            }}
           />
-        </Link>
-      ))}
+        </div>
+      </div>
+      <div className="col col-lg-3 col-sm-12 col-12 col-xs-12">
+        {images.map((item: any, index: number) => {
+          if (index < 3) {
+            return (
+              <div
+                className="gallery-frame mb-3"
+                key={index}
+                onClick={() => handleGallery(index)}
+              >
+                {images.length > 3 && index === 2 && (
+                  <div className="gallery-filter">{images.length - 3}+</div>
+                )}
+                <CustomImage
+                  src={`/uploads/property/${item.image}`}
+                  className="img-fluid object-fit-cover"
+                  style={{ width: "100%" }}
+                />
+              </div>
+            );
+          }
+          return null;
+        })}
+      </div>
+
       <Modal
         className="modal-image-gallery"
         show={galleryOpen}
@@ -40,11 +72,22 @@ function AssetPicture({ images }: { images: any[] }) {
         centered
       >
         <Modal.Body>
-          <div className="position-absolute top-0 end-0 p-2 bg-danger rounded-circle">
-            <Button variant="close" onClick={() => setGallery(false)}></Button>
-          </div>
           <div className="show-image">
-            <CustomImage src={modalImage} alt="Modal Image" style={{}} />
+            <div className="position-absolute top-0 end-0 p-1 bg-danger rounded-circle">
+              <Button
+                variant="close"
+                onClick={() => setGallery(false)}
+              ></Button>
+            </div>
+            <GrPrevious
+              className="previous-img"
+              onClick={() => handleGallery(modalImage.imgPrev)}
+            />
+            <GrNext
+              className="next-img"
+              onClick={() => handleGallery(modalImage.imgNext)}
+            />
+            <CustomImage src={modalImage.src} alt="Modal Image" style={{}} />
           </div>
         </Modal.Body>
       </Modal>

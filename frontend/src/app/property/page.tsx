@@ -1,10 +1,7 @@
 "use client";
 import CustomImage from "../../components/CustomImage";
 import Link from "next/link";
-import {
-  faMagnifyingGlass,
-  faClock,
-} from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass, faClock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Banner from "./banner";
 import { useEffect, useState } from "react";
@@ -14,7 +11,7 @@ import { Map } from "@components/dev/map";
 import { api } from "@utils/api/index";
 import Loading from "@components/dev/loading";
 import { formatCurrency, formatNumber } from "@components/helpers";
-import Pagination, {  } from "@components/dev/pagination";
+import Pagination from "@components/dev/pagination";
 
 function Propertysale() {
   const [assetTypes, setAssetTypes] = useState([]);
@@ -28,21 +25,24 @@ function Propertysale() {
     total: 1,
   });
 
-console.log(assets)
+  console.log(assets);
   const changePage = (num: number) => {
     setPage((prev) => ({ ...prev, page: num }));
   };
-  
+
   useEffect(() => {
     const fetchAssets = async () => {
       setLoading(true);
       try {
-        const { data: res_assets } = await axios.get(api.internal("/api/general/asset"), {
-          params: {
-            page: page.page,
-            asset_type: assetTypeSelect
-          },
-        });
+        const { data: res_assets } = await axios.get(
+          api.internal("/api/general/asset"),
+          {
+            params: {
+              page: page.page,
+              asset_type: assetTypeSelect,
+            },
+          }
+        );
 
         if (res_assets.status) {
           setAssets(res_assets.data);
@@ -61,7 +61,9 @@ console.log(assets)
   useEffect(() => {
     const fetchAssetTypes = async () => {
       try {
-        const { data: res_astype } = await axios.get(api.internal("/api/asset-type"));
+        const { data: res_astype } = await axios.get(
+          api.internal("/api/asset-type")
+        );
         if (res_astype.status) {
           setAssetTypes(res_astype.data);
         }
@@ -143,11 +145,8 @@ console.log(assets)
                   <div className="row shadow ">
                     <div className="col-lg-7">
                       <div className="relative pe-none">
-                        <Map
-                          position={{
-                            lat: item.location_x,
-                            lng: item.locataion_y,
-                          }}
+                        <CustomImage
+                          src={item?.asset_image ?? ""}
                         />
                         <span className="badge font2">
                           {item.asset_type_name}

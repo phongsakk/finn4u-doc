@@ -86,13 +86,16 @@ function PropertyPage() {
       const { data: res_bid } = await axios.post(
         api.internal(`/api/bid/${params.id}`),
         {
-          bid: Number(bidPercent),
+          offer: Number(bidPercent),
         }
       );
       if (res_bid.status) {
         AlertPrimary("คุณได้ทำการ Bid สำเร็จแล้ว", "success");
       } else {
-        AlertPrimary("Bid ไม่สำเร็จ", "success");
+        AlertPrimary(
+          "Bid ไม่สำเร็จ - ถึงขีดจำกัดการเสนอราคาสูงสุดแล้ว",
+          "error"
+        );
       }
     } catch (error) {
       console.error(error);
@@ -115,23 +118,7 @@ function PropertyPage() {
             <section className="photo-gallery">
               <div className="container">
                 <div className="row gallery-grid">
-                  <div className="col col-12 col-lg-9 mb-md-3 mb-sm-3 col-sm-12 col-xs-12 mb-lg-0 mb-sm-0 mb-3">
-                    <div className="gallery-item">
-                      <Map
-                        position={{
-                          lat: Number(asset?.location_x),
-                          lng: Number(asset?.locataion_y),
-                        }}
-                        style={{
-                          width: "100%",
-                          height: "541.88px",
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col col-lg-3 col-sm-12 col-12 col-xs-12">
-                    <AssetPicture images={asset?.images} />
-                  </div>
+                  <AssetPicture images={asset?.images} />
                 </div>
                 <div className="time">
                   <div className="row">

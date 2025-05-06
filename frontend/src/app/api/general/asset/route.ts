@@ -25,7 +25,6 @@ export const GET = async (req: NextRequest) => {
       }
     );
 
-
     const model = response.data.map(
       (item: any) =>
         ({
@@ -47,6 +46,9 @@ export const GET = async (req: NextRequest) => {
           location_y: item.location_y,
           province_name: item?.province?.name,
           asset_type_name: item?.asset_type?.name,
+          asset_image: `/uploads/property/${
+            item?.asset_images[0]?.image ?? ""
+          }`,
           asset_auction: item?.asset_auction && {
             from_date: item.asset_auction.from_date,
             from_time: item.asset_auction.from_time,
@@ -66,7 +68,7 @@ export const GET = async (req: NextRequest) => {
           total: response.total,
         },
       },
-      { status: 200 }
+      { status: response.code }
     );
   } catch (error) {
     return NextResponse.json(await catchError(error));
