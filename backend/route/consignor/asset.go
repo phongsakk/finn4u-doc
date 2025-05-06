@@ -16,7 +16,7 @@ func AssetRouterGroup(r *gin.RouterGroup) {
 
 	guest.GET("/recommended", controller.GetRecommendedAsset)
 	guest.GET("/public", controller.GetPublicAsset)
+	guest.GET("/public/:id", controller.SearchAsset)
 	strict.GET("", controller.GetAsset)
-	strict.GET("/:id", controller.SearchAsset)
 	strict.POST("", controller.CreateAsset)
 }

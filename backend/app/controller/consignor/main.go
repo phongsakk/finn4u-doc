@@ -345,7 +345,7 @@ func GetPublicAsset(c *gin.Context) {
 
 func SearchAsset(c *gin.Context) {
 	var assetIdStr = c.Param("id")
-	var user models.User
+	var user models.Consignor
 	var isAuthorize = true
 	var response models.Asset
 	assetId, err := strconv.Atoi(assetIdStr)
@@ -370,7 +370,7 @@ func SearchAsset(c *gin.Context) {
 		return
 	}
 	defer database.Close(db)
-	if err := db.Model(models.Asset{}).Where("id=?", assetId).Preload("AssetAuction").Preload("Province").Preload("District").Preload("AssetType").Preload("AssetTag").Preload("AssetTag.Tag").Preload("Owner").Preload("AssetImages").Find(&response).Error; err != nil {
+	if err := db.Model(models.Asset{}).Where("id=?", assetId).Preload("AssetAuction").Preload("Province").Preload("District").Preload("AssetType").Preload("AssetTag").Preload("AssetTag.Tag").Preload("Owner").Preload("AssetImages").Preload("AssetAppraisal").Find(&response).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
 			Error: utils.NullableString(err.Error()),
@@ -387,14 +387,6 @@ func SearchAsset(c *gin.Context) {
 			// Authorize: &isAuthorize,
 		})
 		return
-	} else {
-		if err := db.Model(models.Asset{}).Where("id=?", assetId).Find(&response).Error; err != nil {
-			c.JSON(http.StatusNotFound, types.Response{
-				Code:  http.StatusNotFound,
-				Error: utils.NullableString(err.Error()),
-			})
-			return
-		}
 	}
 
 	if isAuthorize || response.IsPublished {
