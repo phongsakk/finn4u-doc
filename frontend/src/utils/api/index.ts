@@ -2,7 +2,8 @@ import settingApi from "@setting/api";
 
 export const api = {
     internal: (path: string) => {
-      return path;
+
+      return "http://localhost:3000" + path;
     },
     external: (path: string) => {
       const baseUrl = settingApi.base.trim();
