@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: nnif4udbpassword
       POSTGRES_DB: finn4u
     ports:
-      - "8077:5432"
+      - "${PORT_DATABASE}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -29,7 +29,7 @@ services:
       DB_NAME: finn4u
       DB_PORT: 5432
     ports:
-      - "8078:8080"
+      - "${PORT_API}:8080"
 
   frontend:
     build:
@@ -38,9 +38,11 @@ services:
     container_name: finn4u_frontend
     restart: always
     ports:
-      - "8079:3000"
+      - "${PORT_WEB_USER}:3000"
     depends_on:
       - backend
+    volumes:
+      - ./uploads:/app/public/uploads
 
   admin:
     build:
@@ -49,7 +51,7 @@ services:
     container_name: finn4u_admin
     restart: always
     ports:
-      - "8076:3000"
+      - "${PORT_WEB_ADMIN}:3000"
     depends_on:
       - backend
 
