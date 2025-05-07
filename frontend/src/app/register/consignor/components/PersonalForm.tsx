@@ -9,7 +9,11 @@ import { AlertPrimary } from "@components/alert/SwalAlert";
 import { FormInput } from "@components/FormCustom/FormInput";
 import { LoadPage } from "@components/dev/LoadPage";
 import StepButton from "@components/FormCustom/StepButton";
-import { SelectDistrict, SelectProvince } from "@components/dev/SelectMasterData";
+import {
+  SelectDistrict,
+  SelectProvince,
+} from "@components/dev/SelectMasterData";
+import { CareerList } from "@models/MasterModel";
 
 type masterData = {
   prefix: [];
@@ -104,24 +108,24 @@ function PersonalForm({
     }
   }, [form.password, form.confirm_password]);
 
-   SelectProvince({
-      form,
-      setForm,
-      personal,
-      masterData,
-      setDistricts,
-      setSubDistricts,
-      selectProvince,
-    });
-  
-    SelectDistrict({
-      form,
-      setForm,
-      personal,
-      masterData,
-      setSubDistricts,
-      selectDistrict,
-    });
+  SelectProvince({
+    form,
+    setForm,
+    personal,
+    masterData,
+    setDistricts,
+    setSubDistricts,
+    selectProvince,
+  });
+
+  SelectDistrict({
+    form,
+    setForm,
+    personal,
+    masterData,
+    setSubDistricts,
+    selectDistrict,
+  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -247,7 +251,11 @@ function PersonalForm({
                   name="career_id"
                   required
                 >
-                  <option value="1">พนักงาน</option>
+                  {CareerList?.map((item, index) => (
+                    <option value={item.id} key={index}>
+                      {item.name}
+                    </option>
+                  ))}
                 </FormSelect>
               </div>
             </div>

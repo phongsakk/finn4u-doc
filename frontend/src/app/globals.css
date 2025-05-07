@@ -719,10 +719,21 @@ img {
   }
 }
 
+.property-recom {
+  width: 100% !important;
+  aspect-ratio: 1.338;
+  object-fit: cover;
+}
+
 .land-sale-2 {
   margin: 3rem 0;
   .property-item {
     border-radius: 15px;
+    .property-img {
+      width: 100% !important;
+      height: 410px !important;
+      object-fit: cover;
+    }
   }
   .relative {
     position: relative;

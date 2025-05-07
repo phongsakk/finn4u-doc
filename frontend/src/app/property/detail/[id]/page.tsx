@@ -53,7 +53,7 @@ function PropertyPage() {
         setLoading(true);
 
         const { data: res_asset } = await axios.get(
-          api.internal(`/api/general/asset/${params.id}`)
+          api.internal(`/api/consignor/asset/public/${params.id}`)
         );
         if (res_asset.status) {
           setAsset(res_asset.data);

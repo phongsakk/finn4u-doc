@@ -6,17 +6,27 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Banner from "./banner";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { FormControl, FormSelect } from "react-bootstrap";
-import { Map } from "@components/dev/map";
+import { FormControl, FormSelect, Row } from "react-bootstrap";
+import { IoBanOutline } from "react-icons/io5";
 import { api } from "@utils/api/index";
 import Loading from "@components/dev/loading";
 import { formatCurrency, formatNumber } from "@components/helpers";
 import Pagination from "@components/dev/pagination";
+import { FormSelectCustom } from "@components/FormCustom/FormSelectCustom";
+import { PriceRange } from "@models/MasterModel";
+const MasterData = {
+  asset_type: [],
+  price_range: [],
+};
+const SearchModel = {
+  asset_type: "",
+  price_range: "",
+  search_box: "",
+};
 
 function Propertysale() {
-  const [assetTypes, setAssetTypes] = useState([]);
-  const [assetTypeSelect, setAsTypeSelect] = useState<number>();
-  const [search, setSearch] = useState("");
+  const [master, setMaster] = useState(MasterData);
+  const [formSearch, setFormSearch] = useState(SearchModel);
   const [assets, setAssets] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -25,9 +35,39 @@ function Propertysale() {
     total: 1,
   });
 
-  console.log(assets);
   const changePage = (num: number) => {
     setPage((prev) => ({ ...prev, page: num }));
+  };
+
+  useEffect(() => {
+    const fetchAssetTypes = async () => {
+      try {
+        const { data: res_astype } = await axios.get(
+          api.internal("/api/asset-type")
+        );
+        if (res_astype.status) {
+          setMaster({
+            asset_type: res_astype.data,
+            price_range: PriceRange as [],
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching asset types:", err);
+      }
+    };
+
+    fetchAssetTypes();
+  }, []); // Runs only on mount
+
+  const handleSearch = (e: any) => {
+    setFormSearch((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const formAction = async () => {
+    // console.log(assetTypeSelect, search);
   };
 
   useEffect(() => {
@@ -35,11 +75,11 @@ function Propertysale() {
       setLoading(true);
       try {
         const { data: res_assets } = await axios.get(
-          api.internal("/api/general/asset"),
+          api.internal("/api/consignor/asset/public"),
           {
             params: {
               page: page.page,
-              asset_type: assetTypeSelect,
+              asset_type: formSearch.asset_type,
             },
           }
         );
@@ -56,27 +96,7 @@ function Propertysale() {
     };
 
     fetchAssets();
-  }, [page.page, assetTypeSelect]); // Runs only when page.page changes
-
-  useEffect(() => {
-    const fetchAssetTypes = async () => {
-      try {
-        const { data: res_astype } = await axios.get(
-          api.internal("/api/asset-type")
-        );
-        if (res_astype.status) {
-          setAssetTypes(res_astype.data);
-        }
-      } catch (err) {
-        console.error("Error fetching asset types:", err);
-      }
-    };
-
-    fetchAssetTypes();
-  }, []); // Runs only on mount
-  const formAction = async () => {
-    console.log(assetTypeSelect, search);
-  };
+  }, [page.page, formSearch.asset_type]); // Runs only when page.page changes
   return (
     <div className="property-sale">
       <Banner />
@@ -84,50 +104,37 @@ function Propertysale() {
         <p className="title-content">ทรัพย์สินขายฝาก</p>
         <div className="step-line"></div>
         <form action={formAction} className="container">
-          <div className="row filter">
-            <div className="col-lg-2">
-              <div className="mb-3">
-                <FormSelect
-                  name="asset_type"
-                  onChange={(e) => setAsTypeSelect(Number(e.target.value))}
-                >
-                  <option value="">ประเภททรัพย์สิน</option>
-                  {assetTypes.map(
-                    (
-                      item: {
-                        id: string;
-                        name: string;
-                      },
-                      index
-                    ) => (
-                      <option value={item.id} key={index}>
-                        {item.name}
-                      </option>
-                    )
-                  )}
-                </FormSelect>
-              </div>
-            </div>
-            <div className="col-lg-2">
-              <div className="mb-3">
-                <select id="Select1_2" className="form-select">
-                  <option>select</option>
-                </select>
-              </div>
-            </div>
-            <div className="col-lg-5"></div>
-            <div className="col-lg-3">
+          <Row className="filter">
+            <FormSelectCustom
+              groupClass="col-lg-3 mb-3"
+              name="asset_type"
+              onChange={handleSearch}
+              data={master.asset_type as []}
+              choose="ประเภททรัพย์สิน"
+              value={formSearch.asset_type}
+            />
+            <FormSelectCustom
+              groupClass="col-lg-3 mb-3"
+              name="price_range"
+              onChange={handleSearch}
+              data={master.price_range as []}
+              choose="ช่วงราคา"
+              value={formSearch.price_range}
+            />
+            <div className="col-lg-2"></div>
+            <div className="col-lg-4">
               <div className="search-group">
                 <FormControl
-                  name="search"
-                  onChange={(e) => setSearch(e.target.value)}
+                  name="search_box"
+                  value={formSearch.search_box}
+                  onChange={handleSearch}
                 />
                 <Link href="#" className="form-label">
                   <FontAwesomeIcon icon={faMagnifyingGlass} />
                 </Link>
               </div>
             </div>
-          </div>
+          </Row>
         </form>
       </div>
 
@@ -142,12 +149,22 @@ function Propertysale() {
                   className="not-sale mb-5 property-item pe-auto "
                   key={index}
                 >
-                  <div className="row shadow ">
+                  <div className="row shadow">
                     <div className="col-lg-7">
                       <div className="relative pe-none">
-                        <CustomImage
-                          src={item?.asset_image ?? ""}
-                        />
+                        {item?.asset_image ? (
+                          <CustomImage
+                            className="property-img"
+                            src={item?.asset_image ?? ""}
+                          />
+                        ) : (
+                          <div className="property-img bg-light d-flex justify-content-center align-items-center">
+                            <IoBanOutline
+                              className="text-white w-50 h-50"
+                            />
+                          </div>
+                        )}
+
                         <span className="badge font2">
                           {item.asset_type_name}
                         </span>

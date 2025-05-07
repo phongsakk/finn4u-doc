@@ -14,4 +14,5 @@ export type AssetModel = {
     to_date?: Date;
     to_time?: string;
   };
+  updated_at?: Date;
 };

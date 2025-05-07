@@ -1,8 +1,8 @@
-import { catchError, log, logError } from "@components/helpers";
+import { catchError, logError } from "@components/helpers";
 import { auth } from "@libs/auth";
 import { AssetModel } from "@models/AssetModel";
 import { api } from "@utils/api/index";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (req: NextRequest) => {
@@ -13,7 +13,7 @@ export const GET = async (req: NextRequest) => {
 
     const session = await auth();
     const { data: response } = await axios.get(
-      api.external("/v1/general/asset"),
+      api.external("/v1/consignor/asset/public"),
       {
         params: {
           page: page,
@@ -24,7 +24,7 @@ export const GET = async (req: NextRequest) => {
         },
       }
     );
-
+    logError(1231, response);
     const model = response.data.map(
       (item: any) =>
         ({
@@ -46,9 +46,11 @@ export const GET = async (req: NextRequest) => {
           location_y: item.location_y,
           province_name: item?.province?.name,
           asset_type_name: item?.asset_type?.name,
-          asset_image: `/uploads/property/${
-            item?.asset_images[0]?.image ?? ""
-          }`,
+          asset_image:
+            item?.asset_images[0]?.image &&
+            !item.asset_images[0].image?.startsWith("data:")
+              ? `/uploads/property/${item?.asset_images[0]?.image}`
+              : "",
           asset_auction: item?.asset_auction && {
             from_date: item.asset_auction.from_date,
             from_time: item.asset_auction.from_time,
