@@ -8,8 +8,8 @@ export const AssetModel = {
   aria_size_meter: "",
   land_title_deed_number: "",
   land_plot_number: "",
-  land_title_deed_image: "",
-  asset_images: [],
+  land_title_deed_image: null as File | null,
+  asset_images: [] as File[],
   locataion: "",
   locataion_x: "",
   locataion_y: "",
@@ -18,6 +18,6 @@ export const AssetModel = {
 };
 
 export const AssetImageModel = {
-  land_title_deed_image: "",
+  land_title_deed_image: null,
   asset_images: [],
 };

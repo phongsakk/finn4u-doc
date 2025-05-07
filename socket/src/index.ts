@@ -58,4 +58,6 @@ io.on("disconnect", (socket) => {
 
 server.listen(httpPort, () => {
   console.log(`server running at http://localhost:${httpPort}`);
+  console.log("allow origin", origins);
+  
 });

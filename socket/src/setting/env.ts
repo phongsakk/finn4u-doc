@@ -1,3 +1,7 @@
+import dotenv from "dotenv";
+
+dotenv.config();
+
 const ENV_READER = {
   API_VERSION: process.env.API_VERSION ?? "v0.0.0",
   HTTP_PORT: process.env.HTTP_PORT ?? "3000",

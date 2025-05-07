@@ -30,7 +30,7 @@ export const FormImage = ({
 
     const convertedImage = await convertImage_arr(selectedFile);
     setImage(convertedImage);
-    onChange(multiple ? convertedImage : convertedImage[0]);
+    onChange(multiple ? selectedFile : selectedFile[0]);
   };
 
   return (

@@ -1,7 +1,8 @@
+import { log, logError } from "@component/dev/Helpers";
 import { auth } from "@setting/auth";
 import { api } from "@utils/api";
 import axios, { AxiosError } from "axios";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async () => {
   const session = await auth();
@@ -10,14 +11,25 @@ export const GET = async () => {
   }
   try {
     const token = session.user?.accessToken ?? "";
-    const response = await axios.get(api.external("/v1/admin/tag"), {
+    const { data: res_tags } = await axios.get(api.external("/v1/admin/tag"), {
       headers: {
         Authorization: "Bearer " + token,
       },
     });
-    return NextResponse.json(response.data, {
-      status: 200,
-    });
+
+    return NextResponse.json(
+      {
+        status: true,
+        data:
+          res_tags.data.map(({ id, name }: { id: number; name: string }) => ({
+            id,
+            name,
+          })) || [],
+      },
+      {
+        status: res_tags.code,
+      }
+    );
   } catch (error) {
     if (error instanceof AxiosError) {
       return NextResponse.json(
@@ -28,11 +40,36 @@ export const GET = async () => {
         },
         { status: error.response?.status || 500 }
       );
-    } else {
-      return NextResponse.json(
-        { error: "unknow error", data: [] },
-        { status: 500 }
-      );
     }
+    return NextResponse.json({ status: false, data: [] }, { status: 500 });
+  }
+};
+
+export const POST = async (req: NextRequest) => {
+  try {
+    const session = await auth();
+    if (!session) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
+    const body = await req.json();
+    const token = session.user?.accessToken ?? "";
+
+    const { data: res_tag } = await axios.post(
+      api.external("/v1/admin/tag"),
+      {
+        name: body.new_tag,
+      },
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }
+    );
+    return NextResponse.json(
+      { status: true, message: "Tag created successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json({ status: false }, { status: 500 });
   }
 };

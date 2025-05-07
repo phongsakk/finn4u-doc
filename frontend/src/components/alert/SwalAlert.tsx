@@ -1,5 +1,5 @@
 "use client";
-import Swal from "sweetalert2";
+import Swal, { SweetAlertResult } from "sweetalert2";
 import ReactDOM from "react-dom/client";
 import alertlogo from "@public/finn4u-alert-logo.svg";
 import { Button } from "react-bootstrap";
@@ -11,6 +11,32 @@ type ModalPrimaryProps = {
   type: AlertType;
   text: string;
 };
+
+export const AlertConfirm = <T = any>(text: string, AlertType: AlertType, callback: (response: SweetAlertResult<T>) => void) => {
+  return new Promise<void>((resolve) => {
+    const container = document.createElement("div");
+    const root = ReactDOM.createRoot(container);
+    root.render(<ModalPrimary type={AlertType} text={text} />);
+
+    Swal.fire({
+      title: '',
+      html: container,
+      customClass: {
+        htmlContainer: "p-0 rounded"
+      },
+      confirmButtonText: "ตกลง",
+      showCancelButton: true,
+      cancelButtonText: "ไม่สนใจ"
+    }).then((response) => {
+      // Handle the response here
+      callback(response)
+      resolve()
+    }).catch(error => {
+      console.log(error);
+
+    });
+  });
+}
 
 export const AlertPrimary = (text: string, AlertType: AlertType) => {
   return new Promise<void>((resolve) => {

@@ -10,18 +10,15 @@ import axios from "axios";
 import { api } from "@utils/api";
 import { Button } from "react-bootstrap";
 import { ConsignParam } from "@models/asset";
-import ConModal from "./ConModal";
+import ConModal, { PropertyModal } from "./components/ConModal";
 import { formatNumber, statusColor, statusText } from "@component/dev/Helpers";
 dayjs.locale("th");
 const PropertyPage = () => {
   const [assets, setAssets] = useState([]);
-  const [consignModal, setConModal] = useState<ConsignParam>({
-    id: 0,
-    status: false,
-  });
+  const [consignModal, setConModal] = useState<PropertyModal>();
 
-  const ConModalClose = () => {
-    setConModal({ id: 0, status: false });
+  const handleConOpen = (pro_id: number) => {
+    setConModal({ id: pro_id, open: true });
   };
 
   useEffect(() => {
@@ -45,8 +42,12 @@ const PropertyPage = () => {
   return (
     <>
       <Navbar title="ทรัพย์สินขายฝาก" />
-      {consignModal.id !== 0 && (
-        <ConModal consignModal={consignModal} ConModalClose={ConModalClose} />
+      {consignModal !== undefined && consignModal.id !== undefined && (
+        <ConModal
+          id={consignModal.id}
+          open={consignModal.open}
+          close={() => setConModal({ open: false })}
+        />
       )}
 
       <main className="content">
@@ -290,9 +291,7 @@ const PropertyPage = () => {
                     </td>
                     <td>
                       <Button
-                        onClick={() =>
-                          setConModal({ id: item.id, status: true })
-                        }
+                        onClick={() => handleConOpen(item.id)}
                         className="btn btn-see"
                         variant="outline-success"
                       >
