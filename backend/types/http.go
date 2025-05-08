@@ -24,3 +24,12 @@ type Auth struct {
 	// 	"email":   user.Email,
 	// 	"exp":     time.Now().Add(time.Minute * 5).Unix(),
 }
+
+type AuthMode string
+
+type AuthResponse struct {
+	AccessToken      string `json:"access_token"`
+	RefreshToken     string `json:"refresh_token"`
+	ExpiresIn        int64  `json:"expires_in"`
+	RefreshExpiresIn int64  `json:"refresh_expires_in"`
+}

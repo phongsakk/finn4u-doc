@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -77,11 +78,11 @@ func Connect(c *gin.Context) {
 		Status:  true,
 		Code:    http.StatusOK,
 		Message: utils.NullableString("Logged in successfully"),
-		Data: map[string]interface{}{
-			"access_token":       accessToken,
-			"refresh_token":      refreshToken,
-			"access_expires_in":  accessTokenExpiresIn.Format(time.RFC3339),
-			"refresh_expires_in": refreshTokenExpiresIn.Format(time.RFC3339),
+		Data: types.AuthResponse{
+			AccessToken:      accessToken,
+			RefreshToken:     refreshToken,
+			ExpiresIn:        accessTokenExpiresIn.Unix(),
+			RefreshExpiresIn: refreshTokenExpiresIn.Unix(),
 		},
 	})
 }
@@ -154,6 +155,78 @@ func Login(c *gin.Context) {
 			"refresh_token":      refreshToken,
 			"access_expires_in":  accessTokenExpiresIn,
 			"refresh_expires_in": refreshTokenExpiresIn,
+		},
+	})
+}
+
+func SignIn(c *gin.Context) {
+	var request request.SignIn
+
+	if err := c.ShouldBindBodyWithJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:  http.StatusBadRequest,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	if err := request.Validated(); err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:  http.StatusBadRequest,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+
+	var user models.Consignor
+	db, err := database.Conn()
+	defer database.Close(db)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	if err := db.Where("email =?", request.Email).First(&user).Error; err != nil {
+		c.JSON(http.StatusNotFound, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString("Consignor not found"),
+		})
+		return
+	}
+	if !utils.CheckPasswordHash(request.Password, user.Password) {
+		c.JSON(http.StatusUnauthorized, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString("Invalid password"),
+		})
+		return
+	}
+
+	accessToken, accessTokenExpiresIn, errAccess := user.GenerateAccessToken()
+	if errAccess != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(errAccess.Error()),
+		})
+		return
+	}
+	refreshToken, refreshTokenExpiresIn, errRefresh := user.GenerateRefreshToken()
+	if errRefresh != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(errRefresh.Error()),
+		})
+		return
+	}
+	c.JSON(200, types.Response{
+		Status:  true,
+		Code:    http.StatusOK,
+		Message: utils.NullableString("Logged in successfully"),
+		Data: types.AuthResponse{
+			AccessToken:      accessToken,
+			RefreshToken:     refreshToken,
+			ExpiresIn:        accessTokenExpiresIn.Unix(),
+			RefreshExpiresIn: refreshTokenExpiresIn.Unix(),
 		},
 	})
 }
@@ -352,6 +425,7 @@ func Enroll(c *gin.Context) {
 		Data:    user,
 	})
 }
+
 func Signup(c *gin.Context) {
 	var request request.Signup
 
@@ -370,7 +444,7 @@ func Signup(c *gin.Context) {
 		return
 	}
 
-	var user models.Congisnor
+	var user models.Consignor
 	db, err := database.Conn()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
@@ -420,6 +494,7 @@ func Signup(c *gin.Context) {
 	user.SubdistrictID = request.SubdistrictId
 	user.Email = request.Email
 
+	var otp models.OTP
 	db.Transaction(func(tx *gorm.DB) error {
 		if err := db.Create(&user).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, types.Response{
@@ -429,7 +504,6 @@ func Signup(c *gin.Context) {
 			return err
 		}
 
-		var otp models.OTP
 		otp.UserID = user.ID
 		otp.Ref = utils.RandomString(6)
 		otp.UserType = "Congisnor"
@@ -440,6 +514,8 @@ func Signup(c *gin.Context) {
 		}
 
 		// send OTP here
+		utils.SendEmail(user.Email, "OTP Verification", fmt.Sprintf("Your OTP (REF: %s) is %s. Please use it to verify your account.", otp.Ref, otp.Code))
+		fmt.Println("OTP sent to", user.Email)
 
 		return nil
 	})
@@ -448,7 +524,163 @@ func Signup(c *gin.Context) {
 		Code:    http.StatusCreated,
 		Status:  true,
 		Message: utils.NullableString("User registered successfully"),
-		Data:    user,
+		Data: map[string]any{
+			"user": user,
+			"ref":  otp.Ref,
+		},
+	})
+}
+
+func ConsignorResendOTP(c *gin.Context) {
+	var request request.ConsignorResendOTP
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:  http.StatusBadRequest,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	if err := request.Validated(); err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:  http.StatusBadRequest,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+
+	var user models.Consignor
+	db, err := database.Conn()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	defer database.Close(db)
+	if err := db.Where("email = ?", request.Email).First(&user).Error; err != nil {
+		c.JSON(http.StatusNotFound, types.Response{
+			Code:    http.StatusNotFound,
+			Error:   utils.NullableString(err.Error()),
+			Message: utils.NullableString("User not found"),
+		})
+		return
+	}
+	var otp models.OTP
+	if err := db.Transaction(func(trx *gorm.DB) error {
+		if err := trx.First(&otp, "user_id = ?", user.ID).Error; err != nil {
+			return errors.New("OTP not found")
+		}
+		otp.Ref = utils.RandomString(6)
+		otp.Code = utils.RandomNumber(6)
+		otp.ExpiredAt = time.Now().Add(time.Minute * 10)
+
+		if err := trx.Save(&otp).Error; err != nil {
+			return err
+		}
+		utils.SendEmail(user.Email, "OTP Verification", fmt.Sprintf("Your OTP (REF: %s) is %s. Please use it to verify your account.", otp.Ref, otp.Code))
+		fmt.Println("OTP sent to", user.Email)
+		return nil
+	}); err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, types.Response{
+		Code:    http.StatusCreated,
+		Status:  true,
+		Message: utils.NullableString("OTP resent successfully"),
+		Data: map[string]any{
+			"ref": otp.Ref,
+		},
+	})
+}
+
+func ConsignorVerifyOTP(c *gin.Context) {
+	var request request.ConsignorVerifyOTP
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:  http.StatusBadRequest,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	if err := request.Validated(); err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:  http.StatusBadRequest,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	var otp models.OTP
+	var user models.Consignor
+
+	db, err := database.Conn()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	defer database.Close(db)
+	if err := db.Where("email = ?", request.Email).First(&user).Error; err != nil {
+		c.JSON(http.StatusNotFound, types.Response{
+			Code:    http.StatusNotFound,
+			Error:   utils.NullableString(err.Error()),
+			Message: utils.NullableString("User not found"),
+		})
+		return
+	}
+	if err := db.Where("user_id = ? AND code = ?", user.ID, request.Code).First(&otp).Error; err != nil {
+		c.JSON(http.StatusNotFound, types.Response{
+			Code:    http.StatusNotFound,
+			Error:   utils.NullableString(err.Error()),
+			Message: utils.NullableString("Invalid OTP"),
+		})
+		return
+	}
+	if otp.ExpiredAt.Before(time.Now()) {
+		c.JSON(http.StatusNotFound, types.Response{
+			Code:    http.StatusNotFound,
+			Error:   utils.NullableString("OTP has expired"),
+			Message: utils.NullableString("OTP has expired"),
+		})
+		return
+	}
+
+	db.Model(&user).UpdateColumn("verified", true)
+	db.Delete(&otp)
+
+	accessToken, accessTokenExpiresIn, errAccess := user.GenerateAccessToken()
+	if errAccess != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(errAccess.Error()),
+		})
+		return
+	}
+	refreshToken, refreshTokenExpiresIn, errRefresh := user.GenerateRefreshToken()
+	if errRefresh != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(errRefresh.Error()),
+		})
+		return
+	}
+	c.JSON(http.StatusCreated, types.Response{
+		Code:    http.StatusCreated,
+		Status:  true,
+		Message: utils.NullableString("Consignor verified successfully"),
+		Data: types.AuthResponse{
+			AccessToken:      accessToken,
+			RefreshToken:     refreshToken,
+			ExpiresIn:        accessTokenExpiresIn.Unix(),
+			RefreshExpiresIn: refreshTokenExpiresIn.Unix(),
+		},
 	})
 }
 

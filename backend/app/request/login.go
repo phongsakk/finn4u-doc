@@ -16,6 +16,32 @@ type Connect struct {
 	Password string `json:"password" validate:"required"`
 }
 
+type ConsignorResendOTP struct {
+	Email string `json:"email" validate:"required,email"`
+}
+
+type ConsignorVerifyOTP struct {
+	Email string `json:"email" validate:"required,email"`
+	Code  string `json:"code" validate:"required"`
+}
+
+func (r *ConsignorResendOTP) Validated() error {
+	return utils.Validate(r)
+}
+
+func (r *ConsignorVerifyOTP) Validated() error {
+	return utils.Validate(r)
+}
+
 func (c *Connect) Validated() error {
+	return utils.Validate(c)
+}
+
+type SignIn struct {
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required"`
+}
+
+func (c *SignIn) Validated() error {
 	return utils.Validate(c)
 }

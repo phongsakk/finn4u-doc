@@ -1,11 +1,11 @@
 import NextAuth, { User } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import axios, { AxiosError } from "axios";
-import api from "@utils/api";
 import { jwtDecode } from "jwt-decode";
 import { Jwt } from "jsonwebtoken";
-import { log } from "@components/helpers";
+import { log, logError } from "@components/helpers";
 import dayjs from "dayjs";
+import { api } from "@utils/api/index";
 
 declare module "next-auth" {
   interface User {
@@ -22,6 +22,34 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
   providers: [
     Credentials({
+      id: "credentialsRegister",
+      name: "credentialsRegister",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        accessToken: { label: "accessToken", type: "text" },
+        refreshToken: { label: "refreshToken", type: "text" },
+        userType: { label: "userType", type: "text" },
+      },
+      authorize: async ({ email, accessToken, refreshToken, userType }) => {
+        if (!email && !accessToken && !refreshToken) {
+          return null;
+        }
+        try {
+          return {
+            accessToken: accessToken as string,
+            refreshToken: refreshToken as string,
+            role: userType || "general",
+            name: email as string,
+            email: email as string,
+          };
+        } catch (error) {
+          logError("bypass login error: ", error);
+          return null;
+        }
+      },
+    }),
+    Credentials({
+      id: "credentials",
       name: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },
@@ -34,7 +62,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
 
         try {
-          const response = await axios.post(api("/v1/auth/login"), {
+          let api_path = "";
+          switch (userType) {
+            case "general":
+              api_path = "/v1/auth/login";
+              break;
+            case "consignment":
+              api_path = "/v1/auth/signin";
+              break;
+            case "invester":
+              api_path = "/v1/auth/signin";
+              break;
+            default:
+              api_path = "/v1/auth/login";
+              break;
+          }
+
+          const response = await axios.post(api.external(api_path), {
             email,
             password,
           });
@@ -56,7 +100,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           };
         } catch (error) {
           if (error instanceof AxiosError) {
-            log(`Error api login: ${JSON.stringify(error)}`);
+            logError(`Error api login: `, error.message);
           }
           return null;
         }
@@ -113,12 +157,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return session;
     },
     async redirect({ url, baseUrl }) {
-      console.log(`Callback redirect: URL "${url} ${baseUrl}"`);
+      log(`Callback redirect: URL "${url} ${baseUrl}"`);
 
-      return process.env.NEXT_PUBLIC_AUTH_URL ?? "http://203.159.93.236:8079/";
-
-      // if (url.startsWith(baseUrl)) return url;
-      // return `${baseUrl}/`;
+      return process.env.NEXT_PUBLIC_AUTH_URL ?? "https://finn4u.com/";
     },
   },
   secret: process.env.NEXT_PUBLIC_AUTH_SECRET ?? "terces-htua-u4nnif",
@@ -126,7 +167,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
 async function refreshAccessToken(token: Jwt | any) {
   try {
-    const response = await axios.post(api("/v1/auth/refresh-token"), {
+    const response = await axios.post(api.external("/v1/auth/refresh-token"), {
       refresh_token: `${process.env.NEXT_PUBLIC_AUTH_SECRET} ${token.refreshToken}`,
     });
     const new_token = await response.data;
@@ -140,7 +181,7 @@ async function refreshAccessToken(token: Jwt | any) {
     };
   } catch (error) {
     if (error instanceof AxiosError) {
-      console.log(`RefresAccessTokenError - ${error.message}`);
+      logError("RefresAccessTokenError: ", error.message);
     }
     return null;
   }

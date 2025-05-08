@@ -1,6 +1,8 @@
-import {Modal} from "react-bootstrap"
+"use client";
+import { Modal } from "react-bootstrap"
 import alertlogo from "@public/finn4u-alert-logo.svg";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export type AlertType = {
 	alertOpen: boolean;
@@ -9,30 +11,44 @@ export type AlertType = {
 	text?: string | null;
 }
 
-function AlertStatus({alertOpen, alertClose, status, text} : AlertType) {
-
-	let bgHeader = "";
-	if (status) {
-		if (status === "success") {
-			bgHeader = "bg-success";
-		} else if (status === "error") {
-			bgHeader = "bg-danger";
+function AlertStatus(AlertModel: AlertType) {
+	const [open, setOpen] = useState<boolean>(false);
+	const [bgHeader, setBgHeader] = useState<string>();
+	const [textConent, setTextContent] = useState<string>();
+	console.log(AlertModel)
+	useEffect(() => {
+		if (AlertModel.alertOpen === true) {
+			setOpen(AlertModel.alertOpen);
+			if (AlertModel.status) {
+				if (AlertModel.status === "success") {
+					setBgHeader("bg-success");
+				} else if (AlertModel.status === "error") {
+					setBgHeader("bg-danger");
+				}
+			}
+			setTextContent(AlertModel.text ?? "");
 		}
+		console.log(AlertModel.alertOpen)
+	}, [AlertModel.alertOpen])
+
+	const handleClose = () => {
+		setOpen(false);
+		AlertModel.alertClose?.();
 	}
 
 	return (
 		<>
-			<Modal show={alertOpen}
-				onHide={alertClose}
+			<Modal show={open}
+				onHide={handleClose}
 				centered>
 				<Modal.Header className={bgHeader}
-					closeButton/>
+					closeButton />
 				<Modal.Body>
 					<Image src={alertlogo}
 						className="mb-3"
-						alt=""/>
+						alt="" />
 					<div className="text-center m-3">
-						{text} </div>
+						{textConent} </div>
 				</Modal.Body>
 			</Modal>
 		</>

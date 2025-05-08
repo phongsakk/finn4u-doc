@@ -336,12 +336,13 @@ img {
   }
 }
 
-.register-seller .insert-id-card {
-  padding: 0 100px;
+.underline-none {
+  text-decoration: none !important;
+}
 
+.register-seller .insert-id-card {
   .idcard {
     background-color: #eaf7f1;
-    padding: 4rem 4rem;
     border-radius: 20px;
 
     ul li {
@@ -350,14 +351,7 @@ img {
   }
 
   .import {
-    margin: 44px 0 100px 70px;
-
-    .d-flex {
-      margin-bottom: 60px;
-      column-gap: 44px;
-      margin-left: 30px;
-    }
-
+    margin: 44px 0;
     button {
       display: flex;
       justify-content: center;
@@ -397,20 +391,20 @@ img {
 }
 
 .otp-password {
-  padding: 0 24rem;
   margin-bottom: 40px;
   height: 66px;
   text-align: center;
 
   .d-flex {
     display: flex !important;
-    column-gap: 26px;
     height: 100%;
+    justify-content: center;
   }
 
   input {
     text-align: center;
     font-size: 24px;
+    width: 50px;
   }
 }
 
@@ -454,7 +448,6 @@ img {
 
 .show-image-upload {
   margin-bottom: 20px;
-  display: flex;
   gap: 3px;
   img {
     width: 135px;
@@ -726,11 +719,21 @@ img {
   }
 }
 
+.property-recom {
+  width: 100% !important;
+  aspect-ratio: 1.338;
+  object-fit: cover;
+}
+
 .land-sale-2 {
   margin: 3rem 0;
   .property-item {
-    overflow: hidden;
     border-radius: 15px;
+    .property-img {
+      width: 100% !important;
+      height: 410px !important;
+      object-fit: cover;
+    }
   }
   .relative {
     position: relative;
@@ -815,7 +818,7 @@ img {
   .item-image {
     border: #e9e9e9 1px solid;
     width: 100% !important;
-    height: 377 !important;
+    height: 377px !important;
     object-fit: fill;
     background-color: rgb(176, 176, 176);
   }
@@ -866,12 +869,10 @@ img {
 
 .property-sale-detail {
   .col-lg-3 img {
-    margin-bottom: 1rem;
-    margin-bottom: 1rem;
     height: 170px;
   }
 
-  .col-lg-9 a {
+  .col-lg-9 img {
     height: 100%;
   }
 }
@@ -911,6 +912,21 @@ img {
 
   span {
     font-size: 22px;
+  }
+}
+
+.gallery-frame {
+  position: relative;
+  .gallery-filter {
+    font-size: xx-large;
+    color: #ffffff;
+    text-align: center;
+    align-content: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    opacity: 0.5;
   }
 }
 
@@ -1672,13 +1688,36 @@ img {
     .modal-body {
       padding: 0;
       .show-image {
+        position: relative;
+        aspect-ratio: 1.5;
         width: 100%;
         height: 100%;
-
+        .previous-img {
+          position: absolute;
+          top: 50%;
+          cursor: pointer;
+          font-size: xx-large;
+          font-weight: 800;
+          color: rgb(255, 255, 255);
+          filter: drop-shadow(0 2px 6px rgb(1, 87, 6));
+        }
+        .next-img {
+          position: absolute;
+          top: 50%;
+          right: 0;
+          cursor: pointer;
+          font-size: xx-large;
+          font-weight: 800;
+          color: rgb(255, 255, 255);
+          filter: drop-shadow(0 2px 6px rgb(1, 87, 6));
+        }
         img {
           width: 100%;
           height: 100%;
           object-fit: contain;
+          user-select: none;
+          -moz-user-select: none;
+          -webkit-user-select: none;
         }
       }
     }
@@ -1699,11 +1738,10 @@ img {
 .checklogin .form-check {
   display: flex !important;
   padding: 0;
-  column-gap: 20px;
 
-  label {
+  /* label {
     margin-left: 13px;
-  }
+  } */
 }
 
 .checklogin .form-check-input:checked {
@@ -1790,5 +1828,20 @@ img {
       width: 100%;
       height: 33.5px;
     }
+  }
+}
+
+.form-control::placeholder {
+  color: #a6a6a6;
+}
+
+.loader-page {
+  display: flex;
+  height: 650px;
+  justify-content: center;
+  align-items: center;
+  div {
+    width: 100px;
+    height: 100px;
   }
 }

@@ -1,16 +1,14 @@
 "use client";
-import {useEffect, useState} from "react";
-import {Button} from "react-bootstrap";
+import { useEffect, useState, useRef } from "react";
 
-function Countdown({toDate} : {
-	toDate : Date
+function Countdown({ toDate }: {
+	toDate: Date
 }) {
-
 	const calculateTimeLeft = () => {
 		const now = new Date();
 		const difference = toDate.getTime() - now.getTime();
 		if (difference <= 0) {
-			return {days: 0, hours: 0, minutes: 0, seconds: 0};
+			return { days: 0, hours: 0, minutes: 0, seconds: 0 };
 		}
 
 		return {
@@ -28,13 +26,29 @@ function Countdown({toDate} : {
 	};
 
 	const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+	const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
 	useEffect(() => {
-		const timer = setInterval(() => {
-			setTimeLeft(calculateTimeLeft());
+		intervalRef.current = setInterval(() => {
+			const newTimeLeft = calculateTimeLeft();
+			setTimeLeft(newTimeLeft);
+			if (
+				newTimeLeft.days === 0 &&
+				newTimeLeft.hours === 0 &&
+				newTimeLeft.minutes === 0 &&
+				newTimeLeft.seconds === 0
+			) {
+				if (intervalRef.current) {
+					clearInterval(intervalRef.current);
+				}
+			}
 		}, 1000);
 
-		return() => clearInterval(timer);
+		return () => {
+			if (intervalRef.current) {
+				clearInterval(intervalRef.current);
+			}
+		};
 	}, [toDate]);
 
 	return (
@@ -43,16 +57,16 @@ function Countdown({toDate} : {
 				{
 					backgroundColor: "#30B1753D"
 				}
-		}>
+			}>
 			{
-			String(timeLeft.days).padStart(2, "0")
-		}:{
-			String(timeLeft.hours).padStart(2, "0")
-		}:{
-			String(timeLeft.minutes).padStart(2, "0")
-		}:{
-			String(timeLeft.seconds).padStart(2, "0")
-		} </span>
+				String(timeLeft.days).padStart(2, "0")
+			}:{
+				String(timeLeft.hours).padStart(2, "0")
+			}:{
+				String(timeLeft.minutes).padStart(2, "0")
+			}:{
+				String(timeLeft.seconds).padStart(2, "0")
+			} </span>
 	);
 }
 

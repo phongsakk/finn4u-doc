@@ -14,8 +14,7 @@ export default function Navbar() {
   const [loginOpen, setLoginOpen] = useState(false);
   const pathname = usePathname();
   const { data: session, status } = useSession();
-
-  const handleLogin = (status:boolean = false) => {
+  const handleLogin = (status: boolean = false) => {
     setLoginOpen(status);
   };
 
@@ -26,32 +25,31 @@ export default function Navbar() {
     },
     {
       label: "ขาย",
-      href: "#",
+      href: "/sell",
     },
     {
       label: "เช่า",
-      href: "#",
+      href: "/rent",
     },
     {
       label: "ทรัพย์สินขายฝาก",
-      href: "/property-consignment",
+      href: "/property",
     },
     {
       label: "ผู้ขายฝาก",
-      href:
-        status === "authenticated" ? "/consignment" : "/consignment-register",
+      href: status === "authenticated" ? "/consignor" : "/register/consignor",
     },
     {
       label: "นักลงทุน",
-      href: status === "authenticated" ? "/investment" : "/investment-register",
+      href: status === "authenticated" ? "/invester" : "/register/invester",
     },
     {
       label: "Finn Tips",
-      href: "#",
+      href: "/tips",
     },
     {
       label: "คำถามที่พบบ่อย",
-      href: "#",
+      href: "/FAQ",
     },
   ];
 
@@ -122,9 +120,8 @@ export default function Navbar() {
                 ) : (
                   <div className="d-flex register">
                     <div
-                      className={`nav-item ${
-                        pathname === "/register" ? "nav-active" : ""
-                      }`}
+                      className={`nav-item ${pathname === "/register" ? "nav-active" : ""
+                        }`}
                     >
                       <Link className="nav-link" href="/register">
                         ลงทะเบียน
