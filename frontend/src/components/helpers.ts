@@ -226,3 +226,9 @@ export const catchError = async (error: any) => {
     message: "An unexpected error occurred",
   };
 };
+
+type DefaultFormatDate = "D MMMM YYYY" | "DD/MM/YYYY HH:mm" | (string & {});
+
+export const ToDateThai = (txt: any, format: DefaultFormatDate = "D MMMM YYYY") => {
+  return dayjs(txt).add(543, "year").format(format);
+};

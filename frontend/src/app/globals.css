@@ -1689,6 +1689,7 @@ img {
       padding: 0;
       .show-image {
         position: relative;
+        aspect-ratio: 1.5;
         width: 100%;
         height: 100%;
         .previous-img {

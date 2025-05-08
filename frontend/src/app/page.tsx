@@ -25,7 +25,7 @@ export default async function Page() {
           <div className="row land-sale">
             {RecomGhost?.map((item, i) => (
               <div className="col-lg-4 mb-" key={i}>
-                <div className="card">
+                <div className="card overflow-hidden">
                   <div className="head">
                     <div className="not-hover">
                       <CustomImage src={item.mock_image} alt="map1" />

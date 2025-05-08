@@ -28,7 +28,6 @@ export const GET = async (
     );
 
     const data = response.data;
-    
     const model = {
       id: data.id,
       aria_size: `${data?.aria_size_rai ? `${data.aria_size_rai} ไร่` : ""} ${
@@ -67,7 +66,7 @@ export const GET = async (
         )} ${data.asset_auction.from_time}:00`,
         to_date: `${dayjs(data.asset_auction.to_date).format("DD/MM/YYYY")} ${
           data.asset_auction.to_time
-        }:00`,
+        }:59`,
         max_tax: data.asset_auction.max_tax,
       },
     };

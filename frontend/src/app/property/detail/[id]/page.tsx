@@ -19,6 +19,7 @@ import {
   formatCurrency,
   formatNumber,
   handleNumberChange,
+  ToDateThai,
 } from "@components/helpers";
 
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -63,6 +64,10 @@ function PropertyPage() {
               "DD/MM/YYYY HH:mm:ss"
             ).toDate()
           );
+        } else {
+          await AlertPrimary("Error 404 - Please try again!!", "error").then(() => {
+            window.location.href = api.internal("/property")
+          })
         }
       } catch (err) {
         console.error("get asset:", err);
@@ -70,10 +75,7 @@ function PropertyPage() {
         setLoading(false);
       }
     };
-
-    if (params.id) {
-      boot();
-    }
+    boot();
   }, [params.id]);
 
   const handleBid = async () => {
@@ -89,14 +91,23 @@ function PropertyPage() {
           offer: Number(bidPercent),
         }
       );
-      if (res_bid.status) {
-        AlertPrimary("คุณได้ทำการ Bid สำเร็จแล้ว", "success");
-      } else {
-        AlertPrimary(
-          "Bid ไม่สำเร็จ - ถึงขีดจำกัดการเสนอราคาสูงสุดแล้ว",
-          "error"
-        );
+
+      var BidMessage = "";
+      var status = false;
+      switch (res_bid.data.message) {
+        case "auction has ended":
+          BidMessage = "หมดเวลาการประมูล";
+          break;
+        case "maximum bid limit reached":
+          BidMessage = "ถึงขีดจำกัดการ Bid แล้ว";
+          var status = false;
+          break;
+        default:
+          BidMessage = "Bid สำเร็จ";
+          break;
       }
+
+      AlertPrimary(BidMessage, status ? "success" : "error");
     } catch (error) {
       console.error(error);
       AlertPrimary("500 - Server disconnected. Please try again.", "error");
@@ -164,13 +175,14 @@ function PropertyPage() {
                       </div>
                     </div>
                     <div className="col-sm-4 col-auto text-end">
-                      <Link
+                      {asset?.asset_auction &&    <Link
                         href="#"
                         onClick={(e) => e.preventDefault()}
                         className="btn btn-primary font2"
                       >
                         ประมูล
-                      </Link>
+                      </Link>}
+                   
                       <Link
                         href="#"
                         onClick={(e) => e.preventDefault()}
@@ -279,11 +291,11 @@ function PropertyPage() {
                         <div className="col-sm-auto h5">ระยะเวลาการประมูล:</div>
                         <div className=" row col-lg-6 text-secondary">
                           <div className="col-auto">
-                            {asset.asset_auction.from_date}
+                            {ToDateThai(asset.asset_auction.from_date, "DD/MM/YYYY HH:mm")}
                           </div>
                           <div className="col-auto px-2">-</div>
                           <div className="col-auto">
-                            {asset.asset_auction.to_date}
+                            {dayjs(asset.asset_auction.to_date).add(543, 'year').format("DD/MM/YYYY HH:mm")}
                           </div>
                         </div>
                         <div className="row h5 mt-3">
