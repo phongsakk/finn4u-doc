@@ -1,14 +1,19 @@
 "use client";
 import CustomImage from "@components/CustomImage";
-import { formatNumber } from "@components/helpers";
+import { formatNumber, ToDateThai } from "@components/helpers";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AssetModel } from "@models/AssetModel";
 import { api } from "@utils/api/index";
 import axios from "axios";
+import dayjs from "dayjs";
+import "dayjs/locale/th";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { IoBanOutline } from "react-icons/io5";
+dayjs.extend(customParseFormat);
+dayjs.locale("th");
 
 const fetchAssetRecom = async () => {
   try {
@@ -27,20 +32,20 @@ const fetchAssetRecom = async () => {
 
 function RecommendedPage() {
   const [assetRecom, setAssetRecom] = useState([]);
-  console.log(assetRecom);
+
   useEffect(() => {
     try {
       const boot = async () => {
         setAssetRecom(await fetchAssetRecom());
       };
       boot();
-    } catch (error) {}
+    } catch (error) { }
   }, []);
   return (
     <>
       {assetRecom?.map((item: any, i: number) => (
         <div className="col-lg-4 mb-" key={i}>
-          <div className="card">
+          <div className="card overflow-hidden">
             <div className="head">
               <div className="not-hover">
                 {item?.asset_image ? (
@@ -110,7 +115,7 @@ function RecommendedPage() {
               </div>
               <div className="list">
                 <FontAwesomeIcon icon={faCheck} className="fs-4" />
-                <span className="font2">4 พฤษภาคม 2568{item.updated_at}</span>
+                <span className="font2">{ToDateThai(item.sell_date)}</span>
               </div>
             </div>
           </div>

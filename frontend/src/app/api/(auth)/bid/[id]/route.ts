@@ -24,7 +24,6 @@ export const POST = async (
       offer: body.offer,
     };
 
-    logError(123456, model);
     const { data: res_bid } = await axios.post(
       api.external(`/v1/consignor/bid`),
       model,
@@ -39,7 +38,9 @@ export const POST = async (
       {
         code: res_bid.code,
         status: res_bid.status,
-        message: res_bid.message,
+        data: {
+          message: res_bid.message,
+        },
       },
       { status: res_bid.code }
     );

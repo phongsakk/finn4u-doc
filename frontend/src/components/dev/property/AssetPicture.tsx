@@ -31,7 +31,7 @@ function AssetPicture({ images }: { images: any[] }) {
       <div className="col col-12 col-lg-9 mb-md-3 mb-sm-3 col-sm-12 col-xs-12 mb-lg-0 mb-sm-0 mb-3">
         <div className="gallery-item" onClick={() => handleGallery(0)}>
           <CustomImage
-            src={`/uploads/property/${images[0].image ?? ""}`}
+            src={`/uploads/property/${images[0]?.image ?? ""}`}
             className="img-fluid object-fit-cover"
             style={{
               width: "100%",
@@ -41,7 +41,7 @@ function AssetPicture({ images }: { images: any[] }) {
         </div>
       </div>
       <div className="col col-lg-3 col-sm-12 col-12 col-xs-12">
-        {images.map((item: any, index: number) => {
+        {images?.map((item: any, index: number) => {
           if (index < 3) {
             return (
               <div
