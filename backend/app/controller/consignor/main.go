@@ -159,7 +159,6 @@ func CreateAsset(c *gin.Context) {
 	}
 
 	if err := db.Transaction(func(t *gorm.DB) error {
-		// pattern "ASSET00000000000" where 0 is unix time
 		asset.GenID = fmt.Sprintf("%s%d", "ASSET", time.Now().UnixNano())
 		if err := t.Create(&asset).Error; err != nil {
 			fmt.Println("error assigning asset")

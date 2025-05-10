@@ -54,7 +54,7 @@ func FindMatching(c *gin.Context) {
 
 	var totalAssets int64
 	models := db.Model(&models.AssetAuction{})
-	preloaded := models.Preload("Asset").Preload("Asset.Owner").Preload("Asset.Province").Preload("Asset.AssetType")
+	preloaded := models.Preload("Asset").Preload("Asset.Owner").Preload("Asset.Province").Preload("Asset.AssetType").Preload("Asset.AssetAppraisal")
 	preloaded = preloaded.Offset(offset).Limit(limit).Order(clause.OrderByColumn{
 		Column: clause.Column{
 			Name: orderBy,
@@ -109,6 +109,54 @@ func KillMatching(c *gin.Context) {
 	//
 }
 
-func SearchMatching(c *gin.Context) {
-	//
+func SearchMatchingByAssetID(c *gin.Context) {
+	assetID, errorAssetID := strconv.Atoi(c.Param("asset_id"))
+	if errorAssetID != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:    http.StatusBadRequest,
+			Message: utils.NullableString("invalid asset_id"),
+		})
+		return
+	}
+
+	var response models.AssetAuction
+	var user models.Admin
+	if err := user.GetFromRequest(c); err != nil {
+		c.JSON(http.StatusUnauthorized, types.Response{
+			Code:  http.StatusUnauthorized,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+
+	db, err := database.Conn()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	defer database.Close(db)
+
+	models := db.Model(&models.AssetAuction{})
+	preloaded := models.Preload("Asset").Preload("Asset.Owner")
+	preloaded = preloaded.Preload("Asset.Province").Preload("Asset.AssetType")
+	preloaded = preloaded.Preload("Asset.AssetBidOffer").Preload("Asset.AssetAppraisal")
+	preloaded = preloaded.Where("asset_id=?", assetID)
+	// Fetch assets with pagination
+	if err := preloaded.First(&response).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+
+	c.JSON(200, types.Response{
+		Status:  true,
+		Code:    http.StatusOK,
+		Message: utils.NullableString("Assets retrieved successfully"),
+		Data:    response,
+	})
 }
