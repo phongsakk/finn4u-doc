@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
         protocol: url.protocol.replace(":", "") as "http" | "https",
         hostname: url.hostname,
         port: url.port || "",
-        pathname: "/_next/image",
+        pathname: "/api/uploads/**",
       },
     ],
   },

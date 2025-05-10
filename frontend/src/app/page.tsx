@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faBook } from "@fortawesome/free-solid-svg-icons";
 import CustomImage from "../components/CustomImage";
 import { auth } from "@libs/auth";
+
 import { RecomGhost } from "@models/GhostModel";
 import RecommendedPage from "@components/AssetRecommended/page";
 
@@ -11,7 +12,6 @@ export default async function Page() {
   const session = await auth();
   const pathinvest = session ? "/property/detail" : "/";
 
- 
   return (
     <main>
       <div className="justify-content-center">

@@ -2,6 +2,8 @@
 import CustomImage from "@components/CustomImage";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import banner from "@public/banner-home-emp.png";
+import Image from "next/image";
 
 function Banner() {
   const { data: session, status } = useSession();
@@ -43,7 +45,7 @@ function Banner() {
           )}{" "}
         </div>
       </div>
-      <CustomImage src="/banner-home-emp.png" alt="banner-home-emp" />
+      <Image src={banner} alt="banner-home-emp" priority/>
     </div>
   );
 }

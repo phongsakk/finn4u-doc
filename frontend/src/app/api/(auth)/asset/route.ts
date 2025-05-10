@@ -4,6 +4,8 @@ import { api } from "@utils/api/index";
 import axios, { AxiosError } from "axios";
 import { NextResponse } from "next/server";
 import { AssetModel } from "@models/AssetModel";
+import fs from "node:fs"
+import path from "node:path"
 import { UploadFile, UploadFiles } from "@components/dev/uploadfile";
 
 export const POST = async (req: Request) => {
