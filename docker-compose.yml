@@ -42,7 +42,7 @@ services:
     depends_on:
       - backend
     volumes:
-      - ./uploads:/app/public/uploads
+      - ./uploads:/app/uploads
 
   admin:
     build:
@@ -54,6 +54,8 @@ services:
       - "${PORT_WEB_ADMIN}:3000"
     depends_on:
       - backend
+    volumes:
+      - ./uploads:/app/uploads
 
 volumes:
   postgres_data:
