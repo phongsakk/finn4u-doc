@@ -5,6 +5,8 @@ import (
 	"math"
 	"net/http"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/phongsakk/finn4u-back/app/database"
@@ -13,6 +15,7 @@ import (
 	"github.com/phongsakk/finn4u-back/types"
 	"github.com/phongsakk/finn4u-back/utils"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 func GetAsset(c *gin.Context) {
@@ -156,6 +159,8 @@ func CreateAsset(c *gin.Context) {
 	}
 
 	if err := db.Transaction(func(t *gorm.DB) error {
+		// pattern "ASSET00000000000" where 0 is unix time
+		asset.GenID = fmt.Sprintf("%s%d", "ASSET", time.Now().UnixNano())
 		if err := t.Create(&asset).Error; err != nil {
 			fmt.Println("error assigning asset")
 			return err
@@ -254,11 +259,23 @@ func GetPublicAsset(c *gin.Context) {
 		page = 1
 	}
 
-	take, errTake := strconv.Atoi(c.DefaultQuery("take", "20"))
+	limit, errTake := strconv.Atoi(c.DefaultQuery("limit", "20"))
 	if errTake != nil {
-		take = 20
+		limit = 20
 	}
-	var offset = utils.Offset(page, take)
+	var offset = utils.Offset(page, limit)
+	orderBy := c.DefaultQuery("orderBy", "created_at")
+	sort := c.DefaultQuery("sort", "desc")
+	idDesc := strings.ToLower(sort) != "asc"
+	assetTypeId, errAssetTypeId := strconv.Atoi(c.DefaultQuery("asset_type_id", "0"))
+	if errAssetTypeId != nil {
+		assetTypeId = 0
+	}
+
+	// asset_type_id
+
+	fmt.Println(page, limit, orderBy, sort)
+
 	var response []models.Asset
 	var user models.Consignor
 	var isLogin = true
@@ -279,7 +296,19 @@ func GetPublicAsset(c *gin.Context) {
 	if isLogin {
 		// Count all assets before applying pagination
 		var totalAssets int64
-		if err := db.Model(&models.Asset{}).Where("status = ?", 2).Count(&totalAssets).Error; err != nil {
+		models := db.Model(&models.Asset{}).Where("status = ?", 2)
+		if assetTypeId != 0 {
+			models = models.Where("asset_type_id=?", assetTypeId)
+		}
+		preloaded := models.Preload("Province").Preload("AssetType")
+		preloaded = preloaded.Preload("Owner").Preload("AssetImages")
+		preloaded = preloaded.Offset(offset).Limit(limit).Order(clause.OrderByColumn{
+			Column: clause.Column{
+				Name: orderBy,
+			},
+			Desc: idDesc,
+		})
+		if err := models.Count(&totalAssets).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, types.Response{
 				Code:  http.StatusInternalServerError,
 				Error: utils.NullableString(err.Error()),
@@ -288,7 +317,12 @@ func GetPublicAsset(c *gin.Context) {
 		}
 
 		// Fetch assets with pagination
-		if err := db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Where("status = ?", 2).Offset(offset).Limit(take).Order("id").Find(&response).Error; err != nil {
+		if err := preloaded.Offset(offset).Limit(limit).Order(clause.OrderByColumn{
+			Column: clause.Column{
+				Name: orderBy,
+			},
+			Desc: idDesc,
+		}).Find(&response).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, types.Response{
 				Code:  http.StatusInternalServerError,
 				Error: utils.NullableString(err.Error()),
@@ -304,7 +338,7 @@ func GetPublicAsset(c *gin.Context) {
 			Message:   utils.NullableString("Assets retrieved successfully"),
 			Data:      response,
 			Page:      &page,
-			Limit:     &take,
+			Limit:     &limit,
 			Total:     &total,
 			TotalPage: &totalPage,
 		})
@@ -320,7 +354,12 @@ func GetPublicAsset(c *gin.Context) {
 		}
 
 		// Fetch assets with pagination
-		if err := db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Where("status = ? AND is_published = ?", 2, true).Offset(offset).Limit(take).Order("id").Find(&response).Error; err != nil {
+		if err := db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Where("status = ? AND is_published = ?", 2, true).Offset(offset).Limit(limit).Order(clause.OrderByColumn{
+			Column: clause.Column{
+				Name: orderBy,
+			},
+			Desc: idDesc,
+		}).Find(&response).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, types.Response{
 				Code:  http.StatusInternalServerError,
 				Error: utils.NullableString(err.Error()),
@@ -336,7 +375,7 @@ func GetPublicAsset(c *gin.Context) {
 			Message:   utils.NullableString("Assets retrieved successfully"),
 			Data:      response,
 			Page:      &page,
-			Limit:     &take,
+			Limit:     &limit,
 			Total:     &total,
 			TotalPage: &totalPage,
 		})

@@ -1,3 +1,5 @@
+"use client";
+import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { FaAngleDoubleLeft, FaAngleDoubleRight, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
@@ -12,24 +14,30 @@ export const PaginationModel: PaginationInterface = {
 };
 
 function Pagination({ Page, change }: { Page: PaginationInterface, change: (num: number) => void }) {
+    const [pages, setPages] = useState<any[]>([]);
     const total = Page.total;
     const current = Page.page;
 
-    let pages = [];
+    useEffect(() => {
+        let PageArr = [];
+        let i_start = current - 1 <= 0 ? 1 : current - 1;
+        let i_end = current + 1 > total ? current : current + 1;
 
-    let i_start = current - 1 <= 0 ? 1 : current - 1;
-    let i_end = current + 1 > total ? current : current + 1;
+        const max = Math.max(i_start, i_end)
+        const min = Math.min(i_start, i_end)
+        for (let i = min; i <= max; i++) {
+            PageArr.push(i)
+        }
 
-    const max = Math.max(i_start, i_end)
-    const min = Math.min(i_start, i_end)
-    for (let i = min; i <= max; i++) {
-        pages.push(i)
-    }
+        if ((total - max) > 1) {
+            PageArr.push("...")
+        }
 
-    if (max < total) {
-        pages.push("...")
-        pages.push(total)
-    }
+        if (max < total) {
+            PageArr.push(total)
+        }
+        setPages(PageArr);
+    }, [Page])
 
     return (
         <div className="pagination-main">
@@ -73,7 +81,6 @@ function Pagination({ Page, change }: { Page: PaginationInterface, change: (num:
                             </li>
                         )
                     )
-
                     )}
 
                     <li className="page-item ">
@@ -93,7 +100,7 @@ function Pagination({ Page, change }: { Page: PaginationInterface, change: (num:
                             onClick={() => { Page.page === Page.total ? undefined : change(Page.total) }
                             }
                         >
-                            <FaAngleDoubleRight size={13}  />
+                            <FaAngleDoubleRight size={13} />
                         </span>
                     </li>
                 </ul>

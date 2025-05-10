@@ -290,7 +290,7 @@ function Propertysale() {
             </>
           )}
         </div>
-        {page && <Pagination Page={page} change={changePage} />}
+        <Pagination Page={page} change={changePage} />
       </div>
     </div>
   );
