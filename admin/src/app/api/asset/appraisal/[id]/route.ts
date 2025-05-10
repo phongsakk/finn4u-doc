@@ -1,30 +1,54 @@
-import { log, logError } from "@component/dev/Helpers";
+import { catchError, log, logError, parseFormData } from "@component/dev/Helpers";
+import { UploadFiles } from "@component/dev/uploadfile";
 import { auth } from "@setting/auth";
 import { api } from "@utils/api";
 import axios, { AxiosError } from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (
-  req: NextRequest,
+  req: Request,
   { params }: { params: Promise<{ id: number }> }
 ) => {
   try {
     const { id } = await params;
-    const body = await req.json();
-    const formData = await body.formData;
+    const session = await auth();
+    const formData = await req.formData();
+    const parsed = await parseFormData(formData);
 
+    const new_images = await UploadFiles(
+      formData.getAll("new_images[]") as File[],
+      "property"
+    );
     if (!id) {
       return NextResponse.json({ error: "No id" }, { status: 401 });
     }
-    const session = await auth();
     if (!session) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
+    const model_apr = {
+      price_appraisal: Number(parsed.price_appraisal),
+      collateral_price: Number(parsed.collateral_price),
+      duration: Number(parsed.duration),
+      display_images: parsed.display_images.filter((x: any) => x.is_display === 'true').map((item: any) => (Number(item.id))),
+      new_images: new_images,
+      tags: parsed.tags.filter((x: any) => x.is_check === "true").map((item: any) => (Number(item.id))),
+      is_published: parsed.is_published === "true" ? true : false,
+      find_invester: parsed.find_invester === "true" ? true : false,
+      status: Number(parsed.status),
+      auction: {
+        from_date: formData.get("auction[from_date]"),
+        from_time: formData.get("auction[from_time]"),
+        to_date: formData.get("auction[to_date]"),
+        to_time: formData.get("auction[to_time]"),
+        max_tax: Number(formData.get("auction[max_tax]"))
+      }
+    }
+
 
     const token = session.user?.accessToken ?? "";
-    const response = await axios.post(
+    const { data: response } = await axios.post(
       api.external(`/v1/admin/asset/${id}/appraisal`),
-      formData,
+      model_apr,
       {
         headers: {
           Authorization: "Bearer " + token,
@@ -32,30 +56,14 @@ export const POST = async (
       }
     );
 
-    const model = {
-      ...response.data,
-    };
-
-    return NextResponse.json(model, {
-      status: 200,
+    return NextResponse.json({
+      status: response.status,
+      code: response.code,
+      message: response.message
+    }, {
+      status: response.code,
     });
   } catch (error) {
-    if (error instanceof AxiosError) {
-      console.error(error?.response?.data);
-
-      return NextResponse.json(
-        {
-          status: error.response?.status || 500,
-          data: [],
-          message: error.message,
-        },
-        { status: error.response?.status || 500 }
-      );
-    } else {
-      return NextResponse.json(
-        { error: "unknow error", data: [] },
-        { status: 500 }
-      );
-    }
+    return NextResponse.json(await catchError(error))
   }
 };
