@@ -24,7 +24,6 @@ export const GET = async (req: NextRequest) => {
         },
       }
     );
-    logError(1231, response);
     const model = response.data.map(
       (item: any) =>
       ({
@@ -64,7 +63,7 @@ export const GET = async (req: NextRequest) => {
         data: model,
         page: {
           page: response.page,
-          total: response.total,
+          total: response.total_page,
         },
       },
       { status: response.code }
