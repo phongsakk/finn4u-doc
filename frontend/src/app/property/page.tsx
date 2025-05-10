@@ -14,6 +14,7 @@ import { formatCurrency, formatNumber } from "@components/helpers";
 import Pagination from "@components/dev/pagination";
 import { FormSelectCustom } from "@components/FormCustom/FormSelectCustom";
 import { PriceRange } from "@models/MasterModel";
+import ImageApi from "@components/ImageApi";
 const MasterData = {
   asset_type: [],
   price_range: [],
@@ -153,7 +154,7 @@ function Propertysale() {
                     <div className="col-lg-7">
                       <div className="relative pe-none">
                         {item?.asset_image ? (
-                          <CustomImage
+                          <ImageApi
                             className="property-img"
                             src={item?.asset_image ?? ""}
                           />

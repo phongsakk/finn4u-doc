@@ -1,7 +1,8 @@
-import { catchError, logError } from "@components/helpers";
+import { catchError, logError, ToDateThai } from "@components/helpers";
 import { AssetModel } from "@models/AssetModel";
 import { api } from "@utils/api/index";
 import axios from "axios";
+import dayjs from "dayjs";
 import { NextResponse } from "next/server";
 
 export const GET = async () => {
@@ -9,7 +10,6 @@ export const GET = async () => {
     const { data: response } = await axios.get(
       api.external(`/v1/consignor/asset/recommended`)
     );
-
     const model = response.data.map(
       (item: any) =>
         ({
@@ -34,7 +34,7 @@ export const GET = async () => {
           asset_image:
             item?.asset_images[0]?.image &&
             !item.asset_images[0].image?.startsWith("data:")
-              ? `/uploads/property/${item?.asset_images[0]?.image}`
+              ? `property/${item?.asset_images[0]?.image}`
               : "",
           asset_auction: item?.asset_auction && {
             from_date: item.asset_auction.from_date,
@@ -42,7 +42,7 @@ export const GET = async () => {
             to_date: item.asset_auction.to_date,
             to_time: item.asset_auctionto_time,
           },
-          sell_date: item.updated_at
+          sell_date: ToDateThai(dayjs(item.updated_at)) || ""
         } as AssetModel)
     );
 

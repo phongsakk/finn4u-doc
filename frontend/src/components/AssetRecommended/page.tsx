@@ -115,7 +115,7 @@ function RecommendedPage() {
               </div>
               <div className="list">
                 <FontAwesomeIcon icon={faCheck} className="fs-4" />
-                <span className="font2">{ToDateThai(item.sell_date)}</span>
+                <span className="font2">{item.sell_date}</span>
               </div>
             </div>
           </div>
