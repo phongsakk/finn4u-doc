@@ -210,7 +210,7 @@ export const catchError = async (error: any) => {
   // logError("testet",error)
 
   if (error instanceof AxiosError) {
-    // logError("testet",error.response)
+    // logError("testet",error.response?.data)
     return {
       status: false,
       code: error.response?.status || 500,

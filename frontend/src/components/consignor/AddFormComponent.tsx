@@ -38,9 +38,12 @@ function AddFormComponent({ typeform, setStep, checkStep }: AddFormType) {
   useEffect(() => {
     try {
       const boot = async () => {
-        const { data: res_master } = await axios.get(
+        const response = await axios.get(
           api.internal("/api/asset-master")
         );
+        console.log("((((((()))))))");
+        console.log(response);
+        const res_master = response.data;
         if (res_master.status) {
           setMasterData({
             province: res_master.data.province,
