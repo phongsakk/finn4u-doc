@@ -1,5 +1,7 @@
 "use client";
 import CustomImage from "@components/CustomImage";
+import ImageApi from "@components/ImageApi";
+import { api } from "@utils/api/index";
 import Link from "next/link";
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
@@ -18,7 +20,7 @@ function AssetPicture({ images }: { images: any[] }) {
 
   const handleGallery = (index: number) => {
     setModalImage({
-      src: `/uploads/property/${images[index].image}`,
+      src: api.internal(`api/uploads/property/${images[index].image}`),
       index: index,
       imgPrev: index === 0 ? images.length - 1 : index - 1,
       imgNext: index === images.length - 1 ? 0 : index + 1,
@@ -30,8 +32,8 @@ function AssetPicture({ images }: { images: any[] }) {
     <>
       <div className="col col-12 col-lg-9 mb-md-3 mb-sm-3 col-sm-12 col-xs-12 mb-lg-0 mb-sm-0 mb-3">
         <div className="gallery-item" onClick={() => handleGallery(0)}>
-          <CustomImage
-            src={`/uploads/property/${images[0]?.image ?? ""}`}
+          <ImageApi
+            src={`property/${images[0]?.image ?? ""}`}
             className="img-fluid object-fit-cover"
             style={{
               width: "100%",
@@ -52,8 +54,8 @@ function AssetPicture({ images }: { images: any[] }) {
                 {images.length > 3 && index === 2 && (
                   <div className="gallery-filter">{images.length - 3}+</div>
                 )}
-                <CustomImage
-                  src={`/uploads/property/${item.image}`}
+                <ImageApi
+                  src={`property/${item.image}`}
                   className="img-fluid object-fit-cover"
                   style={{ width: "100%" }}
                 />

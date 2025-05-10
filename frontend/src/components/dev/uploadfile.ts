@@ -22,7 +22,7 @@ export const UploadFile = async (objectFile: File, path_upload = "") => {
     const filename = `${dayjs().format("YYYYMMDDHHmmss")}-${objectFile.name}`;
     const filepath = path.join(
       process.cwd(),
-      "public/uploads",
+      "uploads",
       path_upload,
       filename
     );

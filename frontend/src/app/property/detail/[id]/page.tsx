@@ -133,24 +133,6 @@ function PropertyPage() {
                 </div>
                 <div className="time">
                   <div className="row">
-                    <div className="col-lg-9">
-                      <div className="d-flex">
-                        {/* <!-- ใส่ Class bg-red ต่อจาก Class icon จะเปลี่ยนพื้นหลังสีเเดง --> */}
-                        <div className="icon">
-                          <FontAwesomeIcon icon={faClock} />
-                          <i className="fa-solid fa-clock"></i>
-                        </div>
-                        <span className="font2">
-                          รอการลงทุน
-                          <span className="text-danger font2">
-                            1 วัน 3.50 ชั่วโมง
-                          </span>
-                        </span>
-                        <span className="date-sale font2">
-                          ประกาศขายเมื่อ 11 เมษายน 2565
-                        </span>
-                      </div>
-                    </div>
                     <div className="col-lg-3">
                       {/* <!-- เอา class d-none ออกจะเเสดงสถานะ sold --> */}
                       <div className="sold d-none">
@@ -175,14 +157,14 @@ function PropertyPage() {
                       </div>
                     </div>
                     <div className="col-sm-4 col-auto text-end">
-                      {asset?.asset_auction &&    <Link
+                      {asset?.asset_auction && <Link
                         href="#"
                         onClick={(e) => e.preventDefault()}
                         className="btn btn-primary font2"
                       >
                         ประมูล
                       </Link>}
-                   
+
                       <Link
                         href="#"
                         onClick={(e) => e.preventDefault()}
@@ -291,11 +273,11 @@ function PropertyPage() {
                         <div className="col-sm-auto h5">ระยะเวลาการประมูล:</div>
                         <div className=" row col-lg-6 text-secondary">
                           <div className="col-auto">
-                            {ToDateThai(asset.asset_auction.from_date, "DD/MM/YYYY HH:mm")}
+                            {ToDateThai(asset.asset_auction.from_date, "DD/MM/BBBB HH:mm")}
                           </div>
                           <div className="col-auto px-2">-</div>
                           <div className="col-auto">
-                            {dayjs(asset.asset_auction.to_date).add(543, 'year').format("DD/MM/YYYY HH:mm")}
+                            {ToDateThai(asset.asset_auction.to_date, "DD/MM/BBBB HH:mm")}
                           </div>
                         </div>
                         <div className="row h5 mt-3">

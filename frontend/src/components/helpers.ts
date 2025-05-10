@@ -2,6 +2,13 @@ import { api } from "@utils/api/index";
 import axios, { AxiosError } from "axios";
 import dayjs from "dayjs";
 import sharp from "sharp";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import buddhistEra from "dayjs/plugin/buddhistEra";
+import "dayjs/locale/th";
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.extend(buddhistEra)
 dayjs.locale("th");
 
 export const log = (text: any, textObject?: any) => {
@@ -53,7 +60,7 @@ export const handleNumberChange = (
 };
 
 export const formatDateThai = (value: Date) => {
-  return dayjs(value).add(543, "year").format("DD/MM/YYYY HH:mm:ss");
+  return dayjs(value).format("DD/MM/BBBB HH:mm:ss");
 };
 
 export const convertImage = async (objectfile: File): Promise<string> => {
@@ -227,8 +234,9 @@ export const catchError = async (error: any) => {
   };
 };
 
-type DefaultFormatDate = "D MMMM YYYY" | "DD/MM/YYYY HH:mm" | (string & {});
+type DefaultFormatDate = "D MMMM BBBB" | "DD/MM/BBBB HH:mm" | (string & {});
 
-export const ToDateThai = (txt: any, format: DefaultFormatDate = "D MMMM YYYY") => {
-  return dayjs(txt).add(543, "year").format(format);
+export const ToDateThai = (txt: any, format: DefaultFormatDate = "D MMMM BBBB") => {
+  dayjs.locale('th')
+  return dayjs(txt,"DD/MM/YYYY HH:mm:ss").format(format);
 };

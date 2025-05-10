@@ -3,6 +3,9 @@ import React from 'react';
 import CustomImage from './CustomImage';
 import {Splide, SplideSlide} from "@splidejs/react-splide";
 import '@splidejs/react-splide/css';
+import banner from "@public/banner-home-emp.png";
+import Image from 'next/image';
+
 
 function Banner() {
 	return (
@@ -20,7 +23,7 @@ function Banner() {
 			{
 			[...Array(3)].map((_, i) => (
 				<SplideSlide key={i}>
-					<CustomImage src='/banner-home-emp.png' alt='banner-home-emp' key={i} />
+					<Image src={banner} alt='banner-home-emp' key={i} priority/>
 				</SplideSlide>
 			))
 		} </Splide>
