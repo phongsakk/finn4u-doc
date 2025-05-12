@@ -12,7 +12,7 @@ func (AssetAuction) TableName() string {
 
 type AssetAuction struct {
 	template.Model
-	AssetID  uint      `json:"asset_id" gorm:"not null"`
+	AssetID  uint      `json:"asset_id" gorm:"not null;index;unique"`
 	FromDate time.Time `json:"from_date" gorm:"not null"`
 	ToDate   time.Time `json:"to_date" gorm:"not null"`
 	FromTime string    `json:"from_time" gorm:"not null"` // Store time as HH:MM:SS

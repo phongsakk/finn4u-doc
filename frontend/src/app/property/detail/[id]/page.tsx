@@ -65,9 +65,11 @@ function PropertyPage() {
             ).toDate()
           );
         } else {
-          await AlertPrimary("Error 404 - Please try again!!", "error").then(() => {
-            window.location.href = api.internal("/property")
-          })
+          await AlertPrimary("Error 404 - Please try again!!", "error").then(
+            () => {
+              window.location.href = api.internal("/property");
+            }
+          );
         }
       } catch (err) {
         console.error("get asset:", err);
@@ -104,6 +106,7 @@ function PropertyPage() {
           break;
         default:
           BidMessage = "Bid สำเร็จ";
+          status = true;
           break;
       }
 
@@ -157,13 +160,15 @@ function PropertyPage() {
                       </div>
                     </div>
                     <div className="col-sm-4 col-auto text-end">
-                      {asset?.asset_auction && <Link
-                        href="#"
-                        onClick={(e) => e.preventDefault()}
-                        className="btn btn-primary font2"
-                      >
-                        ประมูล
-                      </Link>}
+                      {asset?.asset_auction && (
+                        <Link
+                          href="#"
+                          onClick={(e) => e.preventDefault()}
+                          className="btn btn-primary font2"
+                        >
+                          ประมูล
+                        </Link>
+                      )}
 
                       <Link
                         href="#"
@@ -213,18 +218,25 @@ function PropertyPage() {
 
                         <span className="font2">{asset?.aria_size}</span>
                       </li>
-                      <li>
-                        <CustomImage
-                          src="/ic-lo3.svg"
-                          alt="ic-lo3"
-                          style={{
-                            width: "30px",
-                            height: "auto",
-                          }}
-                        />
-                        <span className="font2">มูลค่าสินทรัพย์ค้ำประกัน</span>
-                        {formatCurrency(Number(asset?.collateral))}
-                      </li>
+                      {asset?.asset_appraisal.collateral_price && (
+                        <li>
+                          <CustomImage
+                            src="/ic-lo3.svg"
+                            alt="ic-lo3"
+                            style={{
+                              width: "30px",
+                              height: "auto",
+                            }}
+                          />
+                          <span className="font2">
+                            มูลค่าสินทรัพย์ค้ำประกัน
+                          </span>
+                          {formatCurrency(
+                            asset?.asset_appraisal.collateral_price
+                          )}
+                        </li>
+                      )}
+
                       <li>
                         <CustomImage
                           src="/ic-lo4.svg"
@@ -235,7 +247,10 @@ function PropertyPage() {
                           }}
                         />
                         <span className="font2">ราคาขายฝาก</span>
-                        {formatNumber(Number(asset?.consignment_price))} บาท
+                        {formatNumber(
+                          asset?.asset_appraisal.price_appraisal
+                        )}{" "}
+                        บาท
                       </li>
                       <li>
                         <CustomImage
@@ -273,11 +288,17 @@ function PropertyPage() {
                         <div className="col-sm-auto h5">ระยะเวลาการประมูล:</div>
                         <div className=" row col-lg-6 text-secondary">
                           <div className="col-auto">
-                            {ToDateThai(asset.asset_auction.from_date, "DD/MM/BBBB HH:mm")}
+                            {ToDateThai(
+                              asset.asset_auction.from_date,
+                              "DD/MM/BBBB HH:mm"
+                            )}
                           </div>
                           <div className="col-auto px-2">-</div>
                           <div className="col-auto">
-                            {ToDateThai(asset.asset_auction.to_date, "DD/MM/BBBB HH:mm")}
+                            {ToDateThai(
+                              asset.asset_auction.to_date,
+                              "DD/MM/BBBB HH:mm"
+                            )}
                           </div>
                         </div>
                         <div className="row h5 mt-3">

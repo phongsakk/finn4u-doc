@@ -1,6 +1,7 @@
 "use client";
 import CustomImage from "@components/CustomImage";
 import { formatNumber, ToDateThai } from "@components/helpers";
+import ImageApi from "@components/ImageApi";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AssetModel } from "@models/AssetModel";
@@ -49,7 +50,7 @@ function RecommendedPage() {
             <div className="head">
               <div className="not-hover">
                 {item?.asset_image ? (
-                  <CustomImage
+                  <ImageApi
                     src={item?.asset_image ?? ""}
                   />
                 ) : (
@@ -108,14 +109,14 @@ function RecommendedPage() {
                 <span className="font2">
                   ราคาขาย
                   <span className="text-primary font2 px-1">
-                    {formatNumber(Number(item.consignment_price))}
+                    {formatNumber(Number(item.price_appraisal))}
                   </span>
                   บาท
                 </span>
               </div>
               <div className="list">
                 <FontAwesomeIcon icon={faCheck} className="fs-4" />
-                <span className="font2">{item.sell_date}</span>
+                <span className="font2">{ToDateThai(dayjs(item?.date_sell))}</span>
               </div>
             </div>
           </div>
