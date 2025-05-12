@@ -106,6 +106,7 @@ function PropertyPage() {
           break;
         default:
           BidMessage = "Bid สำเร็จ";
+          status = true;
           break;
       }
 
@@ -230,7 +231,9 @@ function PropertyPage() {
                           <span className="font2">
                             มูลค่าสินทรัพย์ค้ำประกัน
                           </span>
-                          {formatCurrency(asset?.asset_appraisal.collateral_price)}
+                          {formatCurrency(
+                            asset?.asset_appraisal.collateral_price
+                          )}
                         </li>
                       )}
 
@@ -244,7 +247,10 @@ function PropertyPage() {
                           }}
                         />
                         <span className="font2">ราคาขายฝาก</span>
-                        {formatNumber(asset?.asset_appraisal.price_appraisal)} บาท
+                        {formatNumber(
+                          asset?.asset_appraisal.price_appraisal
+                        )}{" "}
+                        บาท
                       </li>
                       <li>
                         <CustomImage

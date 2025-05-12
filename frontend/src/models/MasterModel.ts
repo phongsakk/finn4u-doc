@@ -36,5 +36,5 @@ export const PriceRange = [
 export const CareerList = [
   { id: 1, name: "พนักงานบริษัทเอกชน" },
   { id: 2, name: "ประกอบธุรกิจส่วนตัว" },
-  { id: 3, name: "ประกอบธุรกิจส่วนตัว" },
+  { id: 3, name: "รับข้าราชการ" },
 ];

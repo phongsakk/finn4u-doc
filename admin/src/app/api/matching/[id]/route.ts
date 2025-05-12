@@ -30,7 +30,7 @@ export const GET = async (
       res?.data?.asset?.asset_bid_offer.map((item: any) => ({
         id:item.id,
         bidder_id: item.bidder_id,
-        number_consignor: item.bidder.slug,
+        number_consignor: item.bidder.gen_id,
         fullname: item?.bidder.Firstname + " " + item?.bidder.Lastname,
         phone_number: item?.bidder.PhoneNumber,
         tag: "ทั่วประเทศ",
