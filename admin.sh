@@ -2,7 +2,7 @@
 
 git fetch
 git pull
-docker compose up --build -d frontend
+docker compose up --build -d admin
 
 # ใช้ absolute path เพื่อป้องกันปัญหาเกี่ยวกับ relative path
 location=$(realpath "$(dirname "$1")")
