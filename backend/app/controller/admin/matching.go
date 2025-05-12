@@ -165,6 +165,10 @@ func CreateMatching(c *gin.Context) {
 			return err
 		}
 
+		if err := trx.Model(&AssetBidOffer).Update("is_winner", true).Error; err != nil {
+			return err
+		}
+
 		email := AssetBidOffer.Bidder.Email
 		utils.SendEmail(
 			email,

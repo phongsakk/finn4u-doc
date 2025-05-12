@@ -19,4 +19,7 @@ func RouterGroup(r *gin.RouterGroup) {
 
 	bid := strict.Group("/bid")
 	BidRouterGroup(bid)
+
+	matching := strict.Group("/matching")
+	MatchingRouterGroup(matching)
 }

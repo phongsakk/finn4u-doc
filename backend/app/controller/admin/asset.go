@@ -232,30 +232,40 @@ func DoAppraisal(c *gin.Context) {
 		if r.Auction != nil {
 			_auction := r.Auction
 			var auction models.AssetAuction
-			auction.AssetID = asset.ID
-			auction.FromDate = _auction.FromDate
-			auction.ToDate = _auction.ToDate
-			auction.FromTime = _auction.FromTime
-			auction.ToTime = _auction.ToTime
-			auction.MaxTax = _auction.MaxTax
+			if err := db.Where("asset_id=?", asset.ID).First(&auction).Error; err == gorm.ErrRecordNotFound {
+				auction.FromDate = _auction.FromDate
+				auction.ToDate = _auction.ToDate
+				auction.FromTime = _auction.FromTime
+				auction.ToTime = _auction.ToTime
+				auction.MaxTax = _auction.MaxTax
 
-			if err := tx.Save(&auction).Error; err != nil {
-				return err
+				if err := tx.Create(&auction).Error; err != nil {
+					return err
+				}
+			} else {
+				auction.AssetID = asset.ID
+				auction.FromDate = _auction.FromDate
+				auction.ToDate = _auction.ToDate
+				auction.FromTime = _auction.FromTime
+				auction.ToTime = _auction.ToTime
+				auction.MaxTax = _auction.MaxTax
+
+				if err := tx.Save(&auction).Error; err != nil {
+					return err
+				}
 			}
 		}
 
 		if r.IsPublished != nil {
 			asset.IsPublished = *r.IsPublished
-			if err := tx.Save(&asset).Error; err != nil {
-				return err
-			}
 		}
 
 		if r.Status != nil {
 			asset.Status = *r.Status
-			if err := tx.Save(&asset).Error; err != nil {
-				return err
-			}
+		}
+
+		if err := tx.Save(&asset).Error; err != nil {
+			return err
 		}
 
 		return nil
