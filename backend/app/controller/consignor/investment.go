@@ -13,10 +13,10 @@ import (
 )
 
 func CreateInvestment(c *gin.Context) {
-	fmt.Println("create bid")
-	var bid models.AssetBidOffer
+	fmt.Println("create investment")
+	var invest models.AssetInvestmentOffer
 	var user models.Consignor
-	var r generalRequest.BidOfferRequest
+	var r generalRequest.InvestmentOfferRequest
 	if err := c.ShouldBindJSON(&r); err != nil {
 		c.JSON(http.StatusBadRequest, types.Response{
 			Code:  http.StatusBadRequest,
@@ -40,8 +40,10 @@ func CreateInvestment(c *gin.Context) {
 		return
 	}
 
+	fmt.Print("user ")
+	fmt.Println(user.ID, r.AssetID, r.Offer)
 	// Create the bid offer in the database
-	if err := bid.CreateBidOffer(&user, r.AssetID, r.Offer); err != nil {
+	if err := invest.CreateInvestmentOffer(&user, r.AssetID, r.Offer); err != nil {
 		c.JSON(http.StatusBadRequest, types.Response{
 			Code:    http.StatusBadRequest,
 			Message: utils.NullableString(err.Error()),
@@ -54,7 +56,7 @@ func CreateInvestment(c *gin.Context) {
 		Code:    http.StatusOK,
 		Status:  true,
 		Message: utils.NullableString("Bid offer created successfully"),
-		Data:    &bid,
+		Data:    &invest,
 	})
 }
 

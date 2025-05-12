@@ -120,3 +120,15 @@ func (user Consignor) FindBidOffer(assets *Asset, AssetID int) error {
 		Preload("AssetBidOffer").
 		Find(&assets).Error
 }
+
+func (user Consignor) FindInvestmentOffer(assets *Asset, AssetID int) error {
+	db, dbError := database.Conn()
+	if dbError != nil {
+		return dbError
+	}
+	defer database.Close(db)
+	return db.Joins("AssetInvestmentOffer").
+		Where("asset.id = ? AND AssetInvestmentOffer.bidder_id = ?", AssetID, user.ID).
+		Preload("AssetInvestmentOffer").
+		Find(&assets).Error
+}

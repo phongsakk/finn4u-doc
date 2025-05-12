@@ -229,7 +229,11 @@ func GetRecommendedAsset(c *gin.Context) {
 	}
 
 	// Fetch assets with pagination
-	if err := db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Where("status = 2 AND is_recommended = ?", true).Offset(offset).Limit(take).Order("id desc").Find(&response).Error; err != nil {
+	models := db.Model(&models.Asset{})
+	preloaded := models.Preload("Province").Preload("AssetType").Preload("AssetAppraisal")
+	preloaded = preloaded.Preload("Owner").Preload("AssetImages")
+	prepare := preloaded.Where("status = 2 AND is_recommended = ?", true).Offset(offset).Limit(take).Order("id desc")
+	if err := prepare.Find(&response).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
 			Error: utils.NullableString(err.Error()),

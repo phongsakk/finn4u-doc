@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strconv"
@@ -18,15 +19,17 @@ func (AssetInvestmentOffer) TableName() string {
 
 type AssetInvestmentOffer struct {
 	template.Model
-	AssetID    uint      `json:"asset_id" gorm:"not null;index:idx_asset_id"`
-	InvestorID uint      `json:"investor_id" gorm:"not null;index:idx_investor_id"`
-	Offer      float64   `json:"offer" gorm:"not null"`
-	IsWinner   bool      `json:"is_winner" gorm:"default:false"`
-	Status     uint8     `json:"status" gorm:"default:0"`
-	Investor   Consignor `json:"investor" gorm:"foreignKey:InvestorID"`
+	AssetID    uint       `json:"asset_id" gorm:"not null;index:idx_asset_id"`
+	InvestorID uint       `json:"investor_id" gorm:"not null;index:idx_investor_id"`
+	Offer      float64    `json:"offer" gorm:"not null"`
+	IsWinner   bool       `json:"is_winner" gorm:"default:false"`
+	Status     uint8      `json:"status" gorm:"default:0"`
+	Asset      *Asset     `json:"asset" gorm:"foreignKey:AssetID"`
+	Investor   *Consignor `json:"investor" gorm:"foreignKey:InvestorID"`
 }
 
 func (invest *AssetInvestmentOffer) CreateInvestmentOffer(user *Consignor, assetID uint, offer float64) error {
+	fmt.Println("CreateInvestmentOffer", user.ID, assetID, offer)
 	var errored error
 	db, dbError := database.Conn()
 
@@ -73,15 +76,22 @@ func (invest *AssetInvestmentOffer) CreateInvestmentOffer(user *Consignor, asset
 	// count investment history of asset
 	// var count, maxInvestment int64 = 0, 1
 	var investment AssetInvestmentOffer
+	fmt.Println("78", user.ID, assetID, offer)
 	if err := db.Model(&AssetInvestmentOffer{}).Where("asset_id = ? AND investor_id = ?", assetID, user.ID).First(&investment).Error; err == gorm.ErrRecordNotFound {
-		// update investment history if exists
-		investment.Offer = offer
-		return db.Save(&investment).Error
-	} else {
+		fmt.Println("80", user.ID, assetID, offer)
 		// create new
 		invest.AssetID = assetID
 		invest.Offer = offer
 		invest.InvestorID = user.ID
 		return db.Create(&invest).Error
+	} else {
+		// update investment history if exists
+		fmt.Println("85", user.ID, assetID, offer)
+
+		investmentJson, _ := json.Marshal(investment)
+		_ = json.Unmarshal(investmentJson, &invest)
+		invest.Offer = offer
+		invest.InvestorID = user.ID
+		return db.Save(&invest).Error
 	}
 }
