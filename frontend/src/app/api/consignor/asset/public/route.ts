@@ -39,9 +39,9 @@ export const GET = async (req: NextRequest) => {
               ? `${item.aria_size_square_metre} ตารางเมตร`
               : ""
           }`.trim(),
-          price_appraisal: item?.asset_appraisal.price_appraisal,
-          collateral_price: item?.asset_appraisal.collateral_price,
-          date_sell: item?.asset_appraisal.created_at,
+          price_appraisal: item?.asset_appraisal?.price_appraisal || null,
+          collateral_price: item?.asset_appraisal?.collateral_price || null,
+          date_sell: item?.asset_appraisal?.created_at || null,
           location_x: item.location_x,
           location_y: item.location_y,
           province_name: item?.province?.name,

@@ -44,9 +44,9 @@ export const GET = async (
       province_name: data?.province?.name,
       asset_type_name: data?.asset_type?.name,
       asset_appraisal: {
-        price_appraisal: data?.asset_appraisal?.price_appraisal,
-        collateral_price: data?.asset_appraisal?.collateral_price,
-        duration: data?.asset_appraisal?.duration,
+        price_appraisal: data?.asset_appraisal?.price_appraisal || null,
+        collateral_price: data?.asset_appraisal?.collateral_price || null,
+        duration: data?.asset_appraisal?.duration || null,
       },
       asset_tag:
         data?.asset_tag?.map((item: any, index: number) => ({

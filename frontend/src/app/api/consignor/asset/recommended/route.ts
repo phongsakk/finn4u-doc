@@ -25,8 +25,9 @@ export const GET = async () => {
               ? `${item.aria_size_square_metre} ตารางเมตร`
               : ""
           }`.trim(),
-          collateral: item.collateral,
-          consignment_price: item.consignment_price,
+          price_appraisal: item?.asset_appraisal?.price_appraisal || null,
+          collateral_price: item?.asset_appraisal?.collateral_price || null,
+          date_sell: item?.asset_appraisal?.created_at || null,
           location_x: item.location_x,
           location_y: item.location_y,
           province_name: item?.province?.name,
@@ -42,7 +43,7 @@ export const GET = async () => {
             to_date: item.asset_auction.to_date,
             to_time: item.asset_auctionto_time,
           },
-          sell_date: ToDateThai(dayjs(item.updated_at)) || ""
+          sell_date: ToDateThai(dayjs(item.updated_at)) || "",
         } as AssetModel)
     );
 

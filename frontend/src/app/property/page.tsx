@@ -15,6 +15,7 @@ import Pagination from "@components/dev/pagination";
 import { FormSelectCustom } from "@components/FormCustom/FormSelectCustom";
 import { PriceRange } from "@models/MasterModel";
 import ImageApi from "@components/ImageApi";
+import dayjs from "dayjs";
 const MasterData = {
   asset_type: [],
   price_range: [],
@@ -250,7 +251,7 @@ function Propertysale() {
                               }}
                             />
                             <span className="font2">
-                              {ToDateThai(item?.date_sell)}
+                              {ToDateThai(dayjs(item?.date_sell))}
                             </span>
                           </li>
                         </ul>

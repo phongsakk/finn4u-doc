@@ -1,8 +1,8 @@
 export type AssetModel = {
   id: number;
   aria_size: string;
-  price_appraisal: number;
-  collateral_price: number;
+  price_appraisal?: number;
+  collateral_price?: number;
   location_x: number;
   location_y: number;
   province_name: string;
