@@ -4,9 +4,12 @@ import timezone from "dayjs/plugin/timezone";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 import "dayjs/locale/th";
 import { AxiosError } from "axios";
-dayjs.extend(utc)
-dayjs.extend(timezone)
-dayjs.extend(buddhistEra)
+import { Session } from "next-auth";
+import { NextResponse } from "next/server";
+import { auth } from "@setting/auth";
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(buddhistEra);
 dayjs.locale("th");
 
 export const log = (text: any, textObject?: any) => {
@@ -72,13 +75,13 @@ export const formatNumber = (
   style: string = "decimal",
   currency?: string
 ): string => {
-  if (!value) return "-"
+  if (!value) return "-";
   const options: Intl.NumberFormatOptions =
     style === "currency"
       ? { style: "currency", currency: currency || "USD" }
       : style === "percent"
-        ? { style: "percent" }
-        : { style: "decimal" };
+      ? { style: "percent" }
+      : { style: "decimal" };
 
   return new Intl.NumberFormat("en-US", options).format(value);
 };
@@ -139,7 +142,6 @@ export const resizeBase64Image = ({
   });
 };
 
-
 export const handleNumberChange = (
   e: React.ChangeEvent<HTMLInputElement>,
   inputNum: (value: string) => void
@@ -167,14 +169,15 @@ export const numberChange = (
   }
 };
 
-
 type DefaultFormatDate = "D MMMM BBBB" | "DD/MM/BBBB HH:mm" | (string & {});
 
-export const ToDateThai = (txt: any, format: DefaultFormatDate = "D MMMM BBBB") => {
-  dayjs.locale('th')
+export const ToDateThai = (
+  txt: any,
+  format: DefaultFormatDate = "D MMMM BBBB"
+) => {
+  dayjs.locale("th");
   return dayjs(txt, "DD/MM/YYYY HH:mm:ss").format(format);
 };
-
 
 export const parseFormData = (formData: FormData) => {
   const result: Record<string, any> = {};
@@ -201,4 +204,20 @@ export const parseFormData = (formData: FormData) => {
   }
 
   return result;
-}
+};
+
+export const CheckAuth = async () => {
+  const session = await auth();
+  if (!session) {
+    return { status: false, code: 401, message: "Not authenticated" };
+  }
+
+  return {
+    status: true,
+    headerToken: {
+      headers: {
+        Authorization: "Bearer " + (session.user?.accessToken ?? ""),
+      },
+    },
+  };
+};
