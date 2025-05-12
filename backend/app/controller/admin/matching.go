@@ -165,10 +165,10 @@ func CreateMatching(c *gin.Context) {
 		if err := trx.Model(&models.Asset{}).Where("id=?", request.AssetID).First(&asset).Error; err == gorm.ErrRecordNotFound {
 			return fmt.Errorf("asset not found")
 		}
-		if asset.Status == 4 {
+		if asset.Status == 3 {
 			return fmt.Errorf("asset is already sold")
 		} else {
-			asset.Status = 4
+			asset.Status = 3
 			if err := trx.Save(&asset).Error; err != nil {
 				return err
 			}
