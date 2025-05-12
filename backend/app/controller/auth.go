@@ -493,6 +493,7 @@ func Signup(c *gin.Context) {
 	user.DistrictID = request.DistrictId
 	user.SubdistrictID = request.SubdistrictId
 	user.Email = request.Email
+	user.Slug = fmt.Sprintf("IN%d", time.Now().Unix())
 
 	var otp models.OTP
 	db.Transaction(func(tx *gorm.DB) error {
