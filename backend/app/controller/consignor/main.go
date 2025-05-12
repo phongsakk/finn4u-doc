@@ -299,7 +299,7 @@ func GetPublicAsset(c *gin.Context) {
 		if assetTypeId != 0 {
 			models = models.Where("asset_type_id=?", assetTypeId)
 		}
-		preloaded := models.Preload("Province").Preload("AssetType")
+		preloaded := models.Preload("Province").Preload("AssetType").Preload("AssetAppraisal")
 		preloaded = preloaded.Preload("Owner").Preload("AssetImages")
 		preloaded = preloaded.Offset(offset).Limit(limit).Order(clause.OrderByColumn{
 			Column: clause.Column{
@@ -344,7 +344,19 @@ func GetPublicAsset(c *gin.Context) {
 	} else {
 		// Count all assets before applying pagination
 		var totalAssets int64
-		if err := db.Model(&models.Asset{}).Where("status = ? AND is_published = ?", 2, true).Count(&totalAssets).Error; err != nil {
+		models := db.Model(&models.Asset{}).Where("status = ? AND is_published = ?", 2, true)
+		if assetTypeId != 0 {
+			models = models.Where("asset_type_id=?", assetTypeId)
+		}
+		preloaded := models.Preload("Province").Preload("AssetType").Preload("AssetAppraisal")
+		preloaded = preloaded.Preload("Owner").Preload("AssetImages")
+		preloaded = preloaded.Offset(offset).Limit(limit).Order(clause.OrderByColumn{
+			Column: clause.Column{
+				Name: orderBy,
+			},
+			Desc: idDesc,
+		})
+		if err := models.Count(&totalAssets).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, types.Response{
 				Code:  http.StatusInternalServerError,
 				Error: utils.NullableString(err.Error()),
@@ -353,7 +365,7 @@ func GetPublicAsset(c *gin.Context) {
 		}
 
 		// Fetch assets with pagination
-		if err := db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Where("status = ? AND is_published = ?", 2, true).Offset(offset).Limit(limit).Order(clause.OrderByColumn{
+		if err := preloaded.Offset(offset).Limit(limit).Order(clause.OrderByColumn{
 			Column: clause.Column{
 				Name: orderBy,
 			},
@@ -369,8 +381,8 @@ func GetPublicAsset(c *gin.Context) {
 		total := len(response)
 		totalPage := int64(math.Ceil(float64(totalAssets) / float64(len(response))))
 		c.JSON(200, types.Response{
-			Code:      http.StatusOK,
 			Status:    true,
+			Code:      http.StatusOK,
 			Message:   utils.NullableString("Assets retrieved successfully"),
 			Data:      response,
 			Page:      &page,
