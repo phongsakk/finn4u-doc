@@ -233,6 +233,7 @@ func DoAppraisal(c *gin.Context) {
 			_auction := r.Auction
 			var auction models.AssetAuction
 			if err := db.Where("asset_id=?", asset.ID).First(&auction).Error; err == gorm.ErrRecordNotFound {
+				auction.AssetID = asset.ID
 				auction.FromDate = _auction.FromDate
 				auction.ToDate = _auction.ToDate
 				auction.FromTime = _auction.FromTime
