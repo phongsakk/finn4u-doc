@@ -232,7 +232,7 @@ func SearchMatchingByAssetID(c *gin.Context) {
 	models := db.Model(&models.AssetAuction{})
 	preloaded := models.Preload("Asset").Preload("Asset.Owner")
 	preloaded = preloaded.Preload("Asset.Province").Preload("Asset.AssetType")
-	preloaded = preloaded.Preload("Asset.AssetBidOffer").Preload("Asset.AssetAppraisal")
+	preloaded = preloaded.Preload("Asset.AssetBidOffer").Preload("Asset.AssetBidOffer.Bidder").Preload("Asset.AssetAppraisal")
 	preloaded = preloaded.Where("asset_id=?", assetID)
 	// Fetch assets with pagination
 	if err := preloaded.First(&response).Error; err != nil {

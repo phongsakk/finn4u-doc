@@ -17,13 +17,13 @@ func (AssetBidOffer) TableName() string {
 
 type AssetBidOffer struct {
 	template.Model
-	AssetID  uint      `json:"asset_id" gorm:"not null;index:idx_asset_id"`
-	BidderID uint      `json:"bidder_id" gorm:"not null;index:idx_bidder_id"`
-	Offer    float64   `json:"offer" gorm:"not null"`
-	Time     int8      `json:"time" gorm:"not null,default:1"`
-	IsWinner bool      `json:"is_winner" gorm:"default:false"`
-	Status   uint8     `json:"status" gorm:"default:0"`
-	Bidder   Consignor `json:"bidder" gorm:"foreignKey:BidderID"`
+	AssetID  uint       `json:"asset_id" gorm:"not null;index:idx_asset_id"`
+	BidderID uint       `json:"bidder_id" gorm:"not null;index:idx_bidder_id"`
+	Offer    float64    `json:"offer" gorm:"not null"`
+	Time     int8       `json:"time" gorm:"not null,default:1"`
+	IsWinner bool       `json:"is_winner" gorm:"default:false"`
+	Status   uint8      `json:"status" gorm:"default:0"`
+	Bidder   *Consignor `json:"bidder,omitempty" gorm:"foreignKey:BidderID"`
 }
 
 func (bid *AssetBidOffer) CreateBidOffer(user *Consignor, assetID uint, offer float64) error {
