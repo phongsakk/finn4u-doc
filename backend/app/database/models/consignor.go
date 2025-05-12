@@ -15,7 +15,7 @@ import (
 type Consignor struct {
 	template.Model
 	template.User
-	Slug string `json:"slug" gorm:"not null;index;unique;"`
+	GenID string `json:"gen_id" gorm:"not null;index;unique;"`
 
 	UserPrefix *UserPrefix `json:"user_prefix" gorm:"foreignKey:UserPrefixID;references:ID"`
 }
