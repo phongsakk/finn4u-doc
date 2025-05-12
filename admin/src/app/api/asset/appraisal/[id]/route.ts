@@ -1,4 +1,9 @@
-import { catchError, log, logError, parseFormData } from "@component/dev/Helpers";
+import {
+  catchError,
+  log,
+  logError,
+  parseFormData,
+} from "@component/dev/Helpers";
 import { UploadFiles } from "@component/dev/uploadfile";
 import { auth } from "@setting/auth";
 import { api } from "@utils/api";
@@ -25,25 +30,42 @@ export const POST = async (
     if (!session) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
-    const model_apr = {
-      price_appraisal: Number(parsed.price_appraisal),
-      collateral_price: Number(parsed.collateral_price),
-      duration: Number(parsed.duration),
-      display_images: parsed.display_images.filter((x: any) => x.is_display === 'true').map((item: any) => (Number(item.id))),
-      new_images: new_images,
-      tags: parsed.tags.filter((x: any) => x.is_check === "true").map((item: any) => (Number(item.id))),
-      is_published: parsed.is_published === "true" ? true : false,
-      find_invester: parsed.find_invester === "true" ? true : false,
-      status: Number(parsed.status),
-      auction: {
+
+    var auction_model = null;
+
+    if (
+      formData.get("auction[from_date]") &&
+      formData.get("auction[from_time]") &&
+      formData.get("auction[to_date]") &&
+      Number(formData.get("auction[max_tax]"))
+    ) {
+      auction_model = {
         from_date: formData.get("auction[from_date]"),
         from_time: formData.get("auction[from_time]"),
         to_date: formData.get("auction[to_date]"),
         to_time: formData.get("auction[to_time]"),
-        max_tax: Number(formData.get("auction[max_tax]"))
-      }
+        max_tax: Number(formData.get("auction[max_tax]")),
+      };
     }
 
+    const model_apr = {
+      price_appraisal: Number(parsed.price_appraisal),
+      collateral_price: Number(parsed.collateral_price),
+      duration: Number(parsed.duration),
+      display_images: parsed.display_images
+        .filter((x: any) => x.is_display === "true")
+        .map((item: any) => Number(item.id)),
+      new_images: new_images,
+      tags: parsed.tags
+        .filter((x: any) => x.is_check === "true")
+        .map((item: any) => Number(item.id)),
+      is_published: parsed.is_published === "true" ? true : false,
+      find_invester: parsed.find_invester === "true" ? true : false,
+      status: Number(parsed.status),
+      auction: auction_model,
+    };
+
+    logError(12313,model_apr)
 
     const token = session.user?.accessToken ?? "";
     const { data: response } = await axios.post(
@@ -56,14 +78,17 @@ export const POST = async (
       }
     );
 
-    return NextResponse.json({
-      status: response.status,
-      code: response.code,
-      message: response.message
-    }, {
-      status: response.code,
-    });
+    return NextResponse.json(
+      {
+        status: response.status,
+        code: response.code,
+        message: response.message,
+      },
+      {
+        status: response.code,
+      }
+    );
   } catch (error) {
-    return NextResponse.json(await catchError(error))
+    return NextResponse.json(await catchError(error));
   }
 };
