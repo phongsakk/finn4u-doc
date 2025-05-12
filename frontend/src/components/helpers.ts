@@ -6,9 +6,9 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 import "dayjs/locale/th";
-dayjs.extend(utc)
-dayjs.extend(timezone)
-dayjs.extend(buddhistEra)
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(buddhistEra);
 dayjs.locale("th");
 
 export const log = (text: any, textObject?: any) => {
@@ -236,7 +236,14 @@ export const catchError = async (error: any) => {
 
 type DefaultFormatDate = "D MMMM BBBB" | "DD/MM/BBBB HH:mm" | (string & {});
 
-export const ToDateThai = (txt: any, format: DefaultFormatDate = "D MMMM BBBB") => {
-  dayjs.locale('th')
-  return dayjs(txt,"DD/MM/YYYY HH:mm:ss").format(format);
+export const ToDateThai = (
+  txt: any,
+  format: DefaultFormatDate = "D MMMM BBBB"
+) => {
+  try {
+    dayjs.locale("th");
+    return dayjs(txt, "DD/MM/YYYY HH:mm:ss").format(format);
+  } catch (error) {
+    return "-";
+  }
 };

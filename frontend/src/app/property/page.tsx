@@ -10,11 +10,12 @@ import { FormControl, FormSelect, Row } from "react-bootstrap";
 import { IoBanOutline } from "react-icons/io5";
 import { api } from "@utils/api/index";
 import Loading from "@components/dev/loading";
-import { formatCurrency, formatNumber } from "@components/helpers";
+import { formatCurrency, formatNumber, ToDateThai } from "@components/helpers";
 import Pagination from "@components/dev/pagination";
 import { FormSelectCustom } from "@components/FormCustom/FormSelectCustom";
 import { PriceRange } from "@models/MasterModel";
 import ImageApi from "@components/ImageApi";
+import dayjs from "dayjs";
 const MasterData = {
   asset_type: [],
   price_range: [],
@@ -160,9 +161,7 @@ function Propertysale() {
                           />
                         ) : (
                           <div className="property-img bg-light d-flex justify-content-center align-items-center">
-                            <IoBanOutline
-                              className="text-white w-50 h-50"
-                            />
+                            <IoBanOutline className="text-white w-50 h-50" />
                           </div>
                         )}
 
@@ -170,18 +169,6 @@ function Propertysale() {
                           {item.asset_type_name}
                         </span>
                         <button className="btn btn-sold font2">SOLD</button>
-                        <div className="time">
-                          <div className="text-center">
-                            <p className="font2">รอการลงทุน</p>
-                            <p className="text-warning font2">
-                              1 วัน 3.50 ชั่วโมง
-                            </p>
-                          </div>
-                          <div className="icon">
-                            <FontAwesomeIcon icon={faClock} />
-                            <i className="fa-solid fa-clock"></i>
-                          </div>
-                        </div>
                       </div>
                     </div>
                     <div className="col-lg-5">
@@ -216,7 +203,7 @@ function Propertysale() {
 
                             <span className="font2">{item.aria_size}</span>
                           </li>
-                          {item.collateral ? (
+                          {item.price_appraisal ? (
                             <li>
                               <CustomImage
                                 src="/ic-lo3.svg"
@@ -231,7 +218,7 @@ function Propertysale() {
                                 มูลค่าสินทรัพย์ค้ำประกัน
                               </span>
                               <span className="text-primary font2 px-1">
-                                {formatCurrency(item.collateral)}
+                                {formatCurrency(item.collateral_price)}
                               </span>
                             </li>
                           ) : null}
@@ -249,7 +236,7 @@ function Propertysale() {
                             <span className="font2">
                               ราคาขายฝาก
                               <span className="text-primary font2 px-1">
-                                {formatNumber(item.consignment_price)}
+                                {formatNumber(item.price_appraisal)}
                               </span>
                               บาท
                             </span>
@@ -263,7 +250,9 @@ function Propertysale() {
                                 height: "auto",
                               }}
                             />
-                            <span className="font2">11 เมษายน 2565</span>
+                            <span className="font2">
+                              {ToDateThai(dayjs(item?.date_sell))}
+                            </span>
                           </li>
                         </ul>
                         <div className="wrap">

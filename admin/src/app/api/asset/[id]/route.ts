@@ -1,4 +1,4 @@
-import { log, logError } from "@component/dev/Helpers";
+import { catchError, log, logError } from "@component/dev/Helpers";
 import { assetImages, Estimateprice, tags } from "@models/asset";
 import { auth } from "@setting/auth";
 import { api } from "@utils/api";
@@ -38,52 +38,44 @@ export const GET = async (
     });
 
     const model = {
-      assetMain: {
-        id: response_asset.id,
-        status: response_asset.status,
-        is_published: response_asset.is_published,
-      },
-      images:
-        response_asset.asset_images.map((item: any) => ({
-          id: item.id,
-          name: item.image,
-          is_display: item.is_display,
-        })) || [],
-      tags:
-        response_tag.map((item: any) => ({
-          id: item.id,
-          name: item.name,
-          is_check: response_asset?.asset_tag.find(
-            (astagitem: any) => astagitem.tag.id == item.id
-          )
-            ? true
-            : false,
-        })) || [],
-      asset_appraisal: response_asset?.asset_appraisal || null,
-      asset_auction: {
-        fromDate: response_asset?.asset_auction?.from_date || null,
-        fromTime: (response_asset?.asset_auction?.from_time as string) || "",
-        toDate: response_asset?.asset_auction?.to_date || null,
-        toTime: (response_asset?.asset_auction?.to_time as string) || "",
-        maxTax: (response_asset?.asset_auction?.max_tax as string) || "",
-      },
+      status: true,
+      code: 200,
+      data: {
+        price_appraisal: response_asset?.asset_appraisal?.price_appraisal || "",
+        collateral_price: response_asset?.asset_appraisal?.collateral_price || "",
+        duration: response_asset?.asset_appraisal?.duration || "",
+        status: String(response_asset?.status),
+        is_published: response_asset?.is_published,
+        display_images:
+          response_asset.asset_images.map((item: any) => ({
+            id: item.id,
+            name: item.image,
+            is_display: item.is_display,
+          })) || [],
+        tags:
+          response_tag.map((item: any) => ({
+            id: item.id,
+            name: item.name,
+            is_check: response_asset?.asset_tag.find(
+              (astagitem: any) => astagitem.tag.id == item.id
+            )
+              ? true
+              : false,
+          })) || [],
+        auction: {
+          from_date: response_asset?.asset_auction?.from_date || null,
+          from_time: (response_asset?.asset_auction?.from_time as string) || "",
+          to_date: response_asset?.asset_auction?.to_date || null,
+          to_time: (response_asset?.asset_auction?.to_time as string) || "",
+          max_tax: (response_asset?.asset_auction?.max_tax as string) || "",
+        },
+      }
     };
 
     return NextResponse.json(model, {
       status: 200,
     });
   } catch (error) {
-    logError("test:", error);
-    if (error instanceof AxiosError) {
-      return NextResponse.json(
-        {
-          status: error.response?.status || 500,
-          data: null,
-          message: error.message,
-        },
-        { status: error.response?.status || 500 }
-      );
-    }
-    return NextResponse.json({ error: "fail" }, { status: 500 });
+    return NextResponse.json(await catchError(error));
   }
 };
