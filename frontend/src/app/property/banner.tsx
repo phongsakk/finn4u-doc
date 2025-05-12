@@ -45,7 +45,7 @@ function Banner() {
           )}{" "}
         </div>
       </div>
-      <Image src={banner} alt="banner-home-emp" priority/>
+      <CustomImage src="/banner-home-emp.png" alt="banner-home-emp"/>
     </div>
   );
 }
