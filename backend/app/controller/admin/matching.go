@@ -161,6 +161,19 @@ func CreateMatching(c *gin.Context) {
 			return fmt.Errorf("bid offer does not match the asset or bidder")
 		}
 
+		var asset models.Asset
+		if err := trx.Model(&models.Asset{}).Where("id=?", request.AssetID).First(&asset).Error; err == gorm.ErrRecordNotFound {
+			return fmt.Errorf("asset not found")
+		}
+		if asset.Status == 4 {
+			return fmt.Errorf("asset is already sold")
+		} else {
+			asset.Status = 4
+			if err := trx.Save(&asset).Error; err != nil {
+				return err
+			}
+		}
+
 		if err := trx.Create(&response).Error; err != nil {
 			return err
 		}
