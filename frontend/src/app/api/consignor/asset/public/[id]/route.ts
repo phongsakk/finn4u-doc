@@ -43,6 +43,8 @@ export const GET = async (
       location_y: Number(data.location_y),
       province_name: data?.province?.name,
       asset_type_name: data?.asset_type?.name,
+      view_count: data?.view_count || 0,
+      bid_count: data?.bid_count || 0,
       asset_appraisal: {
         price_appraisal: data?.asset_appraisal?.price_appraisal || null,
         collateral_price: data?.asset_appraisal?.collateral_price || null,
