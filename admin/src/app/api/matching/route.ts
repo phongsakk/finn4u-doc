@@ -26,7 +26,7 @@ export const GET = async (
     );
 
     const model = res?.data?.map((item: any) => ({
-      id: item.id,
+      id: item.asset.id,
       date_sell: ToDateThai(
         item?.asset?.asset_appraisal?.created_at,
         "DD/MM/BBBB"

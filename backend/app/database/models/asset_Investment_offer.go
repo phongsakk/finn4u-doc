@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strconv"
@@ -9,23 +10,26 @@ import (
 
 	"github.com/phongsakk/finn4u-back/app/database"
 	"github.com/phongsakk/finn4u-back/app/database/models/template"
+	"gorm.io/gorm"
 )
 
-func (AssetBidOffer) TableName() string {
-	return "asset_bid_offer"
+func (AssetInvestmentOffer) TableName() string {
+	return "asset_investment_offer"
 }
 
-type AssetBidOffer struct {
+type AssetInvestmentOffer struct {
 	template.Model
-	AssetID  int     `json:"asset_id" gorm:"not null;index:idx_asset_id"`
-	BidderID uint    `json:"bidder_id" gorm:"not null;index:idx_bidder_id"`
-	Offer    float64 `json:"offer" gorm:"not null"`
-	Time     int8    `json:"time" gorm:"not null,default:1"`
-	IsWinner bool    `json:"is_winner" gorm:"default:false"`
-	Status   uint8   `json:"status" gorm:"default:0"`
+	AssetID    uint       `json:"asset_id" gorm:"not null;index:idx_asset_id"`
+	InvestorID uint       `json:"investor_id" gorm:"not null;index:idx_investor_id"`
+	Offer      float64    `json:"offer" gorm:"not null"`
+	IsWinner   bool       `json:"is_winner" gorm:"default:false"`
+	Status     uint8      `json:"status" gorm:"default:0"`
+	Asset      *Asset     `json:"asset" gorm:"foreignKey:AssetID"`
+	Investor   *Consignor `json:"investor" gorm:"foreignKey:InvestorID"`
 }
 
-func (bid *AssetBidOffer) CreateBidOffer(user *Consignor, assetID int, offer float64) error {
+func (invest *AssetInvestmentOffer) CreateInvestmentOffer(user *Consignor, assetID uint, offer float64) error {
+	fmt.Println("CreateInvestmentOffer", user.ID, assetID, offer)
 	var errored error
 	db, dbError := database.Conn()
 
@@ -69,16 +73,25 @@ func (bid *AssetBidOffer) CreateBidOffer(user *Consignor, assetID int, offer flo
 		return errors.New("auction has ended")
 	}
 
-	// count bid history of asset
-	var count, maxBid int64 = 0, 3
-	db.Model(&AssetBidOffer{}).Where("asset_id = ? AND bidder_id = ?", assetID, user.ID).Count(&count)
-	if count >= maxBid {
-		return errors.New("maximum bid limit reached")
-	}
+	// count investment history of asset
+	// var count, maxInvestment int64 = 0, 1
+	var investment AssetInvestmentOffer
+	fmt.Println("78", user.ID, assetID, offer)
+	if err := db.Model(&AssetInvestmentOffer{}).Where("asset_id = ? AND investor_id = ?", assetID, user.ID).First(&investment).Error; err == gorm.ErrRecordNotFound {
+		fmt.Println("80", user.ID, assetID, offer)
+		// create new
+		invest.AssetID = assetID
+		invest.Offer = offer
+		invest.InvestorID = user.ID
+		return db.Create(&invest).Error
+	} else {
+		// update investment history if exists
+		fmt.Println("85", user.ID, assetID, offer)
 
-	bid.AssetID = assetID
-	bid.Offer = offer
-	bid.Time = int8(1 + count)
-	bid.BidderID = user.ID
-	return db.Create(&bid).Error
+		investmentJson, _ := json.Marshal(investment)
+		_ = json.Unmarshal(investmentJson, &invest)
+		invest.Offer = offer
+		invest.InvestorID = user.ID
+		return db.Save(&invest).Error
+	}
 }
