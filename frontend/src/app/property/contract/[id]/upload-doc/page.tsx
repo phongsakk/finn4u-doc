@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { redirect, useParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Accordion, Button, Card, Collapse } from "react-bootstrap";
 import { LuDownload } from "react-icons/lu";
 
@@ -11,7 +11,6 @@ function UploadDocPage() {
   if (isNaN(Number(params.id))) {
     redirect("/property");
   }
-  console.log(params.id)
   const sections = [
     "หนังสือสัญญา",
     "หนังสือยินยอมคู่สมรส",

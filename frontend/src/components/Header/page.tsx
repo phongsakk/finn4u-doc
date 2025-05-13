@@ -5,18 +5,15 @@ import Image from "next/image";
 import Button from "react-bootstrap/Button";
 import Collapse from "react-bootstrap/Collapse";
 import { signOut, useSession } from "next-auth/react";
-import Login from "./Login";
 import Imagelogo from "@public/logo1.png";
 import { usePathname } from "next/navigation";
+import { useModal } from "@components/context/ModalContext";
 
 export default function Navbar() {
   const [navbarOpen, setNavOpen] = useState(false);
-  const [loginOpen, setLoginOpen] = useState(false);
+  const { openModal } = useModal();
   const pathname = usePathname();
   const { data: session, status } = useSession();
-  const handleLogin = (status: boolean = false) => {
-    setLoginOpen(status);
-  };
 
   const menuItems = [
     {
@@ -55,7 +52,6 @@ export default function Navbar() {
 
   return (
     <>
-      {!session && <Login loginOpen={loginOpen} handleLogin={handleLogin} />}
       <div className="navbar navbar-expand-lg navbar-main">
         <div className="container-fluid">
           <Link className="navbar-brand" href="/">
@@ -97,7 +93,7 @@ export default function Navbar() {
                 })}
               </ul>
               {status !== "loading" &&
-                (status === "authenticated" ? (
+                (session ? (
                   <div className="d-flex register">
                     <Link
                       className="btn btn-register d-flex align-items-center"
@@ -120,8 +116,9 @@ export default function Navbar() {
                 ) : (
                   <div className="d-flex register">
                     <div
-                      className={`nav-item ${pathname === "/register" ? "nav-active" : ""
-                        }`}
+                      className={`nav-item ${
+                        pathname === "/register" ? "nav-active" : ""
+                      }`}
                     >
                       <Link className="nav-link" href="/register">
                         ลงทะเบียน
@@ -132,7 +129,7 @@ export default function Navbar() {
                       href="#"
                       onClick={(e) => {
                         e.preventDefault();
-                        setLoginOpen(true);
+                        openModal("login");
                       }}
                     >
                       <p>เข้าสู่ระบบ</p>

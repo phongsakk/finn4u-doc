@@ -67,7 +67,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             case "general":
               api_path = "/v1/auth/login";
               break;
-            case "consignment":
+            case "consignor":
               api_path = "/v1/auth/signin";
               break;
             case "invester":
@@ -77,7 +77,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               api_path = "/v1/auth/login";
               break;
           }
-
+          logError(userType)
           const response = await axios.post(api.external(api_path), {
             email,
             password,
