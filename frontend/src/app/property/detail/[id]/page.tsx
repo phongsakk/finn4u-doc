@@ -201,9 +201,11 @@ function PropertyPage() {
                         </div>
                         <div className="manage">
                           <FontAwesomeIcon icon={faEye} />
-                          <span className="mx-2 font2">123</span>
+                          <span className="mx-2 font2">
+                            {asset?.view_count}
+                          </span>
                           <FontAwesomeIcon icon={faHammer} className="mx-2" />
-                          <span className="font2">5</span>
+                          <span className="font2">{asset?.bid_count}</span>
                         </div>
                       </li>
                       <li>
