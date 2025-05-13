@@ -81,5 +81,9 @@ func (bid *AssetBidOffer) CreateBidOffer(user *Consignor, assetID uint, offer fl
 	bid.Offer = offer
 	bid.Time = int8(1 + count)
 	bid.BidderID = user.ID
+
+	asset.BidCount = asset.BidCount + 1
+	db.Save(&asset)
+
 	return db.Create(&bid).Error
 }

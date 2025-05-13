@@ -433,6 +433,8 @@ func SearchAsset(c *gin.Context) {
 	}
 
 	if response.ID == uint(assetId) && response.Status > 0 && response.IsPublished {
+		response.ViewCount = response.ViewCount + 1
+		db.Save(&response)
 		c.JSON(200, types.Response{
 			Code:    http.StatusOK,
 			Message: utils.NullableString("Asset found successfully"),
@@ -444,6 +446,8 @@ func SearchAsset(c *gin.Context) {
 	}
 
 	if isAuthorize || response.IsPublished {
+		response.ViewCount = response.ViewCount + 1
+		db.Save(&response)
 		c.JSON(http.StatusOK, types.Response{
 			Message: utils.NullableString("Asset retrieved successfully"),
 			Status:  true,
