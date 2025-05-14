@@ -391,16 +391,12 @@ func Enroll(c *gin.Context) {
 	user.Email = request.Email
 	user.Beneficiary = request.Beneficiary
 	user.Relation = request.Relation
-	user.InterestDistrictID = &request.InterestDistrictID
+	user.InterestDistrictID = request.InterestDistrictID
 	user.AssetTypeID = request.AssetTypeId
 	user.InvestmentAmount = request.InvestmentAmount
 
-	db.Transaction(func(tx *gorm.DB) error {
+	if err := db.Transaction(func(tx *gorm.DB) error {
 		if err := db.Create(&user).Error; err != nil {
-			c.JSON(http.StatusInternalServerError, types.Response{
-				Code:  http.StatusInternalServerError,
-				Error: utils.NullableString(err.Error()),
-			})
 			return err
 		}
 
@@ -417,8 +413,14 @@ func Enroll(c *gin.Context) {
 		// send OTP here
 
 		return nil
-	})
-
+	}); err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:    http.StatusInternalServerError,
+			Error:   utils.NullableString(err.Error()),
+			Message: utils.NullableString(err.Error()),
+		})
+		return
+	}
 	c.JSON(http.StatusCreated, types.Response{
 		Code:    http.StatusCreated,
 		Status:  true,
@@ -505,16 +507,13 @@ func InvestorRegister(c *gin.Context) {
 	user.Email = request.Email
 	user.Beneficiary = request.Beneficiary
 	user.Relation = request.Relation
-	user.InterestDistrictID = &request.InterestDistrictID
+	user.InterestDistrictID = request.InterestDistrictID
 	user.AssetTypeID = request.AssetTypeId
 	user.InvestmentAmount = request.InvestmentAmount
 
-	db.Transaction(func(tx *gorm.DB) error {
+	fmt.Printf("512")
+	if Err := db.Transaction(func(tx *gorm.DB) error {
 		if err := db.Create(&user).Error; err != nil {
-			c.JSON(http.StatusInternalServerError, types.Response{
-				Code:  http.StatusInternalServerError,
-				Error: utils.NullableString(err.Error()),
-			})
 			return err
 		}
 
@@ -531,8 +530,16 @@ func InvestorRegister(c *gin.Context) {
 		// send OTP here
 
 		return nil
-	})
+	}); Err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:    http.StatusBadRequest,
+			Message: utils.NullableString(Err.Error()),
+			Error:   utils.NullableString(Err.Error()),
+		})
+		return
+	}
 
+	fmt.Printf("544")
 	c.JSON(http.StatusCreated, types.Response{
 		Code:    http.StatusCreated,
 		Status:  true,
@@ -549,6 +556,7 @@ func Signup(c *gin.Context) {
 			Code:  http.StatusBadRequest,
 			Error: utils.NullableString(err.Error()),
 		})
+		return
 	}
 
 	if err := utils.Validate(request); err != nil {
@@ -611,12 +619,8 @@ func Signup(c *gin.Context) {
 	user.GenID = fmt.Sprintf("IN%d", time.Now().Unix())
 
 	var otp models.OTP
-	db.Transaction(func(tx *gorm.DB) error {
+	if err := db.Transaction(func(tx *gorm.DB) error {
 		if err := db.Create(&user).Error; err != nil {
-			c.JSON(http.StatusInternalServerError, types.Response{
-				Code:  http.StatusInternalServerError,
-				Error: utils.NullableString(err.Error()),
-			})
 			return err
 		}
 
@@ -634,7 +638,14 @@ func Signup(c *gin.Context) {
 		fmt.Println("OTP sent to", user.Email)
 
 		return nil
-	})
+	}); err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:    http.StatusInternalServerError,
+			Error:   utils.NullableString(err.Error()),
+			Message: utils.NullableString(err.Error()),
+		})
+		return
+	}
 
 	c.JSON(http.StatusCreated, types.Response{
 		Code:    http.StatusCreated,

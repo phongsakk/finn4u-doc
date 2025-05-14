@@ -72,7 +72,7 @@ type Enroll struct {
 	SubdistrictId      uint    `json:"subdistrict_id" validate:"omitempty"`
 	Beneficiary        string  `json:"beneficiary" validate:"required"`
 	Relation           string  `json:"relation" validate:"required"`
-	InterestDistrictID uint    `json:"interest_district_id" validate:"omitempty"`
+	InterestDistrictID *uint   `json:"interest_district_id" validate:"omitempty"`
 	AssetTypeId        uint    `json:"asset_type_id" validate:"required"`
 	InvestmentAmount   float64 `json:"investment_amount" validate:"required"`
 }
