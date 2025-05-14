@@ -443,6 +443,7 @@ func InvestorRegister(c *gin.Context) {
 			Code:  http.StatusBadRequest,
 			Error: utils.NullableString(err.Error()),
 		})
+		return
 	}
 
 	if err := utils.Validate(request); err != nil {
