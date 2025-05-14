@@ -6,7 +6,7 @@ import { useModal } from "@components/context/ModalContext";
 
 export default function ModalController() {
   const searchParams = useSearchParams();
-  const modalType = searchParams.get("modal");
+  const modalType = searchParams.get("modal") || "";
   const { openModal } = useModal();
 
   useEffect(() => {

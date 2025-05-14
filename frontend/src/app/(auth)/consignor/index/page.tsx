@@ -2,7 +2,7 @@
 import CustomImage from "@components/CustomImage";
 import Link from "next/link";
 import { use, useEffect, useState } from "react";
-import { formatCurrency, formatNumber } from "@components/helpers";
+import { formatCurrency, formatNumber, ToDateThai } from "@components/helpers";
 import imagecosic1 from "@public/cos-ic1.svg";
 import imagecosic2 from "@public/cos-ic2.svg";
 import imagecosic3 from "@public/cos-ic3.svg";
@@ -12,22 +12,16 @@ import imagegraphic from "@public/graph-ic.svg";
 import imageeyecolor from "@public/eye-color.svg";
 import imagebanner from "@public/banner.svg";
 import Image from "next/image";
-import { Map } from "@components/dev/map";
 import Loading from "@components/dev/loading";
 import axios from "axios";
 import { api } from "@utils/api/index";
-import Modal_interest from "../components/modal_interest";
-import Modal_infoconsign, {
-  InfoConType,
-} from "../components/modal_infoconsign";
-import { modalParam } from "@models/modalParam";
+import ImageApi from "@components/ImageApi";
+import { Button } from "react-bootstrap";
+import { useConsignorModal } from "@components/context/ConsignorContext";
 
-function Index() {
+function page() {
   const [assets, setAssets] = useState([]);
-  const [interestOpen, setInterestOpen] = useState<modalParam>({
-    open: false,
-  });
-  const [detailOpen, setDtilOpen] = useState<InfoConType>({ open: false });
+  const { assetGraph, assetInfo } = useConsignorModal();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -41,7 +35,6 @@ function Index() {
           setAssets(res_assets.data);
         }
       } catch (error) {
-        setAssets([]);
         console.error("Error fetching assets:", error);
       } finally {
         setLoading(false);
@@ -52,19 +45,9 @@ function Index() {
 
   return (
     <>
-      <Modal_interest
-        open={interestOpen.open}
-        close={() => setInterestOpen({ open: false })}
-      />
-
-      <Modal_infoconsign
-        open={detailOpen.open}
-        close={() => setDtilOpen({ open: false })}
-      />
-
       <div className="consignment-form2">
         <div className="container">
-          <div className="card-form-main">
+          <div className="card-form-main p-0 p-sm-1 p-md-3 p-lg-5">
             <h4 className="title-main mb-5 mt-5">ข้อมูลทรัพย์สินของคุณ</h4>
 
             <div className="container">
@@ -77,26 +60,27 @@ function Index() {
                       <div className="row not-sale mb-3 shadow p-3" key={index}>
                         <div className="col-lg-4">
                           <div className="relative">
-                            <Map
-                              position={{
-                                lat: item.location_x,
-                                lng: item.location_y,
-                              }}
-                              style={{
-                                width: "100%",
-                                height: "377px",
-                              }}
-                            />
                             <span className="badge shadow-sm">รอนักลงทุน</span>
+                            <ImageApi
+                              src={item.asset_image}
+                              className="object-fit-cover"
+                              style={{ aspectRatio: 1.2, height: "auto" }}
+                            />
                           </div>
                         </div>
                         <div className="col-lg-8 pt-2">
                           <div className="locataion">
                             <div className="date row gap-2 justify-content-between">
                               <p className="col-auto">
-                                {item.published_at ? (
+                                {item.date_sell ? (
                                   <>
-                                    วันที่ประกาศขายฝาก<span>12 พ.ค. 2565</span>
+                                    วันที่ประกาศขายฝาก
+                                    <span className="px-1">
+                                      {ToDateThai(
+                                        item?.date_sell || null,
+                                        "D MMMM BBBB"
+                                      )}
+                                    </span>
                                   </>
                                 ) : (
                                   "ยังไม่ประกาศขาย"
@@ -104,7 +88,7 @@ function Index() {
                               </p>
                               <p className="col-auto">{item.asset_type_name}</p>
                             </div>
-                            <div className="row">
+                            <div className="row mb-0">
                               <div className="col-lg-7">
                                 <div className="d-flex gap-2 row">
                                   <div className="col-1 col-sm-2 col-lg-2 mx-1 text-center">
@@ -135,7 +119,7 @@ function Index() {
                                     {item.aria_size}
                                   </span>
                                 </div>
-                                {item.collateral ? (
+                                {item.collateral_price ? (
                                   <div className="d-flex gap-2 row">
                                     <div className="col-1 col-sm-2 col-lg-2 mx-1 text-center">
                                       <Image src={imagecosic3} alt="" />
@@ -145,7 +129,7 @@ function Index() {
                                         มูลค่าสินทรัพย์ค้ำประกัน
                                       </span>
                                       <span className="text-primary col-auto">
-                                        {formatCurrency(item.collateral)}
+                                        {formatCurrency(item.collateral_price)}
                                       </span>
                                     </div>
                                   </div>
@@ -160,7 +144,7 @@ function Index() {
                                   <div className="col-auto d-flex gap-2 p-0">
                                     <span>ราคาขายฝาก</span>
                                     <span className="text-primary">
-                                      {formatNumber(item.consignment_price)}
+                                      {formatNumber(item.price_appraisal)}
                                     </span>
                                     <span>บาท</span>
                                   </div>
@@ -173,13 +157,17 @@ function Index() {
                                       <span>
                                         <Image src={imageeyecolor} alt="" />
                                       </span>
-                                      <span className="mx-2">123</span>
+                                      <span className="mx-2">
+                                        {item?.view_count}
+                                      </span>
                                     </div>
                                     <div>
                                       <span>
                                         <Image src={imagebanner} alt="" />
                                       </span>
-                                      <span className="mx-2">5</span>
+                                      <span className="mx-2">
+                                        {item?.bid_count}
+                                      </span>
                                     </div>
                                   </div>
                                 </div>
@@ -187,20 +175,14 @@ function Index() {
                                   <div
                                     className="group col-auto"
                                     onClick={() =>
-                                      setInterestOpen({
-                                        open: true,
-                                      })
+                                      assetGraph.openModal(item.id)
                                     }
                                   >
                                     <Image src={imagegraphic} alt="" />
                                   </div>
                                   <div
                                     className="group col-auto"
-                                    onClick={() => {
-                                      setDtilOpen({
-                                        open: true,
-                                      });
-                                    }}
+                                    onClick={() => assetInfo.openModal(item.id)}
                                   >
                                     <Image src={imageinfo} alt="" />
                                   </div>
@@ -244,4 +226,4 @@ function Index() {
     </>
   );
 }
-export default Index;
+export default page;

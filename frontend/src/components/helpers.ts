@@ -6,6 +6,7 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 import "dayjs/locale/th";
+import { auth } from "@libs/auth";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(buddhistEra);
@@ -246,4 +247,31 @@ export const ToDateThai = (
   } catch (error) {
     return "-";
   }
+};
+
+export const CheckAuth = async () => {
+  const session = await auth();
+  if (!session) {
+    return { status: false, code: 401, message: "Not authenticated" };
+  }
+
+  return {
+    status: true,
+    headerToken: {
+      headers: {
+        Authorization: "Bearer " + (session.user?.accessToken ?? ""),
+      },
+    },
+  };
+};
+
+export const statusText = (status: number) => {
+  const status_label_map = [
+    "รอการประเมินราคา",
+    "รอนักลงทุน",
+    "รอนักลงทุน",
+    "ขายฝากสำเร็จ",
+  ];
+
+  return status_label_map[status];
 };

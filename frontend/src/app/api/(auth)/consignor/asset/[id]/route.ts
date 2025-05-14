@@ -18,7 +18,7 @@ export const GET = async (
 
     const session = await auth();
     const { data: response } = await axios.get(
-      api.external(`/v1/consignor/asset/public/${id}`),
+      api.external(`/v1/consignor/asset/${id}`),
       {
         headers: {
           Authorization: "Bearer " + session?.user?.accessToken,
@@ -42,23 +42,13 @@ export const GET = async (
       location_x: Number(data.location_x),
       location_y: Number(data.location_y),
       province_name: data?.province?.name,
+      status: data?.status,
       asset_type_name: data?.asset_type?.name,
       view_count: data?.view_count || 0,
       bid_count: data?.bid_count || 0,
-      asset_appraisal: {
-        price_appraisal: data?.asset_appraisal?.price_appraisal || null,
-        collateral_price: data?.asset_appraisal?.collateral_price || null,
-        duration: data?.asset_appraisal?.duration || null,
-      },
-      asset_tag:
-        data?.asset_tag?.map((item: any, index: number) => ({
-          id: item.id,
-          name: item.tag.name,
-        })) || [],
-      images:
-        data?.asset_images?.map((item: any) => ({
-          image: item.image,
-        })) || [],
+      price_appraisal: data?.asset_appraisal?.price_appraisal || 0,
+      collateral_price: data?.asset_appraisal?.collateral_price || 0,
+      duration: data?.asset_appraisal?.duration || 0,
       asset_auction: data?.asset_auction && {
         from_date: `${dayjs(data.asset_auction.from_date).format(
           "DD/MM/YYYY"

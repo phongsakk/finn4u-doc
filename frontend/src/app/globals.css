@@ -730,8 +730,9 @@ img {
   .property-item {
     border-radius: 15px;
     .property-img {
+      position: static;
       width: 100% !important;
-      height: 410px !important;
+      aspect-ratio: 1.8;
       object-fit: cover;
     }
   }

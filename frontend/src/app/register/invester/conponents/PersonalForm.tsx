@@ -17,6 +17,7 @@ import { api } from "@utils/api/index";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Button, Form, Row } from "react-bootstrap";
+import { CareerList } from "@models/MasterModel";
 
 type masterData = {
   prefix: [];
@@ -165,7 +166,7 @@ function PersonalForm({
       };
 
       const { data: res } = await axios.post(
-        api.internal("/api/register/consignor"),
+        api.internal("/api/register/invester"),
         model
       );
       if (res.status) {
@@ -181,7 +182,7 @@ function PersonalForm({
           setStep(NextStep);
         });
       } else {
-        AlertPrimary(`ไม่สามารถบันทึกข้อมูลได้ - ${res.data.error}`, "error");
+        AlertPrimary(`ไม่สามารถบันทึกข้อมูลได้ - Please try again`, "error");
       }
     } catch (error) {
       AlertPrimary("ไม่สามารถบันทึกข้อมูลได้", "error");
@@ -239,7 +240,7 @@ function PersonalForm({
           <Row className="mt-5 mb-3">
             <FormSelectCustom
               value={form.career_id}
-              data={career as []}
+              data={CareerList as []}
               name="career_id"
               label="อาชีพ"
               onChange={handleForm}

@@ -23,12 +23,12 @@ ChartJS.register(
   ChartDataLabels
 );
 
-const BarChart: React.FC = () => {
+const BarChart = ({ result = 0 }: { result: number }) => {
   const data: ChartData<"bar"> = {
     labels: ["FInn4U \n(ดอกเบี้ย 9-13%)", "นอกละบบ \n(ดอกเบี้ย <15%)"],
     datasets: [
       {
-        data: [130500, 217500],
+        data: [result, 217500],
         backgroundColor: ["rgba(48, 177, 117, 1)", "rgba(164, 164, 164, 1)"],
       },
     ],

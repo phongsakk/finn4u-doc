@@ -164,7 +164,7 @@ function PersonalForm({
           setStep(NextStep);
         });
       } else {
-        AlertPrimary(`ไม่สามารถบันทึกข้อมูลได้ - ${res.data.error}`, "error");
+        AlertPrimary(`ไม่สามารถบันทึกข้อมูลได้ - Please try again`, "error");
       }
     } catch (error) {
       AlertPrimary("ไม่สามารถบันทึกข้อมูลได้", "error");
