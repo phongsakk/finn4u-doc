@@ -391,7 +391,7 @@ func Enroll(c *gin.Context) {
 	user.Email = request.Email
 	user.Beneficiary = request.Beneficiary
 	user.Relation = request.Relation
-	user.InterestDistrictID = request.InterestDistrictID
+	user.InterestDistrictID = &request.InterestDistrictID
 	user.AssetTypeID = request.AssetTypeId
 	user.InvestmentAmount = request.InvestmentAmount
 
@@ -505,7 +505,7 @@ func InvestorRegister(c *gin.Context) {
 	user.Email = request.Email
 	user.Beneficiary = request.Beneficiary
 	user.Relation = request.Relation
-	user.InterestDistrictID = request.InterestDistrictID
+	user.InterestDistrictID = &request.InterestDistrictID
 	user.AssetTypeID = request.AssetTypeId
 	user.InvestmentAmount = request.InvestmentAmount
 

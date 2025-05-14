@@ -9,7 +9,7 @@ type Investor struct {
 	template.User
 	Beneficiary        string    `json:"beneficiary" gorm:"not null"`
 	Relation           string    `json:"relation" gorm:"not null"`
-	InterestDistrictID uint      `json:"interest_district_id"`
+	InterestDistrictID *uint     `json:"interest_district_id" gorm:"nullable"`
 	AssetTypeID        uint      `json:"asset_type_id" gorm:"not null"`
 	InvestmentAmount   float64   `json:"investment_amount" gorm:"not null"`
 	InterestDistrict   District  `json:"district" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:InterestDistrictID"`
