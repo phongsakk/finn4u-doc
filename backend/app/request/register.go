@@ -76,3 +76,7 @@ type Enroll struct {
 	AssetTypeId        uint    `json:"asset_type_id" validate:"required"`
 	InvestmentAmount   float64 `json:"investment_amount" validate:"required"`
 }
+
+func (r *Enroll) Validated() error {
+	return utils.Validate(r)
+}

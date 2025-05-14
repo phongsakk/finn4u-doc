@@ -19,9 +19,9 @@ func AuthRouterGroup(r *gin.RouterGroup) {
 	r.POST("/consignor/resendOTP", con.ConsignorResendOTP) // ลงทะเบียนผู้ขายฝาก/ฝากขาย
 	r.POST("/consignor/verifyOTP", con.ConsignorVerifyOTP) // ลงทะเบียนผู้ขายฝาก/ฝากขาย
 
-	r.POST("/investor/register", con.Enroll)  // ลงทะเบียนนักลงทุน
-	r.POST("/investor/resendOTP", con.Enroll) // ลงทะเบียนนักลงทุน
-	r.POST("/investor/verifyOTP", con.Enroll) // ลงทะเบียนนักลงทุน
+	r.POST("/investor/register", con.InvestorRegister)   // ลงทะเบียนนักลงทุน
+	r.POST("/investor/resendOTP", con.InvestorResendOTP) // ลงทะเบียนนักลงทุน
+	r.POST("/investor/verifyOTP", con.InvestorVerifyOtp) // ลงทะเบียนนักลงทุน
 
 	r.POST("/enroll", con.Enroll) // ลงทะเบียนผู้ลงทุน
 
