@@ -22,7 +22,7 @@ export const formRegisterInvest = {
   province_id: "",
   district_id: "",
   sub_district_id: "",
-  beneficialy: "",
+  beneficiary: "",
   relation: "",
   interest_district_id: "",
   asset_type_id: "",
