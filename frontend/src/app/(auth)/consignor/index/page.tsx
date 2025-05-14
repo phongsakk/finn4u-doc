@@ -75,9 +75,9 @@ function page() {
                                 {item.date_sell ? (
                                   <>
                                     วันที่ประกาศขายฝาก
-                                    <span>
+                                    <span className="px-1">
                                       {ToDateThai(
-                                        item?.date_sell,
+                                        item?.date_sell || null,
                                         "D MMMM BBBB"
                                       )}
                                     </span>
