@@ -65,8 +65,6 @@ export const POST = async (
       auction: auction_model,
     };
 
-    logError(12313,model_apr)
-
     const token = session.user?.accessToken ?? "";
     const { data: response } = await axios.post(
       api.external(`/v1/admin/asset/${id}/appraisal`),

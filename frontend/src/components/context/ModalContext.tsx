@@ -1,5 +1,11 @@
 "use client";
-import { createContext, useState, useContext, ReactNode } from "react";
+import {
+  createContext,
+  useState,
+  useContext,
+  ReactNode,
+  Suspense,
+} from "react";
 
 type ModalType = "login" | "register" | null;
 
@@ -19,7 +25,7 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <ModalContext.Provider value={{ modalType, openModal, closeModal }}>
-      {children}
+      <Suspense>{children}</Suspense>
     </ModalContext.Provider>
   );
 };

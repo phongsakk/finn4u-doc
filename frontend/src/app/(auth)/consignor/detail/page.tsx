@@ -1,6 +1,32 @@
+"use client";
+import { api } from "@utils/api/index";
+import axios from "axios";
 import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-function Detail() {
+function page() {
+  const params = useParams();
+const [form,setForm] = useState<any>();
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const boot = async () => {
+      try {
+        setLoading(true);
+        const { data: res } = await axios.get(
+          api.internal(`/api/consignor/asset/${params.id}`)
+        );
+        if(res.status){
+        }else{
+
+        }
+      } catch (error) {
+      } finally {
+        setLoading(false);
+      }
+    };
+    boot();
+  }, [params.id]);
   return (
     <div className="consignment-form3">
       <div className="container">
@@ -92,4 +118,4 @@ function Detail() {
     </div>
   );
 }
-export default Detail;
+export default page;

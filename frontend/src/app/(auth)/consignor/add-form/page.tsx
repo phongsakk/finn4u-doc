@@ -2,7 +2,7 @@
 
 import AddFormComponent from "@components/consignor/AddFormComponent";
 
-function AddForm() {
+function page() {
   return (
     <div className="consignment-form">
       <div className="container register-seller">
@@ -14,4 +14,4 @@ function AddForm() {
     </div>
   );
 }
-export default AddForm;
+export default page;

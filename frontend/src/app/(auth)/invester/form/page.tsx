@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import React from 'react'
 
-function FormPage() {
+function page() {
     return (
         <div className='investment-form'>
             <div className="container">
@@ -158,4 +158,4 @@ function FormPage() {
     )
 }
 
-export default FormPage
+export default page

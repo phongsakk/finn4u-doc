@@ -10,7 +10,7 @@ type ImageApiProps = {
     style?: {
         width?: string;
         height?: string;
-    };
+    } | {};
 };
 
 function ImageApi({
