@@ -430,7 +430,72 @@ func Enroll(c *gin.Context) {
 }
 
 func InvestorResendOTP(c *gin.Context) {
-	//
+	var request request.InvestorResendOTP
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:  http.StatusBadRequest,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	if err := request.Validated(); err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:  http.StatusBadRequest,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+
+	var user models.Investor
+	db, err := database.Conn()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	defer database.Close(db)
+	if err := db.Where("email = ?", request.Email).First(&user).Error; err != nil {
+		c.JSON(http.StatusNotFound, types.Response{
+			Code:    http.StatusNotFound,
+			Error:   utils.NullableString(err.Error()),
+			Message: utils.NullableString("User not found"),
+		})
+		return
+	}
+	var otp models.OTP
+	if err := db.Transaction(func(trx *gorm.DB) error {
+		if err := trx.First(&otp, "user_id = ?", user.ID).Error; err != nil {
+			return errors.New("OTP not found")
+		}
+		otp.Ref = utils.RandomString(6)
+		otp.Code = utils.RandomNumber(6)
+		otp.ExpiredAt = time.Now().Add(time.Minute * 10)
+
+		if err := trx.Save(&otp).Error; err != nil {
+			return err
+		}
+		utils.SendEmail(user.Email, "OTP Verification", fmt.Sprintf("Your OTP (REF: %s) is %s. Please use it to verify your account.", otp.Ref, otp.Code))
+		fmt.Println("OTP sent to", user.Email)
+		return nil
+	}); err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, types.Response{
+		Code:    http.StatusCreated,
+		Status:  true,
+		Message: utils.NullableString("OTP resent successfully"),
+		Data: map[string]any{
+			"ref": otp.Ref,
+		},
+	})
+
 }
 
 func InvestorVerifyOtp(c *gin.Context) {
