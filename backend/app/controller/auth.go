@@ -676,6 +676,8 @@ func InvestorRegister(c *gin.Context) {
 		}
 
 		// send OTP here
+		utils.SendEmail(user.Email, "OTP Verification", fmt.Sprintf("Your OTP (REF: %s) is %s. Please use it to verify your account.", otp.Ref, otp.Code))
+		fmt.Println("OTP sent to", user.Email)
 
 		return nil
 	}); Err != nil {
