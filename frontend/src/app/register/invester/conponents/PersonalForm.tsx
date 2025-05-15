@@ -172,14 +172,18 @@ function PersonalForm({
         api.internal("/api/register/invester"),
         model
       );
+      console.log(res)
       if (res.status) {
+        console.log(12345645646)
+
         var PersonalModel = {
-          UserID: res.data.user.id,
-          Phone: res.data.user.PhoneNumber,
-          Email: res.data.user.email,
-          Ref: res.data.ref,
+          UserID: res?.data?.user?.id,
+          Phone: res?.data?.user?.PhoneNumber,
+          Email: res?.data?.user?.email,
+          Ref: res?.data?.ref,
           info: model,
         };
+
         setPersonal(PersonalModel);
         AlertPrimary("บันทึกข้อมูลสำเร็จ", "success").then(() => {
           setStep(NextStep);
@@ -188,6 +192,7 @@ function PersonalForm({
         AlertPrimary(`ไม่สามารถบันทึกข้อมูลได้ - Please try again`, "error");
       }
     } catch (error) {
+      console.log(error)
       AlertPrimary("ไม่สามารถบันทึกข้อมูลได้", "error");
     } finally {
       setSubmit(false);

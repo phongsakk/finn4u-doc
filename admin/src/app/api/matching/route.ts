@@ -15,6 +15,8 @@ export const GET = async (
   { params }: { params: Promise<{ id: number }> }
 ) => {
   try {
+    const page = Number(req.nextUrl.searchParams.get("page")) || 1;
+
     const session = await CheckAuth();
     if (!session.status) {
       return NextResponse.json(session);
@@ -22,7 +24,12 @@ export const GET = async (
 
     const { data: res } = await axios.get(
       api.external(`/v1/admin/matching?page=1`),
-      session?.headerToken
+      {
+        params: {
+          page: page,
+        },
+        headers: session?.headerToken?.headers,
+      }
     );
 
     const model = res?.data?.map((item: any) => ({
@@ -47,6 +54,8 @@ export const GET = async (
         status: res.status,
         code: res.code,
         data: model,
+        page: res?.page,
+        total: res?.total_page,
       },
       {
         status: res.code,
@@ -64,7 +73,7 @@ export const POST = async (req: NextRequest) => {
     if (!session.status) {
       return NextResponse.json(session);
     }
-    logError(123456,body)
+    logError(123456, body);
     const { data: res } = await axios.post(
       api.external(`/v1/admin/matching`),
       body,

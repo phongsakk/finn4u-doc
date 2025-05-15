@@ -23,14 +23,15 @@ function AddDoc({
         สมุดบัญชี<span className="text-require">*</span>
       </p>
       <div className="upload-btn-group">
-        <button type="submit" className="btn btn-light csbtn1">
+        <input type="file" className="d-none" id="label-1" />
+        <label htmlFor="label-1" className="btn btn-light csbtn1">
           <CustomImage
             src="/upload.svg"
             alt="upload"
             style={{ height: "auto" }}
           />
           อัพโหลด
-        </button>
+        </label>
       </div>
 
       <p>
@@ -38,14 +39,15 @@ function AddDoc({
         <span className="text-require">*</span>
       </p>
       <div className="upload-btn-group">
-        <button type="submit" className="btn btn-light csbtn1">
+        <input type="file" className="d-none" id="label-2" />
+        <label htmlFor="label-2" className="btn btn-light csbtn1">
           <CustomImage
             src="/upload.svg"
             alt="upload"
             style={{ height: "auto" }}
           />
           อัพโหลด
-        </button>
+        </label>
       </div>
       <div className="submit-group">
         <Button variant="white" onClick={() => setStep(2)}>

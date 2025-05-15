@@ -16,36 +16,39 @@ import VerifyForm from "./conponents/VerifyForm";
 import AddDoc from "./conponents/AddDoc";
 
 function ReConsignmentPage() {
-  const [personal, setPersonal] = useState<regisPersonalInvester>();
-  //   {
-  //   UserID: 1,
-  //   Phone: "0666666664",
-  //   Email: "kengker1144+test17@gmail.com",
-  //   Ref: "VSGCV",
-  //   info: {
-  //     email: "kengker1144+test17@gmail.com",
-  //     password: "12345678",
-  //     confirm_password: "12345678",
-  //     user_prefix_id: 1,
-  //     firstname: "test02",
-  //     lastname: "test-1",
-  //     phone_number: "0666666664",
-  //     online_range: "15:00",
-  //     career_id: 1,
-  //     salary: "30000",
-  //     address_number: "1",
-  //     street_number: "2",
-  //     province_id: 11,
-  //     district_id: 2009,
-  //     sub_district_id: 200902,
-  //     beneficialy: "ชื่ออออ",
-  //     relation: "เมีย",
-  //     interest_district_id: 1,
-  //     asset_type_id: 7,
-  //     investment_amount: 12312345,
-  //     beneficiary: "ก",
-  //   },
-  // }
+  const [personal, setPersonal] = useState<regisPersonalInvester>(
+    // {
+    //   "UserID": 35,
+    //   "Phone": "0666666664",
+    //   "Email": "kengker1144+test38@gmail.com",
+    //   "Ref": "JBLGKH",
+    //   "info": {
+    //     "email": "kengker1144+test38@gmail.com",
+    //     "password": "12345678",
+    //     "confirm_password": "12345678",
+    //     "user_prefix_id": 1,
+    //     "firstname": "1",
+    //     "lastname": "lastname",
+    //     "phone_number": "0666666664",
+    //     "online_range": "15:00",
+    //     "career_id": 2,
+    //     "salary": "90000",
+    //     "address_number": "addd",
+    //     "street_number": "112",
+    //     "province_id": 17,
+    //     "district_id": 2601,
+    //     "sub_district_id": 260111,
+    //     "beneficiary": "เมีย",
+    //     "relation": "เมีย",
+    //     "interest_district_id": null,
+    //     "asset_type_id": 3,
+    //     "investment_amount": 500000
+    //   }
+    // }
+  );
+
+
+  console.log(personal)
   const [step, setStep] = useState<number>(1); // defult 1
   const [checkstep, setCheckStep] = useState<number>(0); //defult 0
 
@@ -75,15 +78,13 @@ function ReConsignmentPage() {
                   </h4>
                   <div className="step justify-content-lg-between justify-content-center">
                     <div
-                      className={`child ${
-                        ![1, 2, 3].includes(step) ? "d-none d-lg-block" : ""
-                      }`}
+                      className={`child ${![1, 2, 3].includes(step) ? "d-none d-lg-block" : ""
+                        }`}
                     >
                       <Image src={ImagerRegstep1} alt="" priority />
                       <p
-                        className={`font2 ${
-                          [1, 2, 3].includes(step) ? "fw-bold" : ""
-                        }`}
+                        className={`font2 ${[1, 2, 3].includes(step) ? "fw-bold" : ""
+                          }`}
                       >
                         ลงทะเบียน
                       </p>
@@ -92,15 +93,13 @@ function ReConsignmentPage() {
                       <Image src={ImagePolygon2} alt="" priority />
                     </div>
                     <div
-                      className={`child ${
-                        ![4].includes(step) ? "d-none d-lg-block" : ""
-                      }`}
+                      className={`child ${![4].includes(step) ? "d-none d-lg-block" : ""
+                        }`}
                     >
                       <Image src={ImagerRegstep2} alt="" priority />
                       <p
-                        className={`font2 ${
-                          [4].includes(step) ? "fw-bold" : ""
-                        }`}
+                        className={`font2 ${[4].includes(step) ? "fw-bold" : ""
+                          }`}
                       >
                         ยืนยันตัวตน
                       </p>
@@ -109,15 +108,13 @@ function ReConsignmentPage() {
                       <Image src={ImagePolygon2} alt="" priority />
                     </div>
                     <div
-                      className={`child ${
-                        ![5].includes(step) ? "d-none d-lg-block" : ""
-                      }`}
+                      className={`child ${![5].includes(step) ? "d-none d-lg-block" : ""
+                        }`}
                     >
                       <Image src={ImagerRegstep3} alt="" priority />
                       <p
-                        className={`font2 ${
-                          [5].includes(step) ? "fw-bold" : ""
-                        }`}
+                        className={`font2 ${[5].includes(step) ? "fw-bold" : ""
+                          }`}
                       >
                         อัพโหลดเอกสาร
                       </p>

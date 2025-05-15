@@ -37,17 +37,17 @@ function AssetPicture({ images }: { images: any[] }) {
             className="img-fluid object-fit-cover"
             style={{
               width: "100%",
-              height: "541.88px",
+              aspectRatio:1.75
             }}
           />
         </div>
       </div>
-      <div className="col col-lg-3 col-sm-12 col-12 col-xs-12">
+      <div className="col col-lg-3 col-sm-12 col-12 col-xs-12 row align-content-between">
         {images?.map((item: any, index: number) => {
           if (index < 3) {
             return (
               <div
-                className="gallery-frame mb-3"
+                className="gallery-frame px-0"
                 key={index}
                 onClick={() => handleGallery(index)}
               >
@@ -57,7 +57,6 @@ function AssetPicture({ images }: { images: any[] }) {
                 <ImageApi
                   src={`property/${item.image}`}
                   className="img-fluid object-fit-cover"
-                  style={{ width: "100%" }}
                 />
               </div>
             );

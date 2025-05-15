@@ -221,3 +221,20 @@ export const CheckAuth = async () => {
     },
   };
 };
+
+export const prefix = (num: number) => {
+  var name = "";
+  switch (num) {
+    case 1:
+      name = "นาย";
+      break;
+    case 2:
+      name = "นาง";
+      break;
+    case 3:
+      name = "นางสาว";
+      break;
+  }
+
+  return name;
+};

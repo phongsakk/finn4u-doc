@@ -36,7 +36,7 @@ export const FormInput = ({
     <Form.Group className={groupClass}>
       {label && (
         <Form.Label className="form-label font2">
-          {label} {required && <span className="text-require font2">*</span>}
+          {label} {required && <span className="text-danger font2">*</span>}
         </Form.Label>
       )}
       <Form.Control

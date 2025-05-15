@@ -19,7 +19,7 @@ import { signOut } from 'next-auth/react';
 const sidebarItems = [
 	{ icon: Icon1, label: "Overview", href: "/", isActive: false },
 	{ icon: Icon2, label: "Matching", href: "/matching", isActive: false },
-	{ icon: Icon3, label: "ผู้ขายฝาก", href: "/consigment", isActive: false },
+	{ icon: Icon3, label: "ผู้ขายฝาก", href: "/consignor", isActive: false },
 	{ icon: Icon4, label: "นักลงทุน", href: "/invester", isActive: false },
 	{ icon: Icon5, label: "ทรัพย์สินขายฝาก", href: "/property", isActive: false },
 	{ icon: Icon6, label: "Dashboard", href: "/dashboard", isActive: false },
