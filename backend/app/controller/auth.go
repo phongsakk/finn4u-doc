@@ -434,7 +434,88 @@ func InvestorResendOTP(c *gin.Context) {
 }
 
 func InvestorVerifyOtp(c *gin.Context) {
-	//
+	var request request.InvestorVerifyOTP
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:  http.StatusBadRequest,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	if err := request.Validated(); err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:  http.StatusBadRequest,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	var otp models.OTP
+	var user models.Investor
+
+	db, err := database.Conn()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	defer database.Close(db)
+	if err := db.Where("email = ?", request.Email).First(&user).Error; err != nil {
+		c.JSON(http.StatusNotFound, types.Response{
+			Code:    http.StatusNotFound,
+			Error:   utils.NullableString(err.Error()),
+			Message: utils.NullableString("User not found"),
+		})
+		return
+	}
+	if err := db.Where("user_id = ? AND code = ?", user.ID, request.Code).First(&otp).Error; err != nil {
+		c.JSON(http.StatusNotFound, types.Response{
+			Code:    http.StatusNotFound,
+			Error:   utils.NullableString(err.Error()),
+			Message: utils.NullableString("Invalid OTP"),
+		})
+		return
+	}
+	if otp.ExpiredAt.Before(time.Now()) {
+		c.JSON(http.StatusNotFound, types.Response{
+			Code:    http.StatusNotFound,
+			Error:   utils.NullableString("OTP has expired"),
+			Message: utils.NullableString("OTP has expired"),
+		})
+		return
+	}
+
+	db.Model(&user).UpdateColumn("verified", true)
+	db.Delete(&otp)
+
+	accessToken, accessTokenExpiresIn, errAccess := user.GenerateAccessToken()
+	if errAccess != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(errAccess.Error()),
+		})
+		return
+	}
+	refreshToken, refreshTokenExpiresIn, errRefresh := user.GenerateRefreshToken()
+	if errRefresh != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(errRefresh.Error()),
+		})
+		return
+	}
+	c.JSON(http.StatusCreated, types.Response{
+		Code:    http.StatusCreated,
+		Status:  true,
+		Message: utils.NullableString("Consignor verified successfully"),
+		Data: types.AuthResponse{
+			AccessToken:      accessToken,
+			RefreshToken:     refreshToken,
+			ExpiresIn:        accessTokenExpiresIn.Unix(),
+			RefreshExpiresIn: refreshTokenExpiresIn.Unix(),
+		},
+	})
 }
 
 func InvestorRegister(c *gin.Context) {

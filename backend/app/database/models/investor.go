@@ -1,7 +1,11 @@
 package models
 
 import (
+	"time"
+
+	"github.com/golang-jwt/jwt"
 	"github.com/phongsakk/finn4u-back/app/database/models/template"
+	"github.com/phongsakk/finn4u-back/types"
 )
 
 type Investor struct {
@@ -18,4 +22,36 @@ type Investor struct {
 
 func (Investor) TableName() string {
 	return "investor"
+}
+
+func (user *Investor) GenerateAccessToken() (string, *time.Time, error) {
+	expiredAt := time.Now().Add(time.Minute * 5)
+	claims := types.Auth{
+		UserId: user.ID,
+		Email:  user.Email,
+		Exp:    expiredAt.Unix(),
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	tokenString, err := token.SignedString(template.SecretKeyAccess)
+	if err != nil {
+		return "", nil, err
+	}
+	return tokenString, &expiredAt, nil
+}
+
+func (user *Investor) GenerateRefreshToken() (string, *time.Time, error) {
+	expiredAt := time.Now().Add(time.Hour * 24)
+	claims := jwt.MapClaims{
+		"user_id": user.ID,
+		"email":   user.Email,
+		"exp":     expiredAt.Unix(),
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	tokenString, err := token.SignedString(template.SecretKeyRefresh)
+	if err != nil {
+		return "", nil, err
+	}
+	return tokenString, &expiredAt, nil
 }

@@ -25,7 +25,16 @@ type ConsignorVerifyOTP struct {
 	Code  string `json:"code" validate:"required"`
 }
 
+type InvestorVerifyOTP struct {
+	Email string `json:"email" validate:"required,email"`
+	Code  string `json:"code" validate:"required"`
+}
+
 func (r *ConsignorResendOTP) Validated() error {
+	return utils.Validate(r)
+}
+
+func (r *InvestorVerifyOTP) Validated() error {
 	return utils.Validate(r)
 }
 
