@@ -10,9 +10,9 @@ export const POST = async (req: NextRequest) => {
       api.external("/v1/auth/investor/register"),
       body
     );
-
+    logError(1213213,res_regis)
     return NextResponse.json(
-      { status: res_regis.status, data: res_regis.data },
+      { status: res_regis.status, code: res_regis.code, data: res_regis.data },
       { status: res_regis.code }
     );
   } catch (error) {

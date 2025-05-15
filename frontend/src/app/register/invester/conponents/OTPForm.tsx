@@ -132,6 +132,7 @@ function OTPForm({
           email: personal.Email,
         }
       );
+      
       if (res_resend.status) {
         setRefCode(res_resend.data.ref);
       } else {
