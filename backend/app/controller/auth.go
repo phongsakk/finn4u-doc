@@ -395,12 +395,12 @@ func Enroll(c *gin.Context) {
 	user.AssetTypeID = request.AssetTypeId
 	user.InvestmentAmount = request.InvestmentAmount
 
+	var otp models.OTP
 	if err := db.Transaction(func(tx *gorm.DB) error {
 		if err := db.Create(&user).Error; err != nil {
 			return err
 		}
 
-		var otp models.OTP
 		otp.UserID = user.ID
 		otp.Ref = utils.RandomString(6)
 		otp.UserType = "Investor"
@@ -427,7 +427,10 @@ func Enroll(c *gin.Context) {
 		Code:    http.StatusCreated,
 		Status:  true,
 		Message: utils.NullableString("User registered successfully"),
-		Data:    user,
+		Data: map[string]any{
+			"user": user,
+			"ref":  otp.Ref,
+		},
 	})
 }
 
@@ -659,13 +662,12 @@ func InvestorRegister(c *gin.Context) {
 	user.AssetTypeID = request.AssetTypeId
 	user.InvestmentAmount = request.InvestmentAmount
 
-	fmt.Printf("512")
+	var otp models.OTP
 	if Err := db.Transaction(func(tx *gorm.DB) error {
 		if err := db.Create(&user).Error; err != nil {
 			return err
 		}
 
-		var otp models.OTP
 		otp.UserID = user.ID
 		otp.Ref = utils.RandomString(6)
 		otp.UserType = "Investor"
@@ -689,12 +691,14 @@ func InvestorRegister(c *gin.Context) {
 		return
 	}
 
-	fmt.Printf("544")
 	c.JSON(http.StatusCreated, types.Response{
 		Code:    http.StatusCreated,
 		Status:  true,
 		Message: utils.NullableString("User registered successfully"),
-		Data:    user,
+		Data: map[string]any{
+			"user": user,
+			"ref":  otp.Ref,
+		},
 	})
 }
 
