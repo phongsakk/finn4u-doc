@@ -45,6 +45,7 @@ function page() {
               <Form.Group className="row col-8 col-sm-6 col-md-4 col-lg-4 col-10 justify-content-center justify-content-lg-start">
                 <div className="col-7 col-sm-9 col-md-9 col-lg-6">
                   <Form.Control
+                    className="rounded-pill"
                     onChange={handleForm}
                     placeholder="ค้นหาด้วยทำเล"
                     name="seach"
