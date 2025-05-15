@@ -11,7 +11,7 @@ export const SellAndRent = () => {
             <div> <TbArrowsSort size={20} /> เรียงตาม:</div>
         </div>
         {[...Array(5)].map((_, index) => (
-            <div className="property-group px-2 mb-3" key={index}>
+            <div className="property-group  bg-white px-2 mb-3" key={index}>
                 <div className="row shadow">
                     <div className="col-lg-7 px-0">
                         <div className="relative pe-none">
@@ -50,7 +50,7 @@ export const SellAndRent = () => {
                                 {ToDateThai(dayjs(), "D MMMM BBBB")}
                             </span>
                         </div>
-                        <div className="fw-bold text-lg-end text-center text-primary h2">฿ 1,490,000</div>
+                        <div className="fw-bold text-end text-primary h2">฿ 1,490,000</div>
                     </div>
                 </div>
             </div>
