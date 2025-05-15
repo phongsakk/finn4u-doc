@@ -2,6 +2,7 @@ import {
   catchError,
   CheckAuth,
   formatNumber,
+  prefix,
   ToDateThai,
 } from "@component/dev/Helpers";
 import { api } from "@utils/api";
@@ -17,33 +18,32 @@ export const GET = async (req: NextRequest) => {
       return NextResponse.json(session);
     }
 
-    const { data: res } = await axios.get(api.external(``), {
+    const { data: res } = await axios.get(api.external(`/v1/admin/investor`), {
       params: {
         page: page,
       },
-      headers: session?.headerToken?.headers,
+      headers: session.headerToken?.headers,
     });
 
-    const model = [
-      {
-        id: 1,
-        datetime: ToDateThai(dayjs(), "DD/MM/BBBB HH:mm:ss"),
-        fullname: "Serena Franklin",
-        phone_number: "0951234531",
-        career: "ผู้ที่ประกอบธุรกิจส่วนตัว",
-        salary: formatNumber(1000000),
-        email: "somkid_J@gmail.com",
-        province_name: "กรุงเทพมหานคร",
-      },
-    ];
+    const model = res.data.map((item: any) => ({
+      id: item.id,
+      datetime: ToDateThai(item.created_at, "DD/MM/BBBB HH:mm:ss"),
+      fullname: `${prefix(item.UserPrefixID)}${item.Firstname} ${
+        item.Lastname
+      }`,
+      location: "กรุงเทพฯและปริมณฑล",
+      asset_type: item?.asset_type?.name,
+      investment_amount: formatNumber(item.investment_amount),
+      verified: item.verified,
+    }));
 
     return NextResponse.json(
       {
         status: true,
         code: 201,
         data: model,
-        page: 1,
-        total: 1,
+        page: res.page,
+        total: res.total_page,
       },
       {
         status: 201,

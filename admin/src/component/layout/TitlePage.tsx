@@ -8,7 +8,7 @@ type TitlePageProps = {
 const TitlePage: React.FC < TitlePageProps > = ({title, description}) => {
 	return (
 		<div className="title-page">
-			<h3>{title}</h3>
+			<h2 className='fw-bold text-success'>{title}</h2>
 			<p>{description}</p>
 		</div>
 	)

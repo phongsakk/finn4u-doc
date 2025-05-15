@@ -1,5 +1,7 @@
 "use client";
 import { LoadPage } from "@component/dev/LoadPage";
+import Pagination from "@component/dev/pagination";
+import { Page } from "@models/common";
 import { api } from "@utils/api";
 import axios from "axios";
 import Link from "next/link";
@@ -11,15 +13,26 @@ const matching = () => {
   const [tableData, setTableData] = useState([]);
   const [loadPage, setLoadPage] = useState(true);
   const [FatchFail, setFatchFail] = useState(false);
+  const [page, setPage] = useState(Page);
+  const changePage = (num: number) => {
+    setPage((prev) => ({ ...prev, page: num }));
+  };
+
   useEffect(() => {
     const boot = async () => {
       try {
+        setLoadPage(true)
         const { data: res_data } = await axios.get(
-          api.internal(`/api/matching`)
+          api.internal(`/api/matching`), {
+          params: {
+            page: page.page
+          }
+        }
         );
 
         if (res_data.status) {
           setTableData(res_data.data);
+          setPage({ page: res_data.page, total: res_data.total })
         } else {
           setFatchFail(true);
         }
@@ -30,9 +43,9 @@ const matching = () => {
       }
     };
     boot();
-  }, []);
+  }, [page.page]);
   return (
-    <div className="card flex-fill px-3 py-3">
+    <>
       {loadPage ? (
         <LoadPage />
       ) : (
@@ -56,12 +69,12 @@ const matching = () => {
             <tbody>
               {tableData?.map((item: any, index: number) => (
                 <tr key={index}>
-                  <td className="text-center">{item.date_sell}</td>
-                  <td className="text-center">{item.gen_id}</td>
-                  <td className="text-center">{item.consignor_name}</td>
-                  <td className="text-center">{item.phone_number}</td>
-                  <td className="text-center">{item.province_name}</td>
-                  <td className="text-center">{item.asset_type}</td>
+                  <td>{item.date_sell}</td>
+                  <td>{item.gen_id}</td>
+                  <td>{item.consignor_name}</td>
+                  <td>{item.phone_number}</td>
+                  <td>{item.province_name}</td>
+                  <td>{item.asset_type}</td>
                   <td>{item.collateral_price}</td>
                   <td className="text-center">
                     <Link
@@ -76,9 +89,11 @@ const matching = () => {
               ))}
             </tbody>
           </table>
+          <Pagination Page={page} change={changePage} />
         </>
       )}
-    </div>
+    </>
+
   );
 };
 

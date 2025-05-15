@@ -61,7 +61,6 @@ function page() {
 
   return (
     <>
-      <div className="card flex-fill px-3 py-3 overflow-x-auto">
         {loadPage ? (
           <LoadPage />
         ) : (
@@ -152,7 +151,6 @@ function page() {
             </div>
           </>
         )}
-      </div>
     </>
   );
 }

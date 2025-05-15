@@ -1,39 +1,37 @@
-import { log, logError } from "@component/dev/Helpers";
+import { catchError, CheckAuth, log, logError } from "@component/dev/Helpers";
 import { auth } from "@setting/auth";
 import { api } from "@utils/api";
 import axios, { AxiosError } from "axios";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export const GET = async () => {
-  const session = await auth();
-  if (!session) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-  }
+export const GET = async (req: NextRequest) => {
   try {
-    const token = session.user?.accessToken ?? "";
-    const response = await axios.get(api.external("/v1/admin/asset"), {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
-    return NextResponse.json(response.data, {
-      status: 200,
-    });
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      return NextResponse.json(
-        {
-          status: error.response?.status || 500,
-          data:[],
-          message: error.message,
-        },
-        { status: error.response?.status || 500 }
-      );
-    } else {
-      return NextResponse.json(
-        { error: "unknow error", data: [] },
-        { status: 500 }
-      );
+    const page = Number(req.nextUrl.searchParams.get("page")) || 1;
+    const session = await CheckAuth();
+    if (!session.status) {
+      return NextResponse.json(session);
     }
+
+    const { data: res } = await axios.get(api.external("/v1/admin/asset"), {
+      params: {
+        page: page,
+      },
+      headers: session?.headerToken?.headers,
+    });
+
+    return NextResponse.json(
+      {
+        status: true,
+        code: res.code,
+        data: res.data,
+        page: res.page,
+        total: res.total_page,
+      },
+      {
+        status: res.code,
+      }
+    );
+  } catch (error) {
+    return NextResponse.json(await catchError(error));
   }
 };

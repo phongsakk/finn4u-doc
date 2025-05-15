@@ -50,7 +50,7 @@ function ReConsignmentPage() {
 
   console.log(personal)
   const [step, setStep] = useState<number>(1); // defult 1
-  const [checkstep, setCheckStep] = useState<number>(5); //defult 0
+  const [checkstep, setCheckStep] = useState<number>(0); //defult 0
 
   useEffect(() => {
     if (step > checkstep) {

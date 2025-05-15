@@ -1,25 +1,37 @@
 "use client";
 import { LoadPage } from "@component/dev/LoadPage";
+import Pagination from "@component/dev/pagination";
 import { api } from "@utils/api";
 import axios from "axios";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
-import { MdPersonSearch } from "react-icons/md";
-
+import { FaPenSquare } from "react-icons/fa";
+import { Page } from "@models/common";
 const page = () => {
     const [tableData, setTableData] = useState([]);
     const [loadPage, setLoadPage] = useState(true);
     const [FatchFail, setFatchFail] = useState(false);
+    const [page, setPage] = useState(Page);
+    const changePage = (num: number) => {
+        setPage((prev) => ({ ...prev, page: num }));
+    };
+
     useEffect(() => {
         const boot = async () => {
             try {
                 const { data: res_data } = await axios.get(
                     api.internal(`/api/consignor`)
+                    , {
+                        params: {
+                            page: page.page
+                        }
+                    }
                 );
 
                 if (res_data.status) {
                     setTableData(res_data.data);
+                    setPage({ page: res_data.page, total: res_data.total })
                 } else {
                     setFatchFail(true);
                 }
@@ -30,9 +42,9 @@ const page = () => {
             }
         };
         boot();
-    }, []);
+    }, [page.page]);
     return (
-        <div className="card flex-fill px-3 py-3">
+        <>
             {loadPage ? (
                 <LoadPage />
             ) : (
@@ -45,11 +57,11 @@ const page = () => {
                             <tr>
                                 <th>วันที่</th>
                                 <th>ชื่อ - สกุล</th>
-                                <th>ที่ตั้งทรัพย์สิน</th>
-                                <th>ประเภท</th>
-                                <th>จำนวนเงินที่ต้องการลงทุน</th>
-                                <th>ประเภททรัพย์สิน</th>
-                                <th>สถานะ</th>
+                                <th>เบอร์โทรศัพท์</th>
+                                <th>อาชีพ</th>
+                                <th>รายได้ต่อเดือน</th>
+                                <th>อีเมล</th>
+                                <th>ที่อยู่ปัจจุบัน</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -57,27 +69,29 @@ const page = () => {
                             {tableData?.map((item: any, index: number) => (
                                 <tr key={index}>
                                     <td >{item?.datetime}</td>
-                                    <td >{item.fullname}</td>
-                                    <td >{item.location}</td>
-                                    <td >{item.asset_type}</td>
-                                    <td >{item.investment_amount}</td>
-                                    <td className={`text-center ${item.verified ? "text-success" : "text-warning"}`}>{item.verified ? "ยืนยันตัวตนแล้ว" : "รอดำเนินการ"}</td>
+                                    <td >{item?.fullname}</td>
+                                    <td >{item?.phone_number}</td>
+                                    <td >{item?.career}</td>
+                                    <td >{item?.salary}</td>
+                                    <td >{item?.email}</td>
+                                    <td >{item?.province_name}</td>
                                     <td className="text-center">
                                         <Link
                                             href={`/consignor/${item.id}`}
                                             role="button"
                                             className="btn btn-light text-success"
                                         >
-                                            <MdPersonSearch />
+                                            <FaPenSquare size={20} />
                                         </Link>
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
+                    <Pagination Page={page} change={changePage} />
                 </>
             )}
-        </div>
+        </>
     );
 };
 
