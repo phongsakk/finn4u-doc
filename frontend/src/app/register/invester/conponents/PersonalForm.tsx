@@ -163,6 +163,9 @@ function PersonalForm({
         province_id: Number(form.province_id),
         district_id: Number(form.district_id),
         sub_district_id: Number(form.sub_district_id),
+        interest_district_id: null,
+        asset_type_id: Number(form.asset_type_id),
+        investment_amount: Number(form.investment_amount)
       };
 
       const { data: res } = await axios.post(
@@ -299,8 +302,8 @@ function PersonalForm({
           <Row className="mt-5 mb-3">
             <FormInput
               label="ชื่อผู้ได้รับผลประโยชน์"
-              name="beneficialy"
-              value={form.beneficialy}
+              name="beneficiary"
+              value={form.beneficiary}
               onChange={handleForm}
               required
             />

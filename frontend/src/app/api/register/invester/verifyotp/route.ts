@@ -9,14 +9,15 @@ export const POST = async (req: NextRequest) => {
     const body = await req.json();
 
     const { data: res_otp } = await axios.post(
-      api.external(`/v1/auth/consignor/verifyOTP`),
+      api.external(`/v1/auth/invester/verifyOTP`),
       body
     );
     if (res_otp.status) {
       return NextResponse.json(
         {
-          status: true,
+          status: res_otp.status,
           message: res_otp.message,
+          code: res_otp.code,
           data: {
             email: body.email,
             accessToken: res_otp.data.access_token,
