@@ -56,9 +56,11 @@ export const GET = async (
           name: item.tag.name,
         })) || [],
       images:
-        data?.asset_images?.map((item: any) => ({
-          image: item.image,
-        })) || [],
+        data?.asset_images
+          ?.filter((x: any) => x.is_display == true)
+          .map((item: any) => ({
+            image: item.image,
+          })) || [],
       asset_auction: data?.asset_auction && {
         from_date: `${dayjs(data.asset_auction.from_date).format(
           "DD/MM/YYYY"
