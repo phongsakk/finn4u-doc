@@ -104,6 +104,10 @@ function PropertyPage() {
           BidMessage = "ถึงขีดจำกัดการ Bid แล้ว";
           var status = false;
           break;
+        case "auction has not started yet":
+          BidMessage = "การประมูลยังไม่เริ่ม";
+          var status = false;
+          break;
         default:
           BidMessage = "Bid สำเร็จ";
           status = true;
