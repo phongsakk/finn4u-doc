@@ -147,10 +147,10 @@ function ConModal(ModalOpen: PropertyModal) {
         alert("บันทึกข้อมูลสำเร็จ");
         window.location.reload();
       } else {
-        alert("ไม่สามารบันทึก กรุณาลองใหม่อีหครั้ง");
+        alert("ไม่สามารบันทึก กรุณาลองใหม่อีกครั้ง");
       }
     } catch (error) {
-      alert("ไม่สามารบันทึก กรุณาลองใหม่อีหครั้ง");
+      alert("ไม่สามารบันทึก กรุณาลองใหม่อีกครั้ง");
       console.error("API save appraisal error!", error);
     }
   };
