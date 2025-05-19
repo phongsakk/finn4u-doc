@@ -195,14 +195,14 @@ func DoAppraisal(c *gin.Context) {
 		if r.NewImages != nil {
 			fmt.Println("not null")
 			newImages := *r.NewImages
-			for _, imageUrl := range newImages {
-				fmt.Println("image url", imageUrl)
-				var imageModel models.AssetAppraisalImage
-				imageModel.AssetAppraisalID = apprisal.ID
-				imageModel.ImageURL = imageUrl
+			for _, image := range newImages {
+				fmt.Println("image url", image)
+				var imageModel models.AssetImage
+				imageModel.AssetID = apprisal.AssetID
+				imageModel.Image = image
 
-				if err := tx.Create(&imageModel).Error; err != nil {
-					return err
+				if ErrCreate := tx.Create(&imageModel).Error; ErrCreate != nil {
+					return ErrCreate
 				}
 			}
 		}
@@ -272,6 +272,7 @@ func DoAppraisal(c *gin.Context) {
 			return err
 		}
 
+		fmt.Println("complete")
 		return nil
 	}); err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
