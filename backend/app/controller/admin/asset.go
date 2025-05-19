@@ -191,14 +191,17 @@ func DoAppraisal(c *gin.Context) {
 			return err
 		}
 
+		fmt.Println("new images", r.NewImages)
 		if r.NewImages != nil {
+			fmt.Println("not null")
 			newImages := *r.NewImages
 			for _, imageUrl := range newImages {
+				fmt.Println("image url", imageUrl)
 				var imageModel models.AssetAppraisalImage
 				imageModel.AssetAppraisalID = apprisal.ID
 				imageModel.ImageURL = imageUrl
 
-				if err := tx.Save(&imageModel).Error; err != nil {
+				if err := tx.Create(&imageModel).Error; err != nil {
 					return err
 				}
 			}
