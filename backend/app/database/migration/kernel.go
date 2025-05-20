@@ -35,6 +35,7 @@ func Migrate() error {
 		// &models.AssetInvestmentOffer{},
 		// &models.Matching{},
 		&models.Sell{},
+		&models.SellType{},
 	); err != nil {
 		return err
 	}
