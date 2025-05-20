@@ -158,6 +158,7 @@ function Propertysale() {
                           <ImageApi
                             className="property-img"
                             src={item?.asset_image ?? ""}
+                            style={{width:"100%",height:"100%"}}
                           />
                         ) : (
                           <div className="property-img bg-light d-flex justify-content-center align-items-center">

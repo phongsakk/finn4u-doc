@@ -37,7 +37,7 @@ function AssetPicture({ images }: { images: any[] }) {
             className="img-fluid object-fit-cover"
             style={{
               width: "100%",
-              aspectRatio: 1.75
+              aspectRatio: 1.75,
             }}
           />
         </div>
@@ -52,7 +52,9 @@ function AssetPicture({ images }: { images: any[] }) {
                 onClick={() => handleGallery(index)}
               >
                 {images.length > 3 && index === 2 && (
-                  <div className="gallery-filter pb-2 pb-lg-0">{images.length - 3}+</div>
+                  <div className="gallery-filter pb-2 pb-lg-0">
+                    {images.length - 3}+
+                  </div>
                 )}
                 <ImageApi
                   src={`property/${item.image}`}
@@ -75,13 +77,6 @@ function AssetPicture({ images }: { images: any[] }) {
       >
         <Modal.Body>
           <div className="show-image">
-            <div className="position-absolute top-0 end-0 p-1">
-              <Button
-                variant="close"
-                className="bg-white"
-                onClick={() => setGallery(false)}
-              ></Button>
-            </div>
             <GrPrevious
               className="previous-img"
               onClick={() => handleGallery(modalImage.imgPrev)}
@@ -90,6 +85,13 @@ function AssetPicture({ images }: { images: any[] }) {
               className="next-img"
               onClick={() => handleGallery(modalImage.imgNext)}
             />
+            <div className="position-absolute top-0 end-0 p-1">
+              <Button
+                variant="close"
+                className="bg-white"
+                onClick={() => setGallery(false)}
+              ></Button>
+            </div>
             <CustomImage src={modalImage.src} alt="Modal Image" style={{}} />
           </div>
         </Modal.Body>

@@ -1700,22 +1700,20 @@ img {
         height: 100%;
         .previous-img {
           position: absolute;
-          top: 50%;
+          height: 100%;
           cursor: pointer;
           font-size: xx-large;
           font-weight: 800;
           color: rgb(255, 255, 255);
-          filter: drop-shadow(0 2px 6px rgb(1, 87, 6));
         }
         .next-img {
           position: absolute;
-          top: 50%;
+          height: 100%;
           right: 0;
           cursor: pointer;
           font-size: xx-large;
           font-weight: 800;
           color: rgb(255, 255, 255);
-          filter: drop-shadow(0 2px 6px rgb(1, 87, 6));
         }
         img {
           width: 100%;
@@ -1849,5 +1847,27 @@ img {
   div {
     width: 100px;
     height: 100px;
+  }
+}
+
+.profile-menu::after {
+  display: none !important;
+}
+
+.profile-menu {
+  .dropdown-toggle::after {
+    display: none;
+  }
+  .dropdown-menu {
+    background-color: #018b68;
+    padding: 5px 10px;
+    .dropdown-item {
+      color: #ffffff !important;
+      padding: 2px 10px 2px 0px;
+    }
+    .dropdown-item:hover {
+      background-color: #018b68 !important;
+      color: #2f2f2f !important;
+    }
   }
 }

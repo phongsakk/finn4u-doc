@@ -22,7 +22,7 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 
   const openModal = (type: ModalType) => setModalType(type);
   const closeModal = () => setModalType(null);
-
+  
   return (
     <ModalContext.Provider value={{ modalType, openModal, closeModal }}>
       <Suspense>{children}</Suspense>

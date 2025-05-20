@@ -10,6 +10,7 @@ import { ModalProvider } from "@components/context/ModalContext";
 import LoginModal from "@components/Modal/LoginModal";
 import RegisterModal from "@components/Modal/registerModal";
 import ModalController from "@components/Modal/ModalController";
+import { LoaderProvider } from "@components/context/LoaderContext";
 
 export const metadata: Metadata = {
   title: "Finn4U",
@@ -26,13 +27,15 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <SessionProvider>
-          <ModalProvider>
-            <ModalController />
-            <LoginModal />
-            <RegisterModal />
-            <Navbar /> {children}
-            <Footer />
-          </ModalProvider>
+          <LoaderProvider>
+            <ModalProvider>
+              <ModalController />
+              <LoginModal />
+              <RegisterModal />
+              <Navbar /> {children}
+              <Footer />
+            </ModalProvider>
+          </LoaderProvider>
         </SessionProvider>
       </body>
     </html>

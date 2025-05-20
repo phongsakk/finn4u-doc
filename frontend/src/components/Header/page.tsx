@@ -4,14 +4,13 @@ import Link from "next/link";
 import Image from "next/image";
 import Button from "react-bootstrap/Button";
 import Collapse from "react-bootstrap/Collapse";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Imagelogo from "@public/logo1.png";
 import { usePathname } from "next/navigation";
-import { useModal } from "@components/context/ModalContext";
+import ProfileMenu from "@components/ProfileMenu";
 
 export default function Navbar() {
   const [navbarOpen, setNavOpen] = useState(false);
-  const { openModal } = useModal();
   const pathname = usePathname();
   const { data: session, status } = useSession();
 
@@ -92,57 +91,7 @@ export default function Navbar() {
                   );
                 })}
               </ul>
-              {status !== "loading" &&
-                (session ? (
-                  <div className="d-flex register">
-                    <Link
-                      className="btn btn-register d-flex align-items-center"
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        signOut();
-                      }}
-                    >
-                      <p>{session?.user?.name}</p>
-                      <Image
-                        src="/register.svg"
-                        alt="register"
-                        width={26}
-                        height={26}
-                        priority
-                      />
-                    </Link>
-                  </div>
-                ) : (
-                  <div className="d-flex register">
-                    <div
-                      className={`nav-item ${
-                        pathname === "/register" ? "nav-active" : ""
-                      }`}
-                    >
-                      <Link className="nav-link" href="/register">
-                        ลงทะเบียน
-                      </Link>
-                    </div>
-                    <Link
-                      className="btn btn-register d-flex align-items-center"
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        openModal("login");
-                      }}
-                    >
-                      <p>เข้าสู่ระบบ</p>
-                      <Image
-                        src="/register.svg"
-                        alt="register"
-                        width={26}
-                        height={26}
-                        priority
-                      />
-                    </Link>
-                  </div>
-                ))}
+              <ProfileMenu session={session} pathname={pathname} />
             </div>
           </Collapse>
         </div>
