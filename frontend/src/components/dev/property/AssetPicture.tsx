@@ -4,7 +4,7 @@ import ImageApi from "@components/ImageApi";
 import { api } from "@utils/api/index";
 import Link from "next/link";
 import React, { useState } from "react";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Modal, Row } from "react-bootstrap";
 import { GrPrevious, GrNext } from "react-icons/gr";
 
 const galleryModel = {
@@ -29,30 +29,30 @@ function AssetPicture({ images }: { images: any[] }) {
   };
 
   return (
-    <>
-      <div className="col col-12 col-lg-9 mb-md-3 mb-sm-3 col-sm-12 col-xs-12 mb-lg-0 mb-sm-0 mb-3">
-        <div className="gallery-item" onClick={() => handleGallery(0)}>
+    <Row className="justify-content-center px-0">
+      <div className="col-12 col-lg-9 col-sm-12 col-xs-12 px-2 px-lg-3 py-1">
+        <div onClick={() => handleGallery(0)}>
           <ImageApi
             src={`property/${images[0]?.image ?? ""}`}
             className="img-fluid object-fit-cover"
             style={{
               width: "100%",
-              aspectRatio:1.75
+              aspectRatio: 1.75
             }}
           />
         </div>
       </div>
-      <div className="col col-lg-3 col-sm-12 col-12 col-xs-12 row align-content-between">
+      <div className="col-12 col-lg-3 col-sm-12 col-xs-12 row align-content-between px-2 px-lg-3 py-1">
         {images?.map((item: any, index: number) => {
           if (index < 3) {
             return (
               <div
-                className="gallery-frame px-0"
+                className="gallery-frame px-0 pb-2 pb-lg-0"
                 key={index}
                 onClick={() => handleGallery(index)}
               >
                 {images.length > 3 && index === 2 && (
-                  <div className="gallery-filter">{images.length - 3}+</div>
+                  <div className="gallery-filter pb-2 pb-lg-0">{images.length - 3}+</div>
                 )}
                 <ImageApi
                   src={`property/${item.image}`}
@@ -92,7 +92,7 @@ function AssetPicture({ images }: { images: any[] }) {
           </div>
         </Modal.Body>
       </Modal>
-    </>
+    </Row>
   );
 }
 

@@ -33,9 +33,7 @@ const images = [
 function page() {
   return (
     <div className="container mt-3 py-2 p-lg-4 bg-white">
-      <div className="row gallery-grid">
-        <AssetPicture images={images} />
-      </div>
+      <AssetPicture images={images} />
       <label className=" my-4 h2">
         🔥ขายบ้านเดี่ยว 39 ตร.วา 3 ห้องนอน 3 ห้องน้ำ จอดรถ 2 คัน โครงการ Casa
         Ville Bangyai🔥
@@ -126,8 +124,8 @@ function page() {
                   width={100}
                   height={100}
                   style={{
-                    width:"70px",
-                    height:"auto"
+                    width: "70px",
+                    height: "auto"
                   }}
                   className="rounded-circle"
                   sizes="100vm"
@@ -138,7 +136,7 @@ function page() {
             </div>
             <div className="info-body p-3 d-flex flex-column gap-3">
               <div className="btn btn-light text-start px-3"><FaPhoneAlt size={20} /> 080-123-45678</div>
-              <div className="btn btn-light text-start px-3"><FaLine size={20}/> 0811721930</div>
+              <div className="btn btn-light text-start px-3"><FaLine size={20} /> 0811721930</div>
               <div className="btn btn-light text-start px-3"><TbMailFilled size={20} /> Anya_forger@gmail.com</div>
             </div>
           </div>

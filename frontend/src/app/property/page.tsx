@@ -98,7 +98,7 @@ function Propertysale() {
     };
 
     fetchAssets();
-  }, [page.page, formSearch.asset_type]); // Runs only when page.page changes
+  }, [page.page, formSearch.asset_type]);
   return (
     <div className="property-sale">
       <Banner />
