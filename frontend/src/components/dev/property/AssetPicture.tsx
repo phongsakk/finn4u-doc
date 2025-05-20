@@ -30,7 +30,7 @@ function AssetPicture({ images }: { images: any[] }) {
 
   return (
     <Row className="justify-content-center px-0">
-      <div className="col-12 col-lg-9 col-sm-12 col-xs-12 px-2 px-lg-3 py-1">
+      <div className="col-12 col-lg-9 col-sm-12 col-xs-12 px-2 ps-lg-0 pe-lg-3 py-1">
         <div onClick={() => handleGallery(0)}>
           <ImageApi
             src={`property/${images[0]?.image ?? ""}`}
@@ -68,15 +68,17 @@ function AssetPicture({ images }: { images: any[] }) {
       <Modal
         className="modal-image-gallery"
         show={galleryOpen}
+        fullscreen
         onHide={() => setGallery(false)}
         size="xl"
         centered
       >
         <Modal.Body>
           <div className="show-image">
-            <div className="position-absolute top-0 end-0 p-1 bg-danger rounded-circle">
+            <div className="position-absolute top-0 end-0 p-1">
               <Button
                 variant="close"
+                className="bg-white"
                 onClick={() => setGallery(false)}
               ></Button>
             </div>
