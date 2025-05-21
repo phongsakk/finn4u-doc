@@ -10,5 +10,6 @@ func MasterRouterGroup(r *gin.RouterGroup) {
 	r.GET("/district", con.GetMasterDistrict)
 	r.GET("/sub-district", con.GetMasterSubDistrict)
 	r.GET("/asset-type", con.GetMasterAssetType)
+	r.GET("/sell-type", con.GetMasterSellType)
 	r.GET("/user-prefix", con.GetUserPrefix)
 }

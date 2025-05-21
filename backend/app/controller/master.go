@@ -90,6 +90,26 @@ func GetMasterAssetType(ctx *gin.Context) {
 	})
 }
 
+func GetMasterSellType(ctx *gin.Context) {
+	var model []models.SellType
+	db, err := database.Conn()
+	if err != nil {
+		ctx.JSON(500, types.Response{
+			Code:  500,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	defer database.Close(db)
+	db.Find(&model)
+	ctx.JSON(200, types.Response{
+		Code:    200,
+		Status:  true,
+		Data:    model,
+		Message: utils.NullableString("Get master asset type success"),
+	})
+}
+
 func GetUserPrefix(c *gin.Context) {
 	var model []models.UserPrefix
 	db, err := database.Conn()
