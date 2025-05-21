@@ -25,4 +25,7 @@ func RouterGroup(r *gin.RouterGroup) {
 
 	tag := auth.Group("/tag")
 	TagRouterGroup(tag)
+
+	sell := auth.Group("/sell")
+	SellRouterGroup(sell)
 }
