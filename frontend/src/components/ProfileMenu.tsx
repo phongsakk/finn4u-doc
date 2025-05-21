@@ -32,19 +32,19 @@ function ProfileMenu({
 
           <Dropdown.Menu>
             <Dropdown.Item
-              href="#/action-1"
+              href={"/profile"}
               className="border-bottom border-white"
             >
               ข้อมูลส่วนตัว
             </Dropdown.Item>
             <Dropdown.Item
-              href="#/action-2"
+              href={"/profile/announcement"}
               className="border-bottom border-white"
             >
               ประกาศของฉัน
             </Dropdown.Item>
             <Dropdown.Item
-              href="#/action-3"
+              href="#"
               className="border-bottom border-white"
             >
               เปลี่ยนรหัสผ่าน

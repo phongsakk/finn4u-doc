@@ -19,7 +19,6 @@ export const SellAndRent = () => {
       <div className="d-flex justify-content-between mb-3">
         <div>พบข้อมูล 5 ประกาศ</div>
         <div>
-          {" "}
           <TbArrowsSort size={20} /> เรียงตาม:
         </div>
       </div>

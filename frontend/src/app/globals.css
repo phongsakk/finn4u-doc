@@ -1871,3 +1871,25 @@ img {
     }
   }
 }
+
+.profile-side {
+  display: flex;
+  flex-direction: column;
+  a {
+    padding: 10px 20px;
+  }
+  a:hover {
+    color: #30b175 !important;
+    background-color: #d0ffe9;
+    border-radius: 0 5px 5px 0;
+    box-shadow: -5px 0 0 #018b68;
+  }
+}
+
+.profile-menu-search {
+  a:hover {
+    color: #30b175 !important;
+    font-weight: 800;
+    box-shadow: 0 5px 0 #30b175;
+  }
+}
