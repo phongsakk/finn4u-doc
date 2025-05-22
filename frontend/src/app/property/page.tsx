@@ -98,7 +98,7 @@ function Propertysale() {
     };
 
     fetchAssets();
-  }, [page.page, formSearch.asset_type]); // Runs only when page.page changes
+  }, [page.page, formSearch.asset_type]);
   return (
     <div className="property-sale">
       <Banner />
@@ -158,6 +158,7 @@ function Propertysale() {
                           <ImageApi
                             className="property-img"
                             src={item?.asset_image ?? ""}
+                            style={{width:"100%",height:"100%"}}
                           />
                         ) : (
                           <div className="property-img bg-light d-flex justify-content-center align-items-center">

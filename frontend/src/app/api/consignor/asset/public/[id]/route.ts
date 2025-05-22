@@ -27,6 +27,26 @@ export const GET = async (
     );
 
     const data = response.data;
+    var model_auction = null;
+
+    if (data?.asset_auction) {
+      const fromDatetime = dayjs(
+        `${dayjs(data.asset_auction.from_date).format("YYYY-MM-DD")}T${
+          data.asset_auction.from_time
+        }:00`
+      );
+      const toDatetime = dayjs(
+        `${dayjs(data.asset_auction.to_date).format("YYYY-MM-DD")}T${
+          data.asset_auction.to_time
+        }:59`
+      );
+
+      model_auction = {
+        from_date: fromDatetime.toISOString(),
+        to_date: toDatetime.toISOString(),
+        max_tax: data.asset_auction.max_tax,
+      };
+    }
 
     const model = {
       id: data.id,
@@ -61,15 +81,7 @@ export const GET = async (
           .map((item: any) => ({
             image: item.image,
           })) || [],
-      asset_auction: data?.asset_auction && {
-        from_date: `${dayjs(data.asset_auction.from_date).format(
-          "DD/MM/YYYY"
-        )} ${data.asset_auction.from_time}:00`,
-        to_date: `${dayjs(data.asset_auction.to_date).format("DD/MM/YYYY")} ${
-          data.asset_auction.to_time
-        }:59`,
-        max_tax: data.asset_auction.max_tax,
-      },
+      asset_auction: model_auction,
     };
 
     return NextResponse.json(

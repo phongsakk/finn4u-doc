@@ -61,96 +61,99 @@ function page() {
 
   return (
     <>
-        {loadPage ? (
-          <LoadPage />
-        ) : (
-          <>
-            {FatchFail === true ? (
-              <span className="text-danger">ไม่สามารถโหลดข้อมูลได้..</span>
-            ) : null}
-            <div className="row fw-bold">
-              <h3 className="col-auto text-success fw-bold">ทรัพย์สินขายฝาก</h3>
-              <h3 className="col-auto px-1 fw-bold">
-                เลขที่ฝากขาย {Model?.gen_id}
-              </h3>
-            </div>
-            <table className="table table-hover my-0 mb-5">
-              <thead className="table-success">
-                <tr>
-                  <th className="text-center">วันที่ลงขายฝาก</th>
-                  <th className="text-center">ผู้ขายฝาก</th>
-                  <th className="text-center">เบอร์โทรศัพท์</th>
-                  <th className="text-center">จังหวัดที่ตั้งทรัพย์สิน</th>
-                  <th className="text-center">ประเภททรัพย์สิน</th>
-                  <th className="text-center">ราคาขายฝากจากการประเมิน</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="text-center">{Model?.asset?.date_sell}</td>
-                  <td className="text-center">
-                    {Model?.asset?.consignor_name}
-                  </td>
-                  <td className="text-center">{Model?.asset?.phone_number}</td>
-                  <td className="text-center">{Model?.asset?.province_name}</td>
-                  <td className="text-center">{Model?.asset?.asset_type}</td>
-                  <td className="text-center">
-                    {Model?.asset?.collateral_price}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+      {loadPage ? (
+        <LoadPage />
+      ) : (
+        <>
+          {FatchFail === true ? (
+            <span className="text-danger">ไม่สามารถโหลดข้อมูลได้..</span>
+          ) : null}
+          <div className="row fw-bold">
+            <h3 className="col-auto text-success fw-bold">ทรัพย์สินขายฝาก</h3>
+            <h3 className="col-auto px-1 fw-bold">
+              เลขที่ฝากขาย {Model?.gen_id}
+            </h3>
+          </div>
+          <table className="table table-hover my-0 mb-5">
+            <thead className="table-success">
+              <tr>
+                <th className="text-center">วันที่ลงขายฝาก</th>
+                <th className="text-center">ผู้ขายฝาก</th>
+                <th className="text-center">เบอร์โทรศัพท์</th>
+                <th className="text-center">จังหวัดที่ตั้งทรัพย์สิน</th>
+                <th className="text-center">ประเภททรัพย์สิน</th>
+                <th className="text-center">ราคาขายฝากจากการประเมิน</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="text-center">{Model?.asset?.date_sell}</td>
+                <td className="text-center">{Model?.asset?.consignor_name}</td>
+                <td className="text-center">{Model?.asset?.phone_number}</td>
+                <td className="text-center">{Model?.asset?.province_name}</td>
+                <td className="text-center">{Model?.asset?.asset_type}</td>
+                <td className="text-center">
+                  {Model?.asset?.collateral_price}
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
-            <div className="row fw-bold">
-              <h3 className="col-auto text-success fw-bold">
-                นักลงทุนที่เหมาะกับพื้นที่ขายฝากนี้
-              </h3>
-            </div>
-            <table className="table table-hover my-0 mb-5 mb-5">
-              <thead className="table-success">
-                <tr>
-                  <th></th>
-                  <th>หมายเลขนักลงทุน</th>
-                  <th>ชื่อนักลงทุน</th>
-                  <th className="text-center">เบอร์โทรศัพท์</th>
-                  <th className="text-center">บริเวณที่ต้องการลงทุน</th>
-                  <th className="text-center">ประเภททรัพย์สิน</th>
-                  <th className="text-center">จำนวนเงินที่ต้องการลงทุน</th>
+          <div className="row fw-bold">
+            <h3 className="col-auto text-success fw-bold">
+              นักลงทุนที่เหมาะกับพื้นที่ขายฝากนี้
+            </h3>
+          </div>
+          <table className="table table-hover my-0 mb-5 mb-5">
+            <thead className="table-success">
+              <tr>
+                <th></th>
+                <th>หมายเลขนักลงทุน</th>
+                <th>ชื่อนักลงทุน</th>
+                <th className="text-center">เบอร์โทรศัพท์</th>
+                <th className="text-center">บริเวณที่ต้องการลงทุน</th>
+                <th className="text-center">ประเภททรัพย์สิน</th>
+                <th className="text-center">จำนวนเงินที่ต้องการลงทุน</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Model?.bidder_offer?.map((item: any, index: number) => (
+                <tr key={index}>
+                  <td className="text-center">
+                    <FormCheck
+                      onChange={() =>
+                        setWinner({
+                          bidder_id: item.bidder_id,
+                          asset_bid_offer_id: item.id,
+                        })
+                      }
+                      checked={item?.is_winner ? true: undefined}
+                      name="bidder"
+                      id={`bidder-${index}`}
+                      type="radio"
+                    />
+                  </td>
+                  <td>{item.number_consignor}</td>
+                  <td>{item.fullname}</td>
+                  <td className="text-center">{item.phone_number}</td>
+                  <td className="text-center">{item.tag}</td>
+                  <td className="text-center">{Model?.asset.asset_type}</td>
+                  <td className="text-center">{item?.offer}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {Model?.bidder_offer?.map((item: any, index: number) => (
-                  <tr key={index}>
-                    <td className="text-center">
-                      <FormCheck
-                        onChange={() =>
-                          setWinner({
-                            bidder_id: item.bidder_id,
-                            asset_bid_offer_id: item.id,
-                          })
-                        }
-                        name="bidder"
-                        id={`bidder-${index}`}
-                        type="radio"
-                      />
-                    </td>
-                    <td>{item.number_consignor}</td>
-                    <td>{item.fullname}</td>
-                    <td className="text-center">{item.phone_number}</td>
-                    <td className="text-center">{item.tag}</td>
-                    <td className="text-center">{Model?.asset.asset_type}</td>
-                    <td className="text-center">{item?.offer}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className="text-center mt-4">
-              <Button disabled={submit} variant="success px-6" onClick={handleSubmit}>
-                MATCHING
-              </Button>
-            </div>
-          </>
-        )}
+              ))}
+            </tbody>
+          </table>
+          <div className="text-center mt-4">
+            <Button
+              disabled={submit}
+              variant="success px-6"
+              onClick={handleSubmit}
+            >
+              MATCHING
+            </Button>
+          </div>
+        </>
+      )}
     </>
   );
 }

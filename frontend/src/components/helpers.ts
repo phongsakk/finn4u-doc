@@ -243,7 +243,7 @@ export const ToDateThai = (
 ) => {
   try {
     dayjs.locale("th");
-    
+
     return dayjs(txt, "DD/MM/YYYY HH:mm:ss").tz("Asia/Bangkok").format(format);
   } catch (error) {
     return "-";

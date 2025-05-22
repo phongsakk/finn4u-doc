@@ -61,7 +61,7 @@ function page() {
             </Row>
           </div>
           <div className="container">
-            <SellAndRent />
+            <SellAndRent pageType="sell" />
           </div>
         </Form>
       </div>

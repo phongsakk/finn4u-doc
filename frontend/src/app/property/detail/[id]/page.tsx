@@ -31,9 +31,15 @@ import { api } from "@utils/api/index";
 import { AlertPrimary } from "@components/alert/SwalAlert";
 import { LoadPage } from "@components/dev/LoadPage";
 import AssetPicture from "@components/dev/property/AssetPicture";
+import Auction from "@components/consignor/Auction";
 
 dayjs.extend(customParseFormat);
 dayjs.locale("th");
+
+type AuctionDate = {
+  from_date?: Date;
+  to_date?: Date;
+}
 
 function PropertyPage() {
   const params = useParams();
@@ -42,7 +48,7 @@ function PropertyPage() {
     redirect("/property");
   }
   const [asset, setAsset] = useState<any>();
-  const [endTime, setEndTime] = useState<Date>();
+  const [auctionDate, setAuctionDate] = useState<AuctionDate>();
   const [bidPercent, setBidPercent] = useState<string>();
   const [loading, setLoading] = useState(true);
   const [submit, setSubmit] = useState(false);
@@ -58,12 +64,10 @@ function PropertyPage() {
         );
         if (res_asset.status) {
           setAsset(res_asset.data);
-          setEndTime(
-            dayjs(
-              res_asset.data?.asset_auction?.to_date,
-              "DD/MM/YYYY HH:mm:ss"
-            ).toDate()
-          );
+          setAuctionDate({
+            from_date: dayjs(res_asset.data?.asset_auction?.from_date).toDate(),
+            to_date: dayjs(res_asset.data?.asset_auction?.to_date).toDate()
+          });
         } else {
           await AlertPrimary("Error 404 - Please try again!!", "error").then(
             () => {
@@ -135,9 +139,7 @@ function PropertyPage() {
             <p className="title-content font2">ทรัพย์สินขายฝาก</p>
             <section className="photo-gallery">
               <div className="container">
-                <div className="row gallery-grid">
-                  <AssetPicture images={asset?.images} />
-                </div>
+                <AssetPicture images={asset?.images} />
                 <div className="time">
                   <div className="row">
                     <div className="col-lg-3">
@@ -282,67 +284,7 @@ function PropertyPage() {
                   ))}
                 </div>
               </div>
-              {status !== "loading" &&
-                status === "authenticated" &&
-                asset?.asset_auction && (
-                  <>
-                    <div className="mt-3 fw-bold">
-                      <h5>จะสิ้นสุดการประมูลในอีก :</h5>
-                      {endTime && <Countdown toDate={endTime} />}
-
-                      <div className="row mt-3">
-                        <div className="col-sm-auto h5">ระยะเวลาการประมูล:</div>
-                        <div className=" row col-lg-6 text-secondary">
-                          <div className="col-auto">
-                            {ToDateThai(
-                              asset.asset_auction.from_date,
-                              "DD/MM/BBBB HH:mm"
-                            )}
-                          </div>
-                          <div className="col-auto px-2">-</div>
-                          <div className="col-auto">
-                            {ToDateThai(
-                              asset.asset_auction.to_date,
-                              "DD/MM/BBBB HH:mm"
-                            )}
-                          </div>
-                        </div>
-                        <div className="row h5 mt-3">
-                          <label className="col-auto">
-                            เปิดประมูลดอกเบี้ยสูงสุดที่:
-                          </label>
-                          <label className="col-auto">
-                            {formatNumber(asset.asset_auction.max_tax)} %
-                          </label>
-                        </div>
-                        <h5 className="mt-3">ใส่ดอกเบี้ยของคุณ (%):</h5>
-                        <div className="row justify-content-start gap-2">
-                          <div className="col-auto">
-                            <Input
-                              onChange={(e) => {
-                                handleNumberChange(e, setBidPercent);
-                              }}
-                              value={bidPercent ?? ""}
-                              name="bid-percent"
-                              className="form-control front2"
-                              placeholder="กรุณาใส่ดอกเบี้ย"
-                            />
-                          </div>
-                          <div className="col-sm-4">
-                            <Button
-                              variant="success"
-                              onClick={handleBid}
-                              className="px-5 text-nowrap"
-                              disabled={submit}
-                            >
-                              {!submit ? "Bid Now" : "กำลัง Bid"}
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                )}
+              {params?.id && asset?.asset_auction && <Auction id={String(params?.id)} auction={asset.asset_auction} />}
             </section>
           </div>
         ) : (
