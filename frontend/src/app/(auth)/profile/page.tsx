@@ -1,9 +1,21 @@
-import React from "react";
-import { FormCheck, Row } from "react-bootstrap";
+"use client";
+import React, { useState } from "react";
+import { Button, FormCheck, Row } from "react-bootstrap";
 import imagePro from "@public/user3.png";
 import Image from "next/image";
+import { FormInput } from "@components/FormCustom/FormInput";
+import { ProfileModel } from "@models/ProfileModel";
+import { useLoaderContext } from "@components/context/LoaderContext";
 
 function page() {
+  const [form, setForm] = useState(ProfileModel);
+  const {session} = useLoaderContext();
+  const handleForm = (e: any) => {
+    setForm((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
   return (
     <div className="rounded bg-white overflow-hidden">
       <div className="py-3 px-4 text-white bg-primary">ข้อมูลส่วนตัว</div>
@@ -58,6 +70,72 @@ function page() {
               type="radio"
               label="นางสาว"
             />
+          </div>
+          <Row className="mb-3">
+            <FormInput
+              groupClass="col-lg-6"
+              value={form?.firstname}
+              label="ชื่อ"
+              placeholder="ชื่อ"
+              name="firstname"
+              onChange={handleForm}
+              required
+            />
+            <FormInput
+              groupClass="col-lg-6"
+              value={form?.lastname}
+              label="นามสกุล"
+              placeholder="นามสกุล"
+              name="lastname"
+              onChange={handleForm}
+              required
+            />
+          </Row>
+          <Row className="mb-3">
+            <FormInput
+              groupClass="col-lg-6"
+              value={session?.user?.name}
+              label="อีเมล"
+              placeholder="อีเมล"
+              disabled
+              name="email"
+              onChange={handleForm}
+              required
+            />
+            <FormInput
+              groupClass="col-lg-6"
+              value={form?.phone_number}
+              label="เบอร์โทรศัพท์"
+              placeholder="เบอร์โทรศัพท์"
+              name="phone_number"
+              onChange={handleForm}
+              required
+            />
+          </Row>
+          <Row className="mb-3">
+            <FormInput
+              groupClass="col-lg-6"
+              value={form?.line}
+              label="Line ID"
+              placeholder="Line ID"
+              name="line"
+              onChange={handleForm}
+              required
+            />
+          </Row>
+          <Row className="mb-3">
+            <FormInput
+              groupClass="col-lg-6"
+              value={form?.license_id}
+              label="เลขบัตรประชาชน"
+              placeholder="กรุณากรอกหมายเลขบัตรประชาชน"
+              name="license_id"
+              onChange={handleForm}
+              required
+            />
+          </Row>
+          <div className="d-flex justify-content-end">
+            <Button variant="primary">บันทึกการเปลี่ยนแปลง</Button>
           </div>
         </div>
       </div>

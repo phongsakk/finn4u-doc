@@ -29,6 +29,7 @@ export const GET = async (
     const bidder_offer =
       res?.data?.asset?.asset_bid_offer.map((item: any) => ({
         id:item.id,
+        is_winner:item.is_winner,
         bidder_id: item.bidder_id,
         number_consignor: item.bidder.gen_id,
         fullname: item?.bidder.Firstname + " " + item?.bidder.Lastname,

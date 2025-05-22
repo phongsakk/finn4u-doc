@@ -9,108 +9,118 @@ import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { FaEye } from "react-icons/fa";
 
-
 const page = () => {
-    const [tableData, setTableData] = useState([]);
-    const [loadPage, setLoadPage] = useState(true);
-    const [FatchFail, setFatchFail] = useState(false);
-    const [submit, setSubmit] = useState(false);
-    const [page, setPage] = useState(Page);
-    const changePage = (num: number) => {
-        setPage((prev) => ({ ...prev, page: num }));
-    };
+  const [tableData, setTableData] = useState([]);
+  const [loadPage, setLoadPage] = useState(true);
+  const [FatchFail, setFatchFail] = useState(false);
+  const [submit, setSubmit] = useState(false);
+  const [page, setPage] = useState(Page);
+  const changePage = (num: number) => {
+    setPage((prev) => ({ ...prev, page: num }));
+  };
 
-    useEffect(() => {
-        const boot = async () => {
-            try {
-                setLoadPage(true)
-                const { data: res_data } = await axios.get(
-                    api.internal(`/api/sellrent`), {
-                    params: {
-                        page: page.page
-                    }
-                }
-                );
+  useEffect(() => {
+    const boot = async () => {
+      try {
+        setLoadPage(true);
+        const { data: res_data } = await axios.get(
+          api.internal(`/api/sellrent`),
+          {
+            params: {
+              page: page.page,
+            },
+          }
+        );
 
-                if (res_data.status) {
-                    setTableData(res_data.data);
-                    setPage({ page: res_data.page, total: res_data.total })
-                } else {
-                    setFatchFail(true);
-                }
-            } catch (error) {
-                setFatchFail(true);
-            } finally {
-                setLoadPage(false);
-            }
-        };
-        boot();
-    }, [page.page]);
-
-    const handleBlock = async (title: string, num: number) => {
-        try {
-            setSubmit(true)
-            const { data: res } = await axios.post(api.internal(`/api/sellrent/block`), {
-                sell_id: num
-            })
-            if (res.status) {
-                AlertPrimary(`ระงับโพส "${title}" สำเร็จ`, "success").then(() => {
-                    window.location.reload()
-                })
-            } else {
-                AlertPrimary(`ระงับโพส "${title}" ไม่สำเร็จ`, "error")
-            }
-        } catch (error) {
-            AlertPrimary(`ระงับโพส "${title}" ไม่สำเร็จ`, "error")
-        } finally {
-            setSubmit(false)
+        if (res_data.status) {
+          setTableData(res_data.data);
+          setPage({ page: res_data.page, total: res_data.total });
+        } else {
+          setFatchFail(true);
         }
-    }
-    return (
-        <>
-            {loadPage ? (
-                <LoadPage />
-            ) : (
-                <>
-                    {FatchFail === true ? (
-                        <span className="text-danger">ไม่สามารถโหลดข้อมูลได้..</span>
-                    ) : null}
-                    <table className="table table-hover my-0">
-                        <thead className="table-success">
-                            <tr>
-                                <th>วันที่ลงขายฝาก</th>
-                                <th>ชื่อบัญชี</th>
-                                <th>รายการประกาศ</th>
-                                <th>Agency</th>
-                                <th>ประเภทประกาศ</th>
-                                <th>ประเภททรัพย์สิน</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {tableData?.map((item: any, index: number) => (
-                                <tr key={index}>
-                                    <td>{item?.created_at}</td>
-                                    <td>{item?.fullname}</td>
-                                    <td>{item?.title}</td>
-                                    <td className={item?.wanted_agency ? "text-success" : ""}>{item?.wanted_agency ? "ต้องการ" : "ไม่ต้องการ"}</td>
-                                    <td>{item?.sell_type_id}</td>
-                                    <td>{item?.asset_type}</td>
-                                    <td className="text-center">
-                                        <Button variant="light" className="me-2"><FaEye className="text-success" /></Button>
-                                        {item?.is_disabled ?  <Button variant="success" onClick={() => handleBlock(item?.title, item.id)}>ระงับ</Button>:  <Button variant="secondary">ระงับ</Button>}
-                                       
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                    <Pagination Page={page} change={changePage} />
-                </>
-            )}
-        </>
+      } catch (error) {
+        setFatchFail(true);
+      } finally {
+        setLoadPage(false);
+      }
+    };
+    boot();
+  }, [page.page]);
 
-    );
+  const handleBlock = async (title: string, num: number) => {
+    try {
+      setSubmit(true);
+      const { data: res } = await axios.post(
+        api.internal(`/api/sellrent/block`),
+        {
+          sell_id: num,
+        }
+      );
+      if (res.status) {
+        AlertPrimary(`ระงับโพส "${title}" สำเร็จ`, "success").then(() => {
+          window.location.reload();
+        });
+      } else {
+        AlertPrimary(`ระงับโพส "${title}" ไม่สำเร็จ`, "error");
+      }
+    } catch (error) {
+      AlertPrimary(`ระงับโพส "${title}" ไม่สำเร็จ`, "error");
+    } finally {
+      setSubmit(false);
+    }
+  };
+  return (
+    <>
+      {loadPage ? (
+        <LoadPage />
+      ) : (
+        <>
+          {FatchFail === true ? (
+            <span className="text-danger">ไม่สามารถโหลดข้อมูลได้..</span>
+          ) : null}
+          <table className="table table-hover my-0">
+            <thead className="table-success">
+              <tr>
+                <th>วันที่ลงขายฝาก</th>
+                <th>ชื่อบัญชี</th>
+                <th>รายการประกาศ</th>
+                <th>Agency</th>
+                <th>ประเภทประกาศ</th>
+                <th>ประเภททรัพย์สิน</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {tableData?.map((item: any, index: number) => (
+                <tr key={index}>
+                  <td>{item?.created_at}</td>
+                  <td>{item?.fullname}</td>
+                  <td>{item?.title}</td>
+                  <td className={item?.wanted_agency ? "text-success" : ""}>
+                    {item?.wanted_agency ? "ต้องการ" : "ไม่ต้องการ"}
+                  </td>
+                  <td>{item?.sell_type_id}</td>
+                  <td>{item?.asset_type}</td>
+                  <td className="text-center">
+                    <Button variant="light" className="me-2">
+                      <FaEye className="text-success" />
+                    </Button>
+                    <Button
+                      variant={item?.is_disabled ? "secondary" : "success"}
+                      onClick={() => handleBlock(item?.title, item.id)}
+                    >
+                      ระงับ
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <Pagination Page={page} change={changePage} />
+        </>
+      )}
+    </>
+  );
 };
 
 export default page;
