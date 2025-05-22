@@ -11,5 +11,7 @@ func SellRouterGroup(r *gin.RouterGroup) {
 	auth := r.Use(middleware.AuthMiddleware(libs.AUTH_GUEST))
 
 	auth.POST("", general.CreateSell)
+	auth.GET("", general.SearchSell)
+	auth.GET("/my", general.MySell)
 
 }

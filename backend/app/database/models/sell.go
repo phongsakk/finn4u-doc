@@ -27,4 +27,5 @@ type Sell struct {
 	Price             float64 `json:"price"`
 	OwnerID           uint    `json:"owner_id"`
 	Description       string  `json:"description" validate:"required"`
+	IsDisabled        bool    `json:"is_disabled" gorm:"default:false"`
 }

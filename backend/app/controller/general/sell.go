@@ -1,7 +1,10 @@
 package general
 
 import (
+	"math"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/phongsakk/finn4u-back/app/database"
@@ -10,6 +13,7 @@ import (
 	"github.com/phongsakk/finn4u-back/types"
 	"github.com/phongsakk/finn4u-back/utils"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 // FUCKS - [F]ind [U]pdate [C]reate [K]ill [S]earch
@@ -118,9 +122,141 @@ func KillSell(c *gin.Context) {
 }
 
 func SearchSell(c *gin.Context) {
+	var response []models.Sell
+
+	DB, ErrDB := database.Conn()
+	if ErrDB != nil {
+		c.JSON(http.StatusUnauthorized, types.Response{
+			Code:    http.StatusUnauthorized,
+			Status:  false,
+			Message: utils.NullableString(ErrDB.Error()),
+		})
+		return
+	}
+	defer database.Close(DB)
+
+	QueryLimit := c.DefaultQuery("limit", "10")
+	QueryPage := c.DefaultQuery("page", "1")
+	OrderBy := c.DefaultQuery("order_by", "created_at")
+	Sort := c.DefaultQuery("sort", "desc")
+	IsDesc := strings.ToLower(Sort) != "asc"
+	Limit, ErrLimit := strconv.Atoi(QueryLimit)
+	Page, ErrPage := strconv.Atoi(QueryPage)
+	if ErrLimit != nil {
+		Limit = 10
+	}
+	if ErrPage != nil {
+		Page = 1
+	}
+	Offset := utils.Offset(Page, Limit)
+
+	Model := DB.Model(&models.Sell{})
+	Preloaded := Model
+	var Count int64 = 0
+	if Err := Preloaded.Count(&Count).Error; Err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:    http.StatusBadRequest,
+			Status:  false,
+			Message: utils.NullableString(Err.Error()),
+		})
+		return
+	}
+	Sorted := Preloaded.Order(clause.OrderByColumn{Column: clause.Column{Name: OrderBy}, Desc: IsDesc})
+	InPage := Sorted.Limit(Limit).Offset(Offset)
+	if Err := InPage.Find(&response).Error; Err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:    http.StatusBadRequest,
+			Status:  false,
+			Message: utils.NullableString(Err.Error()),
+		})
+		return
+	}
+
+	Total := len(response)
+	totalPage := int64(math.Ceil(float64(Count) / float64(len(response))))
 	c.JSON(http.StatusOK, types.Response{
-		Code:    http.StatusOK,
-		Status:  true,
-		Message: utils.NullableString("Search sell"),
+		Code:      http.StatusOK,
+		Status:    true,
+		Message:   utils.NullableString("Search sell"),
+		Data:      response,
+		Page:      &Page,
+		Limit:     &Limit,
+		Total:     &Total,
+		TotalPage: &totalPage,
+	})
+}
+
+func MySell(c *gin.Context) {
+	var response []models.Sell
+	var user models.User
+
+	if Err := user.GetFromRequest(c); Err != nil {
+		c.JSON(http.StatusUnauthorized, types.Response{
+			Code:    http.StatusUnauthorized,
+			Status:  false,
+			Message: utils.NullableString(Err.Error()),
+		})
+		return
+	}
+
+	DB, ErrDB := database.Conn()
+	if ErrDB != nil {
+		c.JSON(http.StatusUnauthorized, types.Response{
+			Code:    http.StatusUnauthorized,
+			Status:  false,
+			Message: utils.NullableString(ErrDB.Error()),
+		})
+		return
+	}
+	defer database.Close(DB)
+
+	QueryLimit := c.DefaultQuery("limit", "10")
+	QueryPage := c.DefaultQuery("page", "1")
+	OrderBy := c.DefaultQuery("order_by", "created_at")
+	Sort := c.DefaultQuery("sort", "desc")
+	IsDesc := strings.ToLower(Sort) != "asc"
+	Limit, ErrLimit := strconv.Atoi(QueryLimit)
+	Page, ErrPage := strconv.Atoi(QueryPage)
+	if ErrLimit != nil {
+		Limit = 10
+	}
+	if ErrPage != nil {
+		Page = 1
+	}
+	Offset := utils.Offset(Page, Limit)
+
+	Model := DB.Model(&models.Sell{})
+	Preloaded := Model.Where("owner_id=?", user.ID)
+	var Count int64 = 0
+	if Err := Preloaded.Count(&Count).Error; Err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:    http.StatusBadRequest,
+			Status:  false,
+			Message: utils.NullableString(Err.Error()),
+		})
+		return
+	}
+	Sorted := Preloaded.Order(clause.OrderByColumn{Column: clause.Column{Name: OrderBy}, Desc: IsDesc})
+	InPage := Sorted.Limit(Limit).Offset(Offset)
+	if Err := InPage.Find(&response).Error; Err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:    http.StatusBadRequest,
+			Status:  false,
+			Message: utils.NullableString(Err.Error()),
+		})
+		return
+	}
+
+	Total := len(response)
+	totalPage := int64(math.Ceil(float64(Count) / float64(len(response))))
+	c.JSON(http.StatusOK, types.Response{
+		Code:      http.StatusOK,
+		Status:    true,
+		Message:   utils.NullableString("Search sell"),
+		Data:      response,
+		Page:      &Page,
+		Limit:     &Limit,
+		Total:     &Total,
+		TotalPage: &totalPage,
 	})
 }

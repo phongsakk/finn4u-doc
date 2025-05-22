@@ -107,7 +107,6 @@ func Login(c *gin.Context) {
 
 	var user models.User
 	db, err := database.Conn()
-	defer database.Close(db)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
@@ -115,6 +114,7 @@ func Login(c *gin.Context) {
 		})
 		return
 	}
+	defer database.Close(db)
 	if err := db.Where("email =?", request.Email).First(&user).Error; err != nil {
 		c.JSON(http.StatusNotFound, types.Response{
 			Code:  http.StatusInternalServerError,
@@ -179,7 +179,6 @@ func SignIn(c *gin.Context) {
 
 	var user models.Consignor
 	db, err := database.Conn()
-	defer database.Close(db)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
@@ -187,6 +186,7 @@ func SignIn(c *gin.Context) {
 		})
 		return
 	}
+	defer database.Close(db)
 	if err := db.Where("email =?", request.Email).First(&user).Error; err != nil {
 		c.JSON(http.StatusNotFound, types.Response{
 			Code:  http.StatusInternalServerError,
@@ -253,7 +253,6 @@ func RefreshToken(c *gin.Context) {
 
 	var user models.User
 	db, err := database.Conn()
-	defer database.Close(db)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
@@ -261,6 +260,7 @@ func RefreshToken(c *gin.Context) {
 		})
 		return
 	}
+	defer database.Close(db)
 	if err := db.Where("email =?", "user1@email.net").First(&user).Error; err != nil {
 		c.JSON(http.StatusNotFound, types.Response{
 			Code:  http.StatusInternalServerError,
