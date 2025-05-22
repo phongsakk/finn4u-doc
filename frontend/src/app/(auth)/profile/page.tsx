@@ -9,7 +9,7 @@ import { useLoaderContext } from "@components/context/LoaderContext";
 
 function page() {
   const [form, setForm] = useState(ProfileModel);
-  const {session} = useLoaderContext();
+  const { session } = useLoaderContext();
   const handleForm = (e: any) => {
     setForm((prev) => ({
       ...prev,
@@ -121,6 +121,16 @@ function page() {
               name="line"
               onChange={handleForm}
               required
+            />
+          </Row>
+          <Row className="mb-3">
+            <FormInput
+              groupClass="col-lg-6"
+              value={form?.birthday}
+              label="วันเกิด"
+              placeholder="วัน/เดือน/ปี"
+              name="birthday"
+              onChange={handleForm}
             />
           </Row>
           <Row className="mb-3">
