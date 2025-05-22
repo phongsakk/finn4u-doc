@@ -5,8 +5,24 @@ import imagePro from "@public/user3.png";
 import { Row } from "react-bootstrap";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
+import { useLoaderContext } from "./context/LoaderContext";
+const menu = [
+  {
+    name: "ข้อมูลส่วนตัว",
+    href: "/profile",
+  },
+  {
+    name: "ประกาศของฉัน",
+    href: "/profile/announcement",
+  },
+  {
+    name: "เปลี่ยนรหัสผ่าน",
+    href: "/profile/changepassword",
+  },
+];
 
 function ProfileSide() {
+  const { pathname } = useLoaderContext();
   return (
     <div className="rounded border p-3 bg-white">
       <Row className="align-items-center px-3 mb-3">
@@ -35,9 +51,15 @@ function ProfileSide() {
       </Row>
       <hr />
       <div className="profile-side">
-        <Link href="/profile">ข้อมูลส่วนตัว</Link>
-        <Link href="/profile/announcement">ประกาศของฉัน</Link>
-        <Link href="#">เปลี่ยนรหัสผ่าน</Link>
+        {menu?.map((item: any, index) => (
+          <Link
+            key={index}
+            href={item?.href}
+            className={item.href == pathname ? "active" : ""}
+          >
+            {item?.name}
+          </Link>
+        ))}
         <Link href="#" onClick={() => signOut()}>
           ออกจากระบบ
         </Link>

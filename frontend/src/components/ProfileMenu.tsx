@@ -6,22 +6,22 @@ import Dropdown from "react-bootstrap/Dropdown";
 import Link from "next/link";
 import { useLoaderContext } from "./context/LoaderContext";
 
-function ProfileMenu({
-  session,
-}: {
-  session: any;
-}) {
+function ProfileMenu({ session }: { session: any }) {
   const { pathname, specialBtn, openModal } = useLoaderContext();
   return (
     <>
       {session && (
         <>
-          {specialBtn?.status &&
+          {specialBtn?.status && (
             <div className="d-flex justify-content-center mb-2 mb-lg-0">
-              <Link className="btn btn-success text-white me-2" href="/profile/announcement/new">ลงประกาศ</Link>
+              <Link
+                className="btn btn-success text-white me-2"
+                href="/profile/announcement/new"
+              >
+                ลงประกาศ
+              </Link>
             </div>
-
-          }
+          )}
           <Dropdown className="d-flex justify-content-center profile-menu">
             <Dropdown.Toggle variant="register">
               {session?.user?.name}
@@ -47,10 +47,7 @@ function ProfileMenu({
               >
                 ประกาศของฉัน
               </Dropdown.Item>
-              <Dropdown.Item
-                href="#"
-                className="border-bottom border-white"
-              >
+              <Dropdown.Item href="#" className="border-bottom border-white">
                 เปลี่ยนรหัสผ่าน
               </Dropdown.Item>
               <Dropdown.Item href="#" onClick={() => signOut()}>
@@ -64,8 +61,9 @@ function ProfileMenu({
       {!session && (
         <div className="d-flex register">
           <div
-            className={`nav-item ${pathname === "/register" ? "nav-active" : ""
-              }`}
+            className={`nav-item ${
+              pathname === "/register" ? "nav-active" : ""
+            }`}
           >
             <Link className="nav-link" href="/register">
               ลงทะเบียน

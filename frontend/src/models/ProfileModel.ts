@@ -5,5 +5,11 @@ export const ProfileModel = {
   phone_number: "",
   line: "",
   birthday: "",
-  license_id:""
+  license_id: "",
+};
+
+export const ChangePassModel = {
+  old_password: "",
+  new_password: "",
+  confirm_password: "",
 };
