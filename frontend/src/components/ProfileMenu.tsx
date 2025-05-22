@@ -5,6 +5,7 @@ import React from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useModal } from "@components/context/ModalContext";
 import Link from "next/link";
+import { useSplButton } from "./context/LoaderContext";
 
 function ProfileMenu({
   session,
@@ -14,54 +15,61 @@ function ProfileMenu({
   pathname: string;
 }) {
   const { openModal } = useModal();
-
+  const { specialBtn } = useSplButton();
   return (
     <>
       {session && (
-        <Dropdown className="d-flex justify-content-center profile-menu">
-          <Dropdown.Toggle variant="register">
-            {session?.user?.name}
-            <Image
-              src="/register.svg"
-              alt="register"
-              width={26}
-              height={26}
-              priority
-            />
-          </Dropdown.Toggle>
+        <>
+          {specialBtn?.status &&
+            <div className="d-flex justify-content-center mb-2 mb-lg-0">
+              <Link className="btn btn-success text-white me-2" href="/profile/announcement/new">ลงประกาศ</Link>
+            </div>
 
-          <Dropdown.Menu>
-            <Dropdown.Item
-              href={"/profile"}
-              className="border-bottom border-white"
-            >
-              ข้อมูลส่วนตัว
-            </Dropdown.Item>
-            <Dropdown.Item
-              href={"/profile/announcement"}
-              className="border-bottom border-white"
-            >
-              ประกาศของฉัน
-            </Dropdown.Item>
-            <Dropdown.Item
-              href="#"
-              className="border-bottom border-white"
-            >
-              เปลี่ยนรหัสผ่าน
-            </Dropdown.Item>
-            <Dropdown.Item href="#" onClick={() => signOut()}>
-              ออกจากระบบ
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
+          }
+          <Dropdown className="d-flex justify-content-center profile-menu">
+            <Dropdown.Toggle variant="register">
+              {session?.user?.name}
+              <Image
+                src="/register.svg"
+                alt="register"
+                width={25}
+                height={25}
+                priority
+              />
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              <Dropdown.Item
+                href={"/profile"}
+                className="border-bottom border-white"
+              >
+                ข้อมูลส่วนตัว
+              </Dropdown.Item>
+              <Dropdown.Item
+                href={"/profile/announcement"}
+                className="border-bottom border-white"
+              >
+                ประกาศของฉัน
+              </Dropdown.Item>
+              <Dropdown.Item
+                href="#"
+                className="border-bottom border-white"
+              >
+                เปลี่ยนรหัสผ่าน
+              </Dropdown.Item>
+              <Dropdown.Item href="#" onClick={() => signOut()}>
+                ออกจากระบบ
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </>
       )}
 
       {!session && (
         <div className="d-flex register">
           <div
-            className={`nav-item ${
-              pathname === "/register" ? "nav-active" : ""
-            }`}
+            className={`nav-item ${pathname === "/register" ? "nav-active" : ""
+              }`}
           >
             <Link className="nav-link" href="/register">
               ลงทะเบียน
