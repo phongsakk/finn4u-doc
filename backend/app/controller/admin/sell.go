@@ -111,6 +111,7 @@ func SearchSell(c *gin.Context) {
 		})
 		return
 	}
+	defer database.Close(DB)
 
 	QueryLimit := c.DefaultQuery("limit", "10")
 	QueryPage := c.DefaultQuery("page", "1")
