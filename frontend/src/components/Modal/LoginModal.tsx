@@ -10,7 +10,6 @@ import {
   Modal,
   Row,
 } from "react-bootstrap";
-import { useModal } from "../context/ModalContext";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import CustomImage from "@components/CustomImage";
@@ -19,12 +18,13 @@ import { FormInput } from "@components/FormCustom/FormInput";
 import { AlertPrimary } from "@components/alert/SwalAlert";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
+import { useLoaderContext } from "@components/context/LoaderContext";
 
 export default function LoginModal() {
   const [form, setForm] = useState(LoginModel);
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get("redirect") || "";
-  const { modalType, closeModal, openModal } = useModal();
+  const { modalType, closeModal, openModal } = useLoaderContext();
   const [submit, setSubmit] = useState(false);
   if (modalType !== "login") return null;
 

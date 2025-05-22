@@ -85,7 +85,7 @@ function page() {
       const event = e.currentTarget;
 
       if (form.images.length < 3) {
-        AlertPrimary("กรุณาอัพโหลดรูปภาพทรัพย์สิน (อย่างน้อย 3 รูป)", "error");
+        AlertPrimary("กรุณาอัพโหลดรูปภาพ (อย่างน้อย 3 รูป)", "error");
         return false;
       }
 

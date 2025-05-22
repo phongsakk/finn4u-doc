@@ -1,15 +1,15 @@
 "use client";
 
 import { Button, Modal } from "react-bootstrap";
-import { useModal } from "../context/ModalContext";
 import Image from "next/image";
 import { FaCheckSquare } from "react-icons/fa";
 import imagedeal from "@public/deal.png";
 import Link from "next/link";
 import CustomImage from "@components/CustomImage";
+import { useLoaderContext } from "@components/context/LoaderContext";
 
 export default function RegisterModal() {
-  const { modalType, closeModal, openModal } = useModal();
+  const { modalType, closeModal, openModal } = useLoaderContext();
 
   // Only show this modal if the active modal type is 'login'
   if (modalType !== "register") return null;

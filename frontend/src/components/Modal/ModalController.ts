@@ -2,12 +2,12 @@
 
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { useModal } from "@components/context/ModalContext";
+import { useLoaderContext } from "@components/context/LoaderContext";
 
 export default function ModalController() {
   const searchParams = useSearchParams();
   const modalType = searchParams.get("modal") || "";
-  const { openModal } = useModal();
+  const { openModal } = useLoaderContext();
 
   useEffect(() => {
     if (modalType === "login") {

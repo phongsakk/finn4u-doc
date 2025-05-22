@@ -1,6 +1,6 @@
 "use client"
 import { AnnouncementItem } from "@components/AnnouncementItem";
-import { useSplButton } from "@components/context/LoaderContext";
+import { useLoaderContext } from "@components/context/LoaderContext";
 import { LoadPage } from "@components/dev/LoadPage";
 import { api } from "@utils/api/index";
 import axios from "axios";
@@ -10,7 +10,7 @@ import { Button, Row } from "react-bootstrap";
 function page() {
   const [asset, setAsset] = useState<any[]>()
   const [loading, setLoading] = useState(true);
-  const { setSplButton } = useSplButton();
+  const { setSplButton } = useLoaderContext();
   useEffect(() => {
     setSplButton({ name: "ลงประกาศ", href: "/", status: true })
 

@@ -6,7 +6,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "@splidejs/splide/dist/css/splide.min.css";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import "./globals.css";
-import { ModalProvider } from "@components/context/ModalContext";
 import LoginModal from "@components/Modal/LoginModal";
 import RegisterModal from "@components/Modal/registerModal";
 import ModalController from "@components/Modal/ModalController";
@@ -28,13 +27,10 @@ export default function RootLayout({
       <body>
         <SessionProvider>
           <LoaderProvider>
-            <ModalProvider>
-              <ModalController />
-              <LoginModal />
-              <RegisterModal />
-              <Navbar /> {children}
-              <Footer />
-            </ModalProvider>
+            <LoginModal />
+            <RegisterModal />
+            <Navbar /> {children}
+            <Footer />
           </LoaderProvider>
         </SessionProvider>
       </body>

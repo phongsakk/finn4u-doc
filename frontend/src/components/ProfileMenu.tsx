@@ -3,19 +3,15 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import React from "react";
 import Dropdown from "react-bootstrap/Dropdown";
-import { useModal } from "@components/context/ModalContext";
 import Link from "next/link";
-import { useSplButton } from "./context/LoaderContext";
+import { useLoaderContext } from "./context/LoaderContext";
 
 function ProfileMenu({
   session,
-  pathname,
 }: {
   session: any;
-  pathname: string;
 }) {
-  const { openModal } = useModal();
-  const { specialBtn } = useSplButton();
+  const { pathname, specialBtn, openModal } = useLoaderContext();
   return (
     <>
       {session && (

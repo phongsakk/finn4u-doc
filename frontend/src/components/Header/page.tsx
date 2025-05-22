@@ -4,15 +4,13 @@ import Link from "next/link";
 import Image from "next/image";
 import Button from "react-bootstrap/Button";
 import Collapse from "react-bootstrap/Collapse";
-import { useSession } from "next-auth/react";
 import Imagelogo from "@public/logo1.png";
-import { usePathname } from "next/navigation";
 import ProfileMenu from "@components/ProfileMenu";
+import { useLoaderContext } from "@components/context/LoaderContext";
 
 export default function Navbar() {
   const [navbarOpen, setNavOpen] = useState(false);
-  const pathname = usePathname();
-  const { data: session, status } = useSession();
+  const { pathname, session, status } = useLoaderContext();
 
   const menuItems = [
     {
@@ -91,7 +89,7 @@ export default function Navbar() {
                   );
                 })}
               </ul>
-              <ProfileMenu session={session} pathname={pathname} />
+              <ProfileMenu session={session} />
             </div>
           </Collapse>
         </div>
