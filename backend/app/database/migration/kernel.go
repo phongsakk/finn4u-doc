@@ -36,6 +36,7 @@ func Migrate() error {
 		// &models.Matching{},
 		&models.Sell{},
 		&models.SellType{},
+		&models.SellImage{},
 	); err != nil {
 		return err
 	}
