@@ -19,10 +19,38 @@ import (
 // FUCKS - [F]ind [U]pdate [C]reate [K]ill [S]earch
 
 func FindSell(c *gin.Context) {
+	SellID := c.Param("id")
+	var response models.Sell
+
+	DB, ErrDB := database.Conn()
+	if ErrDB != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:    http.StatusInternalServerError,
+			Status:  false,
+			Message: utils.NullableString(ErrDB.Error()),
+		})
+		return
+	}
+	defer database.Close(DB)
+
+	Model := DB.Model(&models.Sell{})
+	Preloaded := Model.Preload("Province").Preload("District").Preload("Images").Preload("Owner").Preload("SellType")
+	Where := Preloaded.Where("id=?", SellID)
+
+	if Err := Where.First(&response).Error; Err != nil {
+		c.JSON(http.StatusNotFound, types.Response{
+			Code:    http.StatusNotFound,
+			Status:  false,
+			Message: utils.NullableString("Sell not found"),
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, types.Response{
 		Code:    http.StatusOK,
 		Status:  true,
 		Message: utils.NullableString("Find sell"),
+		Data:    &response,
 	})
 }
 
