@@ -60,10 +60,10 @@ function page() {
               </Form.Group>
             </Row>
           </div>
-          <div className="container">
-            <SellAndRent pageType="rent" />
-          </div>
         </Form>
+        <div className="container">
+          <SellAndRent pageType="sell" />
+        </div>
       </div>
     </>
   );
