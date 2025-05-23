@@ -129,9 +129,9 @@ func SearchSell(c *gin.Context) {
 	Offset := utils.Offset(Page, Limit)
 
 	Model := DB.Model(&models.Sell{})
-	Preloaded := Model
+	Where := Model
 	var Count int64 = 0
-	if Err := Preloaded.Count(&Count).Error; Err != nil {
+	if Err := Where.Count(&Count).Error; Err != nil {
 		c.JSON(http.StatusBadRequest, types.Response{
 			Code:    http.StatusBadRequest,
 			Status:  false,
@@ -139,7 +139,8 @@ func SearchSell(c *gin.Context) {
 		})
 		return
 	}
-	Sorted := Preloaded.Order(clause.OrderByColumn{Column: clause.Column{Name: OrderBy}, Desc: IsDesc})
+	With := Where.Preload("Province").Preload("District").Preload("Images").Preload("Owner").Preload("SellType")
+	Sorted := With.Order(clause.OrderByColumn{Column: clause.Column{Name: OrderBy}, Desc: IsDesc})
 	InPage := Sorted.Limit(Limit).Offset(Offset)
 	if Err := InPage.Find(&response).Error; Err != nil {
 		c.JSON(http.StatusBadRequest, types.Response{

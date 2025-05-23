@@ -19,10 +19,38 @@ import (
 // FUCKS - [F]ind [U]pdate [C]reate [K]ill [S]earch
 
 func FindSell(c *gin.Context) {
+	SellID := c.Param("id")
+	var response models.Sell
+
+	DB, ErrDB := database.Conn()
+	if ErrDB != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:    http.StatusInternalServerError,
+			Status:  false,
+			Message: utils.NullableString(ErrDB.Error()),
+		})
+		return
+	}
+	defer database.Close(DB)
+
+	Model := DB.Model(&models.Sell{})
+	Preloaded := Model.Preload("Province").Preload("District").Preload("Images").Preload("Owner").Preload("SellType")
+	Where := Preloaded.Where("id=?", SellID)
+
+	if Err := Where.First(&response).Error; Err != nil {
+		c.JSON(http.StatusNotFound, types.Response{
+			Code:    http.StatusNotFound,
+			Status:  false,
+			Message: utils.NullableString("Sell not found"),
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, types.Response{
 		Code:    http.StatusOK,
 		Status:  true,
 		Message: utils.NullableString("Find sell"),
+		Data:    &response,
 	})
 }
 
@@ -86,6 +114,7 @@ func CreateSell(c *gin.Context) {
 		response.Soi = request.Soi
 		response.SubDistrictID = request.SubDistrictID
 		response.DistrictID = request.DistrictID
+		response.ProvinceID = request.ProvinceID
 		response.PostalCode = request.PostalCode
 		response.GoogleMapLocation = request.GoogleMapLocation
 		response.BedroomCount = request.BedroomCount
@@ -94,8 +123,23 @@ func CreateSell(c *gin.Context) {
 		response.SquareMeter = request.SquareMeter
 		response.Price = request.Price
 		response.OwnerID = user.ID
+		response.AgencyRequired = request.AgencyRequired
 
-		return tx.Create(&response).Error
+		if Err := tx.Create(&response).Error; Err != nil {
+			return Err
+		}
+
+		// loop through images and create them
+		for _, image := range request.Images {
+			imageResponse := models.SellImage{}
+			imageResponse.Image = image
+			imageResponse.SellID = response.ID
+			if Err := tx.Create(&imageResponse).Error; Err != nil {
+				return Err
+			}
+		}
+
+		return nil
 	}); Err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:    http.StatusInternalServerError,
@@ -151,9 +195,9 @@ func SearchSell(c *gin.Context) {
 	Offset := utils.Offset(Page, Limit)
 
 	Model := DB.Model(&models.Sell{})
-	Preloaded := Model
+	Where := Model.Where("is_disabled=?", false)
 	var Count int64 = 0
-	if Err := Preloaded.Count(&Count).Error; Err != nil {
+	if Err := Where.Count(&Count).Error; Err != nil {
 		c.JSON(http.StatusBadRequest, types.Response{
 			Code:    http.StatusBadRequest,
 			Status:  false,
@@ -161,7 +205,8 @@ func SearchSell(c *gin.Context) {
 		})
 		return
 	}
-	Sorted := Preloaded.Order(clause.OrderByColumn{Column: clause.Column{Name: OrderBy}, Desc: IsDesc})
+	With := Where.Preload("Province").Preload("District").Preload("Images").Preload("Owner").Preload("SellType")
+	Sorted := With.Order(clause.OrderByColumn{Column: clause.Column{Name: OrderBy}, Desc: IsDesc})
 	InPage := Sorted.Limit(Limit).Offset(Offset)
 	if Err := InPage.Find(&response).Error; Err != nil {
 		c.JSON(http.StatusBadRequest, types.Response{
@@ -226,9 +271,9 @@ func MySell(c *gin.Context) {
 	Offset := utils.Offset(Page, Limit)
 
 	Model := DB.Model(&models.Sell{})
-	Preloaded := Model.Where("owner_id=?", user.ID)
+	Where := Model.Where("owner_id=?", user.ID)
 	var Count int64 = 0
-	if Err := Preloaded.Count(&Count).Error; Err != nil {
+	if Err := Where.Count(&Count).Error; Err != nil {
 		c.JSON(http.StatusBadRequest, types.Response{
 			Code:    http.StatusBadRequest,
 			Status:  false,
@@ -236,7 +281,8 @@ func MySell(c *gin.Context) {
 		})
 		return
 	}
-	Sorted := Preloaded.Order(clause.OrderByColumn{Column: clause.Column{Name: OrderBy}, Desc: IsDesc})
+	With := Where.Preload("Province").Preload("District").Preload("Images").Preload("Owner").Preload("SellType")
+	Sorted := With.Order(clause.OrderByColumn{Column: clause.Column{Name: OrderBy}, Desc: IsDesc})
 	InPage := Sorted.Limit(Limit).Offset(Offset)
 	if Err := InPage.Find(&response).Error; Err != nil {
 		c.JSON(http.StatusBadRequest, types.Response{
