@@ -4,7 +4,7 @@ import Image from "next/image";
 import { ReactNode, createContext, useContext, useEffect, useState } from "react";
 import WebLogo from "@public/logo.png";
 import { Spinner } from "react-bootstrap";
-import { usePathname } from 'next/navigation';
+import { redirect, useParams, usePathname } from 'next/navigation';
 
 
 type specialBtn = {
@@ -19,6 +19,7 @@ type ContextType = {
   pathname: string,
   session: any,
   status: any,
+  id: any,
   specialBtn?: specialBtn,
   setSplButton: (prompt: specialBtn) => void
   modalType: ModalType;
@@ -30,8 +31,10 @@ const Context = createContext<ContextType | undefined>(undefined);
 
 export const LoaderProvider = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
+  const params = useParams();
   const { data: session, status } = useSession();
   const [specialBtn, setSplBtn] = useState<specialBtn>();
+  const [id, setID] = useState<any>(undefined);
   const [modalType, setModalType] = useState<ModalType>(null);
 
   const openModal = (type: ModalType) => setModalType(type);
@@ -42,6 +45,13 @@ export const LoaderProvider = ({ children }: { children: ReactNode }) => {
       ...prev,
       status: false,
     }))
+
+    if (params?.id) {
+      if (isNaN(Number(params.id))) {
+        redirect("/");
+      }
+      setID(params.id)
+    }
   }, [pathname]);
 
   const setSplButton = (prompt: specialBtn) => {
@@ -73,7 +83,7 @@ export const LoaderProvider = ({ children }: { children: ReactNode }) => {
     );
   }
 
-  return <Context.Provider value={{ pathname, session, status, specialBtn, setSplButton, modalType, openModal, closeModal }}>{children}</Context.Provider>;
+  return <Context.Provider value={{ id, pathname, session, status, specialBtn, setSplButton, modalType, openModal, closeModal }}>{children}</Context.Provider>;
 };
 
 export const useLoaderContext = () => {

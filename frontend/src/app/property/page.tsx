@@ -152,20 +152,13 @@ function Propertysale() {
                   key={index}
                 >
                   <div className="row shadow">
-                    <div className="col-lg-7">
-                      <div className="relative pe-none">
-                        {item?.asset_image ? (
-                          <ImageApi
-                            className="property-img"
-                            src={item?.asset_image ?? ""}
-                            style={{width:"100%",height:"100%"}}
-                          />
-                        ) : (
-                          <div className="property-img bg-light d-flex justify-content-center align-items-center">
-                            <IoBanOutline className="text-white w-50 h-50" />
-                          </div>
-                        )}
-
+                    <div className="col-lg-7 bg-white">
+                      <div className="relative pe-none h-100">
+                        <ImageApi
+                          className="property-img"
+                          src={item?.asset_image ?? ""}
+                          style={{ aspectRatio: 1.9, height: "auto" }}
+                        />
                         <span className="badge font2">
                           {item.asset_type_name}
                         </span>

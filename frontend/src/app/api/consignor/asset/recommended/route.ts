@@ -32,11 +32,7 @@ export const GET = async () => {
           location_y: item.location_y,
           province_name: item?.province?.name,
           asset_type_name: item?.asset_type?.name,
-          asset_image:
-            item?.asset_images[0]?.image &&
-            !item.asset_images[0].image?.startsWith("data:")
-              ? `property/${item?.asset_images[0]?.image}`
-              : "",
+          asset_image: item?.asset_images.filter((x: any) => x.is_display == true)[0]?.image,
           asset_auction: item?.asset_auction && {
             from_date: item.asset_auction.from_date,
             from_time: item.asset_auction.from_time,

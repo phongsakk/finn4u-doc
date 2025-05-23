@@ -1,4 +1,4 @@
-import { log } from "@components/helpers";
+import { log, logError } from "@components/helpers";
 import dayjs from "dayjs";
 import fs from "fs";
 import path from "path";
@@ -33,7 +33,7 @@ export const UploadFile = async (objectFile: File, path_upload = "") => {
     // Write file to disk
     fs.writeFileSync(filepath, buffer);
 
-    return filename;
+    return path.join(path_upload,filename);
   } catch (error) {
     return "";
   }

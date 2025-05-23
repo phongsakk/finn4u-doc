@@ -13,6 +13,20 @@ const galleryModel = {
   imgPrev: 0,
   imgNext: 0,
 };
+const images_backup = [
+  {
+    id: 1,
+    image: "test.jpg",
+  },
+  {
+    id: 2,
+    image: "test.jpg",
+  },
+  {
+    id: 3,
+    image: "test.jpg",
+  },
+];
 
 function AssetPicture({ images }: { images: any[] }) {
   const [modalImage, setModalImage] = useState(galleryModel);
@@ -20,7 +34,7 @@ function AssetPicture({ images }: { images: any[] }) {
 
   const handleGallery = (index: number) => {
     setModalImage({
-      src: api.internal(`api/uploads/property/${images[index].image}`),
+      src: api.internal(`api/uploads/${images[index].image}`),
       index: index,
       imgPrev: index === 0 ? images.length - 1 : index - 1,
       imgNext: index === images.length - 1 ? 0 : index + 1,
@@ -33,7 +47,7 @@ function AssetPicture({ images }: { images: any[] }) {
       <div className="col-12 col-lg-9 col-sm-12 col-xs-12 px-2 ps-lg-0 pe-lg-3 py-1">
         <div onClick={() => handleGallery(0)}>
           <ImageApi
-            src={`property/${images[0]?.image ?? ""}`}
+            src={`${images[0]?.image ?? ""}`}
             className="img-fluid object-fit-cover"
             style={{
               width: "100%",

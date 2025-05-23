@@ -48,9 +48,11 @@ export const SellAndRent = ({ pageType }: { pageType: string }) => {
         </div>
       </div>
       {asset?.map((item, index) => (
-        <Link href={`/${pageType}/detail/${item.id}`} key={index}>
-          <AnnouncementItem prompt={item} />
-        </Link>
+        <div key={index} className="mb-5">
+          <Link href={`/${pageType}/detail/${item.id}`} >
+            <AnnouncementItem prompt={item} />
+          </Link>
+        </div>
       ))}
     </>
     }

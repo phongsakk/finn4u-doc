@@ -95,11 +95,11 @@ const page = () => {
                 <tr key={index}>
                   <td>{item?.created_at}</td>
                   <td>{item?.fullname}</td>
-                  <td>{item?.title}</td>
-                  <td className={item?.wanted_agency ? "text-success" : ""}>
-                    {item?.wanted_agency ? "ต้องการ" : "ไม่ต้องการ"}
+                  <td className="truncate max-w-[200px] whitespace-nowrap overflow-hidden">{item?.title}</td>
+                  <td className={item?.agency_required ? "text-success" : ""}>
+                    {item?.agency_required ? "ต้องการ" : "ไม่ต้องการ"}
                   </td>
-                  <td>{item?.sell_type_id}</td>
+                  <td>{item?.sell_type}</td>
                   <td>{item?.asset_type}</td>
                   <td className="text-center">
                     <Button variant="light" className="me-2">
