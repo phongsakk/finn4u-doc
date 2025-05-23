@@ -56,9 +56,9 @@ function page() {
             </Link>
           </Row>
           {asset?.map((item: any, index) => (
-            <div key={index} className="mb-4">
+            <div key={index} className="mb-5">
               <AnnouncementItem prompt={item} />
-              <div className="d-flex justify-content-end gap-2">
+              <div className="d-flex justify-content-end gap-2 mt-3">
                 <Button variant="primary">แก้ไข</Button>
                 <Button variant="success">ปิดประกาศ</Button>
               </div>

@@ -1899,3 +1899,7 @@ img {
     box-shadow: 0 5px 0 #30b175;
   }
 }
+
+.description {
+  white-space: pre-line;
+}

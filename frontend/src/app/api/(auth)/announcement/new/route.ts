@@ -20,7 +20,6 @@ export const POST = async (req: Request) => {
       formData.getAll("images[]") as File[],
       "property"
     );
-
     const model = {
       sell_type_id: Number(jsonModel?.sell_type_id),
       asset_type_id: Number(jsonModel?.asset_type_id),

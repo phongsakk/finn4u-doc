@@ -9,7 +9,7 @@ export async function GET(
   { params }: { params: Promise<{ path: string[] }> }
 ) {
   const { path } = await params;
-  const filePath = join(process.cwd(), "uploads", ...path); // or just "uploads", depending where files live
+  const filePath = join(process.cwd(), "uploads", ...path);
 
   if (!existsSync(filePath)) {
     return new Response("File not found", { status: 404 });

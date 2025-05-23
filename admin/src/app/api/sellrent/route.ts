@@ -1,6 +1,7 @@
 import { catchError, CheckAuth, ToDateThai } from "@component/dev/Helpers";
 import { api } from "@utils/api";
 import axios from "axios";
+import dayjs from "dayjs";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (req: NextRequest) => {
@@ -22,11 +23,14 @@ export const GET = async (req: NextRequest) => {
         code: res.code,
         data: res?.data?.map((item: any) => ({
           id: item.id,
-          created_at: ToDateThai(item?.created_at, "DD/MM/BBBB HH:mm"),
+          created_at: ToDateThai(dayjs(item?.created_at), "DD/MM/BBBB HH:mm"),
           fullname: item?.owner?.Firstname + " " + item?.owner?.Lastname,
           title: item?.title,
-          wanted_agency: item?.wanted_agency,
-          sell_type_id: item?.sell_type_id === 1 ? "ประกาศขาย" : "ประกาศเช่า",
+          agency_required: item?.agency_required,
+          sell_type: item?.sell_type?.name,
+          view_front: `https://finn4u.com/${
+            item?.sell_type?.id == 1 ? "rent" : "sell"
+          }/detail/${item.id}`,
           asset_type: item?.asset_type?.name,
           is_disabled: item?.is_disabled,
         })),

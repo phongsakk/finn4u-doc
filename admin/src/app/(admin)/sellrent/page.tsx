@@ -5,6 +5,7 @@ import Pagination from "@component/dev/pagination";
 import { Page } from "@models/common";
 import { api } from "@utils/api";
 import axios from "axios";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { FaEye } from "react-icons/fa";
@@ -95,16 +96,16 @@ const page = () => {
                 <tr key={index}>
                   <td>{item?.created_at}</td>
                   <td>{item?.fullname}</td>
-                  <td>{item?.title}</td>
-                  <td className={item?.wanted_agency ? "text-success" : ""}>
-                    {item?.wanted_agency ? "ต้องการ" : "ไม่ต้องการ"}
+                  <td className="truncate max-w-[200px] whitespace-nowrap overflow-hidden">{item?.title}</td>
+                  <td className={item?.agency_required ? "text-success" : ""}>
+                    {item?.agency_required ? "ต้องการ" : "ไม่ต้องการ"}
                   </td>
-                  <td>{item?.sell_type_id}</td>
+                  <td>{item?.sell_type}</td>
                   <td>{item?.asset_type}</td>
                   <td className="text-center">
-                    <Button variant="light" className="me-2">
+                    <Link  href={item?.view_front ?? "#"} className="btn btn-ligt me-2">
                       <FaEye className="text-success" />
-                    </Button>
+                    </Link>
                     <Button
                       variant={item?.is_disabled ? "secondary" : "success"}
                       onClick={() => handleBlock(item?.title, item.id)}

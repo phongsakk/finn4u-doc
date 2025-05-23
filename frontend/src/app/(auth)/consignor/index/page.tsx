@@ -23,7 +23,7 @@ function page() {
   const [assets, setAssets] = useState([]);
   const { assetGraph, assetInfo } = useConsignorModal();
   const [loading, setLoading] = useState(true);
-
+console.log(assets)
   useEffect(() => {
     const boot = async () => {
       setLoading(true);
@@ -59,12 +59,12 @@ function page() {
                     {assets?.map((item: any, index) => (
                       <div className="row not-sale mb-3 shadow p-3" key={index}>
                         <div className="col-lg-4">
-                          <div className="relative">
+                          <div className="relative h-100">
                             <span className="badge shadow-sm">รอนักลงทุน</span>
                             <ImageApi
-                              src={item.asset_image}
+                              src={item?.asset_image}
                               className="object-fit-cover"
-                              style={{ aspectRatio: 1.2, height: "auto" }}
+                              style={{ aspectRatio: 1.2, height: "100%" }}
                             />
                           </div>
                         </div>
