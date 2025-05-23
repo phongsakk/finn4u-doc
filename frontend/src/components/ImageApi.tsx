@@ -35,7 +35,7 @@ function ImageApi({
     return (
         <>
             {onError == true ?
-                <div className="bg-light d-flex justify-content-center align-items-center w-100 h-100" >
+                <div className="bg-light d-flex justify-content-center align-items-center w-100 h-100" style={style} >
                     <IoBanOutline className="text-white w-50 h-50" />
                 </div> : <Image
                     src={api.internal(`api/uploads/${src}`)}

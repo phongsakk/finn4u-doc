@@ -33,7 +33,7 @@ export const ImageGallery = ({ images, onChange }: {
                         />
                         <ImageApi
                             className="img-responsive w-100 object-fit"
-                            src={`property/${item.name}`}
+                            src={item.name}
                             style={{ aspectRatio: 1.5 }}
                         />
 

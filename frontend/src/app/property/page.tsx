@@ -156,8 +156,8 @@ function Propertysale() {
                       <div className="relative pe-none h-100">
                         <ImageApi
                           className="property-img"
-                          src={item?.asset_image ?? ""}
-                          style={{ aspectRatio: 1.9, height: "auto" }}
+                          src={item?.asset_image}
+                          style={{ aspectRatio: 1.79, height: "100%" }}
                         />
                         <span className="badge font2">
                           {item.asset_type_name}

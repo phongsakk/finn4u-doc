@@ -5,6 +5,7 @@ import Pagination from "@component/dev/pagination";
 import { Page } from "@models/common";
 import { api } from "@utils/api";
 import axios from "axios";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { FaEye } from "react-icons/fa";
@@ -102,9 +103,9 @@ const page = () => {
                   <td>{item?.sell_type}</td>
                   <td>{item?.asset_type}</td>
                   <td className="text-center">
-                    <Button variant="light" className="me-2">
+                    <Link  href={item?.view_front ?? "#"} className="btn btn-ligt me-2">
                       <FaEye className="text-success" />
-                    </Button>
+                    </Link>
                     <Button
                       variant={item?.is_disabled ? "secondary" : "success"}
                       onClick={() => handleBlock(item?.title, item.id)}

@@ -3,7 +3,7 @@ import CustomImage from "@components/CustomImage";
 import ImageApi from "@components/ImageApi";
 import { api } from "@utils/api/index";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Modal, Row } from "react-bootstrap";
 import { GrPrevious, GrNext } from "react-icons/gr";
 
@@ -34,20 +34,20 @@ function AssetPicture({ images }: { images: any[] }) {
 
   const handleGallery = (index: number) => {
     setModalImage({
-      src: api.internal(`api/uploads/${images[index].image}`),
+      src: api.internal(`api/uploads/${images[index]?.image}`),
       index: index,
       imgPrev: index === 0 ? images.length - 1 : index - 1,
       imgNext: index === images.length - 1 ? 0 : index + 1,
     });
     setGallery(true);
   };
-
+console.log(images)
   return (
     <Row className="justify-content-center px-0">
       <div className="col-12 col-lg-9 col-sm-12 col-xs-12 px-2 ps-lg-0 pe-lg-3 py-1">
         <div onClick={() => handleGallery(0)}>
           <ImageApi
-            src={`${images[0]?.image ?? ""}`}
+            src={images[0]?.image}
             className="img-fluid object-fit-cover"
             style={{
               width: "100%",
@@ -71,8 +71,9 @@ function AssetPicture({ images }: { images: any[] }) {
                   </div>
                 )}
                 <ImageApi
-                  src={`property/${item.image}`}
+                  src={item.image}
                   className="img-fluid object-fit-cover"
+                  style={{height:"auto"}}
                 />
               </div>
             );

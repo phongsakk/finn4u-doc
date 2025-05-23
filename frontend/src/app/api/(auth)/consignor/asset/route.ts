@@ -41,11 +41,7 @@ export const GET = async () => {
           asset_type_name: item?.asset_type?.name,
           view_count: item?.view_count || 0,
           bid_count: item?.bid_count || 0,
-          asset_image:
-            item?.asset_images[0]?.image &&
-            !item.asset_images[0].image?.startsWith("data:")
-              ? `property/${item?.asset_images[0]?.image}`
-              : "",
+          asset_image: item?.asset_images[0]?.image,
           asset_auction: item?.asset_auction && {
             from_date: item.asset_auction.from_date,
             from_time: item.asset_auction.from_time,

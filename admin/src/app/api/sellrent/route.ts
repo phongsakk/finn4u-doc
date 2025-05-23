@@ -28,6 +28,9 @@ export const GET = async (req: NextRequest) => {
           title: item?.title,
           agency_required: item?.agency_required,
           sell_type: item?.sell_type?.name,
+          view_front: `https://finn4u.com/${
+            item?.sell_type?.id == 1 ? "rent" : "sell"
+          }/detail/${item.id}`,
           asset_type: item?.asset_type?.name,
           is_disabled: item?.is_disabled,
         })),

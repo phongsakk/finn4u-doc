@@ -22,7 +22,16 @@ export const GET = async (req: NextRequest) => {
       {
         status: res.status,
         code: res.code,
-        data: res.data,
+        data: res?.data?.map((item: any) => ({
+          id: item.id,
+          title: item?.title,
+          image: item?.images[0]?.image,
+          square_meter: item?.square_meter,
+          district_name: item?.district?.name,
+          province_name: item?.province?.name,
+          created_at: item.created_at,
+          price: item?.price,
+        })),
         page: res.page,
         total: res.total_page,
       },
