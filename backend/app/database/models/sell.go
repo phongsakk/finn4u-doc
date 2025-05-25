@@ -30,6 +30,7 @@ type Sell struct {
 	IsDisabled        bool         `json:"is_disabled" gorm:"default:false"`
 	AgencyRequired    bool         `json:"agency_required" gorm:"default:false"`
 	SellType          *SellType    `json:"sell_type,omitempty" gorm:"foreignKey:SellTypeID;references:ID"`
+	AssetType         *AssetType   `json:"asset_type,omitempty" gorm:"foreignKey:AssetTypeID;references:ID"`
 	Province          *Province    `json:"province,omitempty" gorm:"foreignKey:ProvinceID;references:ID"`
 	District          *District    `json:"district,omitempty" gorm:"foreignKey:DistrictID;references:ID"`
 	SubDistrict       *SubDistrict `json:"sub_district,omitempty" gorm:"foreignKey:SubDistrictID;references:ID"`

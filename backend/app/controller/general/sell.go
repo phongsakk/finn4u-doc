@@ -34,7 +34,7 @@ func FindSell(c *gin.Context) {
 	defer database.Close(DB)
 
 	Model := DB.Model(&models.Sell{})
-	Preloaded := Model.Preload("Province").Preload("District").Preload("Images").Preload("Owner").Preload("SellType")
+	Preloaded := Model.Preload("Province").Preload("District").Preload("Images").Preload("Owner").Preload("SellType").Preload("AssetType")
 	Where := Preloaded.Where("id=?", SellID)
 
 	if Err := Where.First(&response).Error; Err != nil {
@@ -205,7 +205,7 @@ func SearchSell(c *gin.Context) {
 		})
 		return
 	}
-	With := Where.Preload("Province").Preload("District").Preload("Images").Preload("Owner").Preload("SellType")
+	With := Where.Preload("Province").Preload("District").Preload("Images").Preload("Owner").Preload("SellType").Preload("AssetType")
 	Sorted := With.Order(clause.OrderByColumn{Column: clause.Column{Name: OrderBy}, Desc: IsDesc})
 	InPage := Sorted.Limit(Limit).Offset(Offset)
 	if Err := InPage.Find(&response).Error; Err != nil {
@@ -281,7 +281,7 @@ func MySell(c *gin.Context) {
 		})
 		return
 	}
-	With := Where.Preload("Province").Preload("District").Preload("Images").Preload("Owner").Preload("SellType")
+	With := Where.Preload("Province").Preload("District").Preload("Images").Preload("Owner").Preload("SellType").Preload("AssetType")
 	Sorted := With.Order(clause.OrderByColumn{Column: clause.Column{Name: OrderBy}, Desc: IsDesc})
 	InPage := Sorted.Limit(Limit).Offset(Offset)
 	if Err := InPage.Find(&response).Error; Err != nil {
