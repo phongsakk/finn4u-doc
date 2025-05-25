@@ -110,6 +110,8 @@ func CreateSell(c *gin.Context) {
 		response.AssetTypeID = request.AssetTypeID
 		response.Title = request.Title
 		response.Address = request.Address
+		response.Description = request.Description
+		response.ProjectName = request.ProjectName
 		response.Street = request.Street
 		response.Soi = request.Soi
 		response.SubDistrictID = request.SubDistrictID
