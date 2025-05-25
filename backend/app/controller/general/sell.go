@@ -317,7 +317,7 @@ func SearchSell(c *gin.Context) {
 	Offset := utils.Offset(Page, Limit)
 
 	Model := DB.Model(&models.Sell{})
-	Where := Model.Where("is_disabled=?", false)
+	Where := Model.Where("is_disabled=? AND is_published=?", false, true)
 	var Count int64 = 0
 	if Err := Where.Count(&Count).Error; Err != nil {
 		c.JSON(http.StatusBadRequest, types.Response{
