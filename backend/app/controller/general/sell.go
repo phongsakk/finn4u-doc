@@ -305,6 +305,7 @@ func SearchSell(c *gin.Context) {
 	QueryPage := c.DefaultQuery("page", "1")
 	OrderBy := c.DefaultQuery("order_by", "created_at")
 	Sort := c.DefaultQuery("sort", "desc")
+	SellTypeID := c.DefaultQuery("sell_type_id", "0")
 	IsDesc := strings.ToLower(Sort) != "asc"
 	Limit, ErrLimit := strconv.Atoi(QueryLimit)
 	Page, ErrPage := strconv.Atoi(QueryPage)
@@ -318,6 +319,9 @@ func SearchSell(c *gin.Context) {
 
 	Model := DB.Model(&models.Sell{})
 	Where := Model.Where("is_disabled=? AND is_published=?", false, true)
+	if SellTypeID != "0" {
+		Where = Where.Where("sell_type_id=?", SellTypeID)
+	}
 	var Count int64 = 0
 	if Err := Where.Count(&Count).Error; Err != nil {
 		c.JSON(http.StatusBadRequest, types.Response{
