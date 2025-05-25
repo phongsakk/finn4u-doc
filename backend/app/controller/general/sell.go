@@ -1,6 +1,7 @@
 package general
 
 import (
+	"fmt"
 	"math"
 	"net/http"
 	"strconv"
@@ -55,10 +56,129 @@ func FindSell(c *gin.Context) {
 }
 
 func UpdateSell(c *gin.Context) {
+	var request request.UpdateSellRequest
+	var user models.User
+	var response models.Sell
+
+	if Err := user.GetFromRequest(c); Err != nil {
+		c.JSON(http.StatusUnauthorized, types.Response{
+			Code:    http.StatusUnauthorized,
+			Status:  false,
+			Message: utils.NullableString(Err.Error()),
+		})
+		return
+	}
+
+	if Err := c.ShouldBindJSON(&request); Err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:    http.StatusBadRequest,
+			Status:  false,
+			Message: utils.NullableString(Err.Error()),
+		})
+		return
+	}
+
+	if Err := request.Validated(); Err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:    http.StatusBadRequest,
+			Status:  false,
+			Message: utils.NullableString(Err.Error()),
+		})
+		return
+	}
+
+	DB, ErrDB := database.Conn()
+	if ErrDB != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:    http.StatusInternalServerError,
+			Status:  false,
+			Message: utils.NullableString(ErrDB.Error()),
+		})
+		return
+	}
+	defer database.Close(DB)
+
+	if Err := DB.Transaction(func(tx *gorm.DB) error {
+		response.SellTypeID = request.SellTypeID
+		response.AssetTypeID = request.AssetTypeID
+		response.Title = request.Title
+		response.Address = request.Address
+		response.Description = request.Description
+		response.ProjectName = request.ProjectName
+		response.Street = request.Street
+		response.Soi = request.Soi
+		response.SubDistrictID = request.SubDistrictID
+		response.DistrictID = request.DistrictID
+		response.ProvinceID = request.ProvinceID
+		response.PostalCode = request.PostalCode
+		response.GoogleMapLocation = request.GoogleMapLocation
+		response.BedroomCount = request.BedroomCount
+		response.BathroomCount = request.BathroomCount
+		response.FloorLevel = request.FloorLevel
+		response.SquareMeter = request.SquareMeter
+		response.Price = request.Price
+		response.OwnerID = user.ID
+		response.AgencyRequired = request.AgencyRequired
+
+		if Err := tx.Create(&response).Error; Err != nil {
+			return Err
+		}
+
+		if request.Images != nil {
+			Add := request.Images.Add
+			Delete := request.Images.Delete
+			Change := request.Images.Change
+
+			if Add != nil {
+				for _, image := range *Add {
+					var Image models.SellImage
+					Image.SellID = response.ID
+					Image.Image = image
+					if Err := DB.Create(&Image).Error; Err != nil {
+						return Err
+					}
+				}
+			}
+
+			if Delete != nil {
+				for _, imageID := range *Delete {
+					var Image models.SellImage
+					Image.ID = imageID
+					Image.SellID = response.ID
+					DB.Delete(&Image)
+				}
+			}
+
+			if Change != nil {
+				for _, change := range *Change {
+					var Image models.SellImage
+					if Err := DB.Where("id=? AND sell_id=?", change.ID, response.ID).First(&Image).Error; Err != nil {
+						return fmt.Errorf("there is no image ID %d in sell ID %d", change.ID, response.ID)
+					}
+
+					Image.Image = change.Image
+					if Err := DB.Save(&Image).Error; Err != nil {
+						return Err
+					}
+				}
+			}
+		}
+
+		return nil
+	}); Err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:    http.StatusInternalServerError,
+			Status:  false,
+			Message: utils.NullableString(Err.Error()),
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, types.Response{
 		Code:    http.StatusOK,
 		Status:  true,
 		Message: utils.NullableString("Update sell"),
+		Data:    response,
 	})
 }
 
@@ -306,5 +426,84 @@ func MySell(c *gin.Context) {
 		Limit:     &Limit,
 		Total:     &Total,
 		TotalPage: &totalPage,
+	})
+}
+
+func PublishSell(c *gin.Context) {
+	var request request.PublishSellRequest
+	var user models.User
+	var response models.Sell
+
+	if Err := user.GetFromRequest(c); Err != nil {
+		c.JSON(http.StatusUnauthorized, types.Response{
+			Code:    http.StatusUnauthorized,
+			Status:  false,
+			Message: utils.NullableString(Err.Error()),
+		})
+		return
+	}
+
+	if Err := c.ShouldBindJSON(&request); Err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:    http.StatusBadRequest,
+			Status:  false,
+			Message: utils.NullableString(Err.Error()),
+		})
+		return
+	}
+
+	if Err := request.Validated(); Err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:    http.StatusBadRequest,
+			Status:  false,
+			Message: utils.NullableString(Err.Error()),
+		})
+		return
+	}
+
+	DB, ErrDB := database.Conn()
+	if ErrDB != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:    http.StatusInternalServerError,
+			Status:  false,
+			Message: utils.NullableString(ErrDB.Error()),
+		})
+		return
+	}
+	defer database.Close(DB)
+
+	if Err := DB.Where("id=?", request.SellID).First(&response).Error; Err != nil {
+		c.JSON(http.StatusNotFound, types.Response{
+			Code:    http.StatusNotFound,
+			Status:  false,
+			Message: utils.NullableString(Err.Error()),
+		})
+		return
+	}
+
+	if response.OwnerID != user.ID {
+		c.JSON(http.StatusForbidden, types.Response{
+			Code:    http.StatusForbidden,
+			Status:  false,
+			Message: utils.NullableString("You are not the owner of this sell"),
+		})
+		return
+	}
+
+	response.IsPublished = true
+	if Err := DB.Save(&response).Error; Err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:    http.StatusInternalServerError,
+			Status:  false,
+			Message: utils.NullableString(Err.Error()),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, types.Response{
+		Code:    http.StatusOK,
+		Status:  true,
+		Message: utils.NullableString("Publish sell"),
+		Data:    &response,
 	})
 }
