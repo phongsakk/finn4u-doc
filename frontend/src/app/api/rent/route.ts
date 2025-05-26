@@ -32,8 +32,10 @@ export const GET = async (req: NextRequest) => {
           created_at: item.created_at,
           price: item?.price,
         })),
-        page: res.page,
-        total: res.total_page,
+        page: {
+          page: res?.page,
+          total: res?.total_page,
+        },
       },
       { status: res.code }
     );
