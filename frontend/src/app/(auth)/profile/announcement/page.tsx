@@ -78,7 +78,12 @@ function page() {
               <div key={index} className="mb-5">
                 <AnnouncementItem prompt={item} />
                 <div className="d-flex justify-content-end gap-2 mt-3">
-                  <Button variant="primary">แก้ไข</Button>
+                  <Link
+                    href={`/profile/announcement/${item.id}`}
+                    className="btn btn-primary"
+                  >
+                    แก้ไข
+                  </Link>
                   <Button variant="success">ปิดประกาศ</Button>
                 </div>
               </div>

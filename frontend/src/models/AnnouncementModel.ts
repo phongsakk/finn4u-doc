@@ -18,4 +18,5 @@ export const AnnouncementModel = {
   price: "",
   description: "",
   images: [] as File[],
+  old_images: [],
 };
