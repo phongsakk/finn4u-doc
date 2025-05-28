@@ -35,9 +35,9 @@ type Asset struct {
 	EndedAt             *time.Time       `json:"ended_at"`
 	Status              uint             `json:"status"`
 	IsPublished         bool             `json:"is_published"`
-	IsRecommended       bool             `json:"is_recommended" gorm:"default:false"`
 	ViewCount           int              `json:"view_count" gorm:"default:0;not null"`
 	BidCount            int              `json:"bid_count" gorm:"default:0;not null"`
+	RecommendedAt       *time.Time       `json:"recommended_at"`
 	Province            *Province        `json:"province,omitempty" gorm:"foreignKey:ProvinceID;references:ID"`
 	District            *District        `json:"district,omitempty" gorm:"foreignKey:DistrictID;references:ID"`
 	AssetType           *AssetType       `json:"asset_type,omitempty" gorm:"foreignKey:AssetTypeID;references:ID"`

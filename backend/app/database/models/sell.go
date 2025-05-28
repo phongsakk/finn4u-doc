@@ -1,6 +1,10 @@
 package models
 
-import "github.com/phongsakk/finn4u-back/app/database/models/template"
+import (
+	"time"
+
+	"github.com/phongsakk/finn4u-back/app/database/models/template"
+)
 
 func (Sell) TableName() string {
 	return "sell"
@@ -30,6 +34,7 @@ type Sell struct {
 	IsDisabled        bool         `json:"is_disabled" gorm:"default:false"`
 	AgencyRequired    bool         `json:"agency_required" gorm:"default:false"`
 	IsPublished       bool         `json:"is_published" gorm:"default:false"`
+	RecommendedAt     *time.Time   `json:"recommended_at"`
 	SellType          *SellType    `json:"sell_type,omitempty" gorm:"foreignKey:SellTypeID;references:ID"`
 	AssetType         *AssetType   `json:"asset_type,omitempty" gorm:"foreignKey:AssetTypeID;references:ID"`
 	Province          *Province    `json:"province,omitempty" gorm:"foreignKey:ProvinceID;references:ID"`

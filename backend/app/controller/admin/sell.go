@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/phongsakk/finn4u-back/app/database"
@@ -162,5 +163,49 @@ func SearchSell(c *gin.Context) {
 		Limit:     &Limit,
 		Total:     &Total,
 		TotalPage: &totalPage,
+	})
+}
+
+func SetSellAsRecommended(c *gin.Context) {
+	var sellID = c.Param("id")
+	var sell models.Sell
+
+	db, dbErr := database.Conn()
+	if dbErr != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:    http.StatusInternalServerError,
+			Status:  false,
+			Message: utils.NullableString(dbErr.Error()),
+			Error:   utils.NullableString(dbErr.Error()),
+		})
+		return
+	}
+	defer database.Close(db)
+
+	if err := db.Where("id=?", sellID).First(&sell).Error; err != nil {
+		c.JSON(http.StatusNotFound, types.Response{
+			Code:    http.StatusNotFound,
+			Status:  false,
+			Message: utils.NullableString(err.Error()),
+		})
+		return
+	}
+
+	now := time.Now()
+	sell.RecommendedAt = &now
+	if err := db.Save(&sell).Error; err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:    http.StatusBadRequest,
+			Status:  false,
+			Message: utils.NullableString(err.Error()),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, types.Response{
+		Code:    http.StatusOK,
+		Status:  true,
+		Message: utils.NullableString("Set as recommended"),
+		Data:    sell,
 	})
 }
