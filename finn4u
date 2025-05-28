@@ -1,5 +1,19 @@
 server {
     listen 80;
+    server_name www.finn4u.com;
+
+    location / {
+        proxy_pass http://localhost:8079;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    client_max_body_size 100M;
+}
+
+server {
+    listen 80;
     server_name finn4u.com;
 
     location / {
@@ -8,6 +22,8 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
+
+    client_max_body_size 100M;
 }
 
 server {
@@ -20,6 +36,8 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
+   
+    client_max_body_size 100M;
 }
 
 server {
@@ -36,7 +54,7 @@ server {
 
 server {
     listen 80;
-    server_name finn4u.co;
+    server_name fin4u.co;
 
     location / {
         proxy_pass http://localhost:9079;
@@ -44,11 +62,13 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
+
+    client_max_body_size 100M;
 }
 
 server {
     listen 80;
-    server_name admin.finn4u.co;
+    server_name admin.fin4u.co;
 
     location / {
         proxy_pass http://localhost:9076;
@@ -56,11 +76,13 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
+
+    client_max_body_size 100M;
 }
 
 server {
     listen 80;
-    server_name api.finn4u.co;
+    server_name api.fin4u.co;
 
     location / {
         proxy_pass http://localhost:9078;
