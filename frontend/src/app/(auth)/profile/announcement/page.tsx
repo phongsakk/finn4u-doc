@@ -1,4 +1,5 @@
 "use client";
+import { AlertConfirm, AlertPrimary } from "@components/alert/SwalAlert";
 import { AnnouncementItem } from "@components/AnnouncementItem";
 import { useLoaderContext } from "@components/context/LoaderContext";
 import { LoadPage } from "@components/dev/LoadPage";
@@ -49,6 +50,26 @@ function page() {
     fetchItem();
   }, [page.page]);
 
+  const handlePubilsh = async (itemID: number) => {
+    AlertConfirm("ลงประกาศหรือไม่", "info", async () => {
+      try {
+        const { data: res } = await axios.post(
+          api.internal(`/api/announcement/publish`),
+          {
+            sell_id: itemID,
+          }
+        );
+        if (res.status) {
+          AlertPrimary("ลงประกาศสำเร็จ", "error");
+        } else {
+          AlertPrimary("ลงประกาศสำเร็จ", "error");
+        }
+      } catch (error) {
+        AlertPrimary("ลงประกาศไม่สำเร็จ", "error");
+      }
+    });
+  };
+
   return (
     <div className="rounded bg-white overflow-hidden">
       <div className="py-3 px-4 text-white bg-primary">ประกาศของฉัน</div>
@@ -84,7 +105,16 @@ function page() {
                   >
                     แก้ไข
                   </Link>
-                  <Button variant="success">ปิดประกาศ</Button>
+                  {item?.is_published ? (
+                    <Button variant="success">ปิดประกาศ</Button>
+                  ) : (
+                    <Button
+                      onClick={() => handlePubilsh(item.id)}
+                      variant="success"
+                    >
+                      เปิดประกาศ
+                    </Button>
+                  )}
                 </div>
               </div>
             ))}

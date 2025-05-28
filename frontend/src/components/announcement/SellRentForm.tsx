@@ -38,8 +38,8 @@ function SellRentForm() {
   const [submit, setSubmit] = useState(false);
   const [submitPub, setSubmitPub] = useState(false);
   const [validated, setValidated] = useState(false);
-  const { Province, District, SubDistrict, setMaster, setFormEdit } = useAddress();
-
+  const { Province, District, SubDistrict, setMaster, setFormEdit } =
+    useAddress();
   const { id } = useLoaderContext();
 
   const handleForm = (e: any) => {
@@ -61,31 +61,14 @@ function SellRentForm() {
     const fetchMaster = async () => {
       try {
         setLoading(true);
-
         const { data: res_master } = await axios.get(
           api.internal(`/api/announcement/master`)
         );
         if (res_master.status) {
           setMasterData(res_master.data);
-          setMaster(res_master.data)
+          setMaster(res_master.data);
         } else {
           console.error(res_master);
-        }
-
-        if (id !== undefined) {
-          const { data: res } = await axios.get(
-            api.internal(`/api/announcement/${id}`)
-          );
-          if (res.status) {
-            setForm(res.data);
-            setFormEdit({
-              province_id: res.data?.province_id,
-              district_id: res.data?.district_id,
-              sub_district_id: res.data?.sub_district_id,
-              handleForm,
-              setForm,
-            })
-          }
         }
       } catch (error) {
         console.error(error);
@@ -96,6 +79,37 @@ function SellRentForm() {
 
     fetchMaster();
   }, []);
+
+  useEffect(() => {
+    const bootId = async () => {
+      try {
+        setLoading(true);
+        const { data: res } = await axios.get(
+          api.internal(`/api/announcement/${id}`)
+        );
+        if (res.status) {
+          setForm(res.data);
+          setFormEdit({
+            province_id: res.data?.province_id,
+            district_id: res.data?.district_id,
+            sub_district_id: res.data?.sub_district_id,
+            handleForm,
+            setForm,
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (id !== undefined) {
+      bootId();
+    } else {
+      setForm(AnnouncementModel);
+      setFormEdit({});
+    }
+  }, [id]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -261,11 +275,32 @@ function SellRentForm() {
                   onChange={handleForm}
                   placeholder="ซอย"
                 />
-                <Province label="จังหวัด" groupClass="col-lg-6" name="province_id" value={form?.province_id} handleForm={handleForm} setForm={setForm} />
+                <Province
+                  label="จังหวัด"
+                  groupClass="col-lg-6"
+                  name="province_id"
+                  value={form?.province_id}
+                  handleForm={handleForm}
+                  setForm={setForm}
+                />
               </Row>
               <Row className="mb-3">
-                <District label="อำเภอ/เขต" groupClass="col-lg-6" name="district_id" value={form?.district_id} handleForm={handleForm} setForm={setForm} />
-                <SubDistrict label="ตำบล/แขวง" groupClass="col-lg-6" name="sub_district_id" value={form?.sub_district_id} handleForm={handleForm} setForm={setForm} />
+                <District
+                  label="อำเภอ/เขต"
+                  groupClass="col-lg-6"
+                  name="district_id"
+                  value={form?.district_id}
+                  handleForm={handleForm}
+                  setForm={setForm}
+                />
+                <SubDistrict
+                  label="ตำบล/แขวง"
+                  groupClass="col-lg-6"
+                  name="sub_district_id"
+                  value={form?.sub_district_id}
+                  handleForm={handleForm}
+                  setForm={setForm}
+                />
               </Row>
               <Row className="mb-3">
                 <FormInput
