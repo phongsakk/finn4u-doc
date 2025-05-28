@@ -13,10 +13,10 @@ import VerifyForm from "./components/VerifyForm";
 import SuccessForm from "./components/SuccessForm";
 import { regis_personal } from "@models/register/consignor";
 import AddAsset from "./components/AddAsset";
+import { AddressProvider } from "@components/context/AddressContext";
 
 function ReConsignmentPage() {
   const [personal, setPersonal] = useState<regis_personal>();
-
   const [step, setStep] = useState<number>(1); // defult 1
   const [checkstep, setCheckStep] = useState<number>(0); //defult 0
 
@@ -47,15 +47,13 @@ function ReConsignmentPage() {
                   </h4>
                   <div className="step justify-content-lg-between justify-content-center">
                     <div
-                      className={`child ${
-                        ![1, 2, 3].includes(step) ? "d-none d-lg-block" : ""
-                      }`}
+                      className={`child ${![1, 2, 3].includes(step) ? "d-none d-lg-block" : ""
+                        }`}
                     >
                       <Image src={ImagerRegstep1} alt="" priority />
                       <p
-                        className={`font2 ${
-                          [1, 2, 3].includes(step) ? "fw-bold" : ""
-                        }`}
+                        className={`font2 ${[1, 2, 3].includes(step) ? "fw-bold" : ""
+                          }`}
                       >
                         ลงทะเบียน
                       </p>
@@ -64,15 +62,13 @@ function ReConsignmentPage() {
                       <Image src={ImagePolygon2} alt="" priority />
                     </div>
                     <div
-                      className={`child ${
-                        ![4].includes(step) ? "d-none d-lg-block" : ""
-                      }`}
+                      className={`child ${![4].includes(step) ? "d-none d-lg-block" : ""
+                        }`}
                     >
                       <Image src={ImagerRegstep2} alt="" priority />
                       <p
-                        className={`font2 ${
-                          [4].includes(step) ? "fw-bold" : ""
-                        }`}
+                        className={`font2 ${[4].includes(step) ? "fw-bold" : ""
+                          }`}
                       >
                         ยืนยันตัวตน
                       </p>
@@ -81,15 +77,13 @@ function ReConsignmentPage() {
                       <Image src={ImagePolygon2} alt="" priority />
                     </div>
                     <div
-                      className={`child ${
-                        ![5].includes(step) ? "d-none d-lg-block" : ""
-                      }`}
+                      className={`child ${![5].includes(step) ? "d-none d-lg-block" : ""
+                        }`}
                     >
                       <Image src={ImagerRegstep3} alt="" priority />
                       <p
-                        className={`font2 ${
-                          [5].includes(step) ? "fw-bold" : ""
-                        }`}
+                        className={`font2 ${[5].includes(step) ? "fw-bold" : ""
+                          }`}
                       >
                         อัพโหลดเอกสาร
                       </p>
@@ -97,12 +91,14 @@ function ReConsignmentPage() {
                   </div>
                 </div>
                 {step === 1 && (
-                  <PersonalForm
-                    personal={personal}
-                    checkStep={checkstep >= 1}
-                    setPersonal={setPersonal}
-                    setStep={setStep}
-                  />
+                  <AddressProvider>
+                    <PersonalForm
+                      personal={personal}
+                      checkStep={checkstep >= 1}
+                      setPersonal={setPersonal}
+                      setStep={setStep}
+                    />
+                  </AddressProvider>
                 )}
                 {personal !== undefined && (
                   <>

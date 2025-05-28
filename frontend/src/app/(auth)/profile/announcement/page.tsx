@@ -59,19 +59,19 @@ function page() {
           <>
             <Row className="border ps-3 pt-3 pe-3 profile-menu-search gap-0 gap-lg-2 align-items-center mb-4">
               <Link className="col pb-3 text-center" href="#">
-                ทั้งหมด (24)
+                ทั้งหมด
               </Link>
               <Link className="col pb-3 text-center" href="#">
-                ออนไลน์ (15)
+                ออนไลน์
               </Link>
               <Link className="col pb-3 text-center" href="#">
-                ออฟไลน์ (3)
+                ออฟไลน์
               </Link>
               <Link className="col pb-3 text-center" href="#">
-                แบบร่าง (3)
+                แบบร่าง
               </Link>
               <Link className="col pb-3 text-center" href="#">
-                ถูกระงับ (3)
+                ถูกระงับ
               </Link>
             </Row>
             {asset?.map((item: any, index) => (

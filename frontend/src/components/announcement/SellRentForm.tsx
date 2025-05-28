@@ -1,6 +1,5 @@
 "use client";
 import { FormImage } from "@components/dev/FormImage";
-import { selectDistrict, selectProvince } from "@components/helpers";
 import {
   SelectProvince,
   SelectDistrict,
@@ -94,23 +93,21 @@ function SellRentForm() {
     fetchMaster();
   }, [id]);
 
-  SelectProvince({
+SelectProvince({
     form,
     setForm,
-    personal: null,
+    dataSet: null,
     masterData: master,
     setDistricts,
-    setSubDistricts,
-    selectProvince,
+    setSubDistricts
   });
 
   SelectDistrict({
     form,
     setForm,
-    personal: null,
+    dataSet: null,
     masterData: master,
     setSubDistricts,
-    selectDistrict,
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

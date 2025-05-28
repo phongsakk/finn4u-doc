@@ -152,7 +152,7 @@ export const resizeBase64Image = ({
   });
 };
 
-export const selectProvince = (
+export const searchProvince = (
   pro_id: string,
   setDistrict: (
     districts: { id: string; pro_id: string; name: string }[]
@@ -164,7 +164,7 @@ export const selectProvince = (
   setDistrict(dis);
 };
 
-export const selectDistrict = (
+export const searchDistrict = (
   dis_id: string,
   setSubDistrict: (
     subDistricts: { id: string; dis_id: string; name: string }[]
