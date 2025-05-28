@@ -1,9 +1,5 @@
 "use client";
 import { FormImage } from "@components/dev/FormImage";
-import {
-  SelectProvince,
-  SelectDistrict,
-} from "@components/dev/SelectMasterData";
 import { FormInput } from "@components/FormCustom/FormInput";
 import { FormSelectCustom } from "@components/FormCustom/FormSelectCustom";
 import { AnnouncementModel } from "@models/AnnouncementModel";
@@ -15,6 +11,7 @@ import { AlertPrimary } from "@components/alert/SwalAlert";
 import { LoadPage } from "@components/dev/LoadPage";
 import { useLoaderContext } from "@components/context/LoaderContext";
 import ImageGroup from "@components/dev/ImageGroup";
+import { useAddress } from "@components/context/AddressContext";
 
 const publish = async (id: number) => {
   try {
@@ -35,15 +32,14 @@ const publish = async (id: number) => {
 };
 
 function SellRentForm() {
-  const [master, setMaster] = useState<any>();
+  const [master, setMasterData] = useState<any>();
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState(AnnouncementModel);
-  const [provinces, setProvinces] = useState<any[]>();
-  const [districts, setDistricts] = useState<any[]>();
-  const [subDistricts, setSubDistricts] = useState<any[]>();
   const [submit, setSubmit] = useState(false);
   const [submitPub, setSubmitPub] = useState(false);
   const [validated, setValidated] = useState(false);
+  const { Province, District, SubDistrict, setMaster, setFormEdit } = useAddress();
+
   const { id } = useLoaderContext();
 
   const handleForm = (e: any) => {
@@ -70,7 +66,8 @@ function SellRentForm() {
           api.internal(`/api/announcement/master`)
         );
         if (res_master.status) {
-          await setMaster(res_master.data);
+          setMasterData(res_master.data);
+          setMaster(res_master.data)
         } else {
           console.error(res_master);
         }
@@ -81,6 +78,13 @@ function SellRentForm() {
           );
           if (res.status) {
             setForm(res.data);
+            setFormEdit({
+              province_id: res.data?.province_id,
+              district_id: res.data?.district_id,
+              sub_district_id: res.data?.sub_district_id,
+              handleForm,
+              setForm,
+            })
           }
         }
       } catch (error) {
@@ -91,24 +95,7 @@ function SellRentForm() {
     };
 
     fetchMaster();
-  }, [id]);
-
-SelectProvince({
-    form,
-    setForm,
-    dataSet: null,
-    masterData: master,
-    setDistricts,
-    setSubDistricts
-  });
-
-  SelectDistrict({
-    form,
-    setForm,
-    dataSet: null,
-    masterData: master,
-    setSubDistricts,
-  });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -274,32 +261,11 @@ SelectProvince({
                   onChange={handleForm}
                   placeholder="ซอย"
                 />
-                <FormSelectCustom
-                  groupClass="col-lg-6"
-                  data={master?.province as []}
-                  onChange={handleForm}
-                  name="province_id"
-                  label="จังหวัด"
-                  value={form?.province_id}
-                />
+                <Province label="จังหวัด" groupClass="col-lg-6" name="province_id" value={form?.province_id} handleForm={handleForm} setForm={setForm} />
               </Row>
               <Row className="mb-3">
-                <FormSelectCustom
-                  groupClass="col-lg-6"
-                  data={districts as []}
-                  onChange={handleForm}
-                  name="district_id"
-                  label="อำเภอ/เขต"
-                  value={form?.district_id}
-                />
-                <FormSelectCustom
-                  groupClass="col-lg-6"
-                  data={subDistricts as []}
-                  onChange={handleForm}
-                  name="sub_district_id"
-                  label="ตำบล/แขวง"
-                  value={form?.sub_district_id}
-                />
+                <District label="อำเภอ/เขต" groupClass="col-lg-6" name="district_id" value={form?.district_id} handleForm={handleForm} setForm={setForm} />
+                <SubDistrict label="ตำบล/แขวง" groupClass="col-lg-6" name="sub_district_id" value={form?.sub_district_id} handleForm={handleForm} setForm={setForm} />
               </Row>
               <Row className="mb-3">
                 <FormInput
