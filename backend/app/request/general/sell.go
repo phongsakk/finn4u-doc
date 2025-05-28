@@ -72,3 +72,11 @@ type PublishSellRequest struct {
 func (r *PublishSellRequest) Validated() error {
 	return utils.Validate(r)
 }
+
+type PrivateSellRequest struct {
+	SellID uint `json:"sell_id" validate:"required"`
+}
+
+func (r *PrivateSellRequest) Validated() error {
+	return utils.Validate(r)
+}

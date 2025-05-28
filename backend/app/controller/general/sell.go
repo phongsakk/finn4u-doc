@@ -511,3 +511,82 @@ func PublishSell(c *gin.Context) {
 		Data:    &response,
 	})
 }
+
+func PrivateSell(c *gin.Context) {
+	var request request.PrivateSellRequest
+	var user models.User
+	var response models.Sell
+
+	if Err := user.GetFromRequest(c); Err != nil {
+		c.JSON(http.StatusUnauthorized, types.Response{
+			Code:    http.StatusUnauthorized,
+			Status:  false,
+			Message: utils.NullableString(Err.Error()),
+		})
+		return
+	}
+
+	if Err := c.ShouldBindJSON(&request); Err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:    http.StatusBadRequest,
+			Status:  false,
+			Message: utils.NullableString(Err.Error()),
+		})
+		return
+	}
+
+	if Err := request.Validated(); Err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:    http.StatusBadRequest,
+			Status:  false,
+			Message: utils.NullableString(Err.Error()),
+		})
+		return
+	}
+
+	DB, ErrDB := database.Conn()
+	if ErrDB != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:    http.StatusInternalServerError,
+			Status:  false,
+			Message: utils.NullableString(ErrDB.Error()),
+		})
+		return
+	}
+	defer database.Close(DB)
+
+	if Err := DB.Where("id=?", request.SellID).First(&response).Error; Err != nil {
+		c.JSON(http.StatusNotFound, types.Response{
+			Code:    http.StatusNotFound,
+			Status:  false,
+			Message: utils.NullableString(Err.Error()),
+		})
+		return
+	}
+
+	if response.OwnerID != user.ID {
+		c.JSON(http.StatusForbidden, types.Response{
+			Code:    http.StatusForbidden,
+			Status:  false,
+			Message: utils.NullableString("You are not the owner of this sell"),
+		})
+		return
+	}
+
+	response.IsPublished = false
+	if Err := DB.Save(&response).Error; Err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:    http.StatusInternalServerError,
+			Status:  false,
+			Message: utils.NullableString(Err.Error()),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, types.Response{
+		Code:    http.StatusOK,
+		Status:  true,
+		Message: utils.NullableString("Sell is private"),
+		Data:    &response,
+	})
+}
