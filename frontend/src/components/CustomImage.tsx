@@ -9,7 +9,7 @@ type CustomImageProps = {
   style?: {
     width?: string;
     height?: string;
-  };
+  }| {};
 };
 
 function CustomImage({
