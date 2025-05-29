@@ -40,7 +40,7 @@ function RecommendedPage() {
         setAssetRecom(await fetchAssetRecom());
       };
       boot();
-    } catch (error) { }
+    } catch (error) {}
   }, []);
   return (
     <>
@@ -52,6 +52,7 @@ function RecommendedPage() {
                 {item?.asset_image ? (
                   <ImageApi
                     src={item?.asset_image ?? ""}
+                    style={{ aspectRatio: 1.33, height: "auto" }}
                   />
                 ) : (
                   <div className="property-recom bg-light d-flex justify-content-center align-items-center">
@@ -116,7 +117,9 @@ function RecommendedPage() {
               </div>
               <div className="list">
                 <FontAwesomeIcon icon={faCheck} className="fs-4" />
-                <span className="font2">{ToDateThai(dayjs(item?.date_sell))}</span>
+                <span className="font2">
+                  {ToDateThai(dayjs(item?.date_sell))}
+                </span>
               </div>
             </div>
           </div>
