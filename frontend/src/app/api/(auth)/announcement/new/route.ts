@@ -20,6 +20,7 @@ export const POST = async (req: Request) => {
       formData.getAll("images[]") as File[],
       "property"
     );
+
     const model = {
       sell_type_id: Number(jsonModel?.sell_type_id),
       asset_type_id: Number(jsonModel?.asset_type_id),
@@ -44,7 +45,7 @@ export const POST = async (req: Request) => {
       images: images,
     };
 
-    logError(121321,model)
+    logError(121321, model);
     const { data: res } = await axios.post(
       api.external("/v1/general/sell"),
       model,
@@ -55,7 +56,9 @@ export const POST = async (req: Request) => {
       {
         status: res.status,
         code: res.code,
-        data: res.data,
+        data: {
+          id: res?.data?.id || null,
+        },
       },
       { status: res.code }
     );

@@ -1,7 +1,7 @@
 "use client";
 import { FormInput } from "@components/FormCustom/FormInput";
 import { FormSelectCustom } from "@components/FormCustom/FormSelectCustom";
-import { SellAndRent } from "@components/SellAndRent";
+import { SellAndRent } from "@components/sellrent/SellAndRent";
 import Link from "next/link";
 import React, { useState } from "react";
 import { Button, Form, Row } from "react-bootstrap";
@@ -62,7 +62,7 @@ function page() {
           </div>
         </Form>
         <div className="container">
-          <SellAndRent pageType="sell" />
+          <SellAndRent pageType={2} />
         </div>
       </div>
     </>

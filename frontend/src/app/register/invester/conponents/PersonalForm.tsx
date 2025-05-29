@@ -8,7 +8,6 @@ import {
 import { FormInput } from "@components/FormCustom/FormInput";
 import { FormSelectCustom } from "@components/FormCustom/FormSelectCustom";
 import StepButton from "@components/FormCustom/StepButton";
-import { selectDistrict, selectProvince } from "@components/helpers";
 import {
   formRegisterInvest,
   regisPersonalInvester,
@@ -18,12 +17,10 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Button, Form, Row } from "react-bootstrap";
 import { CareerList } from "@models/MasterModel";
+import { useAddress } from "@components/context/AddressContext";
 
 type masterData = {
   prefix: [];
-  province: [];
-  district: [];
-  subDistrict: [];
   assetType: [];
 };
 
@@ -52,9 +49,7 @@ function PersonalForm({
   const [PasswordValidated, setPasswordValidated] = useState("");
   const [ConfirmValidated, setConfirmValidated] = useState("");
   const [masterData, setMasterData] = useState<masterData>();
-  const [provinces, setProvinces] = useState<any[]>([]);
-  const [districts, setDistricts] = useState<any[]>([]);
-  const [subDistricts, setSubDistricts] = useState<any[]>([]);
+  const { Province, District, SubDistrict, setMaster, setFormEdit } = useAddress();
   const [submit, setSubmit] = useState<boolean>(false);
 
   const career = [
@@ -79,8 +74,25 @@ function PersonalForm({
       try {
         setLoadingPage(true);
         const master = await fetchMaster();
-        setMasterData(master);
-        setProvinces(master.province);
+        setMasterData({ assetType: master?.assetType, prefix: master?.prefix });
+        setMaster(master)
+        if (personal !== undefined) {
+          setForm({
+            ...personal.info,
+            user_prefix_id: String(personal.info.user_prefix_id),
+            career_id: String(personal.info.career_id),
+            province_id: String(personal.info.province_id),
+            district_id: String(personal.info.district_id),
+            sub_district_id: String(personal.info.sub_district_id),
+          });
+          setFormEdit({
+            province_id: String(personal.info.province_id),
+            district_id: String(personal.info.district_id),
+            sub_district_id: String(personal.info.sub_district_id),
+            setForm,
+            handleForm,
+          });
+        }
       } catch (error) {
         AlertPrimary("ไม่สามารถโหลดข้อมูลได้ - Please try again!", "error");
       } finally {
@@ -90,18 +102,6 @@ function PersonalForm({
     boot();
   }, []);
 
-  useEffect(() => {
-    if (!loadingPage && personal !== undefined) {
-      setForm({
-        ...personal.info,
-        user_prefix_id: String(personal.info.user_prefix_id),
-        career_id: String(personal.info.career_id),
-        province_id: String(personal.info.province_id),
-        district_id: String(personal.info.district_id),
-        sub_district_id: String(personal.info.sub_district_id),
-      });
-    }
-  }, [loadingPage]);
 
   const handleNum = (e: any) => {
     const { name, value } = e.target;
@@ -125,25 +125,6 @@ function PersonalForm({
       setConfirmValidated("");
     }
   }, [form.password, form.confirm_password]);
-
-  SelectProvince({
-    form,
-    setForm,
-    personal,
-    masterData,
-    setDistricts,
-    setSubDistricts,
-    selectProvince,
-  });
-
-  SelectDistrict({
-    form,
-    setForm,
-    personal,
-    masterData,
-    setSubDistricts,
-    selectDistrict,
-  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -174,7 +155,6 @@ function PersonalForm({
       );
       console.log(res)
       if (res.status) {
-        console.log(12345645646)
 
         var PersonalModel = {
           UserID: res?.data?.user?.id,
@@ -279,30 +259,9 @@ function PersonalForm({
             />
           </Row>
           <Row className="mb-3">
-            <FormSelectCustom
-              data={provinces as []}
-              value={form.province_id}
-              onChange={handleForm}
-              name="province_id"
-              label="จังหวัด"
-              required
-            />
-            <FormSelectCustom
-              data={districts as []}
-              value={form.district_id}
-              onChange={handleForm}
-              name="district_id"
-              label="อำเภอ/เขต"
-              required
-            />
-            <FormSelectCustom
-              data={subDistricts as []}
-              value={form.sub_district_id}
-              onChange={handleForm}
-              name="sub_district_id"
-              label="ตำบล/แขวง"
-              required
-            />
+            <Province label="จังหวัด" groupClass="mb-3 col-lg-4" name="province_id" value={form?.province_id} handleForm={handleForm} setForm={setForm} required />
+            <District label="อำเภอ/เขต" groupClass="mb-3 col-lg-4" name="district_id" value={form?.district_id} handleForm={handleForm} setForm={setForm} required />
+            <SubDistrict label="ตำบล/แขวง" groupClass="mb-3 col-lg-4" name="sub_district_id" value={form?.sub_district_id} handleForm={handleForm} setForm={setForm} required />
           </Row>
           <Row className="mt-5 mb-3">
             <FormInput

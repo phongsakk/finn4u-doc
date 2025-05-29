@@ -51,6 +51,8 @@ export const LoaderProvider = ({ children }: { children: ReactNode }) => {
         redirect("/");
       }
       setID(params.id)
+    }else{
+      setID({})
     }
   }, [pathname]);
 

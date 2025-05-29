@@ -1,5 +1,6 @@
 "use client";
 import { AlertPrimary } from "@component/alert/SwalAlert";
+import CheckBox from "@component/dev/CheckBox";
 import { LoadPage } from "@component/dev/LoadPage";
 import Pagination from "@component/dev/pagination";
 import { Page } from "@models/common";
@@ -48,6 +49,16 @@ const page = () => {
     boot();
   }, [page.page]);
 
+  const handleRec = async (status: boolean, itemID: number) => {
+    if (status) {
+      try {
+        const { data: res } = await axios.post(api.internal(`/api/sellrent/${itemID}/recommend`));
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }
+
   const handleBlock = async (title: string, num: number) => {
     try {
       setSubmit(true);
@@ -88,6 +99,7 @@ const page = () => {
                 <th>Agency</th>
                 <th>ประเภทประกาศ</th>
                 <th>ประเภททรัพย์สิน</th>
+                <th className="text-center">แนะนำ</th>
                 <th></th>
               </tr>
             </thead>
@@ -102,8 +114,9 @@ const page = () => {
                   </td>
                   <td>{item?.sell_type}</td>
                   <td>{item?.asset_type}</td>
+                  <td className="text-center"><CheckBox status={item?.recommended_at} itemId={item?.id} handleChange={handleRec} /></td>
                   <td className="text-center">
-                    <Link  href={item?.view_front ?? "#"} className="btn btn-ligt me-2">
+                    <Link href={item?.view_front ?? "#"} className="btn btn-ligt me-2">
                       <FaEye className="text-success" />
                     </Link>
                     <Button

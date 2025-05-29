@@ -1,4 +1,4 @@
-import { catchError, CheckAuth } from "@components/helpers";
+import { catchError, CheckAuth, logError } from "@components/helpers";
 import { api } from "@utils/api/index";
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const GET = async (req: NextRequest) => {
   try {
     const page = Number(req.nextUrl.searchParams.get("page")) || 1;
+    const sell_type_id = Number(req.nextUrl.searchParams.get("sell_type")) || 1;
     const asset_type =
       Number(req.nextUrl.searchParams.get("asset_type")) || null;
 
@@ -13,7 +14,7 @@ export const GET = async (req: NextRequest) => {
 
     const { data: res } = await axios.get(
       api.external(
-        `/v1/general/sell?limit=10&page=${page}&order_by=created_at&sort=desc`
+        `v1/general/sell?limit=20&page=${page}&order_by=created_at&sort=desc&sell_type_id=${sell_type_id}`
       ),
       session?.headerToken
     );

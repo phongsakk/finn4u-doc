@@ -1,4 +1,5 @@
 "use client";
+import { AlertConfirm, AlertPrimary } from "@components/alert/SwalAlert";
 import { AnnouncementItem } from "@components/AnnouncementItem";
 import { useLoaderContext } from "@components/context/LoaderContext";
 import { LoadPage } from "@components/dev/LoadPage";
@@ -49,6 +50,26 @@ function page() {
     fetchItem();
   }, [page.page]);
 
+  const handlePubilsh = async (itemID: number) => {
+    AlertConfirm("ลงประกาศหรือไม่", "info", async () => {
+      try {
+        const { data: res } = await axios.post(
+          api.internal(`/api/announcement/publish`),
+          {
+            sell_id: itemID,
+          }
+        );
+        if (res.status) {
+          AlertPrimary("ลงประกาศสำเร็จ", "error");
+        } else {
+          AlertPrimary("ลงประกาศสำเร็จ", "error");
+        }
+      } catch (error) {
+        AlertPrimary("ลงประกาศไม่สำเร็จ", "error");
+      }
+    });
+  };
+
   return (
     <div className="rounded bg-white overflow-hidden">
       <div className="py-3 px-4 text-white bg-primary">ประกาศของฉัน</div>
@@ -59,27 +80,41 @@ function page() {
           <>
             <Row className="border ps-3 pt-3 pe-3 profile-menu-search gap-0 gap-lg-2 align-items-center mb-4">
               <Link className="col pb-3 text-center" href="#">
-                ทั้งหมด (24)
+                ทั้งหมด
               </Link>
               <Link className="col pb-3 text-center" href="#">
-                ออนไลน์ (15)
+                ออนไลน์
               </Link>
               <Link className="col pb-3 text-center" href="#">
-                ออฟไลน์ (3)
+                ออฟไลน์
               </Link>
               <Link className="col pb-3 text-center" href="#">
-                แบบร่าง (3)
+                แบบร่าง
               </Link>
               <Link className="col pb-3 text-center" href="#">
-                ถูกระงับ (3)
+                ถูกระงับ
               </Link>
             </Row>
             {asset?.map((item: any, index) => (
               <div key={index} className="mb-5">
                 <AnnouncementItem prompt={item} />
                 <div className="d-flex justify-content-end gap-2 mt-3">
-                  <Button variant="primary">แก้ไข</Button>
-                  <Button variant="success">ปิดประกาศ</Button>
+                  <Link
+                    href={`/profile/announcement/${item.id}`}
+                    className="btn btn-primary"
+                  >
+                    แก้ไข
+                  </Link>
+                  {item?.is_published ? (
+                    <Button variant="success">ปิดประกาศ</Button>
+                  ) : (
+                    <Button
+                      onClick={() => handlePubilsh(item.id)}
+                      variant="success"
+                    >
+                      เปิดประกาศ
+                    </Button>
+                  )}
                 </div>
               </div>
             ))}

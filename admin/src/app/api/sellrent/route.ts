@@ -33,6 +33,7 @@ export const GET = async (req: NextRequest) => {
           }/detail/${item.id}`,
           asset_type: item?.asset_type?.name,
           is_disabled: item?.is_disabled,
+          recommended_at: item?.recommended_at ? true : false,
         })),
         page: res.page,
         total: res.total_page,

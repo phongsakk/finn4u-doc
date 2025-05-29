@@ -8,12 +8,13 @@ import Link from "next/link";
 import Navbar from "@component/layout/Navbar";
 import axios from "axios";
 import { api } from "@utils/api";
-import { Button } from "react-bootstrap";
+import { Button, FormCheck } from "react-bootstrap";
 import { ConsignParam } from "@models/asset";
 import ConModal, { PropertyModal } from "./components/ConModal";
 import { formatNumber, statusColor, statusText } from "@component/dev/Helpers";
 import Pagination from "@component/dev/pagination";
 import { LoadPage } from "@component/dev/LoadPage";
+import CheckBox from "@component/dev/CheckBox";
 dayjs.locale("th");
 const PropertyPage = () => {
   const [assets, setAssets] = useState([]);
@@ -49,6 +50,16 @@ const PropertyPage = () => {
     };
     boot();
   }, [page.page]);
+
+  const handleRec = async (status: boolean, itemID: number) => {
+    if (status) {
+      try {
+        const { data: res } = await axios.post(api.internal(`/api/asset/${itemID}/recommend`));
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }
 
   return (
     <>
@@ -235,7 +246,7 @@ const PropertyPage = () => {
                           </ul>
                         </div>
                       </th>
-                      <th>
+                      <th className="text-center">
                         <div className="dropdown drop-2">
                           <button
                             className="btn dropdown-toggle"
@@ -263,7 +274,7 @@ const PropertyPage = () => {
                           </ul>
                         </div>
                       </th>
-                      <th></th>
+                      <th className="text-center">แนะนำ</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -271,18 +282,13 @@ const PropertyPage = () => {
                     {assets?.map((item: any, index) => (
                       <tr key={index}>
                         <td>
-                          {dayjs(item.created_at).format("DD/MM/YYYY HH:mm:ss")}
+                          {item?.created_at}
                         </td>
-                        <td>{item.province ? item.province.name : "-"}</td>
-                        <td>{item.asset_type ? item.asset_type.name : "-"}</td>
-                        <td>{String(item.id).padStart(5, "0")}</td>
-                        <td className="text-center">
-                          {formatNumber(item?.asset_appraisal?.price_appraisal)}
-                        </td>
-                        <td className="text-center">
-                          {item?.asset_appraisal
-                            ? item.asset_appraisal.duration + " ปี"
-                            : "-"}
+                        <td>{item?.province}</td>
+                        <td>{item?.asset_type}</td>
+                        <td>{String(item?.id).padStart(5, "0")}</td>
+                        <td className="text-center">{item?.price_appraisal}</td>
+                        <td className="text-center">{item?.duration}
                         </td>
                         <td className="text-center">
                           <span
@@ -292,15 +298,8 @@ const PropertyPage = () => {
                             {statusText(item.status)}
                           </span>
                         </td>
-                        <td>
-                          <Button
-                            onClick={(e) => e.preventDefault()}
-                            className="btn btn-see"
-                            variant="outline-success"
-                            disabled
-                          >
-                            <Image src={InfoImage} alt="" />
-                          </Button>
+                        <td className="text-center">
+                          {item.status !== 0 && <CheckBox status={item?.recommended_at} itemId={item?.id} handleChange={handleRec} />}
                         </td>
                         <td>
                           <Button

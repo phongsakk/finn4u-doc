@@ -14,6 +14,7 @@ import OTPForm from "./conponents/OTPForm";
 import TermsAndCon from "./conponents/TermsAndCon";
 import VerifyForm from "./conponents/VerifyForm";
 import AddDoc from "./conponents/AddDoc";
+import { AddressProvider } from "@components/context/AddressContext";
 
 function ReConsignmentPage() {
   const [personal, setPersonal] = useState<regisPersonalInvester>(
@@ -122,12 +123,14 @@ function ReConsignmentPage() {
                   </div>
                 </div>
                 {step === 1 && (
-                  <PersonalForm
-                    personal={personal}
-                    checkStep={checkstep >= 1}
-                    setPersonal={setPersonal}
-                    setStep={setStep}
-                  />
+                  <AddressProvider>
+                    <PersonalForm
+                      personal={personal}
+                      checkStep={checkstep >= 1}
+                      setPersonal={setPersonal}
+                      setStep={setStep}
+                    />
+                  </AddressProvider>
                 )}
                 {personal !== undefined && (
                   <>

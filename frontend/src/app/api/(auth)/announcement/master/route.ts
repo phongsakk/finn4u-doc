@@ -60,6 +60,7 @@ export const GET = async () => {
           res_subdistrict?.data?.map((item: any) => ({
             id: item.id,
             name: item.name,
+            postal_code: item.zip_code,
             dis_id: item.district_id,
           })) || [],
       },

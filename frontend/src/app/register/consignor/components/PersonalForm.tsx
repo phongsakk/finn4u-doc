@@ -1,5 +1,4 @@
 "use client";
-import { selectDistrict, selectProvince } from "@components/helpers";
 import { api } from "@utils/api/index";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -9,17 +8,11 @@ import { AlertPrimary } from "@components/alert/SwalAlert";
 import { FormInput } from "@components/FormCustom/FormInput";
 import { LoadPage } from "@components/dev/LoadPage";
 import StepButton from "@components/FormCustom/StepButton";
-import {
-  SelectDistrict,
-  SelectProvince,
-} from "@components/dev/SelectMasterData";
 import { CareerList } from "@models/MasterModel";
+import { useAddress } from "@components/context/AddressContext";
 
 type masterData = {
   prefix: [];
-  province: [];
-  district: [];
-  subDistrict: [];
 };
 
 const fetchMaster = async () => {
@@ -47,10 +40,8 @@ function PersonalForm({
   const [ConfirmValidated, setConfirmValidated] = useState("");
   const [validated, setValidated] = useState(false);
   const [masterData, setMasterData] = useState<masterData>();
-  const [provinces, setProvinces] = useState<any[]>();
-  const [districts, setDistricts] = useState<any[]>();
-  const [subDistricts, setSubDistricts] = useState<any[]>();
   const [submit, setSubmit] = useState<boolean>(false);
+  const { Province, District, SubDistrict, setMaster, setFormEdit } = useAddress();
 
   const handleForm = (e: any) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -61,8 +52,26 @@ function PersonalForm({
       try {
         setLoadingPage(true);
         const master = await fetchMaster();
-        setMasterData(master);
-        setProvinces(master.province);
+        setMasterData({ prefix: master?.prefix })
+        setMaster(master)
+        if (personal !== undefined) {
+          setForm({
+            ...personal.info,
+            user_prefix_id: String(personal.info.user_prefix_id),
+            career_id: String(personal.info.career_id),
+            province_id: String(personal.info.province_id),
+            district_id: String(personal.info.district_id),
+            sub_district_id: String(personal.info.sub_district_id),
+          });
+          
+          setFormEdit({
+            province_id: String(personal.info.province_id),
+            district_id: String(personal.info.district_id),
+            sub_district_id: String(personal.info.sub_district_id),
+            setForm,
+            handleForm,
+          });
+        }
       } catch (error) {
         AlertPrimary("ไม่สามารถโหลดข้อมูลได้ - Please try again!", "error");
       } finally {
@@ -71,19 +80,6 @@ function PersonalForm({
     };
     boot();
   }, []);
-
-  useEffect(() => {
-    if (!loadingPage && personal !== undefined) {
-      setForm({
-        ...personal.info,
-        user_prefix_id: String(personal.info.user_prefix_id),
-        career_id: String(personal.info.career_id),
-        province_id: String(personal.info.province_id),
-        district_id: String(personal.info.district_id),
-        sub_district_id: String(personal.info.sub_district_id),
-      });
-    }
-  }, [loadingPage]);
 
   const handleNum = (e: any) => {
     const { name, value } = e.target;
@@ -107,25 +103,6 @@ function PersonalForm({
       setConfirmValidated("");
     }
   }, [form.password, form.confirm_password]);
-
-  SelectProvince({
-    form,
-    setForm,
-    personal,
-    masterData,
-    setDistricts,
-    setSubDistricts,
-    selectProvince,
-  });
-
-  SelectDistrict({
-    form,
-    setForm,
-    personal,
-    masterData,
-    setSubDistricts,
-    selectDistrict,
-  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -289,78 +266,9 @@ function PersonalForm({
           </Row>
 
           <Row className="mb-3">
-            <div className="col-lg-4">
-              <div className="mb-3">
-                <label className="form-label font2" htmlFor="province">
-                  จังหวัด<span className="text-require font2">*</span>
-                </label>
-                <FormSelect
-                  disabled={checkStep}
-                  value={form.province_id}
-                  onChange={handleForm}
-                  name="province_id"
-                  id="province_id"
-                  required
-                >
-                  <option value="" className="text-secondary">
-                    เลือกจังหวัด
-                  </option>
-                  {provinces?.map((x: any, index) => (
-                    <option value={x.id} key={index}>
-                      {x.name}
-                    </option>
-                  ))}
-                </FormSelect>
-              </div>
-            </div>
-            <div className="col-lg-4">
-              <div className="mb-3">
-                <label className="form-label font2" htmlFor="district">
-                  อำเภอ/เขต<span className="text-require font2">*</span>
-                </label>
-                <FormSelect
-                  disabled={checkStep}
-                  value={form.district_id}
-                  onChange={handleForm}
-                  name="district_id"
-                  id="district_id"
-                  required
-                >
-                  <option value="" className="text-secondary">
-                    เลือกอำเภอ/เขต
-                  </option>
-                  {districts?.map((x: any, index) => (
-                    <option value={x.id} key={index}>
-                      {x.name}
-                    </option>
-                  ))}
-                </FormSelect>
-              </div>
-            </div>
-            <div className="col-lg-4">
-              <div className="mb-3">
-                <label className="form-label font2">
-                  ตำบล/แขวง<span className="text-require font2">*</span>
-                </label>
-                <FormSelect
-                  disabled={checkStep}
-                  value={form.sub_district_id}
-                  onChange={handleForm}
-                  name="sub_district_id"
-                  id="sub_district_id"
-                  required
-                >
-                  <option value="" className="text-secondary">
-                    เลือกตำบล/แขวง
-                  </option>
-                  {subDistricts?.map((x: any, index) => (
-                    <option value={x.id} key={index}>
-                      {x.name}
-                    </option>
-                  ))}
-                </FormSelect>
-              </div>
-            </div>
+            <Province label="จังหวัด" groupClass="mb-3 col-lg-4" name="province_id" value={form?.province_id} handleForm={handleForm} setForm={setForm} required />
+            <District label="อำเภอ/เขต" groupClass="mb-3 col-lg-4" name="district_id" value={form?.district_id} handleForm={handleForm} setForm={setForm} required />
+            <SubDistrict label="ตำบล/แขวง" groupClass="mb-3 col-lg-4" name="sub_district_id" value={form?.sub_district_id} handleForm={handleForm} setForm={setForm} required />
           </Row>
 
           <Row className="mt-5 mb-3">

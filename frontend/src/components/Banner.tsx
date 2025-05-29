@@ -19,15 +19,16 @@ function Banner() {
       }}
       aria-label="banner"
     >
-      {[...Array(3)].map((_, i) => (
+      {[...Array(5)].map((_, i) => (
         <SplideSlide key={i}>
           <CustomImage
-            src="/banner-home-emp.png"
+            src={`/banner${i + 1}.png`}
             alt="banner-home-emp"
             key={i}
+            style={{aspectRatio:1.99,height:"auto"}}
           />
         </SplideSlide>
-      ))}{" "}
+      ))}
     </Splide>
   );
 }

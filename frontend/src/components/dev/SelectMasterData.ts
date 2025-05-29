@@ -1,29 +1,24 @@
 import { useEffect } from "react";
+import { searchDistrict, searchProvince } from "@components/helpers";
 
 export function SelectProvince({
   form,
   setForm,
-  personal,
+  dataSet,
   masterData,
   setDistricts,
-  setSubDistricts,
-  selectProvince,
+  setSubDistricts
 }: {
   form: any;
   setForm: (updater: (prev: any) => any) => void;
-  personal: any;
+  dataSet: any;
   masterData: any;
   setDistricts: (value: any[]) => void;
   setSubDistricts: (value: any[]) => void;
-  selectProvince: (
-    provinceId: string,
-    setDistricts: (data: any[]) => void,
-    districts: any[]
-  ) => void;
 }) {
   useEffect(() => {
     if (masterData?.district) {
-      selectProvince(
+      searchDistrict(
         form.province_id,
         setDistricts,
         masterData.district
@@ -32,8 +27,8 @@ export function SelectProvince({
       setSubDistricts([]);
 
       setForm((prev) => {
-        const newDistrictId = personal?.info?.district_id
-          ? String(personal.info.district_id)
+        const newDistrictId = dataSet?.district_id
+          ? String(dataSet.district_id)
           : "";
 
         if (prev.district_id === newDistrictId && prev.sub_district_id === "") {
@@ -54,33 +49,27 @@ export function SelectProvince({
 export function SelectDistrict({
   form,
   setForm,
-  personal,
+  dataSet,
   masterData,
   setSubDistricts,
-  selectDistrict,
 }: {
   form: any;
   setForm: (updater: (prev: any) => any) => void;
-  personal: any;
+  dataSet: any;
   masterData: any;
   setSubDistricts: (value: any[]) => void;
-  selectDistrict: (
-    districtId: string,
-    setSubDistricts: (data: any[]) => void,
-    subDistricts: any[]
-  ) => void;
 }) {
   useEffect(() => {
     if (masterData?.subDistrict) {
-      selectDistrict(
+      searchDistrict(
         form.district_id,
         setSubDistricts,
         masterData.subDistrict
       );
 
       setForm((prev) => {
-        const newSubDistrictId = personal?.info?.sub_district_id
-          ? String(personal.info.sub_district_id)
+        const newSubDistrictId = dataSet?.sub_district_id
+          ? String(dataSet.sub_district_id)
           : "";
 
         if (prev.sub_district_id === newSubDistrictId) {
@@ -95,3 +84,8 @@ export function SelectDistrict({
     }
   }, [form.district_id, masterData?.subDistrict]);
 }
+
+
+// export function SelectSubDistrict({
+
+// })

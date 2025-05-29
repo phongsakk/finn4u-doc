@@ -1,4 +1,4 @@
-import { catchError, CheckAuth } from "@components/helpers";
+import { catchError, CheckAuth, logError } from "@components/helpers";
 import { api } from "@utils/api/index";
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
@@ -19,7 +19,7 @@ export const GET = async (req: NextRequest) => {
       ),
       session.headerToken
     );
-
+    
     return NextResponse.json(
       {
         status: res.status,
@@ -33,6 +33,8 @@ export const GET = async (req: NextRequest) => {
           province_name: item?.province?.name,
           created_at: item.created_at,
           price: item?.price,
+          is_published: item?.is_published,
+          is_disabled: item?.is_disabled,
         })),
         page: {
           page: res?.page,
