@@ -13,6 +13,7 @@ func SellRouterGroup(r *gin.RouterGroup) {
 	auth.POST("", general.CreateSell)
 	auth.GET("", general.SearchSell)
 	auth.POST("/publish", general.PublishSell)
+	auth.POST("/private", general.PrivateSell)
 	auth.GET("/:id", general.FindSell)
 	auth.POST("/:id", general.UpdateSell)
 	auth.GET("/my", general.MySell)

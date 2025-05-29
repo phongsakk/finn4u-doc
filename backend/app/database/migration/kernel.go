@@ -22,7 +22,7 @@ func Migrate() error {
 		// &models.Investor{},
 		// &models.Admin{},
 		// &models.AssetType{},
-		// &models.Asset{},
+		&models.Asset{},
 		// &models.OTP{},
 		// &models.AssetAppraisal{},
 		// &models.AssetAppraisalImage{},
@@ -35,8 +35,8 @@ func Migrate() error {
 		// &models.AssetInvestmentOffer{},
 		// &models.Matching{},
 		&models.Sell{},
-		&models.SellType{},
-		&models.SellImage{},
+		// &models.SellType{},
+		// &models.SellImage{},
 	); err != nil {
 		return err
 	}
