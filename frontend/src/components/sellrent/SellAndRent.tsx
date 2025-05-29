@@ -2,23 +2,23 @@
 import banner from "@public/banner-sell.png";
 import Image from "next/image";
 import { TbArrowsSort } from "react-icons/tb";
-import { formatNumber, ToDateThai } from "./helpers";
+import { formatNumber, ToDateThai } from "../helpers";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { api } from "@utils/api/index";
-import { AnnouncementItem } from "./AnnouncementItem";
-import { LoadPage } from "./dev/LoadPage";
-import Pagination from "./dev/pagination";
-export const SellAndRent = ({ pageType }: { pageType: string }) => {
+import { AnnouncementItem } from "../AnnouncementItem";
+import { LoadPage } from "../dev/LoadPage";
+import Pagination from "../dev/pagination";
+export const SellAndRent = ({ pageType }: { pageType: number }) => {
   const [asset, setAsset] = useState<any[]>();
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState({
     page: 1,
     total: 1,
   });
-
+  console.log(pageType)
   const changePage = (num: number) => {
     setPage((prev) => ({ ...prev, page: num }));
   };
@@ -27,9 +27,10 @@ export const SellAndRent = ({ pageType }: { pageType: string }) => {
       try {
         setLoading(true);
         const { data: res } = await axios.get(
-          api.internal(`/api/${pageType}`),
+          api.internal(`/api/sellrent`),
           {
             params: {
+              sell_type: pageType,
               page: page.page,
             },
           }
@@ -70,7 +71,7 @@ export const SellAndRent = ({ pageType }: { pageType: string }) => {
           </div>
           {asset?.map((item, index) => (
             <div key={index} className="mb-5">
-              <Link href={`/${pageType}/detail/${item.id}`}>
+              <Link href={`/${pageType == 1 ? "sell" : "rent"}/detail/${item.id}`}>
                 <AnnouncementItem prompt={item} />
               </Link>
             </div>
