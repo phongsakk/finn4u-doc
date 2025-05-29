@@ -232,7 +232,7 @@ func GetRecommendedAsset(c *gin.Context) {
 	models := db.Model(&models.Asset{})
 	preloaded := models.Preload("Province").Preload("AssetType").Preload("AssetAppraisal")
 	preloaded = preloaded.Preload("Owner").Preload("AssetImages")
-	prepare := preloaded.Where("status = 2 AND recommended_at IS NOT NULL").Offset(offset).Limit(take).Order("id desc")
+	prepare := preloaded.Where("status = 2 AND recommended_at IS NOT NULL").Offset(offset).Limit(take).Order("recommended_at desc")
 	if err := prepare.Find(&response).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
