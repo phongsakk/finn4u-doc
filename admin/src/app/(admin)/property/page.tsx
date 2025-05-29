@@ -35,17 +35,19 @@ const PropertyPage = () => {
   useEffect(() => {
     const boot = async () => {
       try {
-        setLoading(true)
-        const { data: res } = await axios.get(api.internal("/api/asset"), { params: { page: page.page } });
+        setLoading(true);
+        const { data: res } = await axios.get(api.internal("/api/asset"), {
+          params: { page: page.page },
+        });
 
         if (res.status) {
           setAssets(res.data || []);
-          setPage({ page: res.page, total: res.total })
+          setPage({ page: res.page, total: res.total });
         }
       } catch (error) {
         console.error("api assets error!");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     };
     boot();
@@ -54,12 +56,22 @@ const PropertyPage = () => {
   const handleRec = async (status: boolean, itemID: number) => {
     if (status) {
       try {
-        const { data: res } = await axios.post(api.internal(`/api/asset/${itemID}/recommend`));
+        const { data: res } = await axios.post(
+          api.internal(`/api/asset/${itemID}/recommend`)
+        );
       } catch (error) {
-        console.error(error)
+        console.error(error);
+      }
+    } else {
+      try {
+        const { data: res } = await axios.post(
+          api.internal(`/api/asset/${itemID}/recommend/remove`)
+        );
+      } catch (error) {
+        console.error(error);
       }
     }
-  }
+  };
 
   return (
     <>
@@ -104,7 +116,9 @@ const PropertyPage = () => {
 
         <div className="container-fluid p-0">
           <div className="card flex-fill px-3 py-3">
-            {loading ? <LoadPage /> :
+            {loading ? (
+              <LoadPage />
+            ) : (
               <>
                 <table className="table table-hover my-0">
                   <thead className="table-success">
@@ -281,15 +295,12 @@ const PropertyPage = () => {
                   <tbody>
                     {assets?.map((item: any, index) => (
                       <tr key={index}>
-                        <td>
-                          {item?.created_at}
-                        </td>
+                        <td>{item?.created_at}</td>
                         <td>{item?.province}</td>
                         <td>{item?.asset_type}</td>
                         <td>{String(item?.id).padStart(5, "0")}</td>
                         <td className="text-center">{item?.price_appraisal}</td>
-                        <td className="text-center">{item?.duration}
-                        </td>
+                        <td className="text-center">{item?.duration}</td>
                         <td className="text-center">
                           <span
                             className=" fw-bold"
@@ -299,7 +310,13 @@ const PropertyPage = () => {
                           </span>
                         </td>
                         <td className="text-center">
-                          {item.status !== 0 && <CheckBox status={item?.recommended_at} itemId={item?.id} handleChange={handleRec} />}
+                          {item.status !== 0 && (
+                            <CheckBox
+                              status={item?.recommended_at}
+                              itemId={item?.id}
+                              handleChange={handleRec}
+                            />
+                          )}
                         </td>
                         <td>
                           <Button
@@ -316,9 +333,7 @@ const PropertyPage = () => {
                 </table>
                 <Pagination Page={page} change={changePage} />
               </>
-            }
-
-
+            )}
           </div>
         </div>
       </main>
