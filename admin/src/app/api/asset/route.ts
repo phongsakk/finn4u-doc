@@ -20,12 +20,11 @@ export const GET = async (req: NextRequest) => {
       return NextResponse.json(session);
     }
 
-    const { data: res } = await axios.get(api.external("/v1/admin/asset"), {
-      params: {
-        page: page,
-      },
-      headers: session?.headerToken?.headers,
-    });
+    const { data: res } = await axios.get(
+      api.external(`/v1/admin/asset?page=${page}`),
+      session?.headerToken
+    );
+
     return NextResponse.json(
       {
         status: true,
@@ -36,7 +35,7 @@ export const GET = async (req: NextRequest) => {
           province_name: item?.province?.name,
           asset_type: item?.asset_type?.name,
           price_appraisal: formatNumber(item?.asset_appraisal?.price_appraisal),
-          duration: formatNumber(item?.asset_appraisal.duration) + " ปี",
+          duration: formatNumber(item?.asset_appraisal?.duration) + " ปี",
           status: item?.status,
           recommended_at: item?.recommended_at ? true : false,
         })),
