@@ -5,6 +5,8 @@ import (
 	"math"
 	"net/http"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/phongsakk/finn4u-back/app/database"
@@ -13,6 +15,7 @@ import (
 	"github.com/phongsakk/finn4u-back/types"
 	"github.com/phongsakk/finn4u-back/utils"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 func GetAsset(c *gin.Context) {
@@ -50,7 +53,7 @@ func GetAsset(c *gin.Context) {
 	}
 
 	// Fetch assets with pagination
-	if err := db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Where("owner_id = ?", user.ID).Offset(offset).Limit(take).Order("id").Find(&response).Error; err != nil {
+	if err := db.Preload("Province").Preload("AssetType").Preload("AssetAppraisal").Preload("Owner").Preload("AssetImages").Where("owner_id = ?", user.ID).Offset(offset).Limit(take).Order("id").Find(&response).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
 			Error: utils.NullableString(err.Error()),
@@ -156,6 +159,7 @@ func CreateAsset(c *gin.Context) {
 	}
 
 	if err := db.Transaction(func(t *gorm.DB) error {
+		asset.GenID = fmt.Sprintf("%s%d", "ASSET", time.Now().UnixNano())
 		if err := t.Create(&asset).Error; err != nil {
 			fmt.Println("error assigning asset")
 			return err
@@ -216,7 +220,7 @@ func GetRecommendedAsset(c *gin.Context) {
 
 	// Count all assets before applying pagination
 	var totalAssets int64
-	if err := db.Model(&models.Asset{}).Where("status = ? AND is_recommended = ?", 2, true).Count(&totalAssets).Error; err != nil {
+	if err := db.Model(&models.Asset{}).Where("status=? AND recommended_at IS NOT NULL", 2).Count(&totalAssets).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
 			Error: utils.NullableString(err.Error()),
@@ -225,7 +229,11 @@ func GetRecommendedAsset(c *gin.Context) {
 	}
 
 	// Fetch assets with pagination
-	if err := db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Where("status = 2 AND is_recommended = ?", true).Offset(offset).Limit(take).Order("id desc").Find(&response).Error; err != nil {
+	models := db.Model(&models.Asset{})
+	preloaded := models.Preload("Province").Preload("AssetType").Preload("AssetAppraisal")
+	preloaded = preloaded.Preload("Owner").Preload("AssetImages")
+	prepare := preloaded.Where("status = 2 AND recommended_at IS NOT NULL").Offset(offset).Limit(take).Order("recommended_at desc")
+	if err := prepare.Find(&response).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
 			Error: utils.NullableString(err.Error()),
@@ -237,6 +245,7 @@ func GetRecommendedAsset(c *gin.Context) {
 	totalPage := int64(math.Ceil(float64(totalAssets) / float64(len(response))))
 	c.JSON(200, types.Response{
 		Code:      http.StatusOK,
+		Status:    true,
 		Message:   utils.NullableString("Assets retrieved successfully"),
 		Data:      response,
 		Page:      &page,
@@ -247,16 +256,29 @@ func GetRecommendedAsset(c *gin.Context) {
 }
 
 func GetPublicAsset(c *gin.Context) {
+	fmt.Println("GetPublicAsset")
 	page, errPage := strconv.Atoi(c.DefaultQuery("page", "1"))
 	if errPage != nil {
 		page = 1
 	}
 
-	take, errTake := strconv.Atoi(c.DefaultQuery("take", "20"))
+	limit, errTake := strconv.Atoi(c.DefaultQuery("limit", "20"))
 	if errTake != nil {
-		take = 20
+		limit = 20
 	}
-	var offset = utils.Offset(page, take)
+	var offset = utils.Offset(page, limit)
+	orderBy := c.DefaultQuery("orderBy", "created_at")
+	sort := c.DefaultQuery("sort", "desc")
+	idDesc := strings.ToLower(sort) != "asc"
+	assetTypeId, errAssetTypeId := strconv.Atoi(c.DefaultQuery("asset_type_id", "0"))
+	if errAssetTypeId != nil {
+		assetTypeId = 0
+	}
+
+	// asset_type_id
+
+	fmt.Println(page, limit, orderBy, sort)
+
 	var response []models.Asset
 	var user models.Consignor
 	var isLogin = true
@@ -277,7 +299,19 @@ func GetPublicAsset(c *gin.Context) {
 	if isLogin {
 		// Count all assets before applying pagination
 		var totalAssets int64
-		if err := db.Model(&models.Asset{}).Where("status = ?", 2).Count(&totalAssets).Error; err != nil {
+		models := db.Model(&models.Asset{}).Where("status = ?", 2)
+		if assetTypeId != 0 {
+			models = models.Where("asset_type_id=?", assetTypeId)
+		}
+		preloaded := models.Preload("Province").Preload("AssetType").Preload("AssetAppraisal")
+		preloaded = preloaded.Preload("Owner").Preload("AssetImages")
+		preloaded = preloaded.Offset(offset).Limit(limit).Order(clause.OrderByColumn{
+			Column: clause.Column{
+				Name: orderBy,
+			},
+			Desc: idDesc,
+		})
+		if err := models.Count(&totalAssets).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, types.Response{
 				Code:  http.StatusInternalServerError,
 				Error: utils.NullableString(err.Error()),
@@ -286,7 +320,12 @@ func GetPublicAsset(c *gin.Context) {
 		}
 
 		// Fetch assets with pagination
-		if err := db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Where("status = ?", 2).Offset(offset).Limit(take).Order("id").Find(&response).Error; err != nil {
+		if err := preloaded.Offset(offset).Limit(limit).Order(clause.OrderByColumn{
+			Column: clause.Column{
+				Name: orderBy,
+			},
+			Desc: idDesc,
+		}).Find(&response).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, types.Response{
 				Code:  http.StatusInternalServerError,
 				Error: utils.NullableString(err.Error()),
@@ -297,18 +336,31 @@ func GetPublicAsset(c *gin.Context) {
 		total := len(response)
 		totalPage := int64(math.Ceil(float64(totalAssets) / float64(len(response))))
 		c.JSON(200, types.Response{
+			Status:    true,
 			Code:      http.StatusOK,
 			Message:   utils.NullableString("Assets retrieved successfully"),
 			Data:      response,
 			Page:      &page,
-			Limit:     &take,
+			Limit:     &limit,
 			Total:     &total,
 			TotalPage: &totalPage,
 		})
 	} else {
 		// Count all assets before applying pagination
 		var totalAssets int64
-		if err := db.Model(&models.Asset{}).Where("status = ? AND is_published = ?", 2, true).Count(&totalAssets).Error; err != nil {
+		models := db.Model(&models.Asset{}).Where("status = ? AND is_published = ?", 2, true)
+		if assetTypeId != 0 {
+			models = models.Where("asset_type_id=?", assetTypeId)
+		}
+		preloaded := models.Preload("Province").Preload("AssetType").Preload("AssetAppraisal")
+		preloaded = preloaded.Preload("Owner").Preload("AssetImages")
+		preloaded = preloaded.Offset(offset).Limit(limit).Order(clause.OrderByColumn{
+			Column: clause.Column{
+				Name: orderBy,
+			},
+			Desc: idDesc,
+		})
+		if err := models.Count(&totalAssets).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, types.Response{
 				Code:  http.StatusInternalServerError,
 				Error: utils.NullableString(err.Error()),
@@ -317,7 +369,12 @@ func GetPublicAsset(c *gin.Context) {
 		}
 
 		// Fetch assets with pagination
-		if err := db.Preload("Province").Preload("AssetType").Preload("Owner").Preload("AssetImages").Where("status = ? AND is_published = ?", 2, true).Offset(offset).Limit(take).Order("id").Find(&response).Error; err != nil {
+		if err := preloaded.Offset(offset).Limit(limit).Order(clause.OrderByColumn{
+			Column: clause.Column{
+				Name: orderBy,
+			},
+			Desc: idDesc,
+		}).Find(&response).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, types.Response{
 				Code:  http.StatusInternalServerError,
 				Error: utils.NullableString(err.Error()),
@@ -328,11 +385,12 @@ func GetPublicAsset(c *gin.Context) {
 		total := len(response)
 		totalPage := int64(math.Ceil(float64(totalAssets) / float64(len(response))))
 		c.JSON(200, types.Response{
+			Status:    true,
 			Code:      http.StatusOK,
 			Message:   utils.NullableString("Assets retrieved successfully"),
 			Data:      response,
 			Page:      &page,
-			Limit:     &take,
+			Limit:     &limit,
 			Total:     &total,
 			TotalPage: &totalPage,
 		})
@@ -341,7 +399,7 @@ func GetPublicAsset(c *gin.Context) {
 
 func SearchAsset(c *gin.Context) {
 	var assetIdStr = c.Param("id")
-	var user models.User
+	var user models.Consignor
 	var isAuthorize = true
 	var response models.Asset
 	assetId, err := strconv.Atoi(assetIdStr)
@@ -366,7 +424,7 @@ func SearchAsset(c *gin.Context) {
 		return
 	}
 	defer database.Close(db)
-	if err := db.Model(models.Asset{}).Where("id=?", assetId).Preload("AssetAuction").Preload("Province").Preload("District").Preload("AssetType").Preload("AssetTag").Preload("AssetTag.Tag").Preload("Owner").Preload("AssetImages").Find(&response).Error; err != nil {
+	if err := db.Model(models.Asset{}).Where("id=?", assetId).Preload("AssetAuction").Preload("AssetAppraisal").Preload("Province").Preload("District").Preload("AssetType").Preload("AssetTag").Preload("AssetTag.Tag").Preload("Owner").Preload("AssetImages").Preload("AssetAppraisal").Find(&response).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
 			Error: utils.NullableString(err.Error()),
@@ -375,6 +433,8 @@ func SearchAsset(c *gin.Context) {
 	}
 
 	if response.ID == uint(assetId) && response.Status > 0 && response.IsPublished {
+		response.ViewCount = response.ViewCount + 1
+		db.Save(&response)
 		c.JSON(200, types.Response{
 			Code:    http.StatusOK,
 			Message: utils.NullableString("Asset found successfully"),
@@ -383,17 +443,11 @@ func SearchAsset(c *gin.Context) {
 			// Authorize: &isAuthorize,
 		})
 		return
-	} else {
-		if err := db.Model(models.Asset{}).Where("id=?", assetId).Find(&response).Error; err != nil {
-			c.JSON(http.StatusNotFound, types.Response{
-				Code:  http.StatusNotFound,
-				Error: utils.NullableString(err.Error()),
-			})
-			return
-		}
 	}
 
 	if isAuthorize || response.IsPublished {
+		response.ViewCount = response.ViewCount + 1
+		db.Save(&response)
 		c.JSON(http.StatusOK, types.Response{
 			Message: utils.NullableString("Asset retrieved successfully"),
 			Status:  true,

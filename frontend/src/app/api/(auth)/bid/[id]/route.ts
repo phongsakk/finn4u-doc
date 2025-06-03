@@ -1,3 +1,4 @@
+import { catchError, logError } from "@components/helpers";
 import { auth } from "@libs/auth";
 import { api } from "@utils/api/index";
 import axios from "axios";
@@ -18,46 +19,32 @@ export const POST = async (
     if (!session) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
-    const token = session.user?.accessToken ?? "";
+    const model = {
+      asset_id: Number(id),
+      offer: body.offer,
+    };
 
-    // const {
-    //   data: { data: res_bid },
-    // } = await axios.post(api.external(`/v1/bid`), body, {
-    //   headers: {
-    //     Authorization: "Bearer " + token,
-    //   },
-    // });
-
-    let cllk_message = "";
-    let url_redirect = "";
-    const test = "upload-contract" as string;
-    // switch (res_bid.message) {
-    switch (test) {
-      case "success":
-        cllk_message = "success";
-        break;
-      case "overlimit":
-        cllk_message = "success";
-        break;
-      case "upload-contract":
-        cllk_message = "contract";
-        url_redirect =
-          process.env.NEXT_PUBLIC_AUTH_URL + `/property/contract/${id}` ||
-          `https://finn4u.com/property/contract/${id}`;
-        break;
-      default:
-        cllk_message = cllk_message;
-        break;
-    }
+    const { data: res_bid } = await axios.post(
+      api.external(`/v1/consignor/bid`),
+      model,
+      {
+        headers: {
+          Authorization: "Bearer " + session.user?.accessToken,
+        },
+      }
+    );
 
     return NextResponse.json(
       {
-        url: url_redirect,
-        message: cllk_message,
+        code: res_bid.code,
+        status: res_bid.status,
+        data: {
+          message: res_bid.message,
+        },
       },
-      { status: 200 }
+      { status: res_bid.code }
     );
   } catch (error) {
-    return NextResponse.json({ error: "bid error" }, { status: 500 });
+    return NextResponse.json(await catchError(error));
   }
 };

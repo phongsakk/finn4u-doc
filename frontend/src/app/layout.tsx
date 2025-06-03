@@ -6,6 +6,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "@splidejs/splide/dist/css/splide.min.css";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import "./globals.css";
+import LoginModal from "@components/Modal/LoginModal";
+import RegisterModal from "@components/Modal/registerModal";
+import ModalController from "@components/Modal/ModalController";
+import { LoaderProvider } from "@components/context/LoaderContext";
 
 export const metadata: Metadata = {
   title: "Finn4U",
@@ -22,8 +26,12 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <SessionProvider>
+          <LoaderProvider>
+            <LoginModal />
+            <RegisterModal />
             <Navbar /> {children}
             <Footer />
+          </LoaderProvider>
         </SessionProvider>
       </body>
     </html>

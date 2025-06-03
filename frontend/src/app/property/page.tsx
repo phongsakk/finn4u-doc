@@ -1,52 +1,90 @@
 "use client";
 import CustomImage from "../../components/CustomImage";
 import Link from "next/link";
-import {
-  faMagnifyingGlass,
-  faClock,
-  faAngleLeft,
-  faAngleRight,
-  faChevronLeft,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass, faClock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Banner from "./banner";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, FormControl, FormSelect } from "react-bootstrap";
-import { Map } from "@components/dev/map";
+import { FormControl, FormSelect, Row } from "react-bootstrap";
+import { IoBanOutline } from "react-icons/io5";
 import { api } from "@utils/api/index";
 import Loading from "@components/dev/loading";
-import { formatCurrency, formatNumber } from "@components/helpers";
-import Pagination, { PaginationInterface, PaginationModel } from "@components/dev/pagination";
+import { formatCurrency, formatNumber, ToDateThai } from "@components/helpers";
+import Pagination from "@components/dev/pagination";
+import { FormSelectCustom } from "@components/FormCustom/FormSelectCustom";
+import { PriceRange } from "@models/MasterModel";
+import ImageApi from "@components/ImageApi";
+import dayjs from "dayjs";
+const MasterData = {
+  asset_type: [],
+  price_range: [],
+};
+const SearchModel = {
+  asset_type: "",
+  price_range: "",
+  search_box: "",
+};
 
 function Propertysale() {
-  const [assetTypes, setAssetTypes] = useState([]);
-  const [assetTypeSelect, setAsTypeSelect] = useState<number>();
-  const [search, setSearch] = useState("");
+  const [master, setMaster] = useState(MasterData);
+  const [formSearch, setFormSearch] = useState(SearchModel);
   const [assets, setAssets] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const [page, setPage] = useState({
     page: 1,
     total: 1,
   });
 
-  const [loading, setLoading] = useState(true);
-
-  // Function to update page number safely
   const changePage = (num: number) => {
     setPage((prev) => ({ ...prev, page: num }));
   };
-  console.log(123)
+
+  useEffect(() => {
+    const fetchAssetTypes = async () => {
+      try {
+        const { data: res_astype } = await axios.get(
+          api.internal("/api/asset-type")
+        );
+        if (res_astype.status) {
+          setMaster({
+            asset_type: res_astype.data,
+            price_range: PriceRange as [],
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching asset types:", err);
+      }
+    };
+
+    fetchAssetTypes();
+  }, []); // Runs only on mount
+
+  const handleSearch = (e: any) => {
+    setFormSearch((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const formAction = async () => {
+    // console.log(assetTypeSelect, search);
+  };
+
   useEffect(() => {
     const fetchAssets = async () => {
       setLoading(true);
       try {
-        const { data: res_assets } = await axios.get(api.internal("/api/general/asset"), {
-          params: {
-            page: page.page,
-            asset_type: assetTypeSelect
-          },
-        });
+        const { data: res_assets } = await axios.get(
+          api.internal("/api/consignor/asset/public"),
+          {
+            params: {
+              page: page.page,
+              asset_type: formSearch.asset_type,
+            },
+          }
+        );
 
         if (res_assets.status) {
           setAssets(res_assets.data);
@@ -60,25 +98,7 @@ function Propertysale() {
     };
 
     fetchAssets();
-  }, [page.page, assetTypeSelect]); // Runs only when page.page changes
-
-  useEffect(() => {
-    const fetchAssetTypes = async () => {
-      try {
-        const { data: res_astype } = await axios.get(api.internal("/api/asset-type"));
-        if (res_astype.status) {
-          setAssetTypes(res_astype.data);
-        }
-      } catch (err) {
-        console.error("Error fetching asset types:", err);
-      }
-    };
-
-    fetchAssetTypes();
-  }, []); // Runs only on mount
-  const formAction = async () => {
-    console.log(assetTypeSelect, search);
-  };
+  }, [page.page, formSearch.asset_type]);
   return (
     <div className="property-sale">
       <Banner />
@@ -86,50 +106,37 @@ function Propertysale() {
         <p className="title-content">ทรัพย์สินขายฝาก</p>
         <div className="step-line"></div>
         <form action={formAction} className="container">
-          <div className="row filter">
-            <div className="col-lg-2">
-              <div className="mb-3">
-                <FormSelect
-                  name="asset_type"
-                  onChange={(e) => setAsTypeSelect(Number(e.target.value))}
-                >
-                  <option value="">ประเภททรัพย์สิน</option>
-                  {assetTypes.map(
-                    (
-                      item: {
-                        id: string;
-                        name: string;
-                      },
-                      index
-                    ) => (
-                      <option value={item.id} key={index}>
-                        {item.name}
-                      </option>
-                    )
-                  )}
-                </FormSelect>
-              </div>
-            </div>
-            <div className="col-lg-2">
-              <div className="mb-3">
-                <select id="Select1_2" className="form-select">
-                  <option>select</option>
-                </select>
-              </div>
-            </div>
-            <div className="col-lg-5"></div>
-            <div className="col-lg-3">
+          <Row className="filter">
+            <FormSelectCustom
+              groupClass="col-lg-3 mb-3"
+              name="asset_type"
+              onChange={handleSearch}
+              data={master.asset_type as []}
+              choose="ประเภททรัพย์สิน"
+              value={formSearch.asset_type}
+            />
+            <FormSelectCustom
+              groupClass="col-lg-3 mb-3"
+              name="price_range"
+              onChange={handleSearch}
+              data={master.price_range as []}
+              choose="ช่วงราคา"
+              value={formSearch.price_range}
+            />
+            <div className="col-lg-2"></div>
+            <div className="col-lg-4">
               <div className="search-group">
                 <FormControl
-                  name="search"
-                  onChange={(e) => setSearch(e.target.value)}
+                  name="search_box"
+                  value={formSearch.search_box}
+                  onChange={handleSearch}
                 />
                 <Link href="#" className="form-label">
                   <FontAwesomeIcon icon={faMagnifyingGlass} />
                 </Link>
               </div>
             </div>
-          </div>
+          </Row>
         </form>
       </div>
 
@@ -144,31 +151,18 @@ function Propertysale() {
                   className="not-sale mb-5 property-item pe-auto "
                   key={index}
                 >
-                  <div className="row shadow overflow-hidden rounded">
-                    <div className="col-lg-7">
-                      <div className="relative pe-none">
-                        <Map
-                          position={{
-                            lat: item.location_x,
-                            lng: item.locataion_y,
-                          }}
+                  <div className="row shadow">
+                    <div className="col-lg-7 bg-white">
+                      <div className="relative pe-none h-100">
+                        <ImageApi
+                          className="property-img"
+                          src={item?.asset_image}
+                          style={{ aspectRatio: 1.79, height: "100%" }}
                         />
                         <span className="badge font2">
                           {item.asset_type_name}
                         </span>
                         <button className="btn btn-sold font2">SOLD</button>
-                        <div className="time">
-                          <div className="text-center">
-                            <p className="font2">รอการลงทุน</p>
-                            <p className="text-warning font2">
-                              1 วัน 3.50 ชั่วโมง
-                            </p>
-                          </div>
-                          <div className="icon">
-                            <FontAwesomeIcon icon={faClock} />
-                            <i className="fa-solid fa-clock"></i>
-                          </div>
-                        </div>
                       </div>
                     </div>
                     <div className="col-lg-5">
@@ -203,7 +197,7 @@ function Propertysale() {
 
                             <span className="font2">{item.aria_size}</span>
                           </li>
-                          {item.collateral ? (
+                          {item.price_appraisal ? (
                             <li>
                               <CustomImage
                                 src="/ic-lo3.svg"
@@ -218,7 +212,7 @@ function Propertysale() {
                                 มูลค่าสินทรัพย์ค้ำประกัน
                               </span>
                               <span className="text-primary font2 px-1">
-                                {formatCurrency(item.collateral)}
+                                {formatCurrency(item.collateral_price)}
                               </span>
                             </li>
                           ) : null}
@@ -236,7 +230,7 @@ function Propertysale() {
                             <span className="font2">
                               ราคาขายฝาก
                               <span className="text-primary font2 px-1">
-                                {formatNumber(item.consignment_price)}
+                                {formatNumber(item.price_appraisal)}
                               </span>
                               บาท
                             </span>
@@ -250,7 +244,9 @@ function Propertysale() {
                                 height: "auto",
                               }}
                             />
-                            <span className="font2">11 เมษายน 2565</span>
+                            <span className="font2">
+                              {ToDateThai(dayjs(item?.date_sell))}
+                            </span>
                           </li>
                         </ul>
                         <div className="wrap">
@@ -277,7 +273,7 @@ function Propertysale() {
             </>
           )}
         </div>
-        {page && <Pagination Page={page} change={changePage} />}
+        <Pagination Page={page} change={changePage} />
       </div>
     </div>
   );

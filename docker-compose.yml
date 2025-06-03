@@ -3,14 +3,14 @@ version: '3.8'
 services:
   postgres:
     image: postgres:15
-    container_name: finn4u_db
+    container_name: "${GROUP_PREFIX}_finn4u_db"
     restart: always
     environment:
       POSTGRES_USER: finn4udbuser
       POSTGRES_PASSWORD: nnif4udbpassword
       POSTGRES_DB: finn4u
     ports:
-      - "8077:5432"
+      - "${PORT_DATABASE}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -18,7 +18,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: finn4u_api
+    container_name: "${GROUP_PREFIX}_finn4u_api"
     restart: always
     depends_on:
       - postgres
@@ -29,29 +29,34 @@ services:
       DB_NAME: finn4u
       DB_PORT: 5432
     ports:
-      - "8078:8080"
+      - "${PORT_API}:8080"
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: finn4u_frontend
+    container_name: "${GROUP_PREFIX}_finn4u_frontend"
     restart: always
     ports:
-      - "8079:3000"
+      - "${PORT_WEB_USER}:3000"
     depends_on:
       - backend
+    volumes:
+      - ./uploads:/app/uploads
 
   admin:
     build:
       context: ./admin
       dockerfile: Dockerfile
-    container_name: finn4u_admin
+    container_name: "${GROUP_PREFIX}_finn4u_admin"
     restart: always
     ports:
-      - "8076:3000"
+      - "${PORT_WEB_ADMIN}:3000"
     depends_on:
       - backend
+    volumes:
+      - ./uploads:/app/uploads
 
 volumes:
+  # /var/lib/docker/volumes/${dirname}_postgres_data
   postgres_data:

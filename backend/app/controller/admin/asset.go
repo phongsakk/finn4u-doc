@@ -5,6 +5,7 @@ import (
 	"math"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/phongsakk/finn4u-back/app/database"
@@ -191,15 +192,18 @@ func DoAppraisal(c *gin.Context) {
 			return err
 		}
 
+		fmt.Println("new images", r.NewImages)
 		if r.NewImages != nil {
+			fmt.Println("not null")
 			newImages := *r.NewImages
-			for _, imageUrl := range newImages {
-				var imageModel models.AssetAppraisalImage
-				imageModel.AssetAppraisalID = apprisal.ID
-				imageModel.ImageURL = imageUrl
+			for _, image := range newImages {
+				fmt.Println("image url", image)
+				var imageModel models.AssetImage
+				imageModel.AssetID = apprisal.AssetID
+				imageModel.Image = image
 
-				if err := tx.Save(&imageModel).Error; err != nil {
-					return err
+				if ErrCreate := tx.Create(&imageModel).Error; ErrCreate != nil {
+					return ErrCreate
 				}
 			}
 		}
@@ -232,32 +236,44 @@ func DoAppraisal(c *gin.Context) {
 		if r.Auction != nil {
 			_auction := r.Auction
 			var auction models.AssetAuction
-			auction.AssetID = asset.ID
-			auction.FromDate = _auction.FromDate
-			auction.ToDate = _auction.ToDate
-			auction.FromTime = _auction.FromTime
-			auction.ToTime = _auction.ToTime
-			auction.MaxTax = _auction.MaxTax
+			if err := db.Where("asset_id=?", asset.ID).First(&auction).Error; err == gorm.ErrRecordNotFound {
+				auction.AssetID = asset.ID
+				auction.FromDate = _auction.FromDate
+				auction.ToDate = _auction.ToDate
+				auction.FromTime = _auction.FromTime
+				auction.ToTime = _auction.ToTime
+				auction.MaxTax = _auction.MaxTax
 
-			if err := tx.Save(&auction).Error; err != nil {
-				return err
+				if err := tx.Create(&auction).Error; err != nil {
+					return err
+				}
+			} else {
+				auction.AssetID = asset.ID
+				auction.FromDate = _auction.FromDate
+				auction.ToDate = _auction.ToDate
+				auction.FromTime = _auction.FromTime
+				auction.ToTime = _auction.ToTime
+				auction.MaxTax = _auction.MaxTax
+
+				if err := tx.Save(&auction).Error; err != nil {
+					return err
+				}
 			}
 		}
 
 		if r.IsPublished != nil {
 			asset.IsPublished = *r.IsPublished
-			if err := tx.Save(&asset).Error; err != nil {
-				return err
-			}
 		}
 
 		if r.Status != nil {
 			asset.Status = *r.Status
-			if err := tx.Save(&asset).Error; err != nil {
-				return err
-			}
 		}
 
+		if err := tx.Save(&asset).Error; err != nil {
+			return err
+		}
+
+		fmt.Println("complete")
 		return nil
 	}); err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
@@ -271,5 +287,92 @@ func DoAppraisal(c *gin.Context) {
 		Code:    http.StatusOK,
 		Status:  true,
 		Message: utils.NullableString("Asset updated successfully"),
+	})
+}
+
+func SetAssetAsRecommended(c *gin.Context) {
+	var sellID = c.Param("asset_id")
+	var sell models.Asset
+
+	db, dbErr := database.Conn()
+	if dbErr != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:    http.StatusInternalServerError,
+			Status:  false,
+			Message: utils.NullableString(dbErr.Error()),
+			Error:   utils.NullableString(dbErr.Error()),
+		})
+		return
+	}
+	defer database.Close(db)
+
+	if err := db.Where("id=?", sellID).First(&sell).Error; err != nil {
+		c.JSON(http.StatusNotFound, types.Response{
+			Code:    http.StatusNotFound,
+			Status:  false,
+			Message: utils.NullableString(err.Error()),
+		})
+		return
+	}
+
+	now := time.Now()
+	sell.RecommendedAt = &now
+	if err := db.Save(&sell).Error; err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:    http.StatusBadRequest,
+			Status:  false,
+			Message: utils.NullableString(err.Error()),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, types.Response{
+		Code:    http.StatusOK,
+		Status:  true,
+		Message: utils.NullableString("Set as recommended"),
+		Data:    sell,
+	})
+}
+
+func RemoveAssetFromRecommended(c *gin.Context) {
+	var sellID = c.Param("asset_id")
+	var sell models.Asset
+
+	db, dbErr := database.Conn()
+	if dbErr != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:    http.StatusInternalServerError,
+			Status:  false,
+			Message: utils.NullableString(dbErr.Error()),
+			Error:   utils.NullableString(dbErr.Error()),
+		})
+		return
+	}
+	defer database.Close(db)
+
+	if err := db.Where("id=?", sellID).First(&sell).Error; err != nil {
+		c.JSON(http.StatusNotFound, types.Response{
+			Code:    http.StatusNotFound,
+			Status:  false,
+			Message: utils.NullableString(err.Error()),
+		})
+		return
+	}
+
+	sell.RecommendedAt = nil
+	if err := db.Save(&sell).Error; err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:    http.StatusBadRequest,
+			Status:  false,
+			Message: utils.NullableString(err.Error()),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, types.Response{
+		Code:    http.StatusOK,
+		Status:  true,
+		Message: utils.NullableString("Set as recommended"),
+		Data:    sell,
 	})
 }

@@ -51,13 +51,16 @@ export const GET = async () => {
             id,
             name,
             district_id,
+            zip_code,
           }: {
             id: number;
             name: string;
             district_id: number;
+            zip_code: string;
           }) => ({
             id,
             dis_id: district_id,
+            postal_code: zip_code,
             name,
           })
         ) || [],

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { redirect, useParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Accordion, Button, Card, Collapse } from "react-bootstrap";
 import { LuDownload } from "react-icons/lu";
 
@@ -11,15 +11,29 @@ function UploadDocPage() {
   if (isNaN(Number(params.id))) {
     redirect("/property");
   }
-  console.log(params.id)
   const sections = [
-    "หนังสือสัญญา",
-    "หนังสือยินยอมคู่สมรส",
-    "สัญญาแต่งตั้งนายหน้าขายอสังหาริมทรัพย์",
-    "สัญญาจะซื้อจะขาย",
-    "ใบลงรายละเอียดทรัพย์",
-    "ใบมอบอำนาจ",
-    "หนังสือมอบอำนาจอาคารชุด (อ.ช.๒๑)",
+    {
+      name:"หนังสือสัญญาเช่า",
+      href:"หนังสือสัญญาเช่า.pdf",
+    },  {
+      name:"หนังสือยินยอมคู่สมรส",
+      href:"หนังสือยินยอมคู่สมรส.pdf",
+    },{
+      name:"สัญญาแต่งตั้งนายหน้าขายอสังหาริมทรัพย์",
+      href:"สัญญาแต่งตั้งนายหน้าขายอสังหาริมทรัพย์.pdf",
+    },{
+      name:"สัญญาจะซื้อจะขาย",
+      href:"สัญญาจะซื้อจะขาย.pdf",
+    },{
+      name:"ใบลงรายละเอียดทรัพย์",
+      href:"ใบลงรายละเอียดทรัพย์.pdf",
+    },{
+      name:"ใบมอบอำนาจ",
+      href:"ใบมอบอำนาจ_ทด21.pdf",
+    },{
+      name:"หนังสือมอบอำนาจอาคารชุด (อ.ช.๒๑)",
+      href:"แบบฟอร์มหนังสือมอบอำนาจอาคารชุด (อ.ช.๒๑).pdf",
+    },
   ];
 
   const [activeKey, setActiveKey] = useState<string | null>(null); // Track the active section
@@ -70,11 +84,11 @@ function UploadDocPage() {
                     onClick={() => handleToggle(String(index))}
                   >
                     <Link
-                      href="#"
+                      href={`/download/${item.href}`}
                       className="underline-primary"
-                      onClick={(e) => e.preventDefault()}
+                      target="_blank"
                     >
-                      {item} <LuDownload />
+                      {item.name} <LuDownload />
                     </Link>
                   </Card.Header>
                   <Accordion.Collapse eventKey={String(index)}>

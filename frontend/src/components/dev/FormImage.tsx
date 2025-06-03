@@ -7,7 +7,8 @@ import { Form, Row } from "react-bootstrap";
 type FormImageType = {
   name: string;
   id?: string;
-  label: string;
+  label?: string;
+  className?: string;
   onChange: (e: any) => void;
   multiple?: boolean;
   required?: boolean;
@@ -17,6 +18,7 @@ export const FormImage = ({
   name,
   id,
   label,
+  className,
   onChange,
   multiple = false,
   required = false,
@@ -30,16 +32,16 @@ export const FormImage = ({
 
     const convertedImage = await convertImage_arr(selectedFile);
     setImage(convertedImage);
-    onChange(multiple ? convertedImage : convertedImage[0]);
+    onChange(multiple ? selectedFile : selectedFile[0]);
   };
 
   return (
     <>
-      <Row>
+      <Row >
         <Form.Label htmlFor={InputId}>
-          {label} {required && <span className="text-require font2">*</span>}
+          {label} {label && required && <span className="text-require font2">*</span>}
         </Form.Label>
-        <Form.Group className="upload-btn-group">
+        <Form.Group className={`upload-btn-group ${className}`}>
           <Form.Control
             name={name}
             id={InputId}

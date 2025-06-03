@@ -719,10 +719,22 @@ img {
   }
 }
 
+.property-recom {
+  width: 100% !important;
+  aspect-ratio: 1.338;
+  object-fit: cover;
+}
+
 .land-sale-2 {
   margin: 3rem 0;
   .property-item {
     border-radius: 15px;
+    .property-img {
+      position: static;
+      width: 100% !important;
+      aspect-ratio: 1.8;
+      object-fit: cover;
+    }
   }
   .relative {
     position: relative;
@@ -858,12 +870,10 @@ img {
 
 .property-sale-detail {
   .col-lg-3 img {
-    margin-bottom: 1rem;
-    margin-bottom: 1rem;
     height: 170px;
   }
 
-  .col-lg-9 a {
+  .col-lg-9 img {
     height: 100%;
   }
 }
@@ -903,6 +913,26 @@ img {
 
   span {
     font-size: 22px;
+  }
+}
+
+.gallery-frame {
+  position: relative;
+  .gallery-filter {
+    font-size: xx-large;
+    color: #ffffff;
+    text-align: center;
+    align-content: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    opacity: 0.5;
+  }
+  img {
+    width: 100%;
+    height: 100% !important;
+    aspect-ratio: 1.75;
   }
 }
 
@@ -1664,13 +1694,34 @@ img {
     .modal-body {
       padding: 0;
       .show-image {
+        position: relative;
+        aspect-ratio: 1.5;
         width: 100%;
         height: 100%;
-
+        .previous-img {
+          position: absolute;
+          height: 100%;
+          cursor: pointer;
+          font-size: xx-large;
+          font-weight: 800;
+          color: rgb(255, 255, 255);
+        }
+        .next-img {
+          position: absolute;
+          height: 100%;
+          right: 0;
+          cursor: pointer;
+          font-size: xx-large;
+          font-weight: 800;
+          color: rgb(255, 255, 255);
+        }
         img {
           width: 100%;
           height: 100%;
           object-fit: contain;
+          user-select: none;
+          -moz-user-select: none;
+          -webkit-user-select: none;
         }
       }
     }
@@ -1797,4 +1848,58 @@ img {
     width: 100px;
     height: 100px;
   }
+}
+
+.profile-menu::after {
+  display: none !important;
+}
+
+.profile-menu {
+  .dropdown-toggle::after {
+    display: none;
+  }
+  .dropdown-menu {
+    background-color: #018b68;
+    padding: 5px 10px;
+    .dropdown-item {
+      color: #ffffff !important;
+      padding: 2px 10px 2px 0px;
+    }
+    .dropdown-item:hover {
+      background-color: #018b68 !important;
+      color: #2f2f2f !important;
+    }
+  }
+}
+
+.profile-side {
+  display: flex;
+  flex-direction: column;
+  a {
+    padding: 10px 20px;
+  }
+  a:hover {
+    color: #30b175 !important;
+    background-color: #d0ffe9;
+    border-radius: 0 5px 5px 0;
+    box-shadow: -5px 0 0 #018b68;
+  }
+  a.active {
+    color: #30b175 !important;
+    background-color: #d0ffe9;
+    border-radius: 0 5px 5px 0;
+    box-shadow: -5px 0 0 #018b68;
+  }
+}
+
+.profile-menu-search {
+  a:hover {
+    color: #30b175 !important;
+    font-weight: 800;
+    box-shadow: 0 5px 0 #30b175;
+  }
+}
+
+.description {
+  white-space: pre-line;
 }

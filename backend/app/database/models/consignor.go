@@ -15,6 +15,7 @@ import (
 type Consignor struct {
 	template.Model
 	template.User
+	GenID string `json:"gen_id" gorm:"not null;index;unique;"`
 
 	UserPrefix *UserPrefix `json:"user_prefix" gorm:"foreignKey:UserPrefixID;references:ID"`
 }
@@ -117,5 +118,17 @@ func (user Consignor) FindBidOffer(assets *Asset, AssetID int) error {
 	return db.Joins("AssetBidOffer").
 		Where("asset.id = ? AND AssetBidOffer.bidder_id = ?", AssetID, user.ID).
 		Preload("AssetBidOffer").
+		Find(&assets).Error
+}
+
+func (user Consignor) FindInvestmentOffer(assets *Asset, AssetID int) error {
+	db, dbError := database.Conn()
+	if dbError != nil {
+		return dbError
+	}
+	defer database.Close(db)
+	return db.Joins("AssetInvestmentOffer").
+		Where("asset.id = ? AND AssetInvestmentOffer.bidder_id = ?", AssetID, user.ID).
+		Preload("AssetInvestmentOffer").
 		Find(&assets).Error
 }

@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "@assets/css/app.css"
 import "@assets/css/custom.css"
 import { SessionProvider } from "next-auth/react";
-import SessionDisplay from "@component/dev/SessionDisplay";
+// import SessionDisplay from "@component/dev/SessionDisplay";
 
 export const metadata: Metadata = {
   title: "Login - Finn4U",
@@ -19,7 +19,6 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <SessionProvider >
-          <SessionDisplay />
           {children}
         </SessionProvider>
       </body>

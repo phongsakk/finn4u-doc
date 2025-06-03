@@ -2,6 +2,14 @@ import { api } from "@utils/api/index";
 import axios, { AxiosError } from "axios";
 import dayjs from "dayjs";
 import sharp from "sharp";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import buddhistEra from "dayjs/plugin/buddhistEra";
+import "dayjs/locale/th";
+import { auth } from "@libs/auth";
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(buddhistEra);
 dayjs.locale("th");
 
 export const log = (text: any, textObject?: any) => {
@@ -52,9 +60,8 @@ export const handleNumberChange = (
   }
 };
 
-
 export const formatDateThai = (value: Date) => {
-  return dayjs(value).add(543, "year").format("DD/MM/YYYY HH:mm:ss");
+  return dayjs(value).format("DD/MM/BBBB HH:mm:ss");
 };
 
 export const convertImage = async (objectfile: File): Promise<string> => {
@@ -145,7 +152,7 @@ export const resizeBase64Image = ({
   });
 };
 
-export const selectProvince = (
+export const searchProvince = (
   pro_id: string,
   setDistrict: (
     districts: { id: string; pro_id: string; name: string }[]
@@ -157,7 +164,7 @@ export const selectProvince = (
   setDistrict(dis);
 };
 
-export const selectDistrict = (
+export const searchDistrict = (
   dis_id: string,
   setSubDistrict: (
     subDistricts: { id: string; dis_id: string; name: string }[]
@@ -166,7 +173,6 @@ export const selectDistrict = (
 ) => {
   const dis =
     subDistricts.filter((x: any) => x.dis_id === Number(dis_id)) || [];
-
   setSubDistrict(dis);
 };
 
@@ -227,4 +233,46 @@ export const catchError = async (error: any) => {
     data: "Api error",
     message: "An unexpected error occurred",
   };
+};
+
+type DefaultFormatDate = "D MMMM BBBB" | "DD/MM/BBBB HH:mm" | (string & {});
+
+export const ToDateThai = (
+  txt: any,
+  format: DefaultFormatDate = "D MMMM BBBB"
+) => {
+  try {
+    dayjs.locale("th");
+
+    return dayjs(txt, "DD/MM/YYYY HH:mm:ss").tz("Asia/Bangkok").format(format);
+  } catch (error) {
+    return "-";
+  }
+};
+
+export const CheckAuth = async () => {
+  const session = await auth();
+  if (!session) {
+    return { status: false, code: 401, message: "Not authenticated" };
+  }
+
+  return {
+    status: true,
+    headerToken: {
+      headers: {
+        Authorization: "Bearer " + (session.user?.accessToken ?? ""),
+      },
+    },
+  };
+};
+
+export const statusText = (status: number) => {
+  const status_label_map = [
+    "รอการประเมินราคา",
+    "รอนักลงทุน",
+    "รอนักลงทุน",
+    "ขายฝากสำเร็จ",
+  ];
+
+  return status_label_map[status];
 };

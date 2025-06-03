@@ -8,7 +8,7 @@ type AssetAppraisal struct {
 	PriceAppraisal float64 `json:"price_appraisal,omitempty"`
 	CollateraPrice float64 `json:"collateral_price"`
 	Duration       int     `json:"duration"`
-	Asset          *Asset  `json:"asset" gorm:"foreignKey:AssetID;references:ID"`
+	Asset          *Asset  `json:"asset,omitempty" gorm:"foreignKey:AssetID;references:ID"`
 }
 
 func (AssetAppraisal) TableName() string {

@@ -32,6 +32,11 @@ func Migrate() error {
 		&models.AssetTag{},
 		&models.UserPrefix{},
 		&models.AssetBidOffer{},
+		&models.AssetInvestmentOffer{},
+		&models.Matching{},
+		&models.Sell{},
+		&models.SellType{},
+		&models.SellImage{},
 	); err != nil {
 		return err
 	}

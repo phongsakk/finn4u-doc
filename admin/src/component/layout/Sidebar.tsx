@@ -19,9 +19,10 @@ import { signOut } from 'next-auth/react';
 const sidebarItems = [
 	{ icon: Icon1, label: "Overview", href: "/", isActive: false },
 	{ icon: Icon2, label: "Matching", href: "/matching", isActive: false },
-	{ icon: Icon3, label: "ผู้ขายฝาก", href: "/consigment", isActive: false },
+	{ icon: Icon3, label: "ผู้ขายฝาก", href: "/consignor", isActive: false },
 	{ icon: Icon4, label: "นักลงทุน", href: "/invester", isActive: false },
 	{ icon: Icon5, label: "ทรัพย์สินขายฝาก", href: "/property", isActive: false },
+	{ icon: Icon3, label: "ขาย/เช่า", href: "/sellrent", isActive: false },
 	{ icon: Icon6, label: "Dashboard", href: "/dashboard", isActive: false },
 	{ icon: Icon7, label: "การตั้งค่า", href: "/setting", isActive: false },
 	// { icon: Icon8, label: "ออกจากระบบ", href: "/logout", isActive: false }
