@@ -43,7 +43,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             email: email as string,
           };
         } catch (error) {
-          logError("bypass login error: ", error);
+          // logError("bypass login error: ", error);
           return null;
         }
       },
@@ -77,7 +77,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               api_path = "/v1/auth/login";
               break;
           }
-          logError(userType)
+          // logError(userType)
           const response = await axios.post(api.external(api_path), {
             email,
             password,
@@ -100,7 +100,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           };
         } catch (error) {
           if (error instanceof AxiosError) {
-            logError(`Error api login: `, error.message);
+            // logError(`Error api login: `, error.message);
           }
           return null;
         }
@@ -125,28 +125,28 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       if (token?.accessTokenExpires) {
         const accessTokenExpire = token.accessTokenExpires as number;
-        log(
-          `Access Token: DateNow("${dayjs(Date.now()).format(
-            "DD-MM-YYYY HH:mm:ss"
-          )}") - ExpireDate("${dayjs(accessTokenExpire).format(
-            "DD-MM-YYYY HH:mm:ss"
-          )}")`
-        );
+        // log(
+        //   `Access Token: DateNow("${dayjs(Date.now()).format(
+        //     "DD-MM-YYYY HH:mm:ss"
+        //   )}") - ExpireDate("${dayjs(accessTokenExpire).format(
+        //     "DD-MM-YYYY HH:mm:ss"
+        //   )}")`
+        // );
 
         if (Date.now() < accessTokenExpire) {
-          log(
-            `Returning previous token "${dayjs(Date.now()).format(
-              "DD-MM-YYYY HH:mm:ss"
-            )}" < "${dayjs(accessTokenExpire).format("DD-MM-YYYY HH:mm:ss")}"`
-          );
+          // log(
+          //   `Returning previous token "${dayjs(Date.now()).format(
+          //     "DD-MM-YYYY HH:mm:ss"
+          //   )}" < "${dayjs(accessTokenExpire).format("DD-MM-YYYY HH:mm:ss")}"`
+          // );
           return token;
         }
       }
-      log("Refresh-Token now.");
+      // log("Refresh-Token now.");
       return refreshAccessToken(token);
     },
     session: async ({ session, token }) => {
-      log(`Callback session: User "${token.name}"`);
+      // log(`Callback session: User "${token.name}"`);
       if (token) {
         return {
           ...session,
@@ -157,8 +157,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return session;
     },
     async redirect({ url, baseUrl }) {
-      log(`Callback redirect: URL "${url} ${baseUrl}"`);
-
+      // log(`Callback redirect: URL "${url} ${baseUrl}"`);
       return process.env.NEXT_PUBLIC_AUTH_URL ?? "https://finn4u.com/";
     },
   },
@@ -181,7 +180,7 @@ async function refreshAccessToken(token: Jwt | any) {
     };
   } catch (error) {
     if (error instanceof AxiosError) {
-      logError("RefresAccessTokenError: ", error.message);
+      // logError("RefresAccessTokenError: ", error.message);
     }
     return null;
   }

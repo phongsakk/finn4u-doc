@@ -11,13 +11,17 @@ function Layout({
   return (
     <div className="consignment-index">
       <div className="justify-content-center">
-        <CustomImage src="/consigment-banner.png" alt="consigment-banner" />
+        <CustomImage
+          src="/consigment-banner.png"
+          alt="consigment-banner"
+          style={{ aspectRatio: 2.5, height: "auto" }}
+        />
       </div>
       <ConsignorModalProvider>
         <AssetGraph />
         <AssetInfo />
         {children}
-        </ConsignorModalProvider>
+      </ConsignorModalProvider>
     </div>
   );
 }

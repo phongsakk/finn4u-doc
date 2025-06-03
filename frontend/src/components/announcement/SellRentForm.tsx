@@ -12,6 +12,7 @@ import { LoadPage } from "@components/dev/LoadPage";
 import { useLoaderContext } from "@components/context/LoaderContext";
 import ImageGroup from "@components/dev/ImageGroup";
 import { useAddress } from "@components/context/AddressContext";
+import CheckRadio from "@components/FormCustom/CheckRadio";
 
 const publish = async (id: number) => {
   try {
@@ -107,7 +108,11 @@ function SellRentForm() {
       bootId();
     } else {
       setForm(AnnouncementModel);
-      setFormEdit({});
+      setFormEdit((prev: any) => ({
+        ...prev,
+        handleForm,
+        setForm,
+      }));
     }
   }, [id]);
 
@@ -144,18 +149,23 @@ function SellRentForm() {
         locataion_y:
           marker && (!isNaN(Number(marker[1])) ? Number(marker[1]) : null),
       };
+      var res_asset: any;
+      if (id !== undefined) {
+        console.log("id is an empty object");
+      } else {
+        const { data: res } = await axios.post(
+          api.internal("/api/announcement/new"),
+          model,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        res_asset = res;
+      }
 
-      const { data: res_asset } = await axios.post(
-        api.internal("/api/announcement/new"),
-        model,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      if (res_asset.status) {
+      if (res_asset?.status) {
         if (action === "publish") {
           const publish_status = await publish(res_asset?.data.id);
           if (publish_status) {
@@ -193,6 +203,7 @@ function SellRentForm() {
       setSubmitPub(false);
     }
   };
+
   return (
     <Form noValidate validated={validated} onSubmit={handleSubmit}>
       <div className="rounded bg-white overflow-hidden">
@@ -422,24 +433,15 @@ function SellRentForm() {
                 ครบทุกความต้องการ ด้วยทีมงานมืออาชีพ
               </p>
               <Row className="mb-3 checklogin">
-                <div className="form-check">
-                  <FormCheck
-                    className="group gap-0 gap-ms-1 gap-lg-2 ms-1 ms-md-2 ms-lg-3"
-                    value="0"
-                    id="0"
-                    name="wanted_agency"
-                    type="radio"
-                    label="ต้องการ Agency"
-                  />
-                  <FormCheck
-                    className="group gap-0 gap-ms-1 gap-lg-2 ms-1 ms-md-2 ms-lg-3"
-                    value="1"
-                    id="1"
-                    name="wanted_agency"
-                    type="radio"
-                    label="ไม่ต้องการ"
-                  />
-                </div>
+                <CheckRadio
+                  name="agency_required"
+                  value={form?.agency_required}
+                  data={[
+                    { label: "ต้องการ Agency", value: true },
+                    { label: "ไม่ต้องการ", value: false },
+                  ]}
+                  setForm={setForm}
+                />
               </Row>
             </>
           )}

@@ -62,7 +62,7 @@ function page() {
           </div>
         </Form>
         <div className="container">
-          <SellAndRent pageType={2} />
+          <SellAndRent pageType={1} />
         </div>
       </div>
     </>
