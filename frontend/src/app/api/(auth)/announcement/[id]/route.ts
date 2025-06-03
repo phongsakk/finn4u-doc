@@ -32,7 +32,7 @@ export const GET = async (
       address: data?.address,
       street: data?.street,
       soi: data?.soi,
-      province_id:String(data?.province_id),
+      province_id: String(data?.province_id),
       district_id: String(data?.district_id),
       sub_district_id: String(data?.sub_district_id),
       postal_code: data?.postal_code,
@@ -43,6 +43,7 @@ export const GET = async (
       square_meter: data?.square_meter,
       price: data?.price,
       description: data?.description,
+      agency_required: data?.agency_required,
       old_images: data?.images?.map((item: any) => ({
         image: item.image,
       })),

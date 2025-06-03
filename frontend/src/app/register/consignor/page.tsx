@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import ImageBannerregis1 from "@public/banner_regis1.png";
+import ImageBannerregis1 from "@public/consigment-banner.png";
 import ImagePolygon2 from "@public/Polygon2.png";
 import ImagerRegstep1 from "@public/reg-step1.png";
 import ImagerRegstep2 from "@public/reg-step2.png";
@@ -43,7 +43,7 @@ function ReConsignmentPage() {
               <div className="card-form-main">
                 <div className="wrap">
                   <h4 className="title-main font2">
-                    ลงทะเบียนเป็นผู้ขายฝากกับ Finn4U
+                    ลงทะเบียนเป็นผู้ขายฝากกับ ทุนทันใจ
                   </h4>
                   <div className="step justify-content-lg-between justify-content-center">
                     <div

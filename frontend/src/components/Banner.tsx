@@ -25,7 +25,7 @@ function Banner() {
             src={`/banner${i + 1}.png`}
             alt="banner-home-emp"
             key={i}
-            style={{aspectRatio:1.99,height:"auto"}}
+            style={{aspectRatio:2.5,height:"auto"}}
           />
         </SplideSlide>
       ))}

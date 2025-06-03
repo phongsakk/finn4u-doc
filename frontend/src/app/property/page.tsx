@@ -3,7 +3,7 @@ import CustomImage from "../../components/CustomImage";
 import Link from "next/link";
 import { faMagnifyingGlass, faClock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Banner from "./banner";
+import Banner from "@/components/Banner";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { FormControl, FormSelect, Row } from "react-bootstrap";

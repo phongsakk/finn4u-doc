@@ -20,5 +20,6 @@ export const config = {
     "/consignment/:path*",
     "/investment/:path*",
     "/property/contract/:path*",
+    "/profile/:path*"
   ],
 };
