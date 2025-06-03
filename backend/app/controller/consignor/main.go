@@ -220,7 +220,7 @@ func GetRecommendedAsset(c *gin.Context) {
 
 	// Count all assets before applying pagination
 	var totalAssets int64
-	if err := db.Model(&models.Asset{}).Where("status = ? AND is_recommended = ?", 2, true).Count(&totalAssets).Error; err != nil {
+	if err := db.Model(&models.Asset{}).Where("status=? AND recommended_at IS NOT NULL", 2).Count(&totalAssets).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
 			Error: utils.NullableString(err.Error()),
@@ -232,7 +232,7 @@ func GetRecommendedAsset(c *gin.Context) {
 	models := db.Model(&models.Asset{})
 	preloaded := models.Preload("Province").Preload("AssetType").Preload("AssetAppraisal")
 	preloaded = preloaded.Preload("Owner").Preload("AssetImages")
-	prepare := preloaded.Where("status = 2 AND is_recommended = ?", true).Offset(offset).Limit(take).Order("id desc")
+	prepare := preloaded.Where("status = 2 AND recommended_at IS NOT NULL").Offset(offset).Limit(take).Order("recommended_at desc")
 	if err := prepare.Find(&response).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
 			Code:  http.StatusInternalServerError,
