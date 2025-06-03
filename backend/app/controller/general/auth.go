@@ -90,7 +90,7 @@ func Register(c *gin.Context) {
 
 		otp.UserID = user.ID
 		otp.Ref = utils.RandomString(6)
-		otp.UserType = "Congisnor"
+		otp.UserType = "General User"
 		otp.Code = utils.RandomNumber(6)
 		otp.ExpiredAt = time.Now().Add(time.Minute * 10)
 		if err := db.Create(&otp).Error; err != nil {
