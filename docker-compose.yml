@@ -58,4 +58,4 @@ services:
       - ./uploads:/app/uploads
 
 volumes:
-  postgres_data: "${POSTGRESS_DATA}"
+  postgres_data:
