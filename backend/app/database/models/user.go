@@ -31,13 +31,12 @@ func (user *User) GetFromRequest(c *gin.Context) error {
 	return nil
 }
 
-func (user *User) GenerateAccessToken() (string, *int64, error) {
-	unix := time.Now().Add(time.Minute * 5).Unix()
-	expiredAt := &unix
+func (user *User) GenerateAccessToken() (string, *time.Time, error) {
+	expiredAt := time.Now().Add(time.Minute * 5)
 	claims := types.Auth{
 		UserId: user.ID,
 		Email:  user.Email,
-		Exp:    *expiredAt,
+		Exp:    expiredAt.Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
@@ -45,7 +44,7 @@ func (user *User) GenerateAccessToken() (string, *int64, error) {
 	if err != nil {
 		return "", nil, err
 	}
-	return tokenString, expiredAt, nil
+	return tokenString, &expiredAt, nil
 }
 
 func (user *User) ValidateToken(encodedToken string) error {

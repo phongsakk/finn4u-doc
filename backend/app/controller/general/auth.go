@@ -1,6 +1,7 @@
 package general
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -224,7 +225,7 @@ func RefreshToken(c *gin.Context) {
 		return
 	}
 	defer database.Close(db)
-	if err := db.Where("email =?", "user1@email.net").First(&user).Error; err != nil {
+	if err := db.Where("email=?", "user1@email.net").First(&user).Error; err != nil {
 		c.JSON(http.StatusNotFound, types.Response{
 			Code:  http.StatusInternalServerError,
 			Error: utils.NullableString("User not found"),
@@ -257,6 +258,159 @@ func RefreshToken(c *gin.Context) {
 			"refresh_token":      refreshToken,
 			"access_expires_in":  accessTokenExpiresIn,  // 5 minutes
 			"refresh_expires_in": refreshTokenExpiresIn, // 1 day
+		},
+	})
+}
+
+func ResendOTP(c *gin.Context) {
+	var request request.ResendOTPRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:  http.StatusBadRequest,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	if err := request.Validated(); err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:  http.StatusBadRequest,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+
+	var user models.Consignor
+	db, err := database.Conn()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	defer database.Close(db)
+	if err := db.Where("email=?", request.Email).First(&user).Error; err != nil {
+		c.JSON(http.StatusNotFound, types.Response{
+			Code:    http.StatusNotFound,
+			Error:   utils.NullableString(err.Error()),
+			Message: utils.NullableString("User not found"),
+		})
+		return
+	}
+	var otp models.OTP
+	if err := db.Transaction(func(trx *gorm.DB) error {
+		if err := trx.First(&otp, "user_id=?", user.ID).Error; err != nil {
+			return errors.New("OTP not found")
+		}
+		otp.Ref = utils.RandomString(6)
+		otp.Code = utils.RandomNumber(6)
+		otp.ExpiredAt = time.Now().Add(time.Minute * 10)
+
+		if err := trx.Save(&otp).Error; err != nil {
+			return err
+		}
+		utils.SendEmail(user.Email, "OTP Verification", fmt.Sprintf("Your OTP (REF: %s) is %s. Please use it to verify your account.", otp.Ref, otp.Code))
+		fmt.Println("OTP sent to", user.Email)
+		return nil
+	}); err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, types.Response{
+		Code:    http.StatusCreated,
+		Status:  true,
+		Message: utils.NullableString("OTP resent successfully"),
+		Data: map[string]any{
+			"ref": otp.Ref,
+		},
+	})
+}
+
+func VerifyOTP(c *gin.Context) {
+	var request request.VerifyOTPRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:  http.StatusBadRequest,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	if err := request.Validated(); err != nil {
+		c.JSON(http.StatusBadRequest, types.Response{
+			Code:  http.StatusBadRequest,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	var otp models.OTP
+	var user models.User
+
+	db, err := database.Conn()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	defer database.Close(db)
+	if err := db.Where("email = ?", request.Email).First(&user).Error; err != nil {
+		c.JSON(http.StatusNotFound, types.Response{
+			Code:    http.StatusNotFound,
+			Error:   utils.NullableString(err.Error()),
+			Message: utils.NullableString("User not found"),
+		})
+		return
+	}
+	if err := db.Where("user_id = ? AND code = ?", user.ID, request.Code).First(&otp).Error; err != nil {
+		c.JSON(http.StatusNotFound, types.Response{
+			Code:    http.StatusNotFound,
+			Error:   utils.NullableString(err.Error()),
+			Message: utils.NullableString("Invalid OTP"),
+		})
+		return
+	}
+	if otp.ExpiredAt.Before(time.Now()) {
+		c.JSON(http.StatusNotFound, types.Response{
+			Code:    http.StatusNotFound,
+			Error:   utils.NullableString("OTP has expired"),
+			Message: utils.NullableString("OTP has expired"),
+		})
+		return
+	}
+
+	db.Model(&user).UpdateColumn("verified", true)
+	db.Delete(&otp)
+
+	accessToken, accessTokenExpiresIn, errAccess := user.GenerateAccessToken()
+	if errAccess != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(errAccess.Error()),
+		})
+		return
+	}
+	refreshToken, refreshTokenExpiresIn, errRefresh := user.GenerateRefreshToken()
+	if errRefresh != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(errRefresh.Error()),
+		})
+		return
+	}
+	c.JSON(http.StatusCreated, types.Response{
+		Code:    http.StatusCreated,
+		Status:  true,
+		Message: utils.NullableString("Consignor verified successfully"),
+		Data: types.AuthResponse{
+			AccessToken:      accessToken,
+			RefreshToken:     refreshToken,
+			ExpiresIn:        accessTokenExpiresIn.Unix(),
+			RefreshExpiresIn: refreshTokenExpiresIn.Unix(),
 		},
 	})
 }

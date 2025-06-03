@@ -46,3 +46,20 @@ type RefreshToken struct {
 func (r *RefreshToken) Validated() error {
 	return utils.Validate(r)
 }
+
+type ResendOTPRequest struct {
+	Email string `json:"email" validate:"required,email"`
+}
+
+func (r *ResendOTPRequest) Validated() error {
+	return utils.Validate(r)
+}
+
+type VerifyOTPRequest struct {
+	Email string `json:"email" validate:"required,email"`
+	Code  string `json:"code" validate:"required"`
+}
+
+func (r *VerifyOTPRequest) Validated() error {
+	return utils.Validate(r)
+}
