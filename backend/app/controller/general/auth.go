@@ -66,7 +66,7 @@ func Register(c *gin.Context) {
 		})
 		return
 	}
-	user.UserRoleID = 2
+	user.UserRoleID = 1
 	user.Password = hashedPassword
 	user.Email = request.Email
 	user.UserPrefixID = int(request.UserPrefixId)
