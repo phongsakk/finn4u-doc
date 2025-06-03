@@ -59,6 +59,7 @@ func UpdateSell(c *gin.Context) {
 	var request request.UpdateSellRequest
 	var user models.User
 	var response models.Sell
+	SellID := c.Param("id")
 
 	if Err := user.GetFromRequest(c); Err != nil {
 		c.JSON(http.StatusUnauthorized, types.Response{
@@ -99,6 +100,9 @@ func UpdateSell(c *gin.Context) {
 	defer database.Close(DB)
 
 	if Err := DB.Transaction(func(tx *gorm.DB) error {
+		if Err := tx.Where("id=?", SellID).First(&response).Error; Err != nil {
+			return Err
+		}
 		response.SellTypeID = request.SellTypeID
 		response.AssetTypeID = request.AssetTypeID
 		response.Title = request.Title
@@ -120,7 +124,7 @@ func UpdateSell(c *gin.Context) {
 		response.OwnerID = user.ID
 		response.AgencyRequired = request.AgencyRequired
 
-		if Err := tx.Create(&response).Error; Err != nil {
+		if Err := tx.Save(&response).Error; Err != nil {
 			return Err
 		}
 
@@ -130,6 +134,7 @@ func UpdateSell(c *gin.Context) {
 			Change := request.Images.Change
 
 			if Add != nil {
+				fmt.Println("Add Images")
 				for _, image := range *Add {
 					var Image models.SellImage
 					Image.SellID = response.ID
@@ -141,6 +146,7 @@ func UpdateSell(c *gin.Context) {
 			}
 
 			if Delete != nil {
+				fmt.Println("Delete Images")
 				for _, imageID := range *Delete {
 					var Image models.SellImage
 					Image.ID = imageID
@@ -150,6 +156,7 @@ func UpdateSell(c *gin.Context) {
 			}
 
 			if Change != nil {
+				fmt.Println("Update Images ")
 				for _, change := range *Change {
 					var Image models.SellImage
 					if Err := DB.Where("id=? AND sell_id=?", change.ID, response.ID).First(&Image).Error; Err != nil {
