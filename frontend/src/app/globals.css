@@ -1507,6 +1507,46 @@ img {
   }
 }
 
+.Separator {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  div {
+    small {
+      color: #afafaf;
+    }
+  }
+}
+
+.group-guest-btn{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  button{
+    width: 100%;
+    display: flex !important;
+    border-radius: 75px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.btn-feacbook {
+  background-color: #1877f2 !important;
+}
+
+.btn-line{
+  background-color: #00C300 !important;
+}
+
+.btn-google{
+  border: solid 1px #2f2f2f;
+  background-color: #ffffff !important;
+}
+
 .modallogin .line {
   width: 100%;
   height: 1px;

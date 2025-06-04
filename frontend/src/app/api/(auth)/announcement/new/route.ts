@@ -40,6 +40,7 @@ export const POST = async (req: Request) => {
       square_meter: Number(jsonModel?.square_meter),
       price: Number(jsonModel?.price),
       description: jsonModel?.description,
+      agency_required: jsonModel?.agency_required == "true" ? true : false,
       locataion_x: Number(jsonModel?.locataion_x),
       locataion_y: Number(jsonModel?.locataion_y),
       images: images,

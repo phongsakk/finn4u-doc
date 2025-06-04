@@ -17,6 +17,7 @@ export const AnnouncementModel = {
   square_meter: "",
   price: "",
   description: "",
+  agency_required: "",
   images: [] as File[],
   old_images: [],
 };

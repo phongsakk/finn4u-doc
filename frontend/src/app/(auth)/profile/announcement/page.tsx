@@ -12,7 +12,7 @@ import { Button, Row } from "react-bootstrap";
 function page() {
   const [asset, setAsset] = useState<any[]>();
   const [loading, setLoading] = useState(true);
-  const { setSplButton } = useLoaderContext();
+  const { path, setSplButton } = useLoaderContext();
   const [page, setPage] = useState({
     page: 1,
     total: 1,
@@ -23,8 +23,6 @@ function page() {
   };
 
   useEffect(() => {
-    setSplButton({ name: "ลงประกาศ", href: "/", status: true });
-
     const fetchItem = async () => {
       try {
         setLoading(true);
@@ -46,9 +44,12 @@ function page() {
         setLoading(false);
       }
     };
-
     fetchItem();
   }, [page.page]);
+
+  useEffect(() => {
+    setSplButton({ name: "ลงประกาศ", href: "/", status: true });
+  }, [path]);
 
   const handlePubilsh = async (itemID: number) => {
     AlertConfirm("ลงประกาศหรือไม่", "info", async () => {
