@@ -65,7 +65,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           let api_path = "";
           switch (userType) {
             case "general":
-              api_path = "/v1/auth/login";
+              api_path = "/v1/general/auth/login";
               break;
             case "consignor":
               api_path = "/v1/auth/signin";
@@ -74,7 +74,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               api_path = "/v1/auth/signin";
               break;
             default:
-              api_path = "/v1/auth/login";
+              api_path = "/v1/general/auth/login";
               break;
           }
           // logError(userType)
