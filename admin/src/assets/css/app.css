@@ -15774,3 +15774,18 @@ span.flatpickr-weekday {
     }
   }
 }
+
+
+.bg-optical-success{
+  background-color: #EAF7F1;
+  color: #30B175;
+  border-radius: 25px;
+  padding: 5px 20px;
+}
+
+.bg-optical-danger{
+  background-color: #FDE3E3;
+  color: #F04141;
+  border-radius: 25px;
+  padding: 5px 20px;
+}

@@ -1,13 +1,34 @@
+"use client"
 import Image from "next/image";
 import grupic1 from "@/public/grupic-1.png"
 import grupic2 from "@/public/grupic-2.png"
 import grupic3 from "@/public/grupic-3.png"
 import Navbar from "@/component/layout/Navbar";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { api } from "@utils/api";
+import LineChart from "@component/chart/LineChart";
 
 export default function Home() {
+  const [form, setForm] = useState<any>();
+  const [loadPage, setLoadPage] = useState(true)
+  useEffect(() => {
+    const boot = async () => {
+      try {
+        setLoadPage(true)
+        const { data: res } = await axios.get(api.internal(`/api/overview`))
+        if (res?.status) {
+          setForm(res?.data)
+        }
+      } finally {
+        setLoadPage(false)
+      }
+    }
+    boot();
+  }, [])
   return (
     <>
-      <Navbar title="Overview" description="Detailed information about  Finn4U"/>
+      <Navbar title="Overview" description="Detailed information about  ทุนทันใจ" />
       <main className="content">
         <div className="container-fluid p-0">
           <div className="card overview-oa radius-pm">
@@ -18,7 +39,7 @@ export default function Home() {
                     <Image src={grupic1} className="" alt="" />
                     <div>
                       <p>ขายฝากสำเร็จ</p>
-                      <h3 className="text-primary">26 รายการ</h3>
+                      <h3 className="text-primary fw-bold">{form?.consignment_total} รายการ</h3>
                     </div>
                   </div>
                 </div>
@@ -28,7 +49,7 @@ export default function Home() {
                       <Image src={grupic2} className="" alt="" />
                       <div>
                         <p>พื้นที่ทรัพย์สินคงเหลือในระบบ</p>
-                        <h3 className="text-danger">3 รายการ</h3>
+                        <h3 className="text-danger fw-bold">{form?.stock_total} รายการ</h3>
                       </div>
                     </div>
                   </a>
@@ -39,7 +60,7 @@ export default function Home() {
                       <Image src={grupic3} className="" alt="" />
                       <div>
                         <p>ผู้ใช้งานลงทะเบียน</p>
-                        <h3 className="text-blue">100 รายการ</h3>
+                        <h3 className="text-blue fw-bold">{form?.member} รายการ</h3>
                       </div>
                     </div>
                   </a>
@@ -63,55 +84,22 @@ export default function Home() {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td>
-                          <h3 className="text-green">1</h3>
-                        </td>
-                        <td>
-                          <h3 className="text-green">ดอนเมือง, ปทุมธานี</h3>
-                        </td>
-                        <td className="d-xl-table-cell text-center">
-                          <div className="badge">
-                            <span className="badge bg-success">2,500,000</span>
-                          </div>
-                        </td>
-                        <td className="d-xl-table-cell text-center">
-                          <span className="badge bg-danger ">5,500,000</span>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <h4 className="text-green">2</h4>
-                        </td>
-                        <td>
-                          <h4 className="text-green">บางละมุง, ชลบุรี</h4>
-                        </td>
-                        <td className="d-xl-table-cell text-center">
-                          <div className="badge">
-                            <span className="badge bg-success">2,500,000</span>
-                          </div>
-                        </td>
-                        <td className="d-xl-table-cell text-center">
-                          <span className="badge bg-danger ">5,500,000</span>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <h4 className="text-green">3</h4>
-                        </td>
-                        <td>
-                          <h4 className="text-green">ลาดกระบัง, กรุงเทพฯ</h4>
-                        </td>
-                        <td className="d-xl-table-cell text-center">
-                          <div className="badge">
-                            <span className="badge bg-success">2,500,000</span>
-                          </div>
-                        </td>
-                        <td className="d-xl-table-cell text-center">
-                          <span className="badge bg-danger ">5,500,000</span>
-                        </td>
-                      </tr>
-
+                      {form?.most_viewers?.map((item: any, index: number) => (
+                        <tr key={index} className={`${index === 0 && "fw-bold h2"}`}>
+                          <td className="text-center">
+                            <span className="text-green">{index + 1}</span>
+                          </td>
+                          <td>
+                            <span className="text-green">{item?.location}</span>
+                          </td>
+                          <td className="d-xl-table-cell text-center">
+                            <span className="bg-optical-success">{item?.price}</span>
+                          </td>
+                          <td className="d-xl-table-cell text-center">
+                            <span className="bg-optical-danger ">{item?.property_value}</span>
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
@@ -119,7 +107,7 @@ export default function Home() {
             </div>
 
             <div className="col-lg-4">
-              <p className="card-title">มูลค่าขายฝากกับ Finn4U</p>
+              <p className="card-title">มูลค่าขายฝากกับ ทุนทันใจ</p>
               <div className="card-body  py-3">
                 <div className="chart chart-sm">
                   <div className="chartjs-size-monitor">
@@ -130,8 +118,7 @@ export default function Home() {
                       <div className=""></div>
                     </div>
                   </div>
-                  {/* style="display: block; width: 696px; height: 252px;" */}
-                  <canvas id="chartjs-dashboard-line" width="696" height="252" style={{ display: "block", width: 696, height: 252 }} className="chartjs-render-monitor"></canvas>
+                  {form?.consignment_value && <LineChart set={form?.consignment_value} />}
                 </div>
               </div>
             </div>
@@ -144,47 +131,19 @@ export default function Home() {
                 <div className="card-body">
                   <table className="table table-hover my-0">
                     <tbody>
-                      <tr>
-                        <td>
-                          <h3 className="text-secondary">1</h3>
-                        </td>
-                        <td>
-                          <h3 className="text-secondary">สมคิด จิตชื่นบาน</h3>
-                        </td>
-                        <td className="d-xl-table-cell text-end">
-                          <div className="badge">
-                            <span className="badge badge2">10,000,000+</span>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <h4 className="text-secondary">2</h4>
-                        </td>
-                        <td>
-                          <h4 className="text-secondary">สมหมาย ใจดี</h4>
-                        </td>
-                        <td className="d-xl-table-cell text-end">
-                          <div className="badge">
-                            <span className="badge badge2">5,000,000-10,000,000</span>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <h4 className="text-secondary">3</h4>
-                        </td>
-                        <td>
-                          <h4 className="text-secondary">สมพร มั่นทอง</h4>
-                        </td>
-                        <td className="d-xl-table-cell text-end">
-                          <div className="badge">
-                            <span className="badge badge2">1,000,000-5,000,000</span>
-                          </div>
-                        </td>
-                      </tr>
-
-
+                      {form?.most_invester?.map((item: any, index: number) => (
+                        <tr key={index} className={`${index === 0 && "fw-bold h2"}`}>
+                          <td className="text-center">
+                            <span className="text-secondary">{index + 1}</span>
+                          </td>
+                          <td>
+                            <span className="text-secondary">{item?.fullname}</span>
+                          </td>
+                          <td className="d-xl-table-cell text-end">
+                            <span className="badge badge2">{item?.amount}</span>
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
@@ -192,24 +151,10 @@ export default function Home() {
             </div>
 
             <div className="col-lg-4">
-              <p className="card-title">จำนวนผู้ลงทะเบียนกับ Finn4U</p>
+              <p className="card-title">จำนวนผู้ลงทะเบียนกับ ทุนทันใจ</p>
               <div className="card-body  py-3">
                 <div className="chart chart-sm">
-                  <div className="chartjs-size-monitor">
-                    <div className="chartjs-size-monitor-expand">
-                      <div className=""></div>
-                    </div>
-                    <div className="chartjs-size-monitor-shrink">
-                      <div className=""></div>
-                    </div>
-                  </div>
-                  <canvas
-                    id="chartjs-dashboard-line2"
-                    width="696"
-                    height="252"
-                    style={{ display: "block", width: "696px", height: "252px" }}
-                    className="chartjs-render-monitor"
-                  ></canvas>
+                  {form?.member_value && <LineChart set={form?.member_value} />}
                 </div>
               </div>
             </div>
