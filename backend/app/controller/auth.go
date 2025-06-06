@@ -87,78 +87,6 @@ func Connect(c *gin.Context) {
 	})
 }
 
-func Login(c *gin.Context) {
-	var request request.Login
-
-	if err := c.ShouldBindBodyWithJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, types.Response{
-			Code:  http.StatusBadRequest,
-			Error: utils.NullableString(err.Error()),
-		})
-		return
-	}
-	if err := request.Validated(); err != nil {
-		c.JSON(http.StatusBadRequest, types.Response{
-			Code:  http.StatusBadRequest,
-			Error: utils.NullableString(err.Error()),
-		})
-		return
-	}
-
-	var user models.User
-	db, err := database.Conn()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, types.Response{
-			Code:  http.StatusInternalServerError,
-			Error: utils.NullableString(err.Error()),
-		})
-		return
-	}
-	defer database.Close(db)
-	if err := db.Where("email =?", request.Email).First(&user).Error; err != nil {
-		c.JSON(http.StatusNotFound, types.Response{
-			Code:  http.StatusInternalServerError,
-			Error: utils.NullableString("User not found"),
-		})
-		return
-	}
-	if !utils.CheckPasswordHash(request.Password, user.Password) {
-		c.JSON(http.StatusUnauthorized, types.Response{
-			Code:  http.StatusInternalServerError,
-			Error: utils.NullableString("Invalid password"),
-		})
-		return
-	}
-
-	accessToken, accessTokenExpiresIn, errAccess := user.GenerateAccessToken()
-	if errAccess != nil {
-		c.JSON(http.StatusInternalServerError, types.Response{
-			Code:  http.StatusInternalServerError,
-			Error: utils.NullableString(errAccess.Error()),
-		})
-		return
-	}
-	refreshToken, refreshTokenExpiresIn, errRefresh := user.GenerateRefreshToken()
-	if errRefresh != nil {
-		c.JSON(http.StatusInternalServerError, types.Response{
-			Code:  http.StatusInternalServerError,
-			Error: utils.NullableString(errRefresh.Error()),
-		})
-		return
-	}
-	c.JSON(200, types.Response{
-		Status:  true,
-		Code:    http.StatusOK,
-		Message: utils.NullableString("Logged in successfully"),
-		Data: map[string]interface{}{
-			"access_token":       accessToken,
-			"refresh_token":      refreshToken,
-			"access_expires_in":  accessTokenExpiresIn,
-			"refresh_expires_in": refreshTokenExpiresIn,
-		},
-	})
-}
-
 func SignIn(c *gin.Context) {
 	var request request.SignIn
 
@@ -231,73 +159,6 @@ func SignIn(c *gin.Context) {
 	})
 }
 
-func RefreshToken(c *gin.Context) {
-	var request request.RefreshToken
-
-	if err := c.ShouldBindBodyWithJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, types.Response{
-			Code:  http.StatusBadRequest,
-			Error: utils.NullableString(err.Error()),
-		})
-		return
-	}
-	if err := request.Validated(); err != nil {
-		c.JSON(http.StatusBadRequest, types.Response{
-			Code:  http.StatusBadRequest,
-			Error: utils.NullableString(err.Error()),
-		})
-		return
-	}
-
-	fmt.Println(request)
-
-	var user models.User
-	db, err := database.Conn()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, types.Response{
-			Code:  http.StatusInternalServerError,
-			Error: utils.NullableString(err.Error()),
-		})
-		return
-	}
-	defer database.Close(db)
-	if err := db.Where("email =?", "user1@email.net").First(&user).Error; err != nil {
-		c.JSON(http.StatusNotFound, types.Response{
-			Code:  http.StatusInternalServerError,
-			Error: utils.NullableString("User not found"),
-		})
-		return
-	}
-
-	accessToken, accessTokenExpiresIn, errAccess := user.GenerateAccessToken()
-	if errAccess != nil {
-		c.JSON(http.StatusInternalServerError, types.Response{
-			Code:  http.StatusInternalServerError,
-			Error: utils.NullableString(errAccess.Error()),
-		})
-		return
-	}
-	refreshToken, refreshTokenExpiresIn, errRefresh := user.GenerateRefreshToken()
-	if errRefresh != nil {
-		c.JSON(http.StatusInternalServerError, types.Response{
-			Code:  http.StatusInternalServerError,
-			Error: utils.NullableString(errRefresh.Error()),
-		})
-		return
-	}
-	c.JSON(200, types.Response{
-		Status:  true,
-		Code:    http.StatusOK,
-		Message: utils.NullableString("Logged in successfully"),
-		Data: map[string]any{
-			"access_token":       accessToken,
-			"refresh_token":      refreshToken,
-			"access_expires_in":  accessTokenExpiresIn,  // 5 minutes
-			"refresh_expires_in": refreshTokenExpiresIn, // 1 day
-		},
-	})
-}
-
 func VerifyToken(c *gin.Context) {
 	// auth := c.GetHeader("Authorization")
 	// if auth == "" {
@@ -316,10 +177,6 @@ func VerifyToken(c *gin.Context) {
 	// 	c.JSON(http.StatusUnauthorized, gin.H{"error": "Token is invalid"})
 	// 	return
 	// }
-}
-
-func Register(c *gin.Context) {
-
 }
 
 func Enroll(c *gin.Context) {
