@@ -75,7 +75,7 @@ export const formatNumber = (
   style: string = "decimal",
   currency?: string
 ): string => {
-  if (!value) return "-";
+  if (!value) return "0";
   const options: Intl.NumberFormatOptions =
     style === "currency"
       ? { style: "currency", currency: currency || "USD" }
