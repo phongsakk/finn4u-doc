@@ -15774,7 +15774,9 @@ span.flatpickr-weekday {
     }
   }
 }
-
+.bg-primary {
+  background-color: #30b175 !important;
+}
 
 .bg-optical-success{
   background-color: #EAF7F1;

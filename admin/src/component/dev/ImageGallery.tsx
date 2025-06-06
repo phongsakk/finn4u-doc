@@ -15,7 +15,8 @@ export const ImageGallery = ({ images, onChange }: {
         <Row className="mb-3">
             {images?.map((item, index) => (
                 <div
-                    className="col-lg-4 col-sm-5 mb-1 me-auto d-flex justify-content-center justify-content-lg-start  nopad"
+                    className="col-lg-4 col-sm-5 mb-1 me-auto d-flex justify-content-center justify-content-lg-start nopad"
+                    style={{ minHeight: "150px" }}
                     key={index}
                 >
                     <label
