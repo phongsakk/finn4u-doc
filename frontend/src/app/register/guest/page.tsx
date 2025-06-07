@@ -1,11 +1,15 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomImage from "@components/CustomImage";
 import { Button, Form, Row } from "react-bootstrap";
 import { FormInput } from "@components/FormCustom/FormInput";
 import { FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { FaLine } from "react-icons/fa";
+import { AlertPrimary } from "@components/alert/SwalAlert";
+import axios from "axios";
+import { api } from "@utils/api/index";
+import { redirect } from "next/navigation";
 
 const RegisguestModel = {
   firstname: "",
@@ -18,12 +22,61 @@ const RegisguestModel = {
 
 function page() {
   const [form, setForm] = useState(RegisguestModel);
+  const [PasswordValidated, setPasswordValidated] = useState("");
+  const [ConfirmValidated, setConfirmValidated] = useState("");
+  const [validated, setValidated] = useState(false);
+  const [submit, setSubmit] = useState<boolean>(false);
+
   const handleForm = (e: any) => {
     setForm((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
   };
+
+  useEffect(() => {
+    if (form.password.length < 8) {
+      setPasswordValidated("Then more 8 characters!");
+    } else {
+      setPasswordValidated("");
+    }
+
+    if (form.password !== form.confirm_password) {
+      setConfirmValidated("Passwords do not match!");
+    } else {
+      setConfirmValidated("");
+    }
+  }, [form.password, form.confirm_password]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      setSubmit(true);
+      const event = e.currentTarget;
+      if (event.checkValidity() === false) {
+        e.stopPropagation();
+        setValidated(true);
+        return false;
+      }
+      if (form?.password !== form?.confirm_password) {
+       return AlertPrimary("Password not match - Please try again!", "error")
+      }
+
+      const { data: res } = await axios.post(api.internal(`/api/register/guest`), form)
+      if (res.status) {
+        AlertPrimary("บันทึกข้อมูลสำเร็จ", "success").then(() => {
+          redirect("/")
+        });
+      } else {
+        AlertPrimary(`ไม่สามารถบันทึกข้อมูลได้ - Please try again`, "error");
+      }
+    } catch (error) {
+      AlertPrimary(`ไม่สามารถบันทึกข้อมูลได้ - Please try again`, "error");
+    } finally {
+      setSubmit(false);
+    }
+  }
+
   return (
     <div className="">
       <div className="justify-content-center">
@@ -39,7 +92,7 @@ function page() {
             <h4 className="title-main font2 mb-5">
               ลงทะเบียนฝากขายกับ ทุนทันใจ
             </h4>
-            <Form>
+            <Form noValidate validated={validated} onSubmit={handleSubmit}>
               <Row className="mb-3">
                 <FormInput
                   groupClass="col-lg-6"
@@ -63,7 +116,11 @@ function page() {
               <Row className="mb-3">
                 <FormInput
                   groupClass="col-lg-12"
-                  onChange={handleForm}
+                  onChange={(e) => {
+                    if (e.target.value.length <= 10) {
+                      handleForm(e);
+                    }
+                  }}
                   name="phone_number"
                   value={form?.phone_number}
                   label="เบอร์โทรศัพท์"
@@ -86,6 +143,7 @@ function page() {
                   name="password"
                   type="password"
                   value={form?.password}
+                  invalid={PasswordValidated}
                   label="รหัสผ่าน"
                   placeholder="รหัสผ่าน"
                   required
@@ -96,6 +154,7 @@ function page() {
                   name="confirm_password"
                   type="password"
                   value={form?.confirm_password}
+                  invalid={ConfirmValidated}
                   label="ยืนยันรหัสผ่าน"
                   placeholder="ยืนยันรหัสผ่าน"
                   required
@@ -103,10 +162,12 @@ function page() {
               </Row>
               <div className="d-flex flex-column align-items-center px-5">
                 <Button
+                  type="submit"
                   className="rounded-pill w-100 text-center py-2"
                   variant="primary"
+                  disabled={submit}
                 >
-                  สมัครสมาชิก
+                  {submit ? "กำลังตรวจสอบข้อมูล..." : "สมัครสมาชิก"}
                 </Button>
               </div>
               <div className="Separator my-4">

@@ -48,6 +48,7 @@ function ImageApi({
                     style={style}
                     onError={() => setOnError(true)}
                     priority
+                    unoptimized
                 />
             }
         </>

@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "@assets/css/app.css"
 import "@assets/css/custom.css"
 import { SessionProvider } from "next-auth/react";
+import { LoaderProvider } from "@component/context/LoaderContext";
 // import SessionDisplay from "@component/dev/SessionDisplay";
 
 export const metadata: Metadata = {
@@ -19,7 +20,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <SessionProvider >
-          {children}
+          <LoaderProvider>
+            {children}
+          </LoaderProvider>
         </SessionProvider>
       </body>
     </html>
