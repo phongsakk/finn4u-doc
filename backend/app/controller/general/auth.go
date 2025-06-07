@@ -26,7 +26,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	if err := utils.Validate(request); err != nil {
+	if err := request.Validated(); err != nil {
 		c.JSON(http.StatusBadRequest, types.Response{
 			Code:  http.StatusBadRequest,
 			Error: utils.NullableString(err.Error()),
@@ -34,7 +34,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	var user models.Consignor
+	var user models.User
 	db, err := database.Conn()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
@@ -81,7 +81,6 @@ func Register(c *gin.Context) {
 	user.DistrictID = request.DistrictID
 	user.SubdistrictID = request.SubdistrictID
 	user.Email = request.Email
-	user.GenID = fmt.Sprintf("IN%d", time.Now().Unix())
 
 	var otp models.OTP
 	if err := db.Transaction(func(tx *gorm.DB) error {
@@ -287,7 +286,7 @@ func ResendOTP(c *gin.Context) {
 		return
 	}
 
-	var user models.Consignor
+	var user models.User
 	db, err := database.Conn()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
