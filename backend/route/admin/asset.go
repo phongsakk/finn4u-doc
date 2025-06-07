@@ -7,7 +7,7 @@ import (
 
 func AssetRouterGroup(r *gin.RouterGroup) {
 	r.GET("/", conAdmin.FindAsset)
-	r.POST("/matchings", conAdmin.DoAppraisal)
+	r.POST("/matchings", conAdmin.CreateMatching)
 	r.POST("/:asset_id/set-as-recommended", conAdmin.SetAssetAsRecommended)
 	r.POST("/:asset_id/remove-from-recommended", conAdmin.RemoveAssetFromRecommended)
 	r.POST("/:asset_id/appraisal", conAdmin.DoAppraisal)

@@ -8,6 +8,7 @@ import (
 func AuthRouterGroup(r *gin.RouterGroup) {
 	r.POST("/signin", con.SignIn)          // consignor
 	r.POST("/consignor/login", con.SignIn) // consignor
+	r.POST("/refresh-token", con.RefreshToken)
 
 	r.POST("/verify-token", con.VerifyToken)
 
