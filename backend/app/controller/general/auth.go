@@ -181,15 +181,17 @@ func Login(c *gin.Context) {
 		})
 		return
 	}
+
+	fmt.Println(accessTokenExpiresIn.Unix())
 	c.JSON(200, types.Response{
 		Status:  true,
 		Code:    http.StatusOK,
 		Message: utils.NullableString("Logged in successfully"),
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"access_token":       accessToken,
 			"refresh_token":      refreshToken,
-			"access_expires_in":  accessTokenExpiresIn,
-			"refresh_expires_in": refreshTokenExpiresIn,
+			"access_expires_in":  accessTokenExpiresIn.Unix(),
+			"refresh_expires_in": refreshTokenExpiresIn.Unix(),
 		},
 	})
 }
@@ -419,5 +421,40 @@ func VerifyOTP(c *gin.Context) {
 			ExpiresIn:        accessTokenExpiresIn.Unix(),
 			RefreshExpiresIn: refreshTokenExpiresIn.Unix(),
 		},
+	})
+}
+
+func Profile(c *gin.Context) {
+	var user models.User
+
+	if err := user.GetFromRequest(c); err != nil {
+		c.JSON(http.StatusUnauthorized, types.Response{
+			Code:    http.StatusUnauthorized,
+			Error:   utils.NullableString(err.Error()),
+			Message: utils.NullableString("Invalid token"),
+		})
+		return
+	}
+	db, errDb := database.Conn()
+	if errDb != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(errDb.Error()),
+		})
+		return
+	}
+	defer database.Close(db)
+	if err := db.Model(&user).Error; err != nil {
+		c.JSON(http.StatusUnauthorized, types.Response{
+			Code:  http.StatusUnauthorized,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, types.Response{
+		Code:   http.StatusOK,
+		Status: true,
+		Data:   user,
 	})
 }
