@@ -840,9 +840,7 @@ func RefreshToken(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(request)
-
-	var user models.User
+	var user models.Consignor
 	db, err := database.Conn()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
@@ -852,7 +850,19 @@ func RefreshToken(c *gin.Context) {
 		return
 	}
 	defer database.Close(db)
-	if err := db.Where("email =?", "user1@email.net").First(&user).Error; err != nil {
+
+	if err := user.ValidateRefreshToken(request.RefreshToken); err != nil {
+		c.JSON(http.StatusUnauthorized, types.Response{
+			Code:  http.StatusUnauthorized,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+	fmt.Println(request.RefreshToken)
+	fmt.Println(user.ID)
+	fmt.Println(user.Email)
+
+	if err := db.Where("id=?", user.ID).First(&user).Error; err != nil {
 		c.JSON(http.StatusNotFound, types.Response{
 			Code:  http.StatusInternalServerError,
 			Error: utils.NullableString("User not found"),
