@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/phongsakk/finn4u-back/app/database"
 	"github.com/phongsakk/finn4u-back/app/database/models"
+	"github.com/phongsakk/finn4u-back/app/libs"
 	request "github.com/phongsakk/finn4u-back/app/request/admin"
 	"github.com/phongsakk/finn4u-back/types"
 	"github.com/phongsakk/finn4u-back/utils"
@@ -165,10 +166,10 @@ func CreateMatching(c *gin.Context) {
 		if err := trx.Model(&models.Asset{}).Where("id=?", request.AssetID).First(&asset).Error; err == gorm.ErrRecordNotFound {
 			return fmt.Errorf("asset not found")
 		}
-		if asset.Status == 3 {
+		if asset.Status == libs.ASSET_MATCHING {
 			return fmt.Errorf("asset is already sold")
 		} else {
-			asset.Status = 3
+			asset.Status = libs.ASSET_MATCHING
 			if err := trx.Save(&asset).Error; err != nil {
 				return err
 			}

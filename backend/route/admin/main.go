@@ -28,4 +28,7 @@ func RouterGroup(r *gin.RouterGroup) {
 
 	sell := auth.Group("/sell")
 	SellRouterGroup(sell)
+
+	overview := auth.Group("/overview")
+	OverviewRouterGroup(overview)
 }
