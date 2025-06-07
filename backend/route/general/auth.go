@@ -7,6 +7,7 @@ import (
 
 func AuthRouterGroup(r *gin.RouterGroup) {
 	r.POST("/login", controller.Login)
+	r.POST("/refresh-token", controller.RefreshToken)
 	r.POST("/register", controller.Register)
 	r.POST("/resend-otp", controller.ResendOTP)
 	r.POST("/verify-otp", controller.VerifyOTP)
