@@ -24,6 +24,7 @@ export const POST = async (
       formData.getAll("new_images[]") as File[],
       "property"
     );
+
     if (!id) {
       return NextResponse.json({ error: "No id" }, { status: 401 });
     }
@@ -48,6 +49,8 @@ export const POST = async (
       };
     }
 
+    const tags = formData.getAll("tags[]");
+
     const model_apr = {
       price_appraisal: Number(parsed.price_appraisal),
       collateral_price: Number(parsed.collateral_price),
@@ -56,15 +59,13 @@ export const POST = async (
         .filter((x: any) => x.is_display === "true")
         .map((item: any) => Number(item.id)),
       new_images: new_images,
-      tags: parsed.tags
-        .filter((x: any) => x.is_check === "true")
-        .map((item: any) => Number(item.id)),
+      tags: tags?.map((item: any) => Number(item)) || [],
       is_published: parsed.is_published === "true" ? true : false,
       find_invester: parsed.find_invester === "true" ? true : false,
       status: Number(parsed.status),
       auction: auction_model,
     };
-
+    
     const token = session.user?.accessToken ?? "";
     const { data: response } = await axios.post(
       api.external(`/v1/admin/asset/${id}/appraisal`),

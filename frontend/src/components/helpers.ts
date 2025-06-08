@@ -258,6 +258,7 @@ export const CheckAuth = async () => {
 
   return {
     status: true,
+    role:session?.user?.role ?? "",
     headerToken: {
       headers: {
         Authorization: "Bearer " + (session.user?.accessToken ?? ""),

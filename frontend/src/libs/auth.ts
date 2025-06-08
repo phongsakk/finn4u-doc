@@ -7,17 +7,6 @@ import { log, logError } from "@components/helpers";
 import dayjs from "dayjs";
 import { api } from "@utils/api/index";
 
-declare module "next-auth" {
-  interface User {
-    id?: string;
-    name?: string | null;
-    email?: string | null;
-    image?: string | null;
-    accessToken?: string | null;
-    refreshToken?: string | null;
-  }
-}
-
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
   providers: [
@@ -30,7 +19,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         refreshToken: { label: "refreshToken", type: "text" },
         userType: { label: "userType", type: "text" },
       },
-      authorize: async ({ email, accessToken, refreshToken, userType }) => {
+      authorize: async (credentials) => {
+        const { email, accessToken, refreshToken, userType } = credentials;
         if (!email && !accessToken && !refreshToken) {
           return null;
         }
@@ -38,7 +28,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return {
             accessToken: accessToken as string,
             refreshToken: refreshToken as string,
-            role: userType || "general",
+            role: String(userType) || "general",
             name: email as string,
             email: email as string,
           };
@@ -56,7 +46,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: "Password", type: "password" },
         userType: { label: "User type", type: "text" },
       },
-      authorize: async ({ email, password, userType }) => {
+      authorize: async (credentials) => {
+        const { email, password, userType } = credentials;
         if (email === null && password === null) {
           return null;
         }
@@ -94,7 +85,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return {
             accessToken,
             refreshToken,
-            role: userType || "general",
+            role: String(userType) || "general",
             name: email as string,
             email: email as string,
           };
@@ -168,9 +159,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
 async function refreshAccessToken(token: Jwt | any) {
   try {
-    const response = await axios.post(api.external("/v1/auth/refresh-token"), {
+    var api_path = "";
+    switch (token.user.role) {
+      case "general":
+        api_path = "/v1/general/auth/refresh-token";
+        break;
+      case "consignor":
+        api_path = "/v1/auth/refresh-token";
+        break;
+      case "invester":
+        api_path = "/v1/auth/refresh-token";
+        break;
+      default:
+        api_path = "/v1/general/auth/refresh-token";
+        break;
+    }
+
+    const response = await axios.post(api.external(api_path), {
       refresh_token: token.refreshToken,
     });
+
     const new_token = await response.data;
     if (!new_token) {
       return null;

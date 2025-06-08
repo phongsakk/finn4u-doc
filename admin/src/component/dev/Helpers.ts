@@ -211,9 +211,9 @@ export const CheckAuth = async () => {
   if (!session) {
     return { status: false, code: 401, message: "Not authenticated" };
   }
-
   return {
     status: true,
+    role: session?.user?.role ?? "",
     headerToken: {
       headers: {
         Authorization: "Bearer " + (session.user?.accessToken ?? ""),

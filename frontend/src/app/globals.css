@@ -34,6 +34,7 @@
 /* ROOT */
 
 body {
+  position: relative;
   background-color: #eaf7f1 !important;
 }
 
@@ -55,6 +56,9 @@ span {
 
 img {
   width: 100%;
+}
+.body-frame {
+  padding-top: 60px;
 }
 
 .text-primary {
@@ -478,6 +482,9 @@ img {
     border: none;
   }
 }
+.navbar-expand-lg .navbar-nav{
+  width: 65%;
+}
 
 .navbar-expand-lg .navbar-nav .nav-link {
   color: #a4a4a4;
@@ -486,10 +493,6 @@ img {
 
 .nav-link {
   font-size: 18px !important;
-}
-
-.navbar-expand-lg .navbar-nav {
-  column-gap: 32px;
 }
 
 .navbar-nav > .nav-item.nav-active,
@@ -1247,15 +1250,15 @@ img {
 
   .navbar-brand {
     padding: 0 !important;
-    display: inline-block;
-    width: 9%;
+    width: 100%;
+    position: relative;
 
     img {
       position: absolute;
       left: 20px;
       width: 130px;
       height: auto;
-      top: -8px;
+      top: -35px;
     }
   }
 
@@ -1519,11 +1522,11 @@ img {
   }
 }
 
-.group-guest-btn{
+.group-guest-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  button{
+  button {
     width: 100%;
     display: flex !important;
     border-radius: 75px;
@@ -1538,11 +1541,11 @@ img {
   background-color: #1877f2 !important;
 }
 
-.btn-line{
-  background-color: #00C300 !important;
+.btn-line {
+  background-color: #00c300 !important;
 }
 
-.btn-google{
+.btn-google {
   border: solid 1px #2f2f2f;
   background-color: #ffffff !important;
 }
@@ -1618,9 +1621,12 @@ img {
 }
 
 .navbar-expand-lg .container-fluid {
-  padding-top: 12px;
   padding-bottom: 12px;
-  padding-right: 22px !important;
+  padding-right: 1% !important;
+  .logo-brand{
+    width: 120px;
+    height: 57px;
+  }
 }
 
 #modalinterest .modal-header {
@@ -1897,6 +1903,9 @@ img {
 .profile-menu {
   .dropdown-toggle::after {
     display: none;
+  }
+  .profile-name {
+    max-width: 120px;
   }
   .dropdown-menu {
     background-color: #018b68;

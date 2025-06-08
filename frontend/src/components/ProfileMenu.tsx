@@ -5,6 +5,8 @@ import React from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import Link from "next/link";
 import { useLoaderContext } from "./context/LoaderContext";
+import { BsHouseAdd } from "react-icons/bs";
+import { BsPersonFillAdd } from "react-icons/bs";
 
 function ProfileMenu({ session }: { session: any }) {
   const { pathname, specialBtn, openModal } = useLoaderContext();
@@ -13,18 +15,24 @@ function ProfileMenu({ session }: { session: any }) {
       {session && (
         <>
           {specialBtn?.status && (
-            <div className="d-flex justify-content-center mb-2 mb-lg-0">
-              <Link
-                className="btn btn-success text-white me-2"
-                href="/profile/announcement/new"
-              >
+            <Link
+              className="btn btn-success text-white me-2"
+              href="/profile/announcement/new"
+            >
+              <span className="d-none d-sm-none d-mb-block d-lg-block">
                 ลงประกาศ
-              </Link>
-            </div>
+              </span>
+              <BsHouseAdd
+                className="d-block d-sm-block d-mb-none d-lg-none"
+                size={25}
+              />
+            </Link>
           )}
           <Dropdown className="d-flex justify-content-center profile-menu">
             <Dropdown.Toggle variant="register">
-              {session?.user?.name}
+              <span className="d-none d-sm-none d-md-none d-lg-block profile-name text-truncate">
+                {session?.user?.name}
+              </span>
               <Image
                 src="/register.svg"
                 alt="register"
@@ -66,7 +74,13 @@ function ProfileMenu({ session }: { session: any }) {
             }`}
           >
             <Link className="nav-link" href="/register">
-              ลงทะเบียน
+              <span className="d-none d-sm-none d-mb-block d-lg-block">
+                ลงทะเบียน
+              </span>
+              <BsPersonFillAdd
+                className="d-block d-sm-block d-mb-none d-lg-none text-primary"
+                size={25}
+              />
             </Link>
           </div>
           <Link
@@ -77,7 +91,7 @@ function ProfileMenu({ session }: { session: any }) {
               openModal("login");
             }}
           >
-            <p>เข้าสู่ระบบ</p>
+            <p className="d-none d-sm-none d-md-none d-lg-block">เข้าสู่ระบบ</p>
             <Image
               src="/register.svg"
               alt="register"

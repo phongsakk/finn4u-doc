@@ -226,6 +226,7 @@ func DoAppraisal(c *gin.Context) {
 		tags := *r.Tags
 		for _, tagId := range tags {
 			var tag models.AssetTag
+			tx.Where("asset_id=? AND tag_id=?", asset.ID, tagId).First(&tag)
 			tag.AssetID = asset.ID
 			tag.TagID = tagId
 			if err := tx.Save(&tag).Error; err != nil {

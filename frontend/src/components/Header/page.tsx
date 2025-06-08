@@ -3,14 +3,24 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Button from "react-bootstrap/Button";
-import Collapse from "react-bootstrap/Collapse";
 import Imagelogo from "@public/logo1.png";
+import logoSmall from "@public/logo.png";
 import ProfileMenu from "@components/ProfileMenu";
 import { useLoaderContext } from "@components/context/LoaderContext";
+import { Modal } from "react-bootstrap";
+import { PiList } from "react-icons/pi";
 
 export default function Navbar() {
   const [navbarOpen, setNavOpen] = useState(false);
+  const [showmenu, setShowMenu] = useState(false);
   const { pathname, session, status } = useLoaderContext();
+  const CloseMenu = () => {
+    setShowMenu(false);
+  };
+
+  const OpenMenu = () => {
+    setShowMenu(true);
+  };
 
   const menuItems = [
     {
@@ -49,51 +59,75 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="navbar navbar-expand-lg navbar-main">
+      <div className="navbar navbar-expand-lg navbar-main position-fixed w-100 z-3">
         <div className="container-fluid">
-          <Link className="navbar-brand" href="/">
-            <Image src={Imagelogo} alt="logo" priority />
-          </Link>
-          <Button
-            className="navbar-toggler"
-            onClick={() => setNavOpen(!navbarOpen)}
-            type="button"
-            variant="secondary"
-            aria-controls="navbarSupportedContent"
-            aria-expanded={navbarOpen}
-          >
-            <span className="navbar-toggler-icon"></span>
-          </Button>
-
-          <Collapse in={navbarOpen}>
-            <div className="navbar-collapse" id="navbarSupportedContent">
-              <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                {menuItems.map((item, index) => {
-                  const isActive = new RegExp(`^${item.href}(/|$)`).test(
-                    pathname
-                  );
-
-                  return (
-                    <li
-                      className={`nav-item ${isActive ? "nav-active" : ""}`}
-                      key={index}
-                    >
-                      <Link
-                        className="nav-link"
-                        aria-current="page"
-                        href={item.href}
-                      >
-                        {item.label}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-              <ProfileMenu session={session} />
-            </div>
-          </Collapse>
+          <div className="logo-brand">
+            <Link href="/">
+              <Image
+                src={Imagelogo}
+                alt="logo"
+                className="w-100 h-100"
+                priority
+              />
+            </Link>
+          </div>
+          <ul className="d-none d-sm-none d-mb-none d-lg-flex navbar-nav px-3 justify-content-between">
+            {menuItems.map((item, index) => {
+              const isActive = new RegExp(`^${item.href}(/|$)`).test(pathname);
+              return (
+                <li
+                  className={`nav-item ${isActive ? "nav-active" : ""}`}
+                  key={index}
+                >
+                  <Link
+                    className="nav-link"
+                    aria-current="page"
+                    href={item.href}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+          <div className="d-flex">
+            <ProfileMenu session={session} />
+            <Button
+              className="ms-2 d-mb-block d-lg-none border"
+              variant=""
+              onClick={OpenMenu}
+            >
+              <PiList size={25} />
+            </Button>
+          </div>
         </div>
       </div>
+      <Modal show={showmenu} onHide={CloseMenu} fullscreen>
+        <Modal.Header className="text-center" closeButton>
+          <h3 className="text-primary fw-bold">ทุนทันใจ</h3>
+        </Modal.Header>
+        <Modal.Body>
+          <ul className="navbar-nav justify-content-between">
+            {menuItems.map((item, index) => {
+              const isActive = new RegExp(`^${item.href}(/|$)`).test(pathname);
+              return (
+                <li
+                  className={`nav-item ${isActive ? "nav-active" : ""} border-bottom`}
+                  key={index}
+                >
+                  <Link
+                    className="nav-link"
+                    aria-current="page"
+                    href={item.href}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </Modal.Body>
+      </Modal>
     </>
   );
 }
