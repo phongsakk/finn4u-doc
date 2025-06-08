@@ -8,8 +8,10 @@ import (
 )
 
 func AuthRouterGroup(r *gin.RouterGroup) {
-	guest := r.Use(middleware.AuthMiddleware(libs.AUTH_GUEST))
-	auth := r.Use(middleware.AuthMiddleware(libs.AUTH_STRICT))
+	guest := r.Group("")
+	auth := r.Group("")
+	guest.Use(middleware.AuthMiddleware(libs.AUTH_GUEST))
+	auth.Use(middleware.AuthMiddleware(libs.AUTH_STRICT))
 	guest.POST("/login", controller.Login)
 	auth.POST("/refresh-token", controller.RefreshToken)
 	guest.POST("/register", controller.Register)
