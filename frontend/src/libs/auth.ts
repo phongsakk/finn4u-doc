@@ -169,7 +169,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 async function refreshAccessToken(token: Jwt | any) {
   try {
     const response = await axios.post(api.external("/v1/auth/refresh-token"), {
-      refresh_token: `${process.env.NEXT_PUBLIC_AUTH_SECRET} ${token.refreshToken}`,
+      refresh_token: token.refreshToken,
     });
     const new_token = await response.data;
     if (!new_token) {
