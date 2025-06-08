@@ -123,7 +123,7 @@ async function refreshAccessToken(token: Jwt | any) {
     };
   } catch (error) {
     if (error instanceof AxiosError) {
-      log(`RefresAccessTokenError: ${error.message}`);
+      logError(`RefresAccessTokenError: ${error.message}`);
     }
     return null;
   }

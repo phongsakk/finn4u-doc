@@ -1,3 +1,4 @@
+import { CheckAuth } from "@component/dev/Helpers";
 import { auth } from "@setting/auth";
 import { NextResponse } from "next/server";
 
@@ -12,9 +13,9 @@ export async function middleware(req: Request) {
     return NextResponse.next();
   }
 
-  const session = await auth();
+  const session =  await CheckAuth();
 
-  if (!session) {
+  if (!session.status || session.role != "admin") {
     const url = new URL("/auth/login", req.url);
     return NextResponse.redirect(url);
   }

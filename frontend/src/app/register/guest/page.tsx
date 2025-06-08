@@ -12,6 +12,7 @@ import { api } from "@utils/api/index";
 import { redirect } from "next/navigation";
 
 const RegisguestModel = {
+  user_prefix_id: 1,
   firstname: "",
   lastname: "",
   phone_number: "",
@@ -59,13 +60,16 @@ function page() {
         return false;
       }
       if (form?.password !== form?.confirm_password) {
-       return AlertPrimary("Password not match - Please try again!", "error")
+        return AlertPrimary("Password not match - Please try again!", "error");
       }
 
-      const { data: res } = await axios.post(api.internal(`/api/register/guest`), form)
+      const { data: res } = await axios.post(
+        api.internal(`/api/register/guest`),
+        form
+      );
       if (res.status) {
         AlertPrimary("บันทึกข้อมูลสำเร็จ", "success").then(() => {
-          redirect("/")
+          redirect("/");
         });
       } else {
         AlertPrimary(`ไม่สามารถบันทึกข้อมูลได้ - Please try again`, "error");
@@ -75,7 +79,7 @@ function page() {
     } finally {
       setSubmit(false);
     }
-  }
+  };
 
   return (
     <div className="">
@@ -179,26 +183,17 @@ function page() {
                 <div className="line border w-100"></div>
               </div>
               <div className="group-guest-btn px-5">
-                <Button
-                  className="mb-3 text-white"
-                  variant="feacbook"
-                >
+                <Button className="mb-3 text-white" variant="feacbook">
                   <FaFacebook size={20} />
                   <span className="px-2">เข้าสู่ระบบด้วย Facebook</span>
                 </Button>
-                <Button
-                  className="mb-3"
-                  variant="google"
-                >
+                <Button className="mb-3" variant="google">
                   <FcGoogle size={20} />
                   <span className="px-2">เข้าสู่ระบบด้วย Google</span>
                 </Button>
-                <Button
-                  className="text-white"
-                  variant="line"
-                >
+                <Button className="text-white" variant="line">
                   <FaLine size={20} />
-                  <span className="px-2">เข้าสู่ระบบด้วย Google</span>
+                  <span className="px-2">เข้าสู่ระบบด้วย Line</span>
                 </Button>
               </div>
             </Form>

@@ -1,6 +1,5 @@
 import NextAuth from "next-auth";
 
-
 declare module "next-auth" {
   interface User {
     id?: string;
@@ -9,5 +8,6 @@ declare module "next-auth" {
     image?: string | null;
     accessToken?: string | null;
     refreshToken?: string | null;
+    role?: string;
   }
 }
