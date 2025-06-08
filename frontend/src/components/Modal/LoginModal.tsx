@@ -142,9 +142,9 @@ export default function LoginModal() {
                 />
                 <FormCheck
                   className="group gap-0 gap-ms-1 gap-lg-2 ms-1 ms-md-2 ms-lg-3"
-                  value="invester"
-                  checked={form.userType === "invester"}
-                  id="invester"
+                  value="investor"
+                  checked={form.userType === "investor"}
+                  id="investor"
                   name="userType"
                   type="radio"
                   onChange={handleForm}

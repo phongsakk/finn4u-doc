@@ -107,7 +107,7 @@ console.log(images)
                 onClick={() => setGallery(false)}
               ></Button>
             </div>
-            <CustomImage src={modalImage.src} alt="Modal Image" style={{}} />
+            <CustomImage src={modalImage.src} alt="Modal Image" style={{}} unoptimized/>
           </div>
         </Modal.Body>
       </Modal>

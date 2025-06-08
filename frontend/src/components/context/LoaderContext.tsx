@@ -3,7 +3,6 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import {
   ReactNode,
-  // Suspense,
   createContext,
   useContext,
   useEffect,
@@ -15,7 +14,6 @@ import {
   redirect,
   useParams,
   usePathname,
-  useSearchParams,
 } from "next/navigation";
 
 type specialBtn = {
@@ -53,7 +51,6 @@ export const LoaderProvider = ({ children }: { children: ReactNode }) => {
 
   const openModal = (type: ModalType) => setModalType(type);
   const closeModal = () => setModalType(null);
-
   useEffect(() => {
     if (params?.id) {
       if (isNaN(Number(params.id))) {
@@ -79,7 +76,7 @@ export const LoaderProvider = ({ children }: { children: ReactNode }) => {
 
   if (status === "loading") {
     return (
-      <div className="bg-white position-absolute w-100 h-100 d-flex justify-content-center align-items-center">
+      <div className="bg-white position-fixed w-100 h-100 d-flex justify-content-center align-items-center">
         <div>
           <Image
             src={WebLogo}

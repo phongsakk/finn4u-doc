@@ -18,7 +18,6 @@ export const SellAndRent = ({ pageType }: { pageType: number }) => {
     page: 1,
     total: 1,
   });
-  console.log(pageType)
   const changePage = (num: number) => {
     setPage((prev) => ({ ...prev, page: num }));
   };

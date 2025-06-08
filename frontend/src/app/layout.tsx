@@ -29,7 +29,7 @@ export default function RootLayout({
           <LoaderProvider>
             <LoginModal />
             <RegisterModal />
-            <Navbar /> {children}
+            <Navbar /> <div className="body-frame">{children}</div>
             <Footer />
           </LoaderProvider>
         </SessionProvider>
