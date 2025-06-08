@@ -482,6 +482,10 @@ img {
     border: none;
   }
 }
+
+.navbar-main .navbar-nav{
+  color: #30b175;
+}
 .navbar-expand-lg .navbar-nav{
   width: 65%;
 }
