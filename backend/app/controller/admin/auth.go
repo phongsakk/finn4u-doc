@@ -86,6 +86,7 @@ func Login(c *gin.Context) {
 
 func RefreshToken(c *gin.Context) {
 	var request request.RefreshToken
+	fmt.Println(1)
 
 	if err := c.ShouldBindBodyWithJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, types.Response{
@@ -94,6 +95,7 @@ func RefreshToken(c *gin.Context) {
 		})
 		return
 	}
+	fmt.Println(2)
 	if err := request.Validated(); err != nil {
 		c.JSON(http.StatusBadRequest, types.Response{
 			Code:  http.StatusBadRequest,
