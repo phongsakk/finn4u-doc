@@ -7,6 +7,6 @@ import (
 
 func AuthRouterGroup(r *gin.RouterGroup) {
 	r.GET("/login", controller.Login)
-	r.GET("/refresh-token", controller.RefreshToken)
+	r.POST("/refresh-token", controller.RefreshToken)
 	r.GET("/profile", controller.Profile)
 }
