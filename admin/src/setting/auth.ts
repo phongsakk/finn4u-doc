@@ -110,7 +110,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 async function refreshAccessToken(token: Jwt | any) {
   try {
     const response = await apiRefreshToken({
-      refresh_token: `${process.env.NEXT_PUBLIC_AUTH_SECRET ?? "terces-htua-u4nnif"} ${token.refreshToken}`,
+      refresh_token: token.refreshToken,
     });
     const { data } = apiRefreshTokenResponseSchema.parse(response.data);
     if (!data) {
