@@ -10,6 +10,7 @@ func RouterGroup(r *gin.RouterGroup) {
 	guest := r.Group("/")
 	guest.Use()
 	guest.POST("/login", controller.Connect)
+	guest.POST("/refresh-token", controller.AdminRefreshToken)
 
 	auth := r.Group("/")
 	auth.Use(mid.AdminAuthMiddleware)
@@ -28,4 +29,7 @@ func RouterGroup(r *gin.RouterGroup) {
 
 	sell := auth.Group("/sell")
 	SellRouterGroup(sell)
+
+	overview := auth.Group("/overview")
+	OverviewRouterGroup(overview)
 }

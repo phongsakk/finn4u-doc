@@ -83,6 +83,39 @@ func (user *Consignor) ValidateToken(encodedToken string) error {
 	return nil
 }
 
+func (user *Consignor) ValidateRefreshToken(encodedToken string) error {
+	claims := &types.Auth{}
+
+	decoded, err := jwt.ParseWithClaims(encodedToken, claims, func(token *jwt.Token) (any, error) {
+		if _, isvalid := token.Method.(*jwt.SigningMethodHMAC); !isvalid {
+			return nil, fmt.Errorf("invalid token %v", token.Header["alg"])
+		}
+		return template.SecretKeyRefresh, nil
+	})
+
+	if err != nil {
+		return err
+	}
+
+	if !decoded.Valid {
+		return errors.New("token is invalid")
+	}
+
+	user.Email = claims.Email
+	user.ID = claims.UserId
+	db, err := database.Conn()
+	if err != nil {
+		return err
+	}
+	defer database.Close(db)
+
+	if err := db.Where("id = ? AND email = ?", user.ID, user.Email).First(&user).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (user *Consignor) GenerateRefreshToken() (string, *time.Time, error) {
 	expiredAt := time.Now().Add(time.Hour * 24)
 	claims := jwt.MapClaims{

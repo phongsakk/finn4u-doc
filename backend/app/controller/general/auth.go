@@ -26,7 +26,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	if err := utils.Validate(request); err != nil {
+	if err := request.Validated(); err != nil {
 		c.JSON(http.StatusBadRequest, types.Response{
 			Code:  http.StatusBadRequest,
 			Error: utils.NullableString(err.Error()),
@@ -34,7 +34,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	var user models.Consignor
+	var user models.User
 	db, err := database.Conn()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
@@ -81,7 +81,6 @@ func Register(c *gin.Context) {
 	user.DistrictID = request.DistrictID
 	user.SubdistrictID = request.SubdistrictID
 	user.Email = request.Email
-	user.GenID = fmt.Sprintf("IN%d", time.Now().Unix())
 
 	var otp models.OTP
 	if err := db.Transaction(func(tx *gorm.DB) error {
@@ -182,15 +181,17 @@ func Login(c *gin.Context) {
 		})
 		return
 	}
+
+	fmt.Println(accessTokenExpiresIn.Unix())
 	c.JSON(200, types.Response{
 		Status:  true,
 		Code:    http.StatusOK,
 		Message: utils.NullableString("Logged in successfully"),
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"access_token":       accessToken,
 			"refresh_token":      refreshToken,
-			"access_expires_in":  accessTokenExpiresIn,
-			"refresh_expires_in": refreshTokenExpiresIn,
+			"access_expires_in":  accessTokenExpiresIn.Unix(),
+			"refresh_expires_in": refreshTokenExpiresIn.Unix(),
 		},
 	})
 }
@@ -225,7 +226,15 @@ func RefreshToken(c *gin.Context) {
 		return
 	}
 	defer database.Close(db)
-	if err := db.Where("email=?", "user1@email.net").First(&user).Error; err != nil {
+	if err := user.ValidateRefreshToken(request.RefreshToken); err != nil {
+		c.JSON(http.StatusUnauthorized, types.Response{
+			Code:  http.StatusUnauthorized,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+
+	if err := db.Where("id=?", user.ID).First(&user).Error; err != nil {
 		c.JSON(http.StatusNotFound, types.Response{
 			Code:  http.StatusInternalServerError,
 			Error: utils.NullableString("User not found"),
@@ -279,7 +288,7 @@ func ResendOTP(c *gin.Context) {
 		return
 	}
 
-	var user models.Consignor
+	var user models.User
 	db, err := database.Conn()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, types.Response{
@@ -412,5 +421,40 @@ func VerifyOTP(c *gin.Context) {
 			ExpiresIn:        accessTokenExpiresIn.Unix(),
 			RefreshExpiresIn: refreshTokenExpiresIn.Unix(),
 		},
+	})
+}
+
+func Profile(c *gin.Context) {
+	var user models.User
+
+	if err := user.GetFromRequest(c); err != nil {
+		c.JSON(http.StatusUnauthorized, types.Response{
+			Code:    http.StatusUnauthorized,
+			Error:   utils.NullableString(err.Error()),
+			Message: utils.NullableString("Invalid token"),
+		})
+		return
+	}
+	db, errDb := database.Conn()
+	if errDb != nil {
+		c.JSON(http.StatusInternalServerError, types.Response{
+			Code:  http.StatusInternalServerError,
+			Error: utils.NullableString(errDb.Error()),
+		})
+		return
+	}
+	defer database.Close(db)
+	if err := db.Model(&user).Error; err != nil {
+		c.JSON(http.StatusUnauthorized, types.Response{
+			Code:  http.StatusUnauthorized,
+			Error: utils.NullableString(err.Error()),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, types.Response{
+		Code:   http.StatusOK,
+		Status: true,
+		Data:   user,
 	})
 }
