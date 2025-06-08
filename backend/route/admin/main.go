@@ -10,10 +10,12 @@ func RouterGroup(r *gin.RouterGroup) {
 	guest := r.Group("/")
 	guest.Use()
 	guest.POST("/login", controller.Connect)
-	guest.POST("/refresh-token", controller.AdminRefreshToken)
 
 	auth := r.Group("/")
 	auth.Use(mid.AdminAuthMiddleware)
+
+	authGroup := guest.Group("/auth")
+	AuthRouterGroup(authGroup)
 
 	asset := auth.Group("/asset")
 	AssetRouterGroup(asset)
