@@ -6,5 +6,6 @@ import (
 )
 
 func AuthRouterGroup(r *gin.RouterGroup) {
+	r.GET("/refresh-token", controller.RefreshToken)
 	r.GET("/profile", controller.Profile)
 }
