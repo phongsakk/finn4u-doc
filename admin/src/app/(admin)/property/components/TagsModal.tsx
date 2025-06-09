@@ -1,4 +1,5 @@
 "use client";
+import { usePropertyContext } from "@component/context/PropertyContext";
 import { api } from "@utils/api";
 import axios from "axios";
 import Link from "next/link";
@@ -11,28 +12,30 @@ import { SlArrowLeft } from "react-icons/sl";
 export type TagModalType = {
   open: boolean;
   close?: () => void;
-}
+};
 
 type EditTag = {
   editID?: number;
   value?: string;
-  tags?: []
+  tags?: [];
 };
 
 type AddTag = {
   open: boolean;
   value?: string;
   loading?: boolean;
-}
+};
 
-function ImportTagsModal(TagModal: TagModalType) {
+function TagsModal() {
+  const { TagModal, CloseTagModal, SetReTagCon } = usePropertyContext();
   const [tags, setTags] = useState<EditTag>();
-  const [addTag, setAddTag] = useState<AddTag>({ open: false, value: "", loading: false });
-  const [reload, setReload] = useState<boolean>(false);
+  const [addTag, setAddTag] = useState<AddTag>({
+    open: false,
+    value: "",
+    loading: false,
+  });
 
-  const handleClose = () => {
-    TagModal.close?.();
-  }
+  const [reload, setReload] = useState<boolean>(false);
 
   useEffect(() => {
     const boot = async () => {
@@ -40,39 +43,43 @@ function ImportTagsModal(TagModal: TagModalType) {
         const { data: tag_res } = await axios.get(api.internal(`/api/tag`));
         setTags({ tags: tag_res.data });
       } catch (error) {
-        setTags({ tags: [] })
+        setTags({ tags: [] });
         console.error("API tags error!", error);
       }
     };
-    boot();
-  }, [TagModal?.open, reload]);
+    if (TagModal.show === true || reload === true) {
+      boot();
+    }
+  }, [TagModal.show, reload]);
 
   const addOpen = (x: boolean) => {
-    setAddTag({ open: x })
-  }
+    setAddTag({ open: x });
+  };
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
-    setAddTag((prev) => ({ ...prev, loading: true }))
-    if (addTag.value === "" || addTag.value === undefined) return alert("กรุณากรอกข้อมูลพื้นที่")
+    setAddTag((prev) => ({ ...prev, loading: true }));
+    if (addTag.value === "" || addTag.value === undefined)
+      return alert("กรุณากรอกข้อมูลพื้นที่");
     try {
       const { data: res_addtag } = await axios.post(api.internal("/api/tag"), {
-        new_tag: addTag.value
-      })
+        new_tag: addTag.value,
+      });
       if (res_addtag.status === true) {
         setAddTag({ open: false });
-        setReload((prev) => !prev)
+        setReload((prev) => !prev);
+        SetReTagCon(true);
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
     } finally {
-      setAddTag((prev) => ({ ...prev, loading: false }))
+      setAddTag((prev) => ({ ...prev, loading: false }));
     }
-  }
+  };
 
   return (
-    <Modal show={TagModal.open} onHide={handleClose} centered>
+    <Modal show={TagModal.show} onHide={CloseTagModal} centered>
       <Modal.Body>
-        <Button onClick={handleClose} variant="close"></Button>
+        <Button onClick={CloseTagModal} variant="close"></Button>
         <h3>สถานที่สำคัญบริเวณพื้นที่</h3>
         {addTag?.open === false ? (
           <>
@@ -84,15 +91,10 @@ function ImportTagsModal(TagModal: TagModalType) {
               >
                 + เพิ่มสถานที่
               </Button>
-              <div className="col-auto">
-
-              </div>
+              <div className="col-auto"></div>
               {tags?.editID != undefined && tags?.editID != 0 ? (
                 <div className="col text-end">
-                  <Link
-                    href="#"
-                    className="text-success gap-2 mx-3"
-                  >
+                  <Link href="#" className="text-success gap-2 mx-3">
                     <FaPen />
                     <span> แก้ไข</span>
                   </Link>
@@ -102,7 +104,9 @@ function ImportTagsModal(TagModal: TagModalType) {
                     ลบ
                   </Link>
                 </div>
-              ) : (<></>)}
+              ) : (
+                <></>
+              )}
             </div>
 
             <div className="row gap-2 mt-3 area-check">
@@ -113,7 +117,13 @@ function ImportTagsModal(TagModal: TagModalType) {
                   key={index}
                 >
                   <input
-                    onChange={(e) => setTags((prev) => ({ ...prev, editID: Number(e.target.value), value: item.name }))}
+                    onChange={(e) =>
+                      setTags((prev) => ({
+                        ...prev,
+                        editID: Number(e.target.value),
+                        value: item.name,
+                      }))
+                    }
                     name="tags"
                     value={item.id}
                     type="radio"
@@ -153,7 +163,12 @@ function ImportTagsModal(TagModal: TagModalType) {
               />
             </div>
             <div className="w-100 d-flex justify-content-end pt-3">
-              <Button type="submit" variant="success" disabled={addTag.loading} className="mx-1">
+              <Button
+                type="submit"
+                variant="success"
+                disabled={addTag.loading}
+                className="mx-1"
+              >
                 {addTag.loading ? (
                   <>
                     <Spinner
@@ -165,7 +180,9 @@ function ImportTagsModal(TagModal: TagModalType) {
                     />
                     กำลังบันทึกข้อมูล
                   </>
-                ) : "บันทึก"}
+                ) : (
+                  "บันทึก"
+                )}
               </Button>
             </div>
           </form>
@@ -175,4 +192,4 @@ function ImportTagsModal(TagModal: TagModalType) {
   );
 }
 
-export default ImportTagsModal;
+export default TagsModal;

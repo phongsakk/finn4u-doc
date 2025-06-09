@@ -5,11 +5,14 @@ type CustomImageProps = {
   width?: number;
   height?: number;
   className?: string;
-  id?:string;
-  style?: {
-    width?: string;
-    height?: string;
-  }| {};
+  id?: string;
+  style?:
+    | {
+        width?: string;
+        height?: string;
+      }
+    | {};
+  unoptimized?: boolean;
 };
 
 function CustomImage({
@@ -18,11 +21,12 @@ function CustomImage({
   className = "",
   width = 100,
   height = 100,
-  id ="",
+  id = "",
   style = {
     width: "100%",
     height: "auto",
   },
+  unoptimized = false,
 }: CustomImageProps) {
   return (
     <Image
@@ -35,6 +39,7 @@ function CustomImage({
       sizes="100vm"
       style={style}
       priority
+      unoptimized={unoptimized}
     />
   );
 }

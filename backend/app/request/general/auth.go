@@ -3,27 +3,33 @@ package general
 import "github.com/phongsakk/finn4u-back/utils"
 
 type RegisterGeneralUserRequest struct {
+	// 	firstname
+	// lastname
+	// email
+	// password
+	// confirm_password
+
 	Email               string  `json:"email" validate:"required,email"`
-	Password            string  `json:"password" validate:"required,min:8"`
+	Password            string  `json:"password" validate:"required,min=8"`
 	ConfirmPassword     string  `json:"confirm_password" validate:"required"`
 	UserPrefixId        int64   `json:"user_prefix_id" validate:"required"`
 	Fisrtname           string  `json:"firstname" validate:"required"`
 	Lastname            string  `json:"lastname" validate:"required"`
-	PhoneNumber         string  `json:"phone_number" validate:"required,max:32"`
-	OnlineRange         string  `json:"online_range" validate:"required"`
-	CareerId            int64   `json:"career_id" validate:"required"`
-	CareerDesc          string  `json:"career_desc" validate:"default:default"`
-	IncomePerMonth      float32 `json:"income_per_month" validate:"omitempty"`
-	AddressNumber       string  `json:"address_number" validate:"omitempty"`
-	AddressStreet       string  `json:"address_street" validate:"omitempty"`
-	ProvinceID          uint    `json:"province_id" validate:"omitempty"`
-	DistrictID          uint    `json:"district_id" validate:"omitempty"`
-	SubdistrictID       uint    `json:"subdistrict_id" validate:"omitempty"`
-	Beneficiary         string  `json:"beneficiary" validate:"required"`
-	Relation            string  `json:"relation" validate:"required"`
-	InvesmentDistrictId int     `json:"investment_district_id" validate:"required"`
-	AssetTypeId         int     `json:"asset_type_id" validate:"required"`
-	InvestmentAmount    float64 `json:"investment_amount" validate:"required"`
+	PhoneNumber         string  `json:"phone_number" validate:"max=32"`
+	OnlineRange         string  `json:"online_range"`
+	CareerId            int64   `json:"career_id"`
+	CareerDesc          string  `json:"career_desc"`
+	IncomePerMonth      float32 `json:"income_per_month"`
+	AddressNumber       string  `json:"address_number"`
+	AddressStreet       string  `json:"address_street"`
+	ProvinceID          uint    `json:"province_id"`
+	DistrictID          uint    `json:"district_id"`
+	SubdistrictID       uint    `json:"subdistrict_id"`
+	Beneficiary         string  `json:"beneficiary"`
+	Relation            string  `json:"relation"`
+	InvesmentDistrictId int     `json:"investment_district_id"`
+	AssetTypeId         int     `json:"asset_type_id"`
+	InvestmentAmount    float64 `json:"investment_amount"`
 }
 
 func (r *RegisterGeneralUserRequest) Validated() error {

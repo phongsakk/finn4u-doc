@@ -14,6 +14,9 @@ func RouterGroup(r *gin.RouterGroup) {
 	auth := r.Group("/")
 	auth.Use(mid.AdminAuthMiddleware)
 
+	authGroup := guest.Group("/auth")
+	AuthRouterGroup(authGroup)
+
 	asset := auth.Group("/asset")
 	AssetRouterGroup(asset)
 
@@ -28,4 +31,7 @@ func RouterGroup(r *gin.RouterGroup) {
 
 	sell := auth.Group("/sell")
 	SellRouterGroup(sell)
+
+	overview := auth.Group("/overview")
+	OverviewRouterGroup(overview)
 }
