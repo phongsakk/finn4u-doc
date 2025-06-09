@@ -462,6 +462,21 @@ img {
   }
 }
 
+.show-image-upload {
+  .check-image {
+    position: relative;
+    min-height: 120px;
+  }
+
+  .check-image:has(:checked) {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    outline: solid 5px #30b175;
+    outline-offset: -5px;
+  }
+}
+
 .fintips .nav-tabs {
   margin: 0 30px 60px;
   background-color: #fff;
@@ -483,10 +498,10 @@ img {
   }
 }
 
-.navbar-main .navbar-nav{
+.navbar-main .navbar-nav {
   color: #30b175;
 }
-.navbar-expand-lg .navbar-nav{
+.navbar-expand-lg .navbar-nav {
   width: 65%;
 }
 
@@ -1627,7 +1642,7 @@ img {
 .navbar-expand-lg .container-fluid {
   padding-bottom: 12px;
   padding-right: 1% !important;
-  .logo-brand{
+  .logo-brand {
     width: 120px;
     height: 57px;
   }
@@ -1799,6 +1814,10 @@ img {
 }
 
 .checklogin .form-check-input:checked {
+  background-color: #30b175 !important;
+  border-color: #30b175 !important;
+}
+.form-check-input:checked {
   background-color: #30b175 !important;
   border-color: #30b175 !important;
 }

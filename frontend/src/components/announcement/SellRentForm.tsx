@@ -129,17 +129,26 @@ function SellRentForm() {
       } else {
         setSubmit(true);
       }
-
-      if (form.images.length < 3) {
-        AlertPrimary("กรุณาอัพโหลดรูปภาพ (อย่างน้อย 3 รูป)", "error");
-        return false;
+      console.log(id)
+      if (!id) {
+        if (form.images.length < 3) {
+          AlertPrimary("กรุณาอัพโหลดรูปภาพ (อย่างน้อย 3 รูป)", "error");
+          return false;
+        }
+      } else {
+        if (form?.old_images.filter((x: any) => x.is_check === true).length < 3) {
+          AlertPrimary("กรุณาอัพโหลดรูปภาพ (อย่างน้อย 3 รูป)", "error");
+          return false;
+        }
       }
 
+      console.log(event)
       if (event.checkValidity() === false) {
         e.stopPropagation();
         setValidated(true);
         return false;
       }
+
       const marker = form.google_map_location?.split(/,|\s+/).filter(Boolean);
 
       const model = {
@@ -148,22 +157,18 @@ function SellRentForm() {
           marker && (!isNaN(Number(marker[0])) ? Number(marker[0]) : null),
         locataion_y:
           marker && (!isNaN(Number(marker[1])) ? Number(marker[1]) : null),
+        old_images: JSON.stringify(form.old_images)
       };
-      var res_asset: any;
-      if (id !== undefined) {
-        console.log("id is an empty object");
-      } else {
-        const { data: res } = await axios.post(
-          api.internal("/api/announcement/new"),
-          model,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        res_asset = res;
-      }
+
+      const { data: res_asset } = await axios.post(
+        api.internal(`/api/announcement/${id ? id : "new"}`),
+        model,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       if (res_asset?.status) {
         if (action === "publish") {
@@ -190,13 +195,14 @@ function SellRentForm() {
               AlertPrimary("เผยแพร่ประกาศไม่สำเร็จ", "error");
             }
           } else {
-            window.location.href = api.internal(`/profile/announcement`);
+            window.location.href = api.internal(`/profile/announcement/${res_asset?.data?.id}`);
           }
         });
       } else {
         AlertPrimary("เพิ่มประกาศไม่สินสำเร็จ - Please try again!", "error");
       }
     } catch (error) {
+      console.log(error)
       AlertPrimary("เพิ่มประกาศไม่สินสำเร็จ - Please try again!", "error");
     } finally {
       setSubmit(false);
@@ -423,9 +429,9 @@ function SellRentForm() {
                     images: value,
                   }));
                 }}
-                required
+                required={!id}
               />
-              <ImageGroup image={form?.old_images as []} />
+              <ImageGroup image={form?.old_images as []} setForm={setForm} />
 
               <label className="mt-3">รับ Agency ช่วยทำการตลาด</label>
               <p>

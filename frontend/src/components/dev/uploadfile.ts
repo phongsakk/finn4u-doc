@@ -7,7 +7,7 @@ export const UploadFile = async (objectFile: File, path_upload = "") => {
   try {
     const fileExtension = objectFile.name.split(".").pop()?.toLowerCase();
 
-    const allowedExtensions = ["jpg", "png", "pdf"];
+    const allowedExtensions = ["jpg", "png", "pdf","jpeg"];
 
     if (fileExtension && allowedExtensions.includes(fileExtension)) {
       //File is valid
