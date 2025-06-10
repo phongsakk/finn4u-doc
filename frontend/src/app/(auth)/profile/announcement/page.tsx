@@ -47,10 +47,6 @@ function page() {
     fetchItem();
   }, [page.page]);
 
-  useEffect(() => {
-    setSplButton({ name: "ลงประกาศ", href: "/", status: true });
-  }, [path]);
-
   const handlePubilsh = async (itemID: number) => {
     AlertConfirm("ลงประกาศหรือไม่", "info", async () => {
       try {

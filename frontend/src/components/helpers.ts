@@ -7,6 +7,7 @@ import timezone from "dayjs/plugin/timezone";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 import "dayjs/locale/th";
 import { auth } from "@libs/auth";
+import { NextResponse } from "next/server";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(buddhistEra);
@@ -258,7 +259,7 @@ export const CheckAuth = async () => {
 
   return {
     status: true,
-    role:session?.user?.role ?? "",
+    role: session?.user?.role ?? "",
     headerToken: {
       headers: {
         Authorization: "Bearer " + (session.user?.accessToken ?? ""),
@@ -276,4 +277,15 @@ export const statusText = (status: number) => {
   ];
 
   return status_label_map[status];
+};
+
+export const ResponseJson = (res: any, dataset?: any) => {
+  return NextResponse.json(
+    {
+      status: res.status,
+      code: res.code,
+      data: dataset ?? res.data,
+    },
+    { status: res.code }
+  );
 };

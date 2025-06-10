@@ -175,9 +175,17 @@ async function refreshAccessToken(token: Jwt | any) {
         break;
     }
 
-    const response = await axios.post(api.external(api_path), {
-      refresh_token: token.refreshToken,
-    });
+    const response = await axios.post(
+      api.external(api_path),
+      {
+        refresh_token: token.refreshToken,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token.accessToken}`,
+        },
+      }
+    );
 
     const new_token = await response.data;
     if (!new_token) {

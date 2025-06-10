@@ -10,11 +10,25 @@ import {
 } from "react";
 import WebLogo from "@public/logo.png";
 import { Spinner } from "react-bootstrap";
-import {
-  redirect,
-  useParams,
-  usePathname,
-} from "next/navigation";
+import { redirect, useParams, usePathname } from "next/navigation";
+import axios from "axios";
+import { api } from "@utils/api/index";
+
+type UserType = {
+  id?: number;
+  role?: string;
+  image?: string;
+  user_prefix_id?: string;
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  phone_number?: string;
+  line?: string;
+  birthday?: string;
+  license_card?: string;
+};
+
+const User: UserType = {};
 
 type specialBtn = {
   name: String;
@@ -25,6 +39,7 @@ type specialBtn = {
 type ModalType = "login" | "register" | null;
 
 type ContextType = {
+  user: UserType;
   pathname: string;
   path?: string;
   session: any;
@@ -44,6 +59,7 @@ export const LoaderProvider = ({ children }: { children: ReactNode }) => {
   // const searchParams = useSearchParams();
   const params = useParams();
   const { data: session, status } = useSession();
+  const [user, setUser] = useState<UserType>(User);
   const [path, setPath] = useState<string>();
   const [specialBtn, setSplBtn] = useState<specialBtn>();
   const [id, setID] = useState<any>(undefined);
@@ -51,7 +67,20 @@ export const LoaderProvider = ({ children }: { children: ReactNode }) => {
 
   const openModal = (type: ModalType) => setModalType(type);
   const closeModal = () => setModalType(null);
+
   useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const { data: res } = await axios.get(api.internal(`/api/profile`));
+        if (res.status) {
+          setUser(res.data);
+        }
+      } catch (error) {
+        console.error("Api profile error!");
+      }
+    };
+    fetchProfile();
+
     if (params?.id) {
       if (isNaN(Number(params.id))) {
         redirect("/");
@@ -98,6 +127,7 @@ export const LoaderProvider = ({ children }: { children: ReactNode }) => {
   return (
     <Context.Provider
       value={{
+        user,
         id,
         pathname,
         path,

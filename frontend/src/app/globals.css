@@ -462,6 +462,21 @@ img {
   }
 }
 
+.show-image-upload {
+  .check-image {
+    position: relative;
+    min-height: 120px;
+  }
+
+  .check-image:has(:checked) {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    outline: solid 5px #30b175;
+    outline-offset: -5px;
+  }
+}
+
 .fintips .nav-tabs {
   margin: 0 30px 60px;
   background-color: #fff;
@@ -482,7 +497,11 @@ img {
     border: none;
   }
 }
-.navbar-expand-lg .navbar-nav{
+
+.navbar-main .navbar-nav {
+  color: #30b175;
+}
+.navbar-expand-lg .navbar-nav {
   width: 65%;
 }
 
@@ -1621,9 +1640,9 @@ img {
 }
 
 .navbar-expand-lg .container-fluid {
-  padding-bottom: 12px;
+  padding-bottom: 5px;
   padding-right: 1% !important;
-  .logo-brand{
+  .logo-brand {
     width: 120px;
     height: 57px;
   }
@@ -1798,6 +1817,10 @@ img {
   background-color: #30b175 !important;
   border-color: #30b175 !important;
 }
+.form-check-input:checked {
+  background-color: #30b175 !important;
+  border-color: #30b175 !important;
+}
 
 .checklogin .form-check-input:checked {
   border-color: #30b175;
@@ -1951,4 +1974,38 @@ img {
 
 .description {
   white-space: pre-line;
+}
+
+.pofile-picture-frame {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  overflow: hidden;
+  border-radius: 50%;
+  border: solid 1px #9e9e9e;
+  position: relative;
+  cursor: pointer;
+  .hover-profile {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.145);
+    color: rgb(255, 255, 255);
+    display: none;
+    justify-content: center;
+    align-items: center;
+  }
+}
+.pofile-picture-frame:hover {
+  .hover-profile {
+    display: flex;
+  }
+}
+
+.tips {
+  .tips-btn-catagory:hover {
+    font-weight: 800;
+    color: seagreen !important;
+    border-bottom: solid 3px seagreen;
+  }
 }

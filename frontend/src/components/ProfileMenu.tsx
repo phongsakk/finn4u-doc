@@ -1,20 +1,28 @@
 "use client";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import Link from "next/link";
 import { useLoaderContext } from "./context/LoaderContext";
 import { BsHouseAdd } from "react-icons/bs";
 import { BsPersonFillAdd } from "react-icons/bs";
+import ImageApi from "./ImageApi";
 
 function ProfileMenu({ session }: { session: any }) {
-  const { pathname, specialBtn, openModal } = useLoaderContext();
+  const [splBtn, setSplBtn] = useState<any>(undefined);
+  const { pathname, path, user, openModal } = useLoaderContext();
+  console.log(user);
+  useEffect(() => {
+    if (user.role == "general") {
+      setSplBtn({ name: "ลงประกาศ", href: "/", status: true });
+    }
+  }, [user.role]);
   return (
     <>
       {session && (
         <>
-          {specialBtn?.status && (
+          {splBtn?.status && (
             <Link
               className="btn btn-success text-white me-2"
               href="/profile/announcement/new"
@@ -31,15 +39,20 @@ function ProfileMenu({ session }: { session: any }) {
           <Dropdown className="d-flex justify-content-center profile-menu">
             <Dropdown.Toggle variant="register">
               <span className="d-none d-sm-none d-md-none d-lg-block profile-name text-truncate">
-                {session?.user?.name}
+                {user.firstname}
               </span>
-              <Image
-                src="/register.svg"
-                alt="register"
-                width={25}
-                height={25}
-                priority
-              />
+              <div
+              className="overflow-hidden rounded-circle border"
+                style={{
+                  width: "25px",
+                  height: "25px",
+                }}
+              >
+                <ImageApi
+                  src={user?.image || "/"}
+                  alt="register"
+                />
+              </div>
             </Dropdown.Toggle>
 
             <Dropdown.Menu>

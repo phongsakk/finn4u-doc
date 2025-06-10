@@ -1,21 +1,36 @@
-"use client"
-import Image from 'next/image'
+"use client";
+import Image from "next/image";
 import { signIn, SignInOptions } from "next-auth/react";
-import React from 'react'
-import Link from 'next/link'
-import { Button, Col, Container, Form, FormControl, FormGroup, FormLabel, Row } from 'react-bootstrap'
+import React from "react";
+import Link from "next/link";
+import {
+  Button,
+  Col,
+  Container,
+  Form,
+  FormControl,
+  FormGroup,
+  FormLabel,
+  Row,
+} from "react-bootstrap";
 
-import Finn4ULogo from "@assets/img/finn4u-logo.png"
+import Finn4ULogo from "@assets/img/finn4u-logo.png";
+import { AlertPrimary } from "@component/alert/SwalAlert";
+import { redirect } from "next/navigation";
 
 const page = () => {
   const formAction = async (formData: FormData) => {
-    const opts: SignInOptions = {
-      email: formData.get('email'),
-      password: formData.get('password'),
-      redirectTo: "/"
+    const res = await signIn("credentials", {
+      email: formData.get("email"),
+      password: formData.get("password"),
+      redirect: false,
+    });
+    if (res?.url) {
+      redirect("/");
+    } else {
+      AlertPrimary("Invalid email or password.", "error");
     }
-    await signIn("credentials", opts)
-  }
+  };
 
   return (
     <main className="d-flex w-100 login">
@@ -32,14 +47,18 @@ const page = () => {
                   <FormGroup className="mb-3">
                     <FormLabel>อีเมล</FormLabel>
                     <FormControl
-                      size='lg' type="email" name="email"
+                      size="lg"
+                      type="email"
+                      name="email"
                       placeholder="Enter your email"
                     />
                   </FormGroup>
                   <FormGroup className="mb-3">
                     <FormLabel>รหัสผ่าน</FormLabel>
                     <FormControl
-                      size='lg' type="password" name="password"
+                      size="lg"
+                      type="password"
+                      name="password"
                       placeholder="Enter your password"
                     />
                     <span className="forgotpass">
@@ -47,7 +66,14 @@ const page = () => {
                     </span>
                   </FormGroup>
                   <FormGroup className="text-center mt-3">
-                    <Button role="button" type='submit' size='lg' variant='primary'>เข้าสู่ระบบ</Button>
+                    <Button
+                      role="button"
+                      type="submit"
+                      size="lg"
+                      variant="primary"
+                    >
+                      เข้าสู่ระบบ
+                    </Button>
                   </FormGroup>
                 </Form>
               </div>
@@ -56,7 +82,7 @@ const page = () => {
         </Row>
       </Container>
     </main>
-  )
-}
+  );
+};
 
-export default page
+export default page;
