@@ -26,6 +26,7 @@ export const GET = async (
       session?.headerToken
     );
     const data = res.data;
+    
     const model = {
       sell_type_id: data?.sell_type_id,
       asset_type_id: data?.asset_type_id,
@@ -120,6 +121,7 @@ export const POST = async (
             ?.map((x: any) => x.id) || [],
       },
     };
+
     const { data: res } = await axios.post(
       api.external(`/v1/general/sell/${id}`),
       model,

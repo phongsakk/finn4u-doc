@@ -4,14 +4,12 @@ import Link from "next/link";
 import Image from "next/image";
 import Button from "react-bootstrap/Button";
 import Imagelogo from "@public/logo1.png";
-import logoSmall from "@public/logo.png";
 import ProfileMenu from "@components/ProfileMenu";
 import { useLoaderContext } from "@components/context/LoaderContext";
 import { Modal } from "react-bootstrap";
 import { PiList } from "react-icons/pi";
 
 export default function Navbar() {
-  const [navbarOpen, setNavOpen] = useState(false);
   const [showmenu, setShowMenu] = useState(false);
   const { pathname, session, status } = useLoaderContext();
   const CloseMenu = () => {
@@ -48,7 +46,7 @@ export default function Navbar() {
       href: status === "authenticated" ? "/invester" : "/register/invester",
     },
     {
-      label: "Finn Tips",
+      label: "ทุนทันใจ Tips",
       href: "/tips",
     },
     {
@@ -59,7 +57,7 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="navbar navbar-expand-lg navbar-main position-fixed w-100 z-3">
+      <div className="navbar navbar-expand-lg navbar-main position-fixed w-100 z-3 shadow">
         <div className="container-fluid">
           <div className="logo-brand">
             <Link href="/">

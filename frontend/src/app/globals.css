@@ -1640,7 +1640,7 @@ img {
 }
 
 .navbar-expand-lg .container-fluid {
-  padding-bottom: 12px;
+  padding-bottom: 5px;
   padding-right: 1% !important;
   .logo-brand {
     width: 120px;
@@ -1974,4 +1974,38 @@ img {
 
 .description {
   white-space: pre-line;
+}
+
+.pofile-picture-frame {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  overflow: hidden;
+  border-radius: 50%;
+  border: solid 1px #9e9e9e;
+  position: relative;
+  cursor: pointer;
+  .hover-profile {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.145);
+    color: rgb(255, 255, 255);
+    display: none;
+    justify-content: center;
+    align-items: center;
+  }
+}
+.pofile-picture-frame:hover {
+  .hover-profile {
+    display: flex;
+  }
+}
+
+.tips {
+  .tips-btn-catagory:hover {
+    font-weight: 800;
+    color: seagreen !important;
+    border-bottom: solid 3px seagreen;
+  }
 }
