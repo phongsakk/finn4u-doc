@@ -7,6 +7,7 @@ import (
 	"github.com/phongsakk/finn4u-back/route/admin"
 	"github.com/phongsakk/finn4u-back/route/consignor"
 	"github.com/phongsakk/finn4u-back/route/general"
+	"github.com/phongsakk/finn4u-back/route/investor"
 )
 
 func V1(r *gin.RouterGroup) {
@@ -30,4 +31,7 @@ func V1(r *gin.RouterGroup) {
 
 	generalRouter := r.Group("/general")
 	general.RouterGroup(generalRouter)
+
+	investorRouter := r.Group("/investor")
+	investor.RouterGroup(investorRouter)
 }

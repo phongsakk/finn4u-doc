@@ -1,8 +1,10 @@
 package models
 
 import (
+	"errors"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"github.com/phongsakk/finn4u-back/app/database/models/template"
 	"github.com/phongsakk/finn4u-back/types"
@@ -18,6 +20,16 @@ type Investor struct {
 	InvestmentAmount   float64    `json:"investment_amount" gorm:"not null"`
 	InterestDistrict   *District  `json:"district" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:InterestDistrictID"`
 	AssetType          *AssetType `json:"asset_type" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:AssetTypeID"`
+}
+
+func (user *Investor) GetFromRequest(c *gin.Context) error {
+	auth, ok := c.Get("user")
+	if !ok {
+		return errors.New("failed to get user from request")
+	}
+	_user := auth.(Investor)
+	*user = _user
+	return nil
 }
 
 func (Investor) TableName() string {
