@@ -11,6 +11,7 @@ export type FormInputProps = {
   placeholder?: string;
   required?: boolean;
   label?: string;
+  labelClass?: string;
   labelEnd?: string;
   invalid?: string;
   disabled?: boolean;
@@ -27,6 +28,7 @@ export const FormInput = ({
   placeholder,
   required = false,
   label,
+  labelClass,
   labelEnd,
   invalid,
   disabled = false,
@@ -35,7 +37,7 @@ export const FormInput = ({
   return (
     <Form.Group className={groupClass}>
       {label && (
-        <Form.Label className="form-label font2">
+        <Form.Label className={`form-label font2 ${labelClass}`}>
           {label} {required && <span className="text-danger font2">*</span>}
         </Form.Label>
       )}
@@ -51,7 +53,11 @@ export const FormInput = ({
         disabled={disabled}
       />
       {labelEnd !== undefined ? <span className="px-1">{labelEnd}</span> : ""}
-      {invalid !== undefined ? <span className="text-danger">{invalid}</span> : ""}
+      {invalid !== undefined ? (
+        <span className="text-danger">{invalid}</span>
+      ) : (
+        ""
+      )}
     </Form.Group>
   );
 };
