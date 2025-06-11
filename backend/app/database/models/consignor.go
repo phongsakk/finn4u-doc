@@ -18,6 +18,14 @@ type Consignor struct {
 	GenID string `json:"gen_id" gorm:"not null;index;unique;"`
 
 	UserPrefix *UserPrefix `json:"user_prefix" gorm:"foreignKey:UserPrefixID;references:ID"`
+
+	Beneficiary        *string    `json:"beneficiary"`
+	Relation           *string    `json:"relation"`
+	InterestDistrictID *uint      `json:"interest_district_id"`
+	AssetTypeID        *uint      `json:"asset_type_id"`
+	InvestmentAmount   *float64   `json:"investment_amount"`
+	InterestDistrict   *District  `json:"district" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:InterestDistrictID"`
+	AssetType          *AssetType `json:"asset_type" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:AssetTypeID"`
 }
 
 func (Consignor) TableName() string {
