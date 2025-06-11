@@ -9,4 +9,6 @@ func RouterGroup(r *gin.RouterGroup) {
 	AuthRouterGroup(auth2)
 	bid := r.Group("/bid")
 	BidRouterGroup(bid)
+	matching := r.Group("/matching")
+	MatchingRouterGroup(matching)
 }

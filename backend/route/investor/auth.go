@@ -9,5 +9,7 @@ func AuthRouterGroup(r *gin.RouterGroup) {
 	r.POST("/register", constroller.Register)   // ลงทะเบียนนักลงทุน
 	r.POST("/resendOTP", constroller.ResendOTP) // ลงทะเบียนนักลงทุน
 	r.POST("/verifyOTP", constroller.VerifyOtp) // ลงทะเบียนนักลงทุน
-	r.POST("/login", constroller.Register)      // ลงทะเบียนนักลงทุน
+	r.POST("/login", constroller.Login)         // ลงทะเบียนนักลงทุน
+	r.GET("/profile", constroller.Login)        // ลงทะเบียนนักลงทุน
+	r.POST("/profile", constroller.Login)       // ลงทะเบียนนักลงทุน
 }
