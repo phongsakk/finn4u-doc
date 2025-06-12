@@ -29,11 +29,32 @@ const sidebarItems = [
     href: "/dashboard",
     isActive: false,
     secondary: [
-      { label: "ทรัพย์สินขายฝาก", href: "/dashboard/property", isActive: false },
+      {
+        label: "ทรัพย์สินขายฝาก",
+        href: "/dashboard/property",
+        isActive: false,
+      },
       { label: "ขาย/เช่า", href: "/dashboard/sellrent", isActive: false },
     ],
   },
-  { icon: Icon7, label: "การตั้งค่า", href: "/setting", isActive: false },
+  {
+    icon: Icon7,
+    label: "การตั้งค่า",
+    href: "/setting",
+    isActive: false,
+    secondary: [
+      {
+        label: "การเงิน",
+        href: "/setting/finance",
+        isActive: false,
+      },
+      {
+        label: "คำถามที่พบบ่อย",
+        href: "/setting/faq",
+        isActive: false,
+      },
+    ],
+  },
   // { icon: Icon8, label: "ออกจากระบบ", href: "/logout", isActive: false }
 ];
 
