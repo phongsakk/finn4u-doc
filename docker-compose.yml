@@ -42,7 +42,7 @@ services:
     environment:
       DATABASE_URL: "postgresql://finn4udbuser:nnif4udbpassword@postgres:5432/finn4u?schema=public"
     ports:
-      - "${PORT_API2}:8080"
+      - "${PORT_API2}:3000"
 
   frontend:
     build:
