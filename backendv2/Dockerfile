@@ -11,6 +11,9 @@ RUN npm install
 COPY . .
 
 # Build the Next.js app
+RUN npm run db:generate
+
+# Build the Next.js app
 RUN npm run build
 
 # Expose the port and start the application
