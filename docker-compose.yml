@@ -30,6 +30,19 @@ services:
       DB_PORT: 5432
     ports:
       - "${PORT_API}:8080"
+  
+  backend2:
+    build:
+      context: ./backendv2
+      dockerfile: Dockerfile
+    container_name: "${GROUP_PREFIX}_finn4u_apiv2"
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: "postgresql://finn4udbuser:nnif4udbpassword@postgres:5432/finn4u?schema=public"
+    ports:
+      - "${PORT_API2}:8080"
 
   frontend:
     build:

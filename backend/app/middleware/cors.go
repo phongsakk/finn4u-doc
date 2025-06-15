@@ -16,6 +16,8 @@ var Cors = cors.New(cors.Config{
 		"http://203.159.93.236:9076",
 		"https://finn4u.com",
 		"https://www.finn4u.com",
+		"https://thuntanjai.com",
+		"https://www.thuntanjai.com",
 		"https://admin.finn4u.com",
 		"https://fin4u.co",
 		"https://www.fin4u.co",
