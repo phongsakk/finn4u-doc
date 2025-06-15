@@ -133,29 +133,3 @@ server {
 
     client_max_body_size 100M;
 }
-
-server {
-    listen 80;
-    server_name  admin.thuntanjai.com;
-
-    location / {
-        proxy_pass http://localhost:9076;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    }
-
-    client_max_body_size 100M;
-}
-
-server {
-    listen 80;
-    server_name api.thuntanjai.com;
-
-    location / {
-        proxy_pass http://localhost:9078;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    }
-}
