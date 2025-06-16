@@ -55,3 +55,23 @@ export const consignorUploadImage: CustomHandler<{
     data: updatedMatching,
   });
 };
+
+export const consignorMatchingDetails: CustomHandler = async (req, res) => {
+  const matchingId = req.params.matchingId;
+
+  const matching = await prisma.matchings.findFirst({
+    where: {
+      id: safeNumber(matchingId),
+    },
+  });
+  if (!matching) {
+    throw new CustomError("Matching not found", 404);
+  }
+
+  res.status(200).json({
+    message: "Matching details retrieved successfully",
+    status: true,
+    code: 200,
+    data: matching,
+  });
+};
