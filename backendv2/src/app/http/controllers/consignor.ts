@@ -56,6 +56,16 @@ export const consignorUploadImage: CustomHandler<{
   });
 };
 
+export const consignorMatchingAll: CustomHandler = async (req, res) => {
+  const matchings = await prisma.matchings.findMany();
+  res.status(200).json({
+    message: "Matching list retrieved successfully",
+    status: true,
+    code: 200,
+    data: matchings,
+  });
+}
+
 export const consignorMatchingDetails: CustomHandler = async (req, res) => {
   const matchingId = req.params.matchingId;
 
