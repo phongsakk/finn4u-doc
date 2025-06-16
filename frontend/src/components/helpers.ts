@@ -284,6 +284,7 @@ export const ResponseJson = (res: any, dataset?: any) => {
     {
       status: res.status,
       code: res.code,
+      message: res?.message,
       data: dataset ?? res.data,
     },
     { status: res.code }

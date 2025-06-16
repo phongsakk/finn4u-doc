@@ -12,7 +12,7 @@ import ImageApi from "./ImageApi";
 function ProfileMenu({ session }: { session: any }) {
   const [splBtn, setSplBtn] = useState<any>(undefined);
   const { pathname, path, user, openModal } = useLoaderContext();
-  console.log(user);
+  
   useEffect(() => {
     if (user.role == "general") {
       setSplBtn({ name: "ลงประกาศ", href: "/", status: true });
