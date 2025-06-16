@@ -1,69 +1,74 @@
 "use client";
+import { AlertPrimary } from "@components/alert/SwalAlert";
+import {
+  LoaderProvider,
+  useLoaderContext,
+} from "@components/context/LoaderContext";
+import CardToggle from "@components/investor/CardToggle";
+import { EvidenceForm, EvidenceFormType } from "@models/EvidenceForm";
+import { api } from "@utils/api/index";
+import axios from "axios";
 import Link from "next/link";
-import { redirect, useParams } from "next/navigation";
+import { redirect } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { Accordion, Button, Card, Collapse } from "react-bootstrap";
-import { LuDownload } from "react-icons/lu";
+import { Accordion, Button, Card, Collapse, Form } from "react-bootstrap";
+
+const DownLoadForm = {
+  lease_agreement: "หนังสือสัญญาเช่า",
+  lease_agreement_href: "หนังสือสัญญาเช่า.pdf",
+  spouse_consent_letter: "หนังสือยินยอมคู่สมรส",
+  spouse_consent_letter_href: "หนังสือยินยอมคู่สมรส.pdf",
+  real_estate_agent_appointment_agreement:
+    "สัญญาแต่งตั้งนายหน้าขายอสังหาริมทรัพย์",
+  real_estate_agent_appointment_agreement_href:
+    "สัญญาแต่งตั้งนายหน้าขายอสังหาริมทรัพย์.pdf",
+  purchase_and_sale_agreement: "สัญญาจะซื้อจะขาย",
+  purchase_and_sale_agreement_href: "สัญญาจะซื้อจะขาย.pdf",
+  property_detail_sheet: "ใบลงรายละเอียดทรัพย์",
+  property_detail_sheet_href: "ใบลงรายละเอียดทรัพย์.pdf",
+  power_of_attorney: "ใบมอบอำนาจ",
+  power_of_attorney_href: "ใบมอบอำนาจ_ทด21.pdf",
+  condo_power_of_attorney: "หนังสือมอบอำนาจอาคารชุด (อ.ช.๒๑)",
+  condo_power_of_attorney_href: "แบบฟอร์มหนังสือมอบอำนาจอาคารชุด (อ.ช.๒๑).pdf",
+};
 
 function UploadDocPage() {
-  const params = useParams();
+  const { id } = useLoaderContext();
+  const [form, setForm] = useState<EvidenceFormType>(EvidenceForm);
+  const [activeKey, setActiveKey] = useState<string | null>(null);
+  const [submit, setSubmit] = useState(false);
 
-  if (isNaN(Number(params.id))) {
-    redirect("/property");
-  }
-  const sections = [
-    {
-      name:"หนังสือสัญญาเช่า",
-      href:"หนังสือสัญญาเช่า.pdf",
-    },  {
-      name:"หนังสือยินยอมคู่สมรส",
-      href:"หนังสือยินยอมคู่สมรส.pdf",
-    },{
-      name:"สัญญาแต่งตั้งนายหน้าขายอสังหาริมทรัพย์",
-      href:"สัญญาแต่งตั้งนายหน้าขายอสังหาริมทรัพย์.pdf",
-    },{
-      name:"สัญญาจะซื้อจะขาย",
-      href:"สัญญาจะซื้อจะขาย.pdf",
-    },{
-      name:"ใบลงรายละเอียดทรัพย์",
-      href:"ใบลงรายละเอียดทรัพย์.pdf",
-    },{
-      name:"ใบมอบอำนาจ",
-      href:"ใบมอบอำนาจ_ทด21.pdf",
-    },{
-      name:"หนังสือมอบอำนาจอาคารชุด (อ.ช.๒๑)",
-      href:"แบบฟอร์มหนังสือมอบอำนาจอาคารชุด (อ.ช.๒๑).pdf",
-    },
-  ];
+  const handleToggle = (id: string) => {
+    setActiveKey(activeKey === id ? null : id);
+  };
 
-  const [activeKey, setActiveKey] = useState<string | null>(null); // Track the active section
-  const [fileDetails, setFileDetails] = useState<
-    { name: string; size: string }[]
-  >(new Array(sections.length).fill({ name: "", size: "" }));
-
-  const handleFileChange = (
-    index: number,
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const files = event.target.files;
-    if (files && files[0]) {
-      const file = files[0];
-      const sizeInKB = (file.size / 1024).toFixed(0); // Size in KB
-      const newFileDetails = [...fileDetails];
-      newFileDetails[index] = { name: file.name, size: `${sizeInKB}K` };
-      setFileDetails(newFileDetails);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      setSubmit(true);
+      const { data: res } = await axios.post(
+        api.internal(`/api/upload-evidence/${id}`),
+        form,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (res.status) {
+        AlertPrimary("บันทึกข้อมูลสำเร็จ", "success").then(() => {
+          redirect("/property/success");
+        });
+      } else {
+        AlertPrimary("บันทึกข้อมูลไม่สำเร็จ! กรุณาลองใหม่อีกครั้ง", "error");
+      }
+    } catch (error) {
+      AlertPrimary("บันทึกข้อมูลไม่สำเร็จ! กรุณาลองใหม่อีกครั้ง", "error");
+    } finally {
+      setSubmit(false);
     }
   };
 
-  const handleRemoveFile = (index: number) => {
-    const newFileDetails = [...fileDetails];
-    newFileDetails[index] = { name: "", size: "" }; // Remove the file details
-    setFileDetails(newFileDetails);
-  };
-
-  const handleToggle = (id: string) => {
-    setActiveKey(activeKey === id ? null : id); // Toggle the section open/closed
-  };
   return (
     <div className="promise">
       <div className="container">
@@ -76,72 +81,66 @@ function UploadDocPage() {
                 กรอกรายละเอียดให้ครบถ้วนจากนั้นแนบไฟล์เพื่อรอการตรวจสอบ
               </p>
             </div>
-            <Accordion className="upload-doc" activeKey={activeKey}>
-              {sections.map((item, index) => (
-                <Card className="mb-3" key={index}>
-                  <Card.Header
-                    className="p-3 bg-light"
-                    onClick={() => handleToggle(String(index))}
-                  >
-                    <Link
-                      href={`/download/${item.href}`}
-                      className="underline-primary"
-                      target="_blank"
-                    >
-                      {item.name} <LuDownload />
-                    </Link>
-                  </Card.Header>
-                  <Accordion.Collapse eventKey={String(index)}>
-                    <Card.Body className="bg-light">
-                      <div className="row align-items-center">
-                        <div className="col-auto">แนบไฟล์:</div>
-                        <div className="col-auto">
-                          <label
-                            className="btn btn-success"
-                            htmlFor={`file-input-${index}`}
-                          >
-                            อัปโหลด...
-                          </label>
-                        </div>
-                        <div className="w-100">
-                          {fileDetails[index].name && (
-                            <div className="mt-2 d-flex justify-content-between aling-items-center p-2 show-file-name  px-3">
-                              <div>
-                                <span className="text-success">
-                                  {fileDetails[index].name}
-                                </span>
-                                <span className="px-1 text-secondary">
-                                  ({fileDetails[index].size})
-                                </span>
-                              </div>
-                              <Button
-                                variant="link"
-                                className="text-danger p-0"
-                                onClick={() => handleRemoveFile(index)}
-                              >
-                                x
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                        <input
-                          onChange={(e) => handleFileChange(index, e)}
-                          type="file"
-                          className="d-none"
-                          name={`fileinput[${index}]`}
-                          id={`file-input-${index}`}
-                        />
-                      </div>
-                    </Card.Body>
-                  </Accordion.Collapse>
-                </Card>
-              ))}
-            </Accordion>
-            <div className="submit-group">
-              <Link href="/property/success" className="btn btn-primary font2">
-                ถัดไป
-              </Link>
-            </div>
+            <Form onSubmit={handleSubmit}>
+              <Accordion className="upload-doc" activeKey={activeKey}>
+                <CardToggle
+                  name="lease_agreement"
+                  href={DownLoadForm.lease_agreement_href}
+                  text={DownLoadForm.lease_agreement}
+                  handleToggle={handleToggle}
+                  setForm={setForm}
+                />
+                <CardToggle
+                  name="spouse_consent_letter"
+                  href={DownLoadForm.spouse_consent_letter_href}
+                  text={DownLoadForm.spouse_consent_letter}
+                  handleToggle={handleToggle}
+                  setForm={setForm}
+                />
+                <CardToggle
+                  name="real_estate_agent_appointment_agreement"
+                  href={
+                    DownLoadForm.real_estate_agent_appointment_agreement_href
+                  }
+                  text={DownLoadForm.real_estate_agent_appointment_agreement}
+                  handleToggle={handleToggle}
+                  setForm={setForm}
+                />
+                <CardToggle
+                  name="purchase_and_sale_agreement"
+                  href={DownLoadForm.purchase_and_sale_agreement_href}
+                  text={DownLoadForm.purchase_and_sale_agreement}
+                  handleToggle={handleToggle}
+                  setForm={setForm}
+                />
+                <CardToggle
+                  name="property_detail_sheet"
+                  href={DownLoadForm.property_detail_sheet_href}
+                  text={DownLoadForm.property_detail_sheet}
+                  handleToggle={handleToggle}
+                  setForm={setForm}
+                />
+                <CardToggle
+                  name="power_of_attorney"
+                  href={DownLoadForm.power_of_attorney_href}
+                  text={DownLoadForm.power_of_attorney}
+                  handleToggle={handleToggle}
+                  setForm={setForm}
+                />
+                <CardToggle
+                  name="condo_power_of_attorney"
+                  href={DownLoadForm.condo_power_of_attorney_href}
+                  text={DownLoadForm.condo_power_of_attorney}
+                  handleToggle={handleToggle}
+                  setForm={setForm}
+                />
+              </Accordion>
+              <div className="submit-group">
+                <Button type="submit" variant="primary" className="font2" disabled={submit}>
+                  {submit ? "กำลังบันทึก.." :"ถัดไป" } 
+                </Button>
+              </div>
+            </Form>
           </div>
         </div>
       </div>
