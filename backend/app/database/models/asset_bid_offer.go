@@ -27,6 +27,9 @@ type AssetBidOffer struct {
 }
 
 func (bid *AssetBidOffer) CreateBidOffer(user *Consignor, assetID uint, offer float64) error {
+	if user == nil {
+
+	}
 	var errored error
 	db, dbError := database.Conn()
 

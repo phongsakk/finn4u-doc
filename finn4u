@@ -98,10 +98,48 @@ server {
     listen 80;
     server_name api.fin4u.co;
 
-    location / {
-        proxy_pass http://localhost:9078;
+    client_max_body_size 100M;
+
+    location /v2/ {
+        rewrite ^/v2/(.*)$ /$1 break;
+        proxy_pass http://localhost:9075/;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
+
+    location / {
+        proxy_pass http://localhost:9078/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+
+server {
+    listen 80;
+    server_name  www.thuntanjai.com;
+
+    location / {
+        proxy_pass http://localhost:8079;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    client_max_body_size 100M;
+}
+
+server {
+    listen 80;
+    server_name  thuntanjai.com;
+
+    location / {
+        proxy_pass http://localhost:8079;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    client_max_body_size 100M;
 }

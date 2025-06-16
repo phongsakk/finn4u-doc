@@ -1,0 +1,514 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model admin {
+  id               BigInt    @id @default(autoincrement())
+  created_at       DateTime? @db.Timestamptz(6)
+  updated_at       DateTime? @db.Timestamptz(6)
+  deleted_at       DateTime? @db.Timestamptz(6)
+  user_role_id     BigInt
+  email            String    @unique(map: "uni_admin_email") @db.VarChar(255)
+  password         String?   @db.VarChar(255)
+  provider         String?   @default("password") @db.VarChar(126)
+  provider_token   String?   @db.VarChar(255)
+  verified         Boolean?  @default(false)
+  user_prefix_id   BigInt
+  firstname        String    @db.VarChar(255)
+  lastname         String    @db.VarChar(255)
+  phone_number     String    @db.VarChar(32)
+  career_id        BigInt
+  career_desc      String?   @db.VarChar(255)
+  income_per_month Decimal?  @db.Decimal(18, 2)
+  online_range     String?   @db.VarChar(255)
+  address_number   String?   @db.VarChar(128)
+  address_street   String?   @db.VarChar(128)
+  province_id      BigInt
+  district_id      BigInt
+  subdistrict_id   BigInt
+
+  @@index([deleted_at], map: "idx_admin_deleted_at")
+  @@index([email], map: "idx_admin_email")
+}
+
+model asset {
+  id                     BigInt                   @id @default(autoincrement())
+  created_at             DateTime?                @db.Timestamptz(6)
+  updated_at             DateTime?                @db.Timestamptz(6)
+  deleted_at             DateTime?                @db.Timestamptz(6)
+  gen_id                 String?                  @db.VarChar(64)
+  province_id            BigInt
+  district_id            BigInt?
+  asset_type_id          BigInt
+  owner_id               BigInt
+  aria_size_rai          BigInt
+  aria_size_ngan         BigInt
+  aria_size_square_wa    Decimal                  @db.Decimal(18, 2)
+  aria_size_square_metre Decimal                  @default(0) @db.Decimal(18, 2)
+  collateral             BigInt?
+  consignment_price      BigInt?
+  land_title_deed_number String                   @db.VarChar(128)
+  land_title_deed_image  String
+  land_plot_number       String                   @db.VarChar(128)
+  description            String?
+  location               String?                  @db.VarChar(128)
+  location_x             String?                  @db.VarChar(128)
+  location_y             String?                  @db.VarChar(128)
+  is_multiple_holder     Boolean?                 @default(false)
+  published_at           DateTime?                @db.Timestamptz(6)
+  ended_at               DateTime?                @db.Timestamptz(6)
+  status                 BigInt?
+  is_published           Boolean?
+  is_recommended         Boolean?                 @default(false)
+  view_count             BigInt                   @default(0)
+  bid_count              BigInt                   @default(0)
+  recommended_at         DateTime?                @db.Timestamptz(6)
+  asset_type             asset_type               @relation(fields: [asset_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_asset_asset_type")
+  district               district?                @relation(fields: [district_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_asset_district")
+  consignor              consignor                @relation(fields: [owner_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_asset_owner")
+  province               province                 @relation(fields: [province_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_asset_province")
+  asset_appraisal        asset_appraisal[]
+  asset_auction          asset_auction?
+  asset_bid_offer        asset_bid_offer[]
+  asset_images           asset_images[]
+  asset_investment_offer asset_investment_offer[]
+  asset_tag              asset_tag[]
+
+  @@index([deleted_at], map: "idx_asset_deleted_at")
+}
+
+model asset_appraisal {
+  id                    BigInt                  @id @default(autoincrement())
+  created_at            DateTime?               @db.Timestamptz(6)
+  updated_at            DateTime?               @db.Timestamptz(6)
+  deleted_at            DateTime?               @db.Timestamptz(6)
+  asset_id              BigInt?
+  price_appraisal       Decimal?                @db.Decimal
+  collatera_price       Decimal?                @db.Decimal
+  duration              BigInt?
+  asset                 asset?                  @relation(fields: [asset_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_asset_asset_appraisal")
+  asset_appraisal_image asset_appraisal_image[]
+
+  @@index([deleted_at], map: "idx_asset_appraisal_deleted_at")
+}
+
+model asset_appraisal_image {
+  id                 BigInt           @id @default(autoincrement())
+  created_at         DateTime?        @db.Timestamptz(6)
+  updated_at         DateTime?        @db.Timestamptz(6)
+  deleted_at         DateTime?        @db.Timestamptz(6)
+  asset_appraisal_id BigInt?
+  image_url          String?
+  image_name         String?
+  asset_appraisal    asset_appraisal? @relation(fields: [asset_appraisal_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_asset_appraisal_image_asset_appraisal")
+
+  @@index([deleted_at], map: "idx_asset_appraisal_image_deleted_at")
+}
+
+model asset_auction {
+  id         BigInt    @id @default(autoincrement())
+  created_at DateTime? @db.Timestamptz(6)
+  updated_at DateTime? @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
+  asset_id   BigInt    @unique(map: "uni_asset_auction_asset_id")
+  from_date  DateTime  @db.Timestamptz(6)
+  to_date    DateTime  @db.Timestamptz(6)
+  from_time  String
+  to_time    String
+  max_tax    Decimal   @db.Decimal
+  asset      asset     @relation(fields: [asset_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_asset_asset_auction")
+
+  @@index([asset_id], map: "idx_asset_auction_asset_id")
+  @@index([deleted_at], map: "idx_asset_auction_deleted_at")
+}
+
+model asset_bid_offer {
+  id         BigInt    @id @default(autoincrement())
+  created_at DateTime? @db.Timestamptz(6)
+  updated_at DateTime? @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
+  asset_id   BigInt
+  bidder_id  BigInt
+  offer      Decimal   @db.Decimal
+  time       Int?      @db.SmallInt
+  is_winner  Boolean?  @default(false)
+  status     Int?      @default(0) @db.SmallInt
+  asset      asset     @relation(fields: [asset_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_asset_asset_bid_offer")
+  consignor  consignor @relation(fields: [bidder_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_asset_bid_offer_bidder")
+
+  @@index([deleted_at], map: "idx_asset_bid_offer_deleted_at")
+  @@index([asset_id], map: "idx_asset_id")
+  @@index([bidder_id], map: "idx_bidder_id")
+}
+
+model asset_images {
+  id         BigInt    @id @default(autoincrement())
+  created_at DateTime? @db.Timestamptz(6)
+  updated_at DateTime? @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
+  image      String
+  asset_id   BigInt
+  is_display Boolean?
+  asset      asset     @relation(fields: [asset_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_asset_asset_images")
+
+  @@index([deleted_at], map: "idx_asset_images_deleted_at")
+}
+
+model asset_investment_offer {
+  id          BigInt    @id @default(autoincrement())
+  created_at  DateTime? @db.Timestamptz(6)
+  updated_at  DateTime? @db.Timestamptz(6)
+  deleted_at  DateTime? @db.Timestamptz(6)
+  asset_id    BigInt
+  investor_id BigInt
+  offer       Decimal   @db.Decimal
+  is_winner   Boolean?  @default(false)
+  status      Int?      @default(0) @db.SmallInt
+  asset       asset     @relation(fields: [asset_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_asset_investment_offer_asset")
+  consignor   consignor @relation(fields: [investor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_asset_investment_offer_investor")
+
+  @@index([deleted_at], map: "idx_asset_investment_offer_deleted_at")
+  @@index([investor_id], map: "idx_investor_id")
+}
+
+model asset_tag {
+  id         BigInt    @id @default(autoincrement())
+  created_at DateTime? @db.Timestamptz(6)
+  updated_at DateTime? @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
+  asset_id   BigInt?
+  tag_id     BigInt?
+  asset      asset?    @relation(fields: [asset_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_asset_asset_tag")
+  tag        tag?      @relation(fields: [tag_id], references: [id], onDelete: Cascade, map: "fk_asset_tag_tag")
+
+  @@index([deleted_at], map: "idx_asset_tag_deleted_at")
+}
+
+model asset_type {
+  id         BigInt      @id @default(autoincrement())
+  created_at DateTime?   @db.Timestamptz(6)
+  updated_at DateTime?   @db.Timestamptz(6)
+  deleted_at DateTime?   @db.Timestamptz(6)
+  name       String      @db.VarChar(128)
+  name_th    String?     @db.VarChar(128)
+  name_en    String?     @db.VarChar(128)
+  name_cn    String?     @db.VarChar(128)
+  asset      asset[]
+  consignor  consignor[]
+  investor   investor[]
+  sell       sell[]
+
+  @@index([deleted_at], map: "idx_asset_type_deleted_at")
+}
+
+model consignor {
+  id                     BigInt                   @id @default(autoincrement())
+  created_at             DateTime?                @db.Timestamptz(6)
+  updated_at             DateTime?                @db.Timestamptz(6)
+  deleted_at             DateTime?                @db.Timestamptz(6)
+  user_role_id           BigInt
+  email                  String                   @unique(map: "uni_consignor_email") @db.VarChar(255)
+  password               String?                  @db.VarChar(255)
+  provider               String?                  @default("password") @db.VarChar(126)
+  provider_token         String?                  @db.VarChar(255)
+  verified               Boolean?                 @default(false)
+  user_prefix_id         BigInt
+  firstname              String                   @db.VarChar(255)
+  lastname               String                   @db.VarChar(255)
+  phone_number           String                   @db.VarChar(32)
+  career_id              BigInt
+  career_desc            String?                  @db.VarChar(255)
+  income_per_month       Decimal?                 @db.Decimal(18, 2)
+  online_range           String?                  @db.VarChar(255)
+  address_number         String?                  @db.VarChar(128)
+  address_street         String?                  @db.VarChar(128)
+  province_id            BigInt
+  district_id            BigInt
+  subdistrict_id         BigInt
+  gen_id                 String                   @unique(map: "uni_consignor_gen_id")
+  beneficiary            String?
+  relation               String?
+  interest_district_id   BigInt?
+  asset_type_id          BigInt?
+  investment_amount      Decimal?                 @db.Decimal
+  asset                  asset[]
+  asset_bid_offer        asset_bid_offer[]
+  asset_investment_offer asset_investment_offer[]
+  asset_type             asset_type?              @relation(fields: [asset_type_id], references: [id], onDelete: Cascade, map: "fk_consignor_asset_type")
+  district               district?                @relation(fields: [interest_district_id], references: [id], onDelete: Cascade, map: "fk_consignor_interest_district")
+  user_prefix            user_prefix              @relation(fields: [user_prefix_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_consignor_user_prefix")
+
+  @@index([deleted_at], map: "idx_consignor_deleted_at")
+  @@index([email], map: "idx_consignor_email")
+  @@index([gen_id], map: "idx_consignor_gen_id")
+}
+
+model district {
+  id           BigInt         @id @default(autoincrement())
+  created_at   DateTime?      @db.Timestamptz(6)
+  updated_at   DateTime?      @db.Timestamptz(6)
+  deleted_at   DateTime?      @db.Timestamptz(6)
+  name         String         @db.VarChar(128)
+  name_th      String?        @db.VarChar(128)
+  name_en      String?        @db.VarChar(128)
+  name_cn      String?        @db.VarChar(128)
+  province_id  BigInt
+  asset        asset[]
+  consignor    consignor[]
+  province     province       @relation(fields: [province_id], references: [id], onDelete: Cascade, map: "fk_district_province")
+  investor     investor[]
+  sell         sell[]
+  sub_district sub_district[]
+
+  @@index([deleted_at], map: "idx_district_deleted_at")
+}
+
+model investor {
+  id                   BigInt     @id @default(autoincrement())
+  created_at           DateTime?  @db.Timestamptz(6)
+  updated_at           DateTime?  @db.Timestamptz(6)
+  deleted_at           DateTime?  @db.Timestamptz(6)
+  user_role_id         BigInt
+  email                String     @unique(map: "uni_investor_email") @db.VarChar(255)
+  password             String?    @db.VarChar(255)
+  provider             String?    @default("password") @db.VarChar(126)
+  provider_token       String?    @db.VarChar(255)
+  verified             Boolean?   @default(false)
+  user_prefix_id       BigInt
+  firstname            String     @db.VarChar(255)
+  lastname             String     @db.VarChar(255)
+  phone_number         String     @db.VarChar(32)
+  career_id            BigInt
+  career_desc          String?    @db.VarChar(255)
+  income_per_month     Decimal?   @db.Decimal(18, 2)
+  online_range         String?    @db.VarChar(255)
+  address_number       String?    @db.VarChar(128)
+  address_street       String?    @db.VarChar(128)
+  province_id          BigInt
+  district_id          BigInt
+  subdistrict_id       BigInt
+  beneficiary          String
+  relation             String
+  interest_district_id BigInt?
+  asset_type_id        BigInt
+  investment_amount    Decimal    @db.Decimal
+  asset_type           asset_type @relation(fields: [asset_type_id], references: [id], onDelete: Cascade, map: "fk_investor_asset_type")
+  district             district?  @relation(fields: [interest_district_id], references: [id], onDelete: Cascade, map: "fk_investor_interest_district")
+
+  @@index([deleted_at], map: "idx_investor_deleted_at")
+  @@index([email], map: "idx_investor_email")
+}
+
+model matchings {
+  id                                      BigInt    @id @default(autoincrement())
+  created_at                              DateTime? @db.Timestamptz(6)
+  updated_at                              DateTime? @db.Timestamptz(6)
+  deleted_at                              DateTime? @db.Timestamptz(6)
+  confirm_by_admin_id                     BigInt
+  asset_id                                BigInt    @unique(map: "uni_matchings_asset_id")
+  bidder_id                               BigInt
+  asset_bid_offer_id                      BigInt    @unique(map: "uni_matchings_asset_bid_offer_id")
+  lease_agreement                         String?
+  spouse_consent_letter                   String?
+  real_estate_agent_appointment_agreement String?
+  purchase_and_sale_agreement             String?
+  property_detail_sheet                   String?
+  power_of_attorney                       String?
+  condo_power_of_attorney                 String?
+
+  @@index([asset_bid_offer_id], map: "idx_matchings_asset_bid_offer_id")
+  @@index([asset_id], map: "idx_matchings_asset_id")
+  @@index([deleted_at], map: "idx_matchings_deleted_at")
+}
+
+model otp {
+  id         BigInt    @id @default(autoincrement())
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
+  user_id    BigInt
+  ref        String    @unique(map: "uni_otp_ref")
+  user_type  String?
+  code       String
+  expired_at DateTime  @db.Timestamptz(6)
+
+  @@index([deleted_at], map: "idx_otp_deleted_at")
+}
+
+model province {
+  id         BigInt     @id @default(autoincrement())
+  created_at DateTime?  @db.Timestamptz(6)
+  updated_at DateTime?  @db.Timestamptz(6)
+  deleted_at DateTime?  @db.Timestamptz(6)
+  name       String     @db.VarChar(128)
+  name_th    String?    @db.VarChar(128)
+  name_en    String?    @db.VarChar(128)
+  name_cn    String?    @db.VarChar(128)
+  asset      asset[]
+  district   district[]
+  sell       sell[]
+
+  @@index([deleted_at], map: "idx_province_deleted_at")
+}
+
+model sell {
+  id                  BigInt        @id @default(autoincrement())
+  created_at          DateTime?     @db.Timestamptz(6)
+  updated_at          DateTime?     @db.Timestamptz(6)
+  deleted_at          DateTime?     @db.Timestamptz(6)
+  sell_type_id        BigInt?
+  asset_type_id       BigInt?
+  title               String?
+  project_name        String?
+  address             String?
+  street              String?
+  soi                 String?
+  province_id         BigInt?
+  district_id         BigInt?
+  sub_district_id     BigInt?
+  postal_code         String?
+  google_map_location String?
+  bedroom_count       BigInt?
+  bathroom_count      BigInt?
+  floor_level         BigInt?
+  square_meter        Decimal?      @db.Decimal
+  price               Decimal?      @db.Decimal
+  owner_id            BigInt?
+  description         String?
+  is_disabled         Boolean?      @default(false)
+  agency_required     Boolean?      @default(false)
+  is_published        Boolean?      @default(false)
+  recommended_at      DateTime?     @db.Timestamptz(6)
+  asset_type          asset_type?   @relation(fields: [asset_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sell_asset_type")
+  district            district?     @relation(fields: [district_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sell_district")
+  user                user?         @relation(fields: [owner_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sell_owner")
+  province            province?     @relation(fields: [province_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sell_province")
+  sell_type           sell_type?    @relation(fields: [sell_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sell_sell_type")
+  sub_district        sub_district? @relation(fields: [sub_district_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sell_sub_district")
+  sell_images         sell_images[]
+
+  @@index([deleted_at], map: "idx_sell_deleted_at")
+}
+
+model sell_images {
+  id         BigInt    @id @default(autoincrement())
+  created_at DateTime? @db.Timestamptz(6)
+  updated_at DateTime? @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
+  image      String
+  sell_id    BigInt
+  sell       sell      @relation(fields: [sell_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sell_images")
+
+  @@index([deleted_at], map: "idx_sell_images_deleted_at")
+}
+
+model sell_type {
+  id         BigInt    @id @default(autoincrement())
+  created_at DateTime? @db.Timestamptz(6)
+  updated_at DateTime? @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
+  name       String    @db.VarChar(128)
+  name_th    String?   @db.VarChar(128)
+  name_en    String?   @db.VarChar(128)
+  name_cn    String?   @db.VarChar(128)
+  sell       sell[]
+
+  @@index([deleted_at], map: "idx_sell_type_deleted_at")
+}
+
+model sub_district {
+  id          BigInt    @id @default(autoincrement())
+  created_at  DateTime? @db.Timestamptz(6)
+  updated_at  DateTime? @db.Timestamptz(6)
+  deleted_at  DateTime? @db.Timestamptz(6)
+  name        String    @db.VarChar(128)
+  name_th     String?   @db.VarChar(128)
+  name_en     String?   @db.VarChar(128)
+  name_cn     String?   @db.VarChar(128)
+  district_id BigInt
+  zip_code    String
+  sell        sell[]
+  district    district  @relation(fields: [district_id], references: [id], onDelete: Cascade, map: "fk_sub_district_district")
+
+  @@index([deleted_at], map: "idx_sub_district_deleted_at")
+}
+
+model tag {
+  id         BigInt      @id @default(autoincrement())
+  created_at DateTime?   @db.Timestamptz(6)
+  updated_at DateTime?   @db.Timestamptz(6)
+  deleted_at DateTime?   @db.Timestamptz(6)
+  name       String      @db.VarChar(128)
+  name_th    String?     @db.VarChar(128)
+  name_en    String?     @db.VarChar(128)
+  name_cn    String?     @db.VarChar(128)
+  asset_tag  asset_tag[]
+
+  @@index([deleted_at], map: "idx_tag_deleted_at")
+}
+
+model user {
+  id               BigInt        @id @default(autoincrement())
+  created_at       DateTime?     @db.Timestamptz(6)
+  updated_at       DateTime?     @db.Timestamptz(6)
+  deleted_at       DateTime?     @db.Timestamptz(6)
+  user_role_id     BigInt
+  email            String        @unique(map: "uni_user_email") @db.VarChar(255)
+  password         String?       @db.VarChar(255)
+  provider         String?       @default("password") @db.VarChar(126)
+  provider_token   String?       @db.VarChar(255)
+  verified         Boolean?      @default(false)
+  user_prefix_id   BigInt
+  firstname        String        @db.VarChar(255)
+  lastname         String        @db.VarChar(255)
+  phone_number     String        @db.VarChar(32)
+  career_id        BigInt
+  career_desc      String?       @db.VarChar(255)
+  income_per_month Decimal?      @db.Decimal(18, 2)
+  online_range     String?       @db.VarChar(255)
+  address_number   String?       @db.VarChar(128)
+  address_street   String?       @db.VarChar(128)
+  province_id      BigInt
+  district_id      BigInt
+  subdistrict_id   BigInt
+  sell             sell[]
+  prefix           user_prefix[]
+
+  @@index([deleted_at], map: "idx_user_deleted_at")
+  @@index([email], map: "idx_user_email")
+}
+
+model user_prefix {
+  id         BigInt      @id @default(autoincrement())
+  created_at DateTime?   @db.Timestamptz(6)
+  updated_at DateTime?   @db.Timestamptz(6)
+  deleted_at DateTime?   @db.Timestamptz(6)
+  name       String      @db.VarChar(128)
+  name_th    String?     @db.VarChar(128)
+  name_en    String?     @db.VarChar(128)
+  name_cn    String?     @db.VarChar(128)
+  consignor  consignor[]
+  user       user?       @relation(fields: [userId], references: [id])
+  userId     BigInt?
+
+  @@index([deleted_at], map: "idx_user_prefix_deleted_at")
+}
+
+model user_role {
+  id         BigInt    @id @default(autoincrement())
+  created_at DateTime? @db.Timestamptz(6)
+  updated_at DateTime? @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
+  name       String    @db.VarChar(128)
+  name_th    String?   @db.VarChar(128)
+  name_en    String?   @db.VarChar(128)
+  name_cn    String?   @db.VarChar(128)
+
+  @@index([deleted_at], map: "idx_user_role_deleted_at")
+}
