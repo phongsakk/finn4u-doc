@@ -3,6 +3,7 @@
 git fetch
 git pull
 docker compose up --build -d backend
+docker compose up --build -d backend2
 
 # ใช้ absolute path เพื่อป้องกันปัญหาเกี่ยวกับ relative path
 location=$(realpath "$(dirname "$1")")
