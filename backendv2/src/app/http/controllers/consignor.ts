@@ -17,15 +17,15 @@ const ConsignorUploadImageSchema = z.object({
 type ConsignorUploadImageSchema = z.infer<typeof ConsignorUploadImageSchema>;
 
 export const consignorUploadImage: CustomHandler<{
-  matchingId: string;
+  assetID: string;
 }> = async (req, res) => {
-  const matchingId = req.params.matchingId;
+  const assetID = req.params.assetID;
   console.log(req.body);
   const consignorUploadImage = ConsignorUploadImageSchema.parse(req.body);
 
   const matching = await prisma.matchings.findFirst({
     where: {
-      asset_id: safeNumber(matchingId),
+      asset_id: safeNumber(assetID),
     },
   });
   if (!matching) {
@@ -33,7 +33,7 @@ export const consignorUploadImage: CustomHandler<{
   }
   const updatedMatching = await prisma.matchings.update({
     where: {
-      id: safeNumber(matchingId),
+      id: safeNumber(assetID),
     },
     data: {
       lease_agreement: consignorUploadImage.lease_agreement,

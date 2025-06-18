@@ -5,4 +5,4 @@ export const investorRouter = Router();
 
 investorRouter.get("/", consignorMatchingAll);
 investorRouter.get("/:matchingId", consignorMatchingDetails);
-investorRouter.post("/:matchingId/upload-evidence", consignorUploadImage);
+investorRouter.post("/:assetID/upload-evidence", consignorUploadImage);
