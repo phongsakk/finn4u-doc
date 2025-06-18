@@ -25,7 +25,7 @@ export const consignorUploadImage: CustomHandler<{
 
   const matching = await prisma.matchings.findFirst({
     where: {
-      id: safeNumber(matchingId),
+      asset_id: safeNumber(matchingId),
     },
   });
   if (!matching) {
