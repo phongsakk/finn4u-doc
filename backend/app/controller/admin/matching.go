@@ -166,10 +166,12 @@ func CreateMatching(c *gin.Context) {
 		if err := trx.Model(&models.Asset{}).Where("id=?", request.AssetID).First(&asset).Error; err == gorm.ErrRecordNotFound {
 			return fmt.Errorf("asset not found")
 		}
-		if asset.Status == libs.ASSET_MATCHING {
+		if asset.Status == libs.ASSET_ADDED {
+			return fmt.Errorf("asset is not publish yet")
+		} else if asset.Status == libs.ASSET_SUCCESS {
 			return fmt.Errorf("asset is already sold")
 		} else {
-			asset.Status = libs.ASSET_MATCHING
+			asset.Status = libs.ASSET_SUCCESS
 			if err := trx.Save(&asset).Error; err != nil {
 				return err
 			}

@@ -7,10 +7,24 @@ export const getMatchingByAssetID: CustomHandler<{ assetID: string }> = async (
   req,
   res
 ) => {
-  const result = await prisma.matchings.findFirst({
+  const result = await prisma.asset_auction.findFirst({
     where: {
       asset_id: safeNumber(req.params.assetID),
     },
+    include: {
+      asset: {
+        include: {
+          owner: true,
+          province: true,
+          asset_type: true,
+          asset_bid_offer: {
+            include: {
+              bidder: true,
+            },
+          },
+        }
+      },
+    }
   });
 
   if (!result) {

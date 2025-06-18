@@ -3,11 +3,11 @@ import { CustomHandler } from "../../../types/extends";
 import { safeString } from "../../../utils/data";
 type ServerStatus = { db: "ok" | "error"; version: string };
 export const health: CustomHandler<{}, ServerStatus> = async (req, res) => {
-  let status: ServerStatus = { 
-    db: "ok", 
+  let status: ServerStatus = {
+    db: "ok",
     // package.json version
-    version: safeString(process.env.npm_package_version, '-'),
-};
+    version: safeString(process.env.npm_package_version, "-"),
+  };
   try {
     const client = new PrismaClient();
     await client.$connect();
