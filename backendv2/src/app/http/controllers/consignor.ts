@@ -1,4 +1,3 @@
-import { PrismaClient } from "../../../../generated/prisma";
 import { CustomHandler } from "../../../types/extends";
 import { z } from "zod";
 import { safeNumber } from "../../../utils/data";
@@ -33,7 +32,7 @@ export const consignorUploadImage: CustomHandler<{
   }
   const updatedMatching = await prisma.matchings.update({
     where: {
-      id: safeNumber(assetID),
+      id: matching.id,
     },
     data: {
       lease_agreement: consignorUploadImage.lease_agreement,
@@ -48,12 +47,33 @@ export const consignorUploadImage: CustomHandler<{
     },
   });
 
+  console.log(typeof updatedMatching.asset_id);
+
   res.status(201).json({
     status: true,
     code: 201,
     message: "Evidence uploaded successfully",
-    data: updatedMatching,
+    data: serializeBigInt(updatedMatching),
   });
+};
+
+const serializeBigInt = (obj: any): any => {
+  if (obj && typeof obj === "object") {
+    const keys = Object.keys(obj);
+    for (const key of keys) {
+      const val = obj[key];
+      if (typeof val === "bigint") {
+        if (val < Math.pow(2, 52)) {
+          obj[key] = parseInt(obj[key].toString());
+        } else {
+          obj[key] = obj[key].toString();
+        }
+      } else if (typeof obj[key] === "object") {
+        obj[key] = serializeBigInt(obj[key]);
+      }
+    }
+  }
+  return obj;
 };
 
 export const consignorMatchingAll: CustomHandler = async (req, res) => {
@@ -64,7 +84,7 @@ export const consignorMatchingAll: CustomHandler = async (req, res) => {
     code: 200,
     data: matchings,
   });
-}
+};
 
 export const consignorMatchingDetails: CustomHandler = async (req, res) => {
   const matchingId = req.params.matchingId;
