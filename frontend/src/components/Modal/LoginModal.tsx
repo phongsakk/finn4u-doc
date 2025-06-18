@@ -17,11 +17,12 @@ import { LoginModel } from "@models/LoginModel";
 import { FormInput } from "@components/FormCustom/FormInput";
 import { AlertPrimary } from "@components/alert/SwalAlert";
 import { signIn } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useLoaderContext } from "@components/context/LoaderContext";
 
 export default function LoginModal() {
   const [form, setForm] = useState(LoginModel);
+  const router  = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get("redirect") || "";
   const { modalType, closeModal, openModal } = useLoaderContext();
@@ -47,7 +48,8 @@ export default function LoginModal() {
       });
       if (res?.url) {
         if (redirectUrl) {
-          window.location.href = redirectUrl;
+          router.push(redirectUrl)
+          closeModal();
         } else {
           window.location.reload();
         }

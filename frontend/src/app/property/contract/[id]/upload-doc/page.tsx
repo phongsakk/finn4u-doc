@@ -9,7 +9,7 @@ import { EvidenceForm, EvidenceFormType } from "@models/EvidenceForm";
 import { api } from "@utils/api/index";
 import axios from "axios";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Accordion, Button, Card, Collapse, Form } from "react-bootstrap";
 
@@ -34,6 +34,7 @@ const DownLoadForm = {
 
 function UploadDocPage() {
   const { id } = useLoaderContext();
+  const router = useRouter();
   const [form, setForm] = useState<EvidenceFormType>(EvidenceForm);
   const [activeKey, setActiveKey] = useState<string | null>(null);
   const [submit, setSubmit] = useState(false);
@@ -57,7 +58,7 @@ function UploadDocPage() {
       );
       if (res.status) {
         AlertPrimary("บันทึกข้อมูลสำเร็จ", "success").then(() => {
-          redirect("/property/success");
+          router.push("/property/success");
         });
       } else {
         AlertPrimary("บันทึกข้อมูลไม่สำเร็จ! กรุณาลองใหม่อีกครั้ง", "error");
@@ -137,7 +138,7 @@ function UploadDocPage() {
               </Accordion>
               <div className="submit-group">
                 <Button type="submit" variant="primary" className="font2" disabled={submit}>
-                  {submit ? "กำลังบันทึก.." :"ถัดไป" } 
+                  {submit ? "กำลังบันทึก.." : "ถัดไป"}
                 </Button>
               </div>
             </Form>
