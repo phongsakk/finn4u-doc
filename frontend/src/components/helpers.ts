@@ -290,3 +290,18 @@ export const ResponseJson = (res: any, dataset?: any) => {
     { status: res.code }
   );
 };
+
+export const Num = (input: string | undefined | null): number => {
+  const str = String(input ?? "");
+  const cleaned = str.replace(/,/g, "");
+  const parsed = Number(cleaned);
+  return isNaN(parsed) ? 0 : parsed;
+};
+
+export const PercentageCal = (
+  input1: number | undefined,
+  input2: number | undefined
+): number => {
+  const result = (Number(input1) * Number(input2)) / 100;
+  return isNaN(result) ? 0 : result;
+};

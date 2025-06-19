@@ -12,6 +12,7 @@ import {
   ChartOptions,
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
+import { PercentageCal } from "@components/helpers";
 
 ChartJS.register(
   CategoryScale,
@@ -23,12 +24,14 @@ ChartJS.register(
   ChartDataLabels
 );
 
-const BarChart = ({ result = 0 }: { result: number }) => {
+const BarChart = ({ price = 0, result = 0 }: { price: number, result: number }) => {
+  const UnregulatedInterest = PercentageCal(price, 15);
+
   const data: ChartData<"bar"> = {
-    labels: ["FInn4U \n(ดอกเบี้ย 9-13%)", "นอกละบบ \n(ดอกเบี้ย <15%)"],
+    labels: ["ทุนทันใจ \n(ดอกเบี้ย 9-13%)", "นอกละบบ \n(ดอกเบี้ย <15%)"],
     datasets: [
       {
-        data: [result, 217500],
+        data: [result, UnregulatedInterest],
         backgroundColor: ["rgba(48, 177, 117, 1)", "rgba(164, 164, 164, 1)"],
       },
     ],

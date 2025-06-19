@@ -1,0 +1,18 @@
+export const AssetInfoForm = {
+  firstname: "",
+  lastname: "",
+  asset_id: "00000",
+  asset_type_name: "",
+  address: "",
+  district_name: "",
+  sub_district_name: "",
+  zipcode: "",
+  province_name: "",
+  aria_size: "",
+  price_appraisal: "0",
+  collateral_price: "0",
+  date_sell:"",
+  status: 0,
+  duration:"1",
+  end_sell:"",
+};

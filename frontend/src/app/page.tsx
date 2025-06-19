@@ -29,7 +29,7 @@ export default async function Page() {
       </div>
       <div className="about-fin4u">
         <div className="container">
-          <p className="title-content font2">เกี่ยวกับ Finn4U</p>
+          <p className="title-content font2">เกี่ยวกับ ทุนทันใจ</p>
 
           <div className="wrap">
             <div className="row">
@@ -51,7 +51,7 @@ export default async function Page() {
       <div className="story">
         <div className="container">
           <p className="title-content font2">
-            เรื่องราวที่ผู้ใช้ไว้วางใจบริการ Finn4U
+            เรื่องราวที่ผู้ใช้ไว้วางใจบริการ ทุนทันใจ
           </p>
           <div className="row justify-content-between">
             <div className="col-lg-3">
@@ -62,7 +62,7 @@ export default async function Page() {
                 <p className="name font2">พีทส์</p>
                 <p className="position font2">พีทส์</p>
                 <p className="detail">
-                  “Finn4U คือแพลตฟอร์ม Fintech
+                  “ทุนทันใจ คือแพลตฟอร์ม Fintech
                   ที่ทำให้เกิดประโยชน์กับคนหลายๆฝ่าย”
                 </p>
               </div>

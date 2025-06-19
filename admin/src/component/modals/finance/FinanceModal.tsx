@@ -38,9 +38,8 @@ function FinanceModal({
 
       setForm((prev) => ({
         ...prev,
-        [e.target.name]: `${formatNumber(Number(value))}${
-          lastChar == "." ? "." : ""
-        }`,
+        [e.target.name]: `${formatNumber(Number(value))}${lastChar == "." ? "." : ""
+          }`,
       }));
     }
   };
@@ -236,8 +235,8 @@ const InputCustom = ({
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
   return (
-    <Row className={`col-11 align-items-center ${className}`}>
-      <div className={`col-lg-5 ps-5 ${labelClass}`}>
+    <Row className={`col-11 align-items-center  ${className}`}>
+      <div className={`col-12 col-sm-5 col-md-5 col-lg-5 ps-3 ps-sm-3 ps-md-3 ps-lg-5 ${labelClass}`}>
         {label} {afterLabel ?? <></>}
       </div>
       <FormInput
@@ -247,7 +246,7 @@ const InputCustom = ({
         onChange={onChange}
         disabled={disabled}
       />
-      <div className="col-lg-3">{labelEnd}</div>
+      <div className="col-lg-3 ps-3 ps-sm-3 ps-md-3 ps-lg-0">{labelEnd}</div>
     </Row>
   );
 };

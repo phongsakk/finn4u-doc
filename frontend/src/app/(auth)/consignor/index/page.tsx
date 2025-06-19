@@ -23,7 +23,7 @@ function page() {
   const [assets, setAssets] = useState([]);
   const { assetGraph, assetInfo } = useConsignorModal();
   const [loading, setLoading] = useState(true);
-console.log(assets)
+  console.log(assets)
   useEffect(() => {
     const boot = async () => {
       setLoading(true);
@@ -187,7 +187,7 @@ console.log(assets)
                                     <Image src={imageinfo} alt="" />
                                   </div>
                                   <div className="group col-auto">
-                                    <Link href="/consignor/detail">
+                                    <Link href={`/consignor/index/detail/${item.id}`}>
                                       <Image src={imageusertell} alt="" />
                                     </Link>
                                   </div>

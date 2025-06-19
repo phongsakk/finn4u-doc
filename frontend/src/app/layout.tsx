@@ -12,7 +12,7 @@ import ModalController from "@components/Modal/ModalController";
 import { LoaderProvider } from "@components/context/LoaderContext";
 
 export const metadata: Metadata = {
-  title: "Finn4U",
+  title: "รับจำนอง ขายฝาก บ้าน ที่ดิน คอนโด ดอกเบี้ยถูก อนุมัติไว ไม่เช็คเครดิต | ทุนทันใจ",
   icons: "/logo-icon.svg",
   description: "Property Rental Services",
 };

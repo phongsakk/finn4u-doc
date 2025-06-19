@@ -20,7 +20,7 @@ function Footer() {
             </div>
             <div className="col">
               <div className="mb-3">
-                <p>Finn Tips</p>
+                <p>ทุนทันใจ Tips</p>
                 <p>ขายฝากที่นี่</p>
                 <p>คำถามที่พบบ่อย</p>
               </div>
@@ -32,7 +32,7 @@ function Footer() {
               <div className="col-lg-10">
                 <div className="row mb-3">
                   <div className="col-lg-12">
-                    <p className="head">บริษัท ฟินน์โฟร์ยู</p>
+                    <p className="head">บริษัท ฟินน์โฟร์ยู จำกัด</p>
                   </div>
                 </div>
                 <div className="row mb-3">

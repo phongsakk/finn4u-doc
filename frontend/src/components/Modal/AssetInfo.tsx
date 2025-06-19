@@ -2,15 +2,17 @@
 import { useConsignorModal } from "@components/context/ConsignorContext";
 import Loading from "@components/dev/loading";
 import { formatNumber, ToDateThai } from "@components/helpers";
+import { AssetInfoForm } from "@models/AssetInfoForm";
 import { api } from "@utils/api/index";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Form, Modal, Row } from "react-bootstrap";
-import { MdDateRange } from "react-icons/md";
+import { LuCalendarDays } from "react-icons/lu";
+
 
 function AssetInfo() {
   const { assetInfo } = useConsignorModal();
-  const [form, setForm] = useState<any>();
+  const [form, setForm] = useState(AssetInfoForm);
   const [loading, setLoading] = useState(true);
   const [fetchFail, setFetchFail] = useState(false);
   console.log(loading);
@@ -25,7 +27,7 @@ function AssetInfo() {
       try {
         setLoading(true);
         const { data: res } = await axios.get(api.internal(
-          `/api/consignor/asset/${assetInfo.id}`
+          `/api/consignor/asset/${assetInfo.id}/info`
         ));
         if (res.status) {
           setForm(res.data);
@@ -38,8 +40,11 @@ function AssetInfo() {
         setLoading(false);
       }
     };
+
     if (assetInfo.id) {
       boot();
+    } else {
+      setForm(AssetInfoForm)
     }
   }, [assetInfo.id]);
   return (
@@ -69,7 +74,7 @@ function AssetInfo() {
               <ShowInput
                 name="lastname"
                 onChange={handleForm}
-                slClass="col-lg-1 px-0 text-lg-end"
+                slClass="col-lg-1 px-3 px-sm-3 px-md-0 px-lg-0 text-lg-end align-self-center"
                 groupClass="col-lg-4"
                 startLabel="นามสกุล"
                 value={form?.lastname}
@@ -81,13 +86,13 @@ function AssetInfo() {
                 onChange={handleForm}
                 groupClass="col-lg-4"
                 startLabel="เลขที่ฝากขาย"
-                value={form?.id}
+                value={form?.asset_id}
               />
               <ShowInput
                 name="asset_type_name"
                 onChange={handleForm}
                 groupClass="col-lg-4"
-                slClass="col-lg-1 px-0 text-lg-end"
+                slClass="col-lg-1 px-3 px-sm-3 px-md-0 px-lg-0 text-lg-end align-self-center"
                 startLabel="ประเภท"
                 value={form?.asset_type_name}
               />
@@ -119,7 +124,7 @@ function AssetInfo() {
               />
               <ShowInput
                 name="sub_district_name"
-                slClass="col-lg-1 px-0 text-lg-end align-self-center"
+                slClass="col-lg-1 px-3 px-sm-3 px-md-0 px-lg-0 text-lg-end align-self-center"
                 groupClass="col-lg-2"
                 value={form?.sub_district_name}
                 onChange={handleForm}
@@ -140,7 +145,7 @@ function AssetInfo() {
               />
               <ShowInput
                 name="province_name"
-                slClass="col-lg-1 px-0 text-lg-end align-self-center"
+                slClass="col-lg-1 px-3 px-sm-3 px-md-0 px-lg-0 text-lg-end align-self-center"
                 groupClass="col-lg-2"
                 value={form?.province_name}
                 onChange={handleForm}
@@ -168,7 +173,7 @@ function AssetInfo() {
                 name="price_appraisal"
                 slClass="col-lg-2 text-lg-end align-self-center"
                 groupClass="col-lg-2"
-                value={formatNumber(form?.price_appraisal)}
+                value={form?.price_appraisal}
                 onChange={handleForm}
                 startLabel="ราคาขายฝาก"
                 endLabel="บาท"
@@ -176,9 +181,9 @@ function AssetInfo() {
 
               <ShowInput
                 name="collateral_price"
-                slClass="col-lg-2 px-0 text-lg-end align-self-center"
+                slClass="col-lg-2 px-3 px-sm-3 px-md-0 px-lg-0 text-lg-end align-self-center"
                 groupClass="col-lg-2"
-                value={formatNumber(form?.collateral_price)}
+                value={form?.collateral_price}
                 onChange={handleForm}
                 startLabel="มูลค่าทรัพย์สิน"
                 endLabel="บาท"
@@ -190,14 +195,14 @@ function AssetInfo() {
               </div>
               <ShowInput
                 name="date_sell"
-                value={ToDateThai(form?.date_sell ?? null, "D MMMM BBBB")}
+                value={form?.date_sell}
                 onChange={handleForm}
                 startLabel={
                   form?.status == 2 ? "ตั้งแต่วันที่" : "วันที่ลงขายฝาก"
                 }
               />
               <div className="col-lg-1 px-1 align-self-center">
-                <MdDateRange size={35} className="border" />
+                <LuCalendarDays size={25} className="border" />
               </div>
               <ShowInput
                 name="duration"
@@ -214,12 +219,12 @@ function AssetInfo() {
                 <>
                   <ShowInput
                     name="end_sell"
-                    value={ToDateThai(form?.end_sell ?? null, "D MMMM BBBB")}
+                    value={form?.end_sell}
                     onChange={handleForm}
                     startLabel="จนถึงวันที่"
                   />
                   <div className="col-lg-1 px-1 align-self-center">
-                    <MdDateRange size={35} className="border" />
+                    <LuCalendarDays size={25} className="border" />
                   </div>
                 </>
               )}
