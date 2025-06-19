@@ -1,16 +1,42 @@
 "use client";
 import CustomImage from "@components/CustomImage";
-import BarChart from "./BarChart";
+import { FormInput } from "@components/FormCustom/FormInput";
+import { formatNumber, Num, PercentageCal } from "@components/helpers";
+import BarChart from "@components/Modal/Chart/BarChart";
 import Link from "next/link";
+import { useState } from "react";
+const CustomForm = {
+  price: "0",
+  duration: "0"
+}
 
 function page() {
+  const [form, setForm] = useState(CustomForm);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^0-9.]/g, "");
+    const regex = /^(\d+(\.\d*)?|\.\d+)$/;
+
+    if (regex.test(value) || value === "") {
+      const lastChar = value.charAt(value.length - 1);
+
+      setForm((prev) => ({
+        ...prev,
+        [e.target.name]: `${formatNumber(Number(value))}${lastChar == "." ? "." : ""
+          }`,
+      }));
+    }
+  };
+
+  const result = PercentageCal(Num(form.price),9)
+
   return (
     <>
       <div className="ragister-content">
         <div className="container">
           <h4>
             ขายฝากได้ง่ายกับ
-            <span className="text-primary h3">Finn4U</span>
+            <span className="text-primary h3">ทุนทันใจ</span>
           </h4>
 
           <div className="row">
@@ -24,7 +50,7 @@ function page() {
                     height: "auto",
                   }}
                 />
-                <p>Finn มีอสังหาฯมูลค่าสูง</p>
+                <p>ทุนทันใจ มีอสังหาฯมูลค่าสูง</p>
                 <p>อสังหาริมทรัพย์มูลค่าสูงค้ำประกันง</p>
               </div>
             </div>
@@ -38,7 +64,7 @@ function page() {
                     height: "auto",
                   }}
                 />
-                <p>Finn กับอัตราตอบแทน</p>
+                <p>ทุนทันใจ กับอัตราตอบแทน</p>
                 <p>ด้วยอัตราผลตอบแทนสูง 9-12% ต่อปี</p>
               </div>
             </div>
@@ -52,7 +78,7 @@ function page() {
                     height: "auto",
                   }}
                 />
-                <p>Finn หายห่วง</p>
+                <p>ทุนทันใจ หายห่วง</p>
                 <p>ประเมินทรัพย์สินโดยบริษัทประเมิน</p>
                 <p>ที่ได้รับความเห็นชอบจาก ก.ล.ต.</p>
               </div>
@@ -70,7 +96,7 @@ function page() {
       <div className="calculate">
         <h2 className="text-center font2 m-3">
           ขายฝากได้ง่ายกับ
-          <span className="text-primary font2 h4">Finn4U</span>
+          <span className="text-primary font2 h4">ทุนทันใจ</span>
         </h2>
 
         <div className="container">
@@ -79,34 +105,10 @@ function page() {
               <div className="col-lg-6">
                 <h4 className="text-center font2">
                   คำนวณผลตอบแทนกับ
-                  <span className="text-primary font2 i h4">Finn4U</span>
+                  <span className="text-primary font2 i h4">ทุนทันใจ</span>
                 </h4>
-                <div className="mb-3">
-                  <label className="form-label font2">
-                    จำนวนเงินลงทุน (บาท)
-                    <span className="text-require font2">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control p-3 text-center"
-                    id="form1"
-                    aria-describedby="text"
-                    placeholder="จำนวนเงินลงทุน (บาท)"
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label font2">
-                    ระยะเวลาลงทุน (ปี)
-                    <span className="text-require font2">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control p-3 text-center"
-                    id="form2"
-                    aria-describedby="text"
-                    placeholder="ระยะเวลาลงทุน (ปี)"
-                  />
-                </div>
+                <FormInput groupClass="col-12 mb-3" className="p-3 text-center" value={form.price == "0" || form.price == "-" ? "" : form.price} name="price" label="จำนวนเงินลงทุน (บาท)" placeholder="จำนวนเงินลงทุน (บาท)" onChange={handleChange} />
+                <FormInput groupClass="col-12 mb-3" className="p-3 text-center" value={form.duration == "0" || form.duration == "-" ? "" : form.duration} name="duration" label="ระยะเวลาลงทุน (ปี)" placeholder="ระยะเวลาลงทุน (ปี)" onChange={handleChange} />
                 <div className=" mb-3 font2">
                   <Link
                     onClick={(e) => e.preventDefault()}
@@ -119,7 +121,7 @@ function page() {
                 </div>
               </div>
               <div className="col-lg-6">
-                <BarChart />
+                <BarChart price={Num(form.price)} result={result} />
               </div>
             </div>
           </div>

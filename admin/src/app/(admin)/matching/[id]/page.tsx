@@ -6,15 +6,35 @@ import axios from "axios";
 import { api } from "@utils/api";
 import { AlertPrimary } from "@component/alert/SwalAlert";
 import { LoadPage } from "@component/dev/LoadPage";
+import CheckBox from "@component/dev/CheckBox";
+import EvidenceModal from "@component/modals/matching/EvidenceModal";
+
+type winnerType = {
+  bidder_id: number,
+  asset_bid_offer_id: number
+}
+
+const Evidence = {
+  show: false,
+  id: 0,
+}
 
 function page() {
   const { id } = useParams();
   const [loadPage, setLoadPage] = useState(true);
   const [FatchFail, setFatchFail] = useState(false);
   const [Model, setModel] = useState<any>({});
-  const [winner, setWinner] = useState<any>(undefined);
+  const [winner, setWinner] = useState<winnerType | undefined>(undefined);
   const [submit, setSubmit] = useState(false);
 
+  const [evidenceModal, setEvidenceModal] = useState(Evidence);
+  const OpenEvidence = (Id: number) => {
+    setEvidenceModal({ show: true, id: Id })
+  }
+
+  const CloseEvidence = () => {
+    setEvidenceModal({ show: false, id: 0 })
+  }
   useEffect(() => {
     const boot = async () => {
       try {
@@ -36,6 +56,7 @@ function page() {
     boot();
   }, [id]);
 
+
   const handleSubmit = async () => {
     try {
       setSubmit(true);
@@ -50,7 +71,7 @@ function page() {
           window.location.reload();
         });
       } else {
-        AlertPrimary("ไม่สามารถบันทึกข้อมูลได้ - Please try again!", "error");
+        AlertPrimary(res?.data?.message, "error");
       }
     } catch (error) {
       AlertPrimary("ไม่สามารถบันทึกข้อมูลได้ - Please try again!", "error");
@@ -65,6 +86,7 @@ function page() {
         <LoadPage />
       ) : (
         <>
+          <EvidenceModal prompt={evidenceModal} Close={CloseEvidence} />
           {FatchFail === true ? (
             <span className="text-danger">ไม่สามารถโหลดข้อมูลได้..</span>
           ) : null}
@@ -113,25 +135,15 @@ function page() {
                 <th className="text-center">เบอร์โทรศัพท์</th>
                 <th className="text-center">บริเวณที่ต้องการลงทุน</th>
                 <th className="text-center">ประเภททรัพย์สิน</th>
-                <th className="text-center">จำนวนเงินที่ต้องการลงทุน</th>
+                <th className="text-center">bid</th>
+                <th className="text-center">เอกสาร</th>
               </tr>
             </thead>
             <tbody>
               {Model?.bidder_offer?.map((item: any, index: number) => (
                 <tr key={index}>
                   <td className="text-center">
-                    <FormCheck
-                      onChange={() =>
-                        setWinner({
-                          bidder_id: item.bidder_id,
-                          asset_bid_offer_id: item.id,
-                        })
-                      }
-                      checked={item?.is_winner ? true: undefined}
-                      name="bidder"
-                      id={`bidder-${index}`}
-                      type="radio"
-                    />
+                    <CheckWinner item={item} index={index} winner={winner} setWinner={setWinner} />
                   </td>
                   <td>{item.number_consignor}</td>
                   <td>{item.fullname}</td>
@@ -139,6 +151,7 @@ function page() {
                   <td className="text-center">{item.tag}</td>
                   <td className="text-center">{Model?.asset.asset_type}</td>
                   <td className="text-center">{item?.offer}</td>
+                  <td className="text-center user-select-none" onClick={() => OpenEvidence(item.bidder_id)} ><u>ดาวโหลดเอกสาร</u></td>
                 </tr>
               ))}
             </tbody>
@@ -159,3 +172,29 @@ function page() {
 }
 
 export default page;
+
+const CheckWinner = ({ item, index, winner, setWinner }: { item: any, index: number, winner: any, setWinner: React.Dispatch<any> }) => {
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    if (!winner) {
+      setChecked(item.is_winner)
+    } else {
+      setChecked(item.id === winner?.asset_bid_offer_id)
+    }
+  }, [winner])
+
+  const handleCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setWinner({
+      bidder_id: item.bidder_id,
+      asset_bid_offer_id: item.id,
+    })
+  }
+  return <><FormCheck
+    onChange={handleCheck}
+    checked={checked}
+    name="bidder"
+    id={`bidder-${index}`}
+    type="radio"
+  /></>
+}

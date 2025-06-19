@@ -1,10 +1,10 @@
 import { auth } from "@libs/auth";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function middleware(req: Request) {
+export async function middleware(req: NextRequest) {
   const session = await auth();
   if (!session) {
-    const originalUrl = req.url;
+    const originalUrl = `${req.nextUrl.pathname}`;
 
     const url = new URL("/", req.url);
     url.searchParams.set("modal", "login");
@@ -20,6 +20,6 @@ export const config = {
     "/consignment/:path*",
     "/investment/:path*",
     "/property/contract/:path*",
-    "/profile/:path*"
+    "/profile/:path*",
   ],
 };

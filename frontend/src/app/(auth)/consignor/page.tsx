@@ -7,14 +7,14 @@ function Consignment() {
       <div className="ragister-content">
         <div className="container">
           <h4>
-            ขายฝากได้ง่ายกับ <span className="text-primary h2">Finn4U</span>
+            ขายฝากได้ง่ายกับ <span className="text-primary h2">ทุนทันใจ</span>
           </h4>
 
           <div className="row">
             <div className="col-lg-4">
               <div className="group">
                 <CustomImage src="/menuregis1.png" alt="menuregis1" />
-                <p>Finn กับการลดภาระดอกเบี้ย</p>
+                <p>ทุนทันใจ กับการลดภาระดอกเบี้ย</p>
                 <p>ลดภาระดอกเบี้ยขายฝากที่สูง</p>
                 <p>เหลือเพียง 0.75% ต่อเดือน</p>
               </div>
@@ -22,14 +22,14 @@ function Consignment() {
             <div className="col-lg-4">
               <div className="group">
                 <CustomImage src="/menuregis2.png" alt="menuregis2" />
-                <p>Finn กับการลดภาระดอกเบี้ย</p>
+                <p>ทุนทันใจ กับการลดภาระดอกเบี้ย</p>
                 <p>ราคารับขายฝากสูงสุดถึง 70%</p>
               </div>
             </div>
             <div className="col-lg-4">
               <div className="group">
                 <CustomImage src="/menuregis3.png" alt="menuregis3" />
-                <p>Finn กับการลดภาระดอกเบี้ย</p>
+                <p>ทุนทันใจ กับการลดภาระดอกเบี้ย</p>
                 <p>เพราะเรารักษาข้อมูลของคุณ</p>
                 <p>เป็นความลับสูงสุด</p>
               </div>
@@ -38,7 +38,7 @@ function Consignment() {
 
           <div className="btn-wrap">
             <Link className="btn btn-primary" href="/consignor/index">
-              ลงขายฝากกับ Finn4U
+              ลงขายฝากกับ ทุนทันใจ
             </Link>
           </div>
         </div>
@@ -104,7 +104,7 @@ function Consignment() {
 
       <div className="about-fin4u">
         <div className="container">
-          <p className="title-content">เกี่ยวกับ Finn4U</p>
+          <p className="title-content">เกี่ยวกับ ทุนทันใจ</p>
 
           <div className="wrap">
             <div className="row">
