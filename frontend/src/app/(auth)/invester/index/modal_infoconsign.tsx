@@ -3,20 +3,21 @@ import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { modalParam } from "@models/modalParam";
 import { FaRegCalendarAlt } from "react-icons/fa";
+import { PromptModal } from "@models/promptmodal";
 
 function Modal_infoconsign({
-  detailOpen,
-  handleConHide,
+  model,
+  Close,
 }: {
-  detailOpen: modalParam;
-  handleConHide: () => void;
+  model: PromptModal;
+  Close: () => void;
 }) {
   return (
     <Modal
       className="modal-main modal-100w"
       size="xl"
-      show={detailOpen.open}
-      onHide={() => handleConHide()}
+      show={model.show}
+      onHide={Close}
       centered
     >
       <Modal.Header closeButton>

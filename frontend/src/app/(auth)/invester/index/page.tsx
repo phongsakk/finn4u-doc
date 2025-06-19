@@ -10,138 +10,152 @@ import axios from "axios";
 import { api } from "@utils/api/index";
 import ImageApi from "@components/ImageApi";
 import { formatCurrency, formatNumber } from "@components/helpers";
-import { Row } from "react-bootstrap";
+import { Button, Row } from "react-bootstrap";
 import i1 from "@public/cos-ic1.svg";
 import i2 from "@public/cos-ic2.svg";
 import i3 from "@public/cos-ic3.svg";
+import igraph from "@public/graph-ic.svg";
+import iInfo from "@public/info.svg";
+import iUsertell from "@public/usertell.svg";
 import Image from "next/image";
+import { PromptModal } from "@models/promptmodal";
+import Loading from "@components/dev/loading";
+
+const promptModal = {
+  id: 0,
+  show: false,
+};
 
 function page() {
   const [form, setForm] = useState<any>([]);
   const [loading, setLoading] = useState(true);
+  const [interestModel, setInterest] = useState<PromptModal>(promptModal);
+  const [infoModel, setInfo] = useState<PromptModal>(promptModal);
+  const [tellModel, setTell] = useState<PromptModal>(promptModal);
+
   useEffect(() => {
     const boot = async () => {
       try {
         setLoading(true);
-        const { data: res } = await axios.get(api.internal(`/api/investor`))
+        const { data: res } = await axios.get(api.internal(`/api/investor`));
         if (res?.status) {
-          setForm(res?.data || [])
+          setForm(res?.data || []);
         }
       } finally {
         setLoading(false);
       }
-    }
+    };
     boot();
-  }, [])
+  }, []);
 
-  const [interestOpen, setInterestOpen] = useState<modalParam>({
-    open: false,
-  });
-  const [detailOpen, setDtilOpen] = useState<modalParam>({ open: false });
-  const [userTellOpen, setUserTallOpen] = useState<modalParam>({
-    open: false,
-  });
-
-  const handleHide = () => {
-    setInterestOpen({ open: false });
+  const OpenInterest = (ID: number) => {
+    setInterest({ id: ID, show: true });
+  };
+  const CloseInterest = () => {
+    setInterest(promptModal);
   };
 
-  const handleConHide = () => {
-    setDtilOpen({ open: false });
+  const OpenInfo = (ID: number) => {
+    setInfo({ id: ID, show: true });
+  };
+  const CloseInfo = () => {
+    setInfo(promptModal);
   };
 
-  const handleUserTellHide = () => {
-    setUserTallOpen({ open: false });
+  const OpenTell = (ID: number) => {
+    setTell({ id: ID, show: true });
+  };
+  const CloseTell = () => {
+    setTell(promptModal);
   };
 
   return (
     <>
-      <Modal_interest investCalOpen={interestOpen} handleHide={handleHide} />
-
-      <Modal_infoconsign
-        detailOpen={detailOpen}
-        handleConHide={handleConHide}
-      />
-
-      <Modal_usertell
-        userTellOpen={userTellOpen}
-        handleUserTellHide={handleUserTellHide}
-      />
+      <Modal_interest model={interestModel} Close={CloseInterest} />
+      <Modal_infoconsign model={infoModel} Close={CloseInfo} />
+      <Modal_usertell model={tellModel} Close={CloseTell} />
 
       <div className="consignment-form2 investment-form2">
         <div className="container">
-          <div className="card-form-main">
+          <div className="card-form-main px-1 px-sm-2 px-md-3 px-lg-4">
             <h4 className="title-main mb-5 mt-5 font2">ข้อมูลการลงทุน</h4>
 
             <div className="container">
               <div className="land-sale-2">
-                <Row className="not-sale mb-3">
-                  {form?.map((item: any, index: number) => (
-                    <Row className="col-12 p-1 p-sm-2 p-md-3 p-lg-4 border shadow" key={index}>
-                      <div className="col-lg-4 px-0 border">
-                        <div className="relative">
-                          <ImageApi src={item?.asset_image} />
+                {loading ? (
+                  <Loading />
+                ) : (
+                  <Row className="not-sale mb-3 mx-0">
+                    {form?.map((item: any, index: number) => (
+                      <Row
+                        className="mx-0 col-12 p-1 p-sm-2 p-md-3 p-lg-4 border shadow"
+                        key={index}
+                      >
+                        <div className="col-lg-4 px-0 border">
+                          <div className="relative">
+                            <ImageApi src={item?.asset_image} />
+                          </div>
                         </div>
-                      </div>
-                      <Row className="col-lg-8 mx-0 my-0 px-3 py-3">
-                        <Row className="mx-0 my-0 align-items-center">
-                          <Detail icon={i1} el={item?.province_name} />
-                          <Detail icon={i2} el={<>เลขที่ฝากขาย ${String(item.id).padStart(5, "0")}</>} />
-                          <Detail icon={i3} el={item?.aria_size} />
-                          <Detail icon={i3} el={<><span>มูลค่าสินทรัพย์ค้ำประกัน</span>
-                            <span className="text-primary">{item?.collateral_price}</span></>} />
-                          <Detail icon={i1} el={<><span className="w-100">ราคาขายฝาก</span>
-                            <span className="text-primary">{item?.price_appraisal}</span>
-                            <span>บาท</span></>} />
-                          <Detail icon={i3} el={<>ลงทุนวันที่ {item?.bid_date}</>} />
-                          <div className="col-4">
-                          </div>
+                        <Row className="col-lg-8 mx-0 my-0 px-1 px-sm-1 px-md-2 px-lg-3 py-3 mb-3">
+                          <Row className="col-lg-10 mx-0 my-0 mb-3 mb-sm-0 mb-md-0 mb-lg-0 align-items-center">
+                            <Detail icon={i1} el={item?.province_name} />
+                            <Detail
+                              icon={i2}
+                              el={
+                                <>
+                                  เลขที่ฝากขาย{" "}
+                                  {String(item.id).padStart(5, "0")}
+                                </>
+                              }
+                            />
+                            <Detail icon={i3} el={item?.aria_size} />
+                            <Detail
+                              icon={i3}
+                              el={
+                                <>
+                                  <span>มูลค่าสินทรัพย์ค้ำประกัน</span>
+                                  <span className="text-primary">
+                                    {item?.collateral_price}
+                                  </span>
+                                </>
+                              }
+                            />
+                            <Detail
+                              icon={i1}
+                              el={
+                                <>
+                                  <span className="w-100">ราคาขายฝาก</span>
+                                  <span className="text-primary">
+                                    {item?.price_appraisal}
+                                  </span>
+                                  <span>บาท</span>
+                                </>
+                              }
+                            />
+                            <Detail
+                              icon={i3}
+                              el={<>ลงทุนวันที่ {item?.bid_date}</>}
+                            />
+                          </Row>
+                          <Row className="col-lg-2 mx-0 my-0 justify-content-center align-content-center">
+                            <EventButton
+                              icon={igraph}
+                              onClick={() => OpenInterest(item?.id)}
+                            />
+                            <EventButton
+                              icon={iInfo}
+                              onClick={() => OpenInfo(item?.id)}
+                            />
+                            <EventButton
+                              icon={iUsertell}
+                              onClick={() => OpenTell(item?.id)}
+                            />
+                          </Row>
                         </Row>
-                        {/* <div className="locataion row mx-0 mb-0 align-items-center">
-                          <div className="group-menu-2">
-                            <div
-                              className="group"
-                              onClick={() => setInterestOpen({ open: true })}
-                            >
-                              <CustomImage
-                                width={22}
-                                height={22}
-                                src="/graph-ic.svg"
-                                alt="graph-ic"
-                                style={{}}
-                              />
-                            </div>
-                            <div
-                              className="group"
-                              onClick={() => setDtilOpen({ open: true })}
-                            >
-                              <CustomImage
-                                width={22}
-                                height={22}
-                                src="/info.svg"
-                                alt="info"
-                                style={{}}
-                              />
-                            </div>
-                            <div
-                              className="group"
-                              onClick={() => setUserTallOpen({ open: true })}
-                            >
-                              <CustomImage
-                                width={22}
-                                height={22}
-                                src="/usertell.svg"
-                                alt="usertell"
-                                style={{}}
-                              />
-                            </div>
-                          </div>
-                        </div> */}
                       </Row>
-                    </Row>
-                  ))}
-
-                </Row>
+                    ))}
+                  </Row>
+                )}
 
                 <div className="submit-group mt-5 font2">
                   <Link
@@ -163,16 +177,25 @@ function page() {
 
 export default page;
 
-
-const Detail = ({ icon, el }: { icon: any, el: React.JSX.Element }) => {
+const Detail = ({ icon, el }: { icon: any; el: React.JSX.Element }) => {
   return (
-    <Row className="mx-0 mb-2 col-8">
-      <div className="col-2 px-1 px-sm-1 px-md-2 px-lg-3">
+    <Row className="mx-0 mb-2 col-12 col-sm-12 col-md-12 col-lg-8">
+      <div className="col-2 px-1 px-sm-1 px-md-1 px-lg-1">
         <Image src={icon} alt="" />
       </div>
       <div className="col-10">
         <span className="w-100">{el}</span>
       </div>
     </Row>
-  )
-}
+  );
+};
+
+const EventButton = ({ icon, onClick }: { icon: any; onClick: () => void }) => {
+  return (
+    <div className="col-4 col-sm-4 col-md-4 col-lg-12 mb-2 text-center">
+      <Button variant="" className="border shadow-sm" onClick={onClick}>
+        <Image src={icon} alt="" />
+      </Button>
+    </div>
+  );
+};

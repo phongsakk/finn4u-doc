@@ -2,24 +2,24 @@ import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import BarChart from "./BarChart";
 import { modalParam } from "@models/modalParam";
+import { PromptModal } from "@models/promptmodal";
 function Modal_interest({
-  investCalOpen,
-  handleHide,
+  model,
+  Close,
 }: {
-  investCalOpen: modalParam;
-  handleHide: () => void;
+  model: PromptModal;
+  Close: () => void;
 }) {
-
   return (
     <Modal
       className="font2 modal-main"
-      show={investCalOpen.open}
+      show={model.show}
       size="xl"
-      onHide={() => handleHide()}
+      onHide={Close}
       centered
     >
       <Modal.Header closeButton>
-        <h5 className="modal-title font2">การคำนวณดอกเบี้ย</h5>
+        <h5 className="modal-title font2">ผลตอบแทนเมื่อลงทุนกับ ทุนทันใจ</h5>
       </Modal.Header>
       <Modal.Body>
         <div className="row">
