@@ -8,7 +8,7 @@ export const POST = async (req: NextRequest) => {
     const body = await req.json();
 
     const { data: res_otp } = await axios.post(
-      api.external(`/v1/auth/investor/resendOTP`),
+      api.external(`/v1/investor/auth/resendOTP`),
       body
     );
     return NextResponse.json(

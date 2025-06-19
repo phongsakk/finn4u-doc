@@ -6,8 +6,9 @@ import { NextRequest, NextResponse } from "next/server";
 export const POST = async (req: NextRequest) => {
   try {
     const body = await req.json();
+
     const { data: res_regis } = await axios.post(
-      api.external("/v1/auth/investor/register"),
+      api.external("/v1/investor/auth/register"),
       body
     );
     logError(1213213,res_regis)

@@ -9,7 +9,7 @@ export const POST = async (req: NextRequest) => {
     const body = await req.json();
 
     const { data: res_otp } = await axios.post(
-      api.external(`/v1/auth/investor/verifyOTP`),
+      api.external(`/v1/investor/auth/verifyOTP`),
       body
     );
     logError(121321,res_otp)
