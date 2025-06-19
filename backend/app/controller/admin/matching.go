@@ -189,7 +189,7 @@ func CreateMatching(c *gin.Context) {
 		utils.SendEmail(
 			email,
 			"Your bid offer has been confirmed by the admin",
-			fmt.Sprintf("Your bid offer has been confirmed by the admin. Please check the link for more details. \n https://finn4u.com/property/contract/%d/upload-doc", request.AssetID),
+			fmt.Sprintf("Your bid offer has been confirmed by the admin. Please check the link for more details. \n http://fin4u.co/property/contract/%d/upload-doc", request.AssetID),
 		)
 
 		return nil
