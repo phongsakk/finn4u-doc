@@ -160,6 +160,7 @@ func Register(c *gin.Context) {
 	user.InterestDistrictID = request.InterestDistrictID
 	user.AssetTypeID = &request.AssetTypeId
 	user.InvestmentAmount = &request.InvestmentAmount
+	user.GenID = fmt.Sprintf("IN%d", time.Now().Unix())
 
 	var otp models.OTP
 	if Err := db.Transaction(func(tx *gorm.DB) error {

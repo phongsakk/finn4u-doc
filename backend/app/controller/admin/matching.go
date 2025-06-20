@@ -166,10 +166,12 @@ func CreateMatching(c *gin.Context) {
 		if err := trx.Model(&models.Asset{}).Where("id=?", request.AssetID).First(&asset).Error; err == gorm.ErrRecordNotFound {
 			return fmt.Errorf("asset not found")
 		}
-		if asset.Status == libs.ASSET_MATCHING {
+		if asset.Status == libs.ASSET_ADDED {
+			return fmt.Errorf("asset is not publish yet")
+		} else if asset.Status == libs.ASSET_SUCCESS {
 			return fmt.Errorf("asset is already sold")
 		} else {
-			asset.Status = libs.ASSET_MATCHING
+			asset.Status = libs.ASSET_SUCCESS
 			if err := trx.Save(&asset).Error; err != nil {
 				return err
 			}
@@ -187,7 +189,7 @@ func CreateMatching(c *gin.Context) {
 		utils.SendEmail(
 			email,
 			"Your bid offer has been confirmed by the admin",
-			fmt.Sprintf("Your bid offer has been confirmed by the admin. Please check the link for more details. \n https://finn4u.com/property/contract/%d/upload-doc", request.AssetID),
+			fmt.Sprintf("Your bid offer has been confirmed by the admin. Please check the link for more details. \n http://fin4u.co/property/contract/%d/upload-doc", request.AssetID),
 		)
 
 		return nil
