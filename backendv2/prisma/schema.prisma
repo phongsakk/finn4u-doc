@@ -247,11 +247,11 @@ model consignor {
   asset_bid_offer        asset_bid_offer[]
   asset_investment_offer asset_investment_offer[]
   asset_type             asset_type?              @relation(fields: [asset_type_id], references: [id], onDelete: Cascade, map: "fk_consignor_asset_type")
+  district               district?                @relation("fk_consignor_district", fields: [district_id], references: [id], onDelete: Cascade, map: "fk_consignor_district")
+  interest_district      district?                @relation("fk_consignor_interest_district", fields: [interest_district_id], references: [id], onDelete: Cascade, map: "fk_consignor_interest_district")
   prefix                 user_prefix              @relation(fields: [user_prefix_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_consignor_user_prefix")
   province               province?                @relation(fields: [province_id], references: [id], onDelete: Cascade, map: "fk_consignor_province")
-  district               district?                @relation("fk_consignor_district", fields: [district_id], references: [id], map: "fk_consignor_district")
   sub_district           sub_district?            @relation(fields: [sub_district_ids], references: [id], onDelete: Cascade, map: "fk_consignor_sub_district")
-  interest_district      district?                @relation("fk_consignor_interest_district", fields: [interest_district_id], references: [id], map: "fk_consignor_interest_district")
 
   @@index([deleted_at], map: "idx_consignor_deleted_at")
   @@index([email], map: "idx_consignor_email")
@@ -270,13 +270,13 @@ model district {
   province_id          BigInt
   admin                admin[]
   asset                asset[]
+  consignor            consignor[]    @relation("fk_consignor_district")
   interested_consignor consignor[]    @relation("fk_consignor_interest_district")
   province             province       @relation(fields: [province_id], references: [id], onDelete: Cascade, map: "fk_district_province")
   investor             investor[]
   sell                 sell[]
   sub_district         sub_district[]
   user                 user[]
-  consignor            consignor[]    @relation("fk_consignor_district")
 
   @@index([deleted_at], map: "idx_district_deleted_at")
 }
