@@ -40,7 +40,7 @@ type User struct {
 	OnlineRange    string  `gorm:"type:varchar(255)"`
 	AddressNumber  string  `gorm:"type:varchar(128)"`
 	AddressStreet  string  `gorm:"type:varchar(128)"`
-	ProvinceID     uint    `gorm:"not null"`
-	DistrictID     uint    `gorm:"not null"`
-	SubdistrictID  uint    `gorm:"not null"`
+	ProvinceID     *uint   `json:"province_id"`
+	DistrictID     *uint   `json:"district_id"`
+	SubDistrictID  *uint   `json:"sub_district_id"`
 }

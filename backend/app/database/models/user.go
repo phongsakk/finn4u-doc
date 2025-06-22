@@ -20,6 +20,10 @@ func (User) TableName() string {
 type User struct {
 	template.Model
 	template.User
+	Prefix      *UserPrefix  `json:"prefix" gorm:"foreignKey:UserPrefixID;"`
+	Province    *Province    `json:"province" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:ProvinceID"`
+	District    *District    `json:"district" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:DistrictID"`
+	SubDistrict *SubDistrict `json:"sub_district" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:SubDistrictID"`
 }
 
 func (user *User) GetFromRequest(c *gin.Context) error {

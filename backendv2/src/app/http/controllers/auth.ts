@@ -81,7 +81,7 @@ export const Profile: CustomHandler = async (req, res) => {
             career_id: true,
             province_id: true,
             district_id: true,
-            subdistrict_id: true,
+            sub_district_id: true,
           },
           include: {
             prefix: {
@@ -150,31 +150,31 @@ export const Profile: CustomHandler = async (req, res) => {
               select: {
                 name: true,
               },
-              where: {
-                id: {
-                  gt: 0,
-                },
-              },
+              // where: {
+              //   id: {
+              //     ne: null,
+              //   },
+              // },
             },
             district: {
               select: {
                 name: true,
               },
-              where: {
-                id: {
-                  gt: 0,
-                },
-              },
+              // where: {
+              //   id: {
+              //     gt: 0,
+              //   },
+              // },
             },
             sub_district: {
               select: {
                 name: true,
               },
-              where: {
-                id: {
-                  gt: 0,
-                },
-              },
+              // where: {
+              //   id: {
+              //     gt: 0,
+              //   },
+              // },
             },
           },
         });
