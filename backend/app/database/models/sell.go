@@ -42,4 +42,5 @@ type Sell struct {
 	SubDistrict       *SubDistrict `json:"sub_district,omitempty" gorm:"foreignKey:SubDistrictID;references:ID"`
 	Owner             *User        `json:"owner,omitempty" gorm:"foreignKey:OwnerID;references:ID"`
 	Images            *[]SellImage `json:"images,omitempty" gorm:"foreignKey:SellID;references:ID"`
+	GenID             string       `json:"gen_id" gorm:"type:varchar(64);not null;uniquo"`
 }

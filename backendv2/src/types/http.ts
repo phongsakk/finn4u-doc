@@ -26,6 +26,29 @@ export type CustomHandler<
     | Promise<void>;
 };
 
+export type CustomPagingHandler<
+  P = ParamsDictionary,
+  ResBody = any,
+  ReqBody = any,
+  ReqQuery = ParsedQs,
+  Locals extends Record<string, any> = Record<string, any>
+> = {
+  // tslint:disable-next-line callable-types (This is extended from and can't extend from a type alias in ts<2.2)
+  (
+    req: CustomRequest<
+      P,
+      ResponsePagingStructure<ResBody>,
+      ReqBody,
+      ReqQuery,
+      Locals
+    >,
+    res: ExpressResponse<ResponsePagingStructure<ResBody>, Locals>,
+    next: NextFunction
+  ):
+    | void
+    | Promise<void>;
+};
+
 export type ResponseStructure<T = any> = {
   status: boolean;
   message: string;
@@ -43,7 +66,7 @@ export interface CustomRequest<
   auth?: AuthPayload;
 }
 
-export type CustomPagingResponse<T = any> = {
+export type ResponsePagingStructure<T = any> = {
   status: boolean;
   message: string;
   code: number;
@@ -51,7 +74,7 @@ export type CustomPagingResponse<T = any> = {
   page: number;
   limit: number;
   total: number;
-  totalPage: number;
+  total_page: number;
 };
 
 export type AuthPayload = {
