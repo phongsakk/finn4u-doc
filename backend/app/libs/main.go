@@ -14,3 +14,10 @@ const (
 	ASSET_SUCCESS
 	ASSET_CANCELED
 )
+
+const (
+	USER_ADMIN     types.UserType = "admin"
+	USER_GENERAL   types.UserType = "general"
+	USER_CONSIGNOR types.UserType = "consignor"
+	USER_INVESTOR  types.UserType = "investor"
+)

@@ -1,5 +1,5 @@
 import { CustomError } from "../../../types/exception";
-import { CustomHandler } from "../../../types/extends";
+import { CustomHandler } from "../../../types/http";
 import { safeNumber } from "../../../utils/data";
 import prisma from "../../../utils/prisma";
 

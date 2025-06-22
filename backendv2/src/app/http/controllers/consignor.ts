@@ -1,6 +1,6 @@
-import { CustomHandler } from "../../../types/extends";
+import { CustomHandler } from "../../../types/http";
 import { z } from "zod";
-import { safeNumber } from "../../../utils/data";
+import { safeNumber, serializeBigInt } from "../../../utils/data";
 import { CustomError } from "../../../types/exception";
 import prisma from "../../../utils/prisma";
 
@@ -57,24 +57,6 @@ export const consignorUploadImage: CustomHandler<{
   });
 };
 
-const serializeBigInt = (obj: any): any => {
-  if (obj && typeof obj === "object") {
-    const keys = Object.keys(obj);
-    for (const key of keys) {
-      const val = obj[key];
-      if (typeof val === "bigint") {
-        if (val < Math.pow(2, 52)) {
-          obj[key] = parseInt(obj[key].toString());
-        } else {
-          obj[key] = obj[key].toString();
-        }
-      } else if (typeof obj[key] === "object") {
-        obj[key] = serializeBigInt(obj[key]);
-      }
-    }
-  }
-  return obj;
-};
 
 export const consignorMatchingAll: CustomHandler = async (req, res) => {
   const matchings = await prisma.matchings.findMany();

@@ -1,5 +1,5 @@
 import { NextFunction, Response, ErrorRequestHandler, Request } from "express";
-import { CustomResponse } from "../../../types/http";
+import { ResponseStructure } from "../../../types/http";
 import { CustomError } from "../../../types/exception";
 import { ZodError } from "zod";
 import { join } from "path";
@@ -9,7 +9,7 @@ import { safeString } from "../../../utils/data";
 const errorHandler: ErrorRequestHandler = (
   err: any,
   _req: Request,
-  res: Response<CustomResponse>,
+  res: Response<ResponseStructure>,
   _next: NextFunction
 ) => {
   console.error(err);

@@ -13,3 +13,22 @@ export const safeString = (value: any, defaultValue = ""): string => {
     return defaultValue;
   }
 };
+
+export const serializeBigInt = (obj: any): any => {
+  if (obj && typeof obj === "object") {
+    const keys = Object.keys(obj);
+    for (const key of keys) {
+      const val = obj[key];
+      if (typeof val === "bigint") {
+        if (val < Math.pow(2, 52)) {
+          obj[key] = parseInt(obj[key].toString());
+        } else {
+          obj[key] = obj[key].toString();
+        }
+      } else if (typeof obj[key] === "object") {
+        obj[key] = serializeBigInt(obj[key]);
+      }
+    }
+  }
+  return obj;
+};

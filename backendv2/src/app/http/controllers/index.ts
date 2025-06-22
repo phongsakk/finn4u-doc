@@ -1,11 +1,11 @@
 import { PrismaClient } from "../../../../generated/prisma";
-import { CustomHandler } from "../../../types/extends";
+import { CustomHandler } from "../../../types/http";
+import { ServerStatus } from "../../../types/response";
 import { safeString } from "../../../utils/data";
-type ServerStatus = { db: "ok" | "error"; version: string };
-export const health: CustomHandler<{}, ServerStatus> = async (req, res) => {
+
+export const health: CustomHandler<{}, ServerStatus> = async (_req, res) => {
   let status: ServerStatus = {
     db: "ok",
-    // package.json version
     version: safeString(process.env.npm_package_version, "-"),
   };
   try {

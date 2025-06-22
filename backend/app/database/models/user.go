@@ -9,6 +9,7 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/phongsakk/finn4u-back/app/database"
 	"github.com/phongsakk/finn4u-back/app/database/models/template"
+	"github.com/phongsakk/finn4u-back/app/libs"
 	"github.com/phongsakk/finn4u-back/types"
 )
 
@@ -37,6 +38,7 @@ func (user *User) GenerateAccessToken() (string, *time.Time, error) {
 		UserId: user.ID,
 		Email:  user.Email,
 		Exp:    expiredAt.Unix(),
+		Type:   libs.USER_GENERAL,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 

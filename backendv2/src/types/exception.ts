@@ -4,3 +4,9 @@ export class CustomError extends Error {
     this.code = code;
   }
 }
+
+export class UnauthorizeError extends CustomError {
+  constructor() {
+    super("Unauthorized", 401);
+  }
+}
