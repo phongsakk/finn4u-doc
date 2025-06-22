@@ -5,4 +5,6 @@ const adminRouter = Router();
 
 adminRouter.get("/matching/:assetID", getMatchingByAssetID);
 
+adminRouter.post("/asset/:assetID", getMatchingByAssetID);
+
 export default adminRouter;

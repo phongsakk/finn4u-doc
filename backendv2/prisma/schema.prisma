@@ -44,8 +44,8 @@ model admin {
 
 model asset {
   id                     BigInt                   @id @default(autoincrement())
-  created_at             DateTime?                @db.Timestamptz(6)
-  updated_at             DateTime?                @db.Timestamptz(6)
+  created_at             DateTime?                @default(now()) @db.Timestamptz(6)
+  updated_at             DateTime?                @updatedAt @db.Timestamptz(6)
   deleted_at             DateTime?                @db.Timestamptz(6)
   gen_id                 String?                  @db.VarChar(64)
   province_id            BigInt
@@ -84,6 +84,7 @@ model asset {
   asset_images           asset_images[]
   asset_investment_offer asset_investment_offer[]
   asset_tag              asset_tag[]
+  matchings              matchings[]
 
   @@index([deleted_at], map: "idx_asset_deleted_at")
 }
@@ -134,18 +135,19 @@ model asset_auction {
 }
 
 model asset_bid_offer {
-  id         BigInt    @id @default(autoincrement())
-  created_at DateTime? @db.Timestamptz(6)
-  updated_at DateTime? @db.Timestamptz(6)
-  deleted_at DateTime? @db.Timestamptz(6)
+  id         BigInt      @id @default(autoincrement())
+  created_at DateTime?   @db.Timestamptz(6)
+  updated_at DateTime?   @db.Timestamptz(6)
+  deleted_at DateTime?   @db.Timestamptz(6)
   asset_id   BigInt
   bidder_id  BigInt
-  offer      Decimal   @db.Decimal
-  time       Int?      @db.SmallInt
-  is_winner  Boolean?  @default(false)
-  status     Int?      @default(0) @db.SmallInt
-  asset      asset     @relation(fields: [asset_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_asset_asset_bid_offer")
-  bidder     consignor @relation(fields: [bidder_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_asset_bid_offer_bidder")
+  offer      Decimal     @db.Decimal
+  time       Int?        @db.SmallInt
+  is_winner  Boolean?    @default(false)
+  status     Int?        @default(0) @db.SmallInt
+  asset      asset       @relation(fields: [asset_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_asset_asset_bid_offer")
+  bidder     consignor   @relation(fields: [bidder_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_asset_bid_offer_bidder")
+  matchings  matchings[]
 
   @@index([deleted_at], map: "idx_asset_bid_offer_deleted_at")
   @@index([asset_id], map: "idx_asset_id")
@@ -319,14 +321,14 @@ model investor {
 }
 
 model matchings {
-  id                                      BigInt    @id @default(autoincrement())
-  created_at                              DateTime? @db.Timestamptz(6)
-  updated_at                              DateTime? @db.Timestamptz(6)
-  deleted_at                              DateTime? @db.Timestamptz(6)
+  id                                      BigInt           @id @default(autoincrement())
+  created_at                              DateTime?        @db.Timestamptz(6)
+  updated_at                              DateTime?        @db.Timestamptz(6)
+  deleted_at                              DateTime?        @db.Timestamptz(6)
   confirm_by_admin_id                     BigInt
-  asset_id                                BigInt    @unique(map: "uni_matchings_asset_id")
+  asset_id                                BigInt           @unique(map: "uni_matchings_asset_id")
   bidder_id                               BigInt
-  asset_bid_offer_id                      BigInt    @unique(map: "uni_matchings_asset_bid_offer_id")
+  asset_bid_offer_id                      BigInt           @unique(map: "uni_matchings_asset_bid_offer_id")
   purchase_and_sale_agreement             String?
   power_of_attorney                       String?
   condo_power_of_attorney                 String?
@@ -338,6 +340,8 @@ model matchings {
   spouse_consent_file                     String?
   agent_appointment_agreement             String?
   property_details_form                   String?
+  asset                                   asset?           @relation(fields: [asset_id], references: [id])
+  asset_bid_offer                         asset_bid_offer? @relation(fields: [asset_bid_offer_id], references: [id])
 
   @@index([asset_bid_offer_id], map: "idx_matchings_asset_bid_offer_id")
   @@index([asset_id], map: "idx_matchings_asset_id")
