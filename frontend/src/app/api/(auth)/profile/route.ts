@@ -17,18 +17,18 @@ export const GET = async () => {
     }
 
     const { data: res } = await axios.get(
-      api.external(`/v1/${session.role}/auth/profile`),
+      api.external(`/v2/auth/my`),
       session.headerToken
     );
     return ResponseJson(res, {
       id: res?.data?.id || 0,
       role: session.role,
       image:"profile/20250610171105-profile.png",
-      user_prefix_id: String(res?.data?.UserPrefixID) || "1",
-      firstname: res?.data?.Firstname || "",
-      lastname: res?.data?.Lastname || "",
+      user_prefix_id: String(res?.data?.UserPrefixID || 1),
+      firstname: res?.data?.firstname || "",
+      lastname: res?.data?.lastname || "",
       email: res?.data?.email,
-      phone_number: res?.data?.PhoneNumber || "",
+      phone_number: res?.data?.phone_number || "",
       line: res?.data?.Line || "",
       birthday: res?.data?.birthday || "",
       license_card: res?.data?.LicenseCard || "",

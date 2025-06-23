@@ -60,6 +60,7 @@ export const LoaderProvider = ({ children }: { children: ReactNode }) => {
   const params = useParams();
   const { data: session, status } = useSession();
   const [user, setUser] = useState<UserType>(User);
+  const [userLoad, setUserLoad] = useState(true);
   const [path, setPath] = useState<string>();
   const [specialBtn, setSplBtn] = useState<specialBtn>();
   const [id, setID] = useState<any>(undefined);
@@ -69,18 +70,6 @@ export const LoaderProvider = ({ children }: { children: ReactNode }) => {
   const closeModal = () => setModalType(null);
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const { data: res } = await axios.get(api.internal(`/api/profile`));
-        if (res.status) {
-          setUser(res.data);
-        }
-      } catch (error) {
-        console.error("Api profile error!");
-      }
-    };
-    fetchProfile();
-
     if (params?.id) {
       if (isNaN(Number(params.id))) {
         redirect("/");
@@ -91,6 +80,31 @@ export const LoaderProvider = ({ children }: { children: ReactNode }) => {
     }
     setSplBtn(undefined);
     setPath(pathname);
+  }, [pathname]);
+
+  useEffect(() => {
+    const boot = async (controller: AbortController) => {
+      try {
+        setUserLoad(true);
+        const { data: res } = await axios.get(api.internal(`/api/profile`), {
+          signal: controller.signal,
+        });
+        if (res.status) {
+          setUser(res.data);
+        }
+      } catch (error) {
+        console.error("Api profile error!");
+      } finally {
+        setUserLoad(false);
+      }
+    };
+
+    const controller = new AbortController();
+    boot(controller);
+
+    return () => {
+      controller.abort();
+    };
   }, [pathname]);
 
   // useEffect(() => {

@@ -13,7 +13,7 @@ export default async function Page() {
   const pathinvest = session ? "/property/detail" : "/";
 
   return (
-    <main>
+    <main className="bg-white">
       <div className="justify-content-center">
         <Banner />
       </div>
@@ -21,7 +21,6 @@ export default async function Page() {
       <div className="invest">
         <div className="container">
           <p className="title-content font2">สินทรัพย์ขายฝากแนะนำ</p>
-
           <div className="row land-sale">
             <RecommendedPage />
           </div>
@@ -99,7 +98,7 @@ export default async function Page() {
 
       <div className="tips">
         <div className="container  fintips-detail">
-          <p className="title-content ">Finn Tips เคล็ดลับเรื่องอสังหาฯ</p>
+          <p className="title-content ">ทุนทันใจ Tips เคล็ดลับเรื่องอสังหาฯ</p>
           <div className="row">
             <div className="col-lg-4">
               <div className="card">
