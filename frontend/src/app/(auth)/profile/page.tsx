@@ -17,10 +17,13 @@ function page() {
   const [submit, setSubmit] = useState(false);
 
   useEffect(() => {
-    const fetchMaster = async () => {
+    const boot = async (controller: AbortController) => {
       try {
         const { data: res } = await axios.get(
-          api.internal(`/api/master/prefix`)
+          api.internal(`/api/master/prefix`),
+          {
+            signal: controller.signal,
+          }
         );
         if (res.status) {
           setMaster(res.data);
@@ -29,7 +32,7 @@ function page() {
         console.error(`Api error`);
       }
     };
-    fetchMaster();
+
     setForm({
       image: user?.image || "/",
       user_prefix_id: user?.user_prefix_id || "",
@@ -41,6 +44,11 @@ function page() {
       birthday: user?.birthday || "",
       license_id: user?.license_card || "",
     } as ProfileType);
+    const controller = new AbortController();
+    boot(controller);
+    return () => {
+      controller.abort();
+    };
   }, [user]);
 
   const handleForm = (e: any) => {

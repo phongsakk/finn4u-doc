@@ -1,10 +1,8 @@
 "use client";
-import CustomImage from "@components/CustomImage";
-import { formatNumber, ToDateThai } from "@components/helpers";
 import ImageApi from "@components/ImageApi";
+import LoadingBox from "@components/Loading/LoadingBox";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { AssetModel } from "@models/AssetModel";
 import { api } from "@utils/api/index";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -12,67 +10,83 @@ import "dayjs/locale/th";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { IoBanOutline } from "react-icons/io5";
+import { Button } from "react-bootstrap";
 dayjs.extend(customParseFormat);
 dayjs.locale("th");
 
-const fetchAssetRecom = async () => {
-  try {
-    const { data: res } = await axios.get(
-      api.internal("/api/consignor/asset/recommended")
-    );
-    if (res.status) {
-      return res.data;
-    } else {
-      return [];
-    }
-  } catch (error) {
-    return [];
-  }
-};
-
 function RecommendedPage() {
-  const [assetRecom, setAssetRecom] = useState([]);
+  const [form, setForm] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState({
+    page: 1,
+    total: 1,
+  });
 
+  console.log(page);
   useEffect(() => {
-    try {
-      const boot = async () => {
-        setAssetRecom(await fetchAssetRecom());
-      };
-      boot();
-    } catch (error) {}
-  }, []);
+    const boot = async (controller: AbortController) => {
+      try {
+        setLoading(true);
+        const { data: res } = await axios.get(
+          api.internal(`/api/consignor/asset/recommended?page=${page.page}`),
+          {
+            signal: controller.signal,
+          }
+        );
+        if (res?.status) {
+          setForm((prev: any) => [...prev, ...res?.data]);
+          setPage(res?.page);
+        }
+      } catch {
+      } finally {
+        setLoading(false);
+      }
+    };
+    const controller = new AbortController();
+    boot(controller);
+    return () => {
+      controller.abort();
+    };
+  }, [page.page]);
+
+  const handleMore = () => {
+    setPage((prev) => ({
+      ...prev,
+      page: page.page + 1,
+    }));
+  };
+
   return (
     <>
-      {assetRecom?.map((item: any, i: number) => (
+      {form.map((item: any, i: number) => (
         <div className="col-lg-4 mb-" key={i}>
           <div className="card overflow-hidden">
             <div className="head">
-              <div className="not-hover">
-                {item?.asset_image ? (
-                  <ImageApi
-                    src={item?.asset_image ?? ""}
-                    style={{ aspectRatio: 1.33, height: "auto" }}
-                  />
-                ) : (
-                  <div className="property-recom bg-light d-flex justify-content-center align-items-center">
-                    <IoBanOutline className="text-white w-50 h-50" />
+              <div className="not-hover position-relative">
+                <div className="d-flex mx-0 px-3 pt-3 gap-2 position-absolute">
+                  <div className="bg-primary text-white p-2 rounded font2">
+                    {item?.asset_type}
                   </div>
-                )}
-
-                <span className="badge bg-primary font2">แนะนำ</span>
+                  <div className="bg-primary text-white p-2 rounded font2">
+                    {item?.sell_type}
+                  </div>
+                </div>
+                <ImageApi
+                  src={item?.image ?? ""}
+                  style={{ aspectRatio: 1.33, height: "auto" }}
+                />
               </div>
               <div className="hover">
                 <div className="d-none">
                   <div className="wrap">
-                    <Link
-                      href={`/property/detail/${item.id}`}
+                    {/* <Link
+                      href={`/${item?.path}/detail/${item?.id}`}
                       className="btn btn-primary  font2"
                     >
                       ลงทุน
-                    </Link>
+                    </Link> */}
                     <Link
-                      href={`/property/detail/${item.id}`}
+                      href={`/${item?.path}/detail/${item?.id}`}
                       className="btn btn-white  font2"
                     >
                       ข้อมูลเพิ่มเติม
@@ -88,43 +102,45 @@ function RecommendedPage() {
             <div className="card-body">
               <div className="list">
                 <FontAwesomeIcon icon={faCheck} className="fs-4" />
-                <span className="font2">{item.province_name}</span>
+                <span className="font2">{item?.province_name}</span>
               </div>
               <div className="list">
                 <FontAwesomeIcon icon={faCheck} className="fs-4" />
                 <span className="font2">
-                  เลขที่ประกาศขาย {item.id.toString().padStart(6, "0")}
+                  เลขที่ประกาศขาย {item?.id.toString().padStart(6, "0")}
                 </span>
               </div>
               <div className="list">
                 <FontAwesomeIcon icon={faCheck} className="fs-4" />
-                <span className="font2">{item.aria_size}</span>
+                <span className="font2">{item?.aria_size}</span>
               </div>
-              {/* <div className="list">
-                      <FontAwesomeIcon icon={faCheck} className="fs-4" />
-                      <span className="font2">มูลค่าสินทรัพย์ค้ำประกัน</span>
-                      <span className="text-primary font2">{item.mock_c_price}</span>
-                    </div> */}
               <div className="list">
                 <FontAwesomeIcon icon={faCheck} className="fs-4" />
                 <span className="font2">
                   ราคาขาย
-                  <span className="text-primary font2 px-1">
-                    {formatNumber(Number(item.price_appraisal))}
-                  </span>
+                  <span className="text-primary font2 px-1">{item?.price}</span>
                   บาท
                 </span>
               </div>
               <div className="list">
                 <FontAwesomeIcon icon={faCheck} className="fs-4" />
-                <span className="font2">
-                  {ToDateThai(dayjs(item?.date_sell))}
-                </span>
+                <span className="font2">{item?.recommended_at}</span>
               </div>
             </div>
           </div>
         </div>
       ))}
+      {loading && <LoadingBox />}
+      {page.page != page.total && (
+        <div className="text-center mb-5">
+          <Button
+            variant="outline-success rounded-pill px-5 py3"
+            onClick={handleMore}
+          >
+            แสดงเพิ่มเติม
+          </Button>
+        </div>
+      )}
     </>
   );
 }
