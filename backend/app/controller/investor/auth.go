@@ -151,9 +151,9 @@ func Register(c *gin.Context) {
 	user.IncomePerMonth = request.IncomePerMonth
 	user.AddressNumber = request.AddressNumber
 	user.AddressStreet = request.AddressStreet
-	user.ProvinceID = request.ProvinceId
-	user.DistrictID = request.DistrictId
-	user.SubdistrictID = request.SubdistrictId
+	user.ProvinceID = &request.ProvinceId
+	user.DistrictID = &request.DistrictId
+	user.SubDistrictID = &request.SubdistrictId
 	user.Email = request.Email
 	user.Beneficiary = &request.Beneficiary
 	user.Relation = &request.Relation

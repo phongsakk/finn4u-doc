@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/phongsakk/finn4u-back/app/database"
@@ -253,6 +254,11 @@ func CreateSell(c *gin.Context) {
 		response.Price = request.Price
 		response.OwnerID = user.ID
 		response.AgencyRequired = request.AgencyRequired
+		var t string = "RNT"
+		if request.SellTypeID == 2 {
+			t = "SLL"
+		}
+		response.GenID = fmt.Sprintf("%s%d", t, time.Now().UnixNano())
 
 		if Err := tx.Create(&response).Error; Err != nil {
 			return Err

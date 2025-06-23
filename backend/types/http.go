@@ -17,15 +17,17 @@ type Response struct {
 type Auth struct {
 	// jwt.MapClaims
 	jwt.StandardClaims
-	UserId uint   `json:"user_id"`
-	Email  string `json:"email"`
-	Exp    int64  `json:"exp"`
+	UserId uint     `json:"user_id"`
+	Email  string   `json:"email"`
+	Exp    int64    `json:"exp"`
+	Type   UserType `json:"type" default:"user"`
 	// "user_id": user.ID,
 	// 	"email":   user.Email,
 	// 	"exp":     time.Now().Add(time.Minute * 5).Unix(),
 }
 
 type AuthMode string
+type UserType string
 
 type AuthResponse struct {
 	AccessToken      string `json:"access_token"`

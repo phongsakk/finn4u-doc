@@ -9,6 +9,7 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/phongsakk/finn4u-back/app/database"
 	"github.com/phongsakk/finn4u-back/app/database/models/template"
+	"github.com/phongsakk/finn4u-back/app/libs"
 	"github.com/phongsakk/finn4u-back/types"
 )
 
@@ -19,13 +20,17 @@ type Consignor struct {
 
 	UserPrefix *UserPrefix `json:"user_prefix" gorm:"foreignKey:UserPrefixID;references:ID"`
 
-	Beneficiary        *string    `json:"beneficiary"`
-	Relation           *string    `json:"relation"`
-	InterestDistrictID *uint      `json:"interest_district_id"`
-	AssetTypeID        *uint      `json:"asset_type_id"`
-	InvestmentAmount   *float64   `json:"investment_amount"`
-	InterestDistrict   *District  `json:"district" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:InterestDistrictID"`
-	AssetType          *AssetType `json:"asset_type" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:AssetTypeID"`
+	Beneficiary        *string      `json:"beneficiary"`
+	Relation           *string      `json:"relation"`
+	InterestDistrictID *uint        `json:"interest_district_id"`
+	AssetTypeID        *uint        `json:"asset_type_id"`
+	InvestmentAmount   *float64     `json:"investment_amount"`
+	Prefix             *UserPrefix  `json:"prefix" gorm:"foreignKey:UserPrefixID;"`
+	Province           *Province    `json:"province" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:ProvinceID"`
+	District           *District    `json:"district" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:DistrictID"`
+	SubDistrict        *SubDistrict `json:"sub_district" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:SubDistrictID"`
+	InterestDistrict   *District    `json:"interested_district" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:InterestDistrictID"`
+	AssetType          *AssetType   `json:"asset_type" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:AssetTypeID"`
 }
 
 func (Consignor) TableName() string {
@@ -48,6 +53,7 @@ func (user *Consignor) GenerateAccessToken() (string, *time.Time, error) {
 		UserId: user.ID,
 		Email:  user.Email,
 		Exp:    expiredAt.Unix(),
+		Type:   libs.USER_CONSIGNOR,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 

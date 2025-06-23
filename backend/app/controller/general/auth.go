@@ -77,9 +77,9 @@ func Register(c *gin.Context) {
 	user.OnlineRange = request.OnlineRange
 	user.AddressNumber = request.AddressNumber
 	user.AddressStreet = request.AddressStreet
-	user.ProvinceID = request.ProvinceID
-	user.DistrictID = request.DistrictID
-	user.SubdistrictID = request.SubdistrictID
+	user.ProvinceID = &request.ProvinceID
+	user.DistrictID = &request.DistrictID
+	user.SubDistrictID = &request.SubdistrictID
 	user.Email = request.Email
 
 	var otp models.OTP

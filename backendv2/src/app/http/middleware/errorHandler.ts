@@ -1,15 +1,16 @@
 import { NextFunction, Response, ErrorRequestHandler, Request } from "express";
-import { CustomResponse } from "../../../types/http";
+import { ResponseStructure } from "../../../types/http";
 import { CustomError } from "../../../types/exception";
 import { ZodError } from "zod";
 import { join } from "path";
 import { PrismaClientKnownRequestError } from "../../../../generated/prisma/runtime/library";
 import { safeString } from "../../../utils/data";
+import { TokenExpiredError } from "jsonwebtoken";
 
 const errorHandler: ErrorRequestHandler = (
   err: any,
   _req: Request,
-  res: Response<CustomResponse>,
+  res: Response<ResponseStructure>,
   _next: NextFunction
 ) => {
   console.error(err);
@@ -22,12 +23,6 @@ const errorHandler: ErrorRequestHandler = (
         .join(", "),
     });
   } else if (err instanceof PrismaClientKnownRequestError) {
-    // console.log(1, err.batchRequestIdx);
-    // console.log(2, err.clientVersion);
-    // console.log(3, err.code);
-    // console.log(4, err.message);
-    // console.log(5, err.meta);
-    // console.log(6, err.name);
     res.status(400).json({
       status: false,
       code: 400,
@@ -38,6 +33,12 @@ const errorHandler: ErrorRequestHandler = (
       status: false,
       code: err.code,
       message: err.message,
+    });
+  } else if (err instanceof TokenExpiredError) {
+    res.status(401).json({
+      status: false,
+      code: 401,
+      message: "Token Expired",
     });
   } else if (err instanceof Error) {
     console.log(err.name, err.message, err.stack);

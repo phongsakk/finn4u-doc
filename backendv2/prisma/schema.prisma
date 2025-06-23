@@ -9,29 +9,34 @@ datasource db {
 }
 
 model admin {
-  id               BigInt    @id @default(autoincrement())
-  created_at       DateTime? @db.Timestamptz(6)
-  updated_at       DateTime? @db.Timestamptz(6)
-  deleted_at       DateTime? @db.Timestamptz(6)
+  id               BigInt       @id @default(autoincrement())
+  created_at       DateTime?    @db.Timestamptz(6)
+  updated_at       DateTime?    @updatedAt @db.Timestamptz(6)
+  deleted_at       DateTime?    @db.Timestamptz(6)
   user_role_id     BigInt
-  email            String    @unique(map: "uni_admin_email") @db.VarChar(255)
-  password         String?   @db.VarChar(255)
-  provider         String?   @default("password") @db.VarChar(126)
-  provider_token   String?   @db.VarChar(255)
-  verified         Boolean?  @default(false)
+  email            String       @unique(map: "uni_admin_email") @db.VarChar(255)
+  password         String?      @db.VarChar(255)
+  provider         String?      @default("password") @db.VarChar(126)
+  provider_token   String?      @db.VarChar(255)
+  verified         Boolean?     @default(false)
   user_prefix_id   BigInt
-  firstname        String    @db.VarChar(255)
-  lastname         String    @db.VarChar(255)
-  phone_number     String    @db.VarChar(32)
+  firstname        String       @db.VarChar(255)
+  lastname         String       @db.VarChar(255)
+  phone_number     String       @db.VarChar(32)
   career_id        BigInt
-  career_desc      String?   @db.VarChar(255)
-  income_per_month Decimal?  @db.Decimal(18, 2)
-  online_range     String?   @db.VarChar(255)
-  address_number   String?   @db.VarChar(128)
-  address_street   String?   @db.VarChar(128)
+  career_desc      String?      @db.VarChar(255)
+  income_per_month Decimal?     @db.Decimal(18, 2)
+  online_range     String?      @db.VarChar(255)
+  address_number   String?      @db.VarChar(128)
+  address_street   String?      @db.VarChar(128)
   province_id      BigInt
   district_id      BigInt
   subdistrict_id   BigInt
+  sub_district_id  BigInt?
+  district         district     @relation(fields: [district_id], references: [id], onDelete: Cascade, map: "fk_admin_district")
+  prefix           user_prefix  @relation(fields: [user_prefix_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_admin_prefix")
+  province         province     @relation(fields: [province_id], references: [id], onDelete: Cascade, map: "fk_admin_province")
+  sub_district     sub_district @relation(fields: [subdistrict_id], references: [id], onDelete: Cascade, map: "fk_admin_sub_district")
 
   @@index([deleted_at], map: "idx_admin_deleted_at")
   @@index([email], map: "idx_admin_email")
@@ -39,8 +44,8 @@ model admin {
 
 model asset {
   id                     BigInt                   @id @default(autoincrement())
-  created_at             DateTime?                @db.Timestamptz(6)
-  updated_at             DateTime?                @db.Timestamptz(6)
+  created_at             DateTime?                @default(now()) @db.Timestamptz(6)
+  updated_at             DateTime?                @updatedAt @db.Timestamptz(6)
   deleted_at             DateTime?                @db.Timestamptz(6)
   gen_id                 String?                  @db.VarChar(64)
   province_id            BigInt
@@ -79,6 +84,7 @@ model asset {
   asset_images           asset_images[]
   asset_investment_offer asset_investment_offer[]
   asset_tag              asset_tag[]
+  matchings              matchings[]
 
   @@index([deleted_at], map: "idx_asset_deleted_at")
 }
@@ -129,18 +135,19 @@ model asset_auction {
 }
 
 model asset_bid_offer {
-  id         BigInt    @id @default(autoincrement())
-  created_at DateTime? @db.Timestamptz(6)
-  updated_at DateTime? @db.Timestamptz(6)
-  deleted_at DateTime? @db.Timestamptz(6)
+  id         BigInt      @id @default(autoincrement())
+  created_at DateTime?   @db.Timestamptz(6)
+  updated_at DateTime?   @db.Timestamptz(6)
+  deleted_at DateTime?   @db.Timestamptz(6)
   asset_id   BigInt
   bidder_id  BigInt
-  offer      Decimal   @db.Decimal
-  time       Int?      @db.SmallInt
-  is_winner  Boolean?  @default(false)
-  status     Int?      @default(0) @db.SmallInt
-  asset      asset     @relation(fields: [asset_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_asset_asset_bid_offer")
-  bidder     consignor @relation(fields: [bidder_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_asset_bid_offer_bidder")
+  offer      Decimal     @db.Decimal
+  time       Int?        @db.SmallInt
+  is_winner  Boolean?    @default(false)
+  status     Int?        @default(0) @db.SmallInt
+  asset      asset       @relation(fields: [asset_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_asset_asset_bid_offer")
+  bidder     consignor   @relation(fields: [bidder_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_asset_bid_offer_bidder")
+  matchings  matchings[]
 
   @@index([deleted_at], map: "idx_asset_bid_offer_deleted_at")
   @@index([asset_id], map: "idx_asset_id")
@@ -228,21 +235,25 @@ model consignor {
   online_range           String?                  @db.VarChar(255)
   address_number         String?                  @db.VarChar(128)
   address_street         String?                  @db.VarChar(128)
-  province_id            BigInt
-  district_id            BigInt
-  subdistrict_id         BigInt
+  province_id            BigInt?
+  district_id            BigInt?
+  sub_district_id        BigInt?
   gen_id                 String                   @unique(map: "uni_consignor_gen_id")
   beneficiary            String?
   relation               String?
   interest_district_id   BigInt?
   asset_type_id          BigInt?
   investment_amount      Decimal?                 @db.Decimal
+  sub_district_ids       BigInt?
   asset                  asset[]
   asset_bid_offer        asset_bid_offer[]
   asset_investment_offer asset_investment_offer[]
   asset_type             asset_type?              @relation(fields: [asset_type_id], references: [id], onDelete: Cascade, map: "fk_consignor_asset_type")
-  district               district?                @relation(fields: [interest_district_id], references: [id], onDelete: Cascade, map: "fk_consignor_interest_district")
-  user_prefix            user_prefix              @relation(fields: [user_prefix_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_consignor_user_prefix")
+  district               district?                @relation("fk_consignor_district", fields: [district_id], references: [id], onDelete: Cascade, map: "fk_consignor_district")
+  interest_district      district?                @relation("fk_consignor_interest_district", fields: [interest_district_id], references: [id], onDelete: Cascade, map: "fk_consignor_interest_district")
+  prefix                 user_prefix              @relation(fields: [user_prefix_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_consignor_user_prefix")
+  province               province?                @relation(fields: [province_id], references: [id], onDelete: Cascade, map: "fk_consignor_province")
+  sub_district           sub_district?            @relation(fields: [sub_district_ids], references: [id], onDelete: Cascade, map: "fk_consignor_sub_district")
 
   @@index([deleted_at], map: "idx_consignor_deleted_at")
   @@index([email], map: "idx_consignor_email")
@@ -250,21 +261,24 @@ model consignor {
 }
 
 model district {
-  id           BigInt         @id @default(autoincrement())
-  created_at   DateTime?      @db.Timestamptz(6)
-  updated_at   DateTime?      @db.Timestamptz(6)
-  deleted_at   DateTime?      @db.Timestamptz(6)
-  name         String         @db.VarChar(128)
-  name_th      String?        @db.VarChar(128)
-  name_en      String?        @db.VarChar(128)
-  name_cn      String?        @db.VarChar(128)
-  province_id  BigInt
-  asset        asset[]
-  consignor    consignor[]
-  province     province       @relation(fields: [province_id], references: [id], onDelete: Cascade, map: "fk_district_province")
-  investor     investor[]
-  sell         sell[]
-  sub_district sub_district[]
+  id                   BigInt         @id @default(autoincrement())
+  created_at           DateTime?      @db.Timestamptz(6)
+  updated_at           DateTime?      @db.Timestamptz(6)
+  deleted_at           DateTime?      @db.Timestamptz(6)
+  name                 String         @db.VarChar(128)
+  name_th              String?        @db.VarChar(128)
+  name_en              String?        @db.VarChar(128)
+  name_cn              String?        @db.VarChar(128)
+  province_id          BigInt
+  admin                admin[]
+  asset                asset[]
+  consignor            consignor[]    @relation("fk_consignor_district")
+  interested_consignor consignor[]    @relation("fk_consignor_interest_district")
+  province             province       @relation(fields: [province_id], references: [id], onDelete: Cascade, map: "fk_district_province")
+  investor             investor[]
+  sell                 sell[]
+  sub_district         sub_district[]
+  user                 user[]
 
   @@index([deleted_at], map: "idx_district_deleted_at")
 }
@@ -298,6 +312,7 @@ model investor {
   interest_district_id BigInt?
   asset_type_id        BigInt
   investment_amount    Decimal    @db.Decimal
+  sub_district_id      BigInt?
   asset_type           asset_type @relation(fields: [asset_type_id], references: [id], onDelete: Cascade, map: "fk_investor_asset_type")
   district             district?  @relation(fields: [interest_district_id], references: [id], onDelete: Cascade, map: "fk_investor_interest_district")
 
@@ -306,21 +321,27 @@ model investor {
 }
 
 model matchings {
-  id                                      BigInt    @id @default(autoincrement())
-  created_at                              DateTime? @db.Timestamptz(6)
-  updated_at                              DateTime? @db.Timestamptz(6)
-  deleted_at                              DateTime? @db.Timestamptz(6)
+  id                                      BigInt           @id @default(autoincrement())
+  created_at                              DateTime?        @db.Timestamptz(6)
+  updated_at                              DateTime?        @db.Timestamptz(6)
+  deleted_at                              DateTime?        @db.Timestamptz(6)
   confirm_by_admin_id                     BigInt
-  asset_id                                BigInt    @unique(map: "uni_matchings_asset_id")
+  asset_id                                BigInt           @unique(map: "uni_matchings_asset_id")
   bidder_id                               BigInt
-  asset_bid_offer_id                      BigInt    @unique(map: "uni_matchings_asset_bid_offer_id")
-  lease_agreement                         String?
-  spouse_consent_letter                   String?
-  real_estate_agent_appointment_agreement String?
+  asset_bid_offer_id                      BigInt           @unique(map: "uni_matchings_asset_bid_offer_id")
   purchase_and_sale_agreement             String?
-  property_detail_sheet                   String?
   power_of_attorney                       String?
   condo_power_of_attorney                 String?
+  lease_agreement                         String?
+  property_detail_sheet                   String?
+  real_estate_agent_appointment_agreement String?
+  spouse_consent_letter                   String?
+  contract_file                           String?
+  spouse_consent_file                     String?
+  agent_appointment_agreement             String?
+  property_details_form                   String?
+  asset                                   asset?           @relation(fields: [asset_id], references: [id])
+  asset_bid_offer                         asset_bid_offer? @relation(fields: [asset_bid_offer_id], references: [id])
 
   @@index([asset_bid_offer_id], map: "idx_matchings_asset_bid_offer_id")
   @@index([asset_id], map: "idx_matchings_asset_id")
@@ -342,17 +363,20 @@ model otp {
 }
 
 model province {
-  id         BigInt     @id @default(autoincrement())
-  created_at DateTime?  @db.Timestamptz(6)
-  updated_at DateTime?  @db.Timestamptz(6)
-  deleted_at DateTime?  @db.Timestamptz(6)
-  name       String     @db.VarChar(128)
-  name_th    String?    @db.VarChar(128)
-  name_en    String?    @db.VarChar(128)
-  name_cn    String?    @db.VarChar(128)
+  id         BigInt      @id @default(autoincrement())
+  created_at DateTime?   @db.Timestamptz(6)
+  updated_at DateTime?   @db.Timestamptz(6)
+  deleted_at DateTime?   @db.Timestamptz(6)
+  name       String      @db.VarChar(128)
+  name_th    String?     @db.VarChar(128)
+  name_en    String?     @db.VarChar(128)
+  name_cn    String?     @db.VarChar(128)
+  admin      admin[]
   asset      asset[]
+  consignor  consignor[]
   district   district[]
   sell       sell[]
+  user       user[]
 
   @@index([deleted_at], map: "idx_province_deleted_at")
 }
@@ -385,6 +409,7 @@ model sell {
   agency_required     Boolean?      @default(false)
   is_published        Boolean?      @default(false)
   recommended_at      DateTime?     @db.Timestamptz(6)
+  gen_id              String        @db.VarChar(64)
   asset_type          asset_type?   @relation(fields: [asset_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sell_asset_type")
   district            district?     @relation(fields: [district_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sell_district")
   user                user?         @relation(fields: [owner_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sell_owner")
@@ -423,18 +448,21 @@ model sell_type {
 }
 
 model sub_district {
-  id          BigInt    @id @default(autoincrement())
-  created_at  DateTime? @db.Timestamptz(6)
-  updated_at  DateTime? @db.Timestamptz(6)
-  deleted_at  DateTime? @db.Timestamptz(6)
-  name        String    @db.VarChar(128)
-  name_th     String?   @db.VarChar(128)
-  name_en     String?   @db.VarChar(128)
-  name_cn     String?   @db.VarChar(128)
+  id          BigInt      @id @default(autoincrement())
+  created_at  DateTime?   @db.Timestamptz(6)
+  updated_at  DateTime?   @db.Timestamptz(6)
+  deleted_at  DateTime?   @db.Timestamptz(6)
+  name        String      @db.VarChar(128)
+  name_th     String?     @db.VarChar(128)
+  name_en     String?     @db.VarChar(128)
+  name_cn     String?     @db.VarChar(128)
   district_id BigInt
   zip_code    String
+  admin       admin[]
+  consignor   consignor[]
   sell        sell[]
-  district    district  @relation(fields: [district_id], references: [id], onDelete: Cascade, map: "fk_sub_district_district")
+  district    district    @relation(fields: [district_id], references: [id], onDelete: Cascade, map: "fk_sub_district_district")
+  user        user[]
 
   @@index([deleted_at], map: "idx_sub_district_deleted_at")
 }
@@ -456,7 +484,7 @@ model tag {
 model user {
   id               BigInt        @id @default(autoincrement())
   created_at       DateTime?     @db.Timestamptz(6)
-  updated_at       DateTime?     @db.Timestamptz(6)
+  updated_at       DateTime?     @updatedAt @db.Timestamptz(6)
   deleted_at       DateTime?     @db.Timestamptz(6)
   user_role_id     BigInt
   email            String        @unique(map: "uni_user_email") @db.VarChar(255)
@@ -474,28 +502,35 @@ model user {
   online_range     String?       @db.VarChar(255)
   address_number   String?       @db.VarChar(128)
   address_street   String?       @db.VarChar(128)
-  province_id      BigInt
-  district_id      BigInt
-  subdistrict_id   BigInt
+  province_id      BigInt?
+  district_id      BigInt?
+  subdistrict_id   BigInt?
+  sub_district_id  BigInt?
   sell             sell[]
-  prefix           user_prefix[]
+  district         district?     @relation(fields: [district_id], references: [id], onDelete: Cascade, map: "fk_user_district")
+  prefix           user_prefix   @relation("user_user_prefix_idTouser_prefix", fields: [user_prefix_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_prefix")
+  province         province?     @relation(fields: [province_id], references: [id], onDelete: Cascade, map: "fk_user_province")
+  sub_district     sub_district? @relation(fields: [sub_district_id], references: [id], onDelete: Cascade, map: "fk_user_sub_district")
+  user_prefix      user_prefix[]
 
   @@index([deleted_at], map: "idx_user_deleted_at")
   @@index([email], map: "idx_user_email")
 }
 
 model user_prefix {
-  id         BigInt      @id @default(autoincrement())
-  created_at DateTime?   @db.Timestamptz(6)
-  updated_at DateTime?   @db.Timestamptz(6)
-  deleted_at DateTime?   @db.Timestamptz(6)
-  name       String      @db.VarChar(128)
-  name_th    String?     @db.VarChar(128)
-  name_en    String?     @db.VarChar(128)
-  name_cn    String?     @db.VarChar(128)
-  consignor  consignor[]
-  user       user?       @relation(fields: [userId], references: [id])
-  userId     BigInt?
+  id                                    BigInt      @id @default(autoincrement())
+  created_at                            DateTime?   @db.Timestamptz(6)
+  updated_at                            DateTime?   @db.Timestamptz(6)
+  deleted_at                            DateTime?   @db.Timestamptz(6)
+  name                                  String      @db.VarChar(128)
+  name_th                               String?     @db.VarChar(128)
+  name_en                               String?     @db.VarChar(128)
+  name_cn                               String?     @db.VarChar(128)
+  userId                                BigInt?
+  admin                                 admin[]
+  consignor                             consignor[]
+  user_user_user_prefix_idTouser_prefix user[]      @relation("user_user_prefix_idTouser_prefix")
+  user                                  user?       @relation(fields: [userId], references: [id])
 
   @@index([deleted_at], map: "idx_user_prefix_deleted_at")
 }
