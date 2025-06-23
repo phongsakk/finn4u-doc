@@ -10,14 +10,14 @@ import CheckBox from "@component/dev/CheckBox";
 import EvidenceModal from "@component/modals/matching/EvidenceModal";
 
 type winnerType = {
-  bidder_id: number,
-  asset_bid_offer_id: number
-}
+  bidder_id: number;
+  asset_bid_offer_id: number;
+};
 
 const Evidence = {
   show: false,
   id: 0,
-}
+};
 
 function page() {
   const { id } = useParams();
@@ -29,12 +29,12 @@ function page() {
 
   const [evidenceModal, setEvidenceModal] = useState(Evidence);
   const OpenEvidence = (Id: number) => {
-    setEvidenceModal({ show: true, id: Id })
-  }
+    setEvidenceModal({ show: true, id: Id });
+  };
 
   const CloseEvidence = () => {
-    setEvidenceModal({ show: false, id: 0 })
-  }
+    setEvidenceModal({ show: false, id: 0 });
+  };
   useEffect(() => {
     const boot = async () => {
       try {
@@ -55,7 +55,6 @@ function page() {
     };
     boot();
   }, [id]);
-
 
   const handleSubmit = async () => {
     try {
@@ -143,7 +142,12 @@ function page() {
               {Model?.bidder_offer?.map((item: any, index: number) => (
                 <tr key={index}>
                   <td className="text-center">
-                    <CheckWinner item={item} index={index} winner={winner} setWinner={setWinner} />
+                    <CheckWinner
+                      item={item}
+                      index={index}
+                      winner={winner}
+                      setWinner={setWinner}
+                    />
                   </td>
                   <td>{item.number_consignor}</td>
                   <td>{item.fullname}</td>
@@ -151,7 +155,16 @@ function page() {
                   <td className="text-center">{item.tag}</td>
                   <td className="text-center">{Model?.asset.asset_type}</td>
                   <td className="text-center">{item?.offer}</td>
-                  <td className="text-center user-select-none" onClick={() => OpenEvidence(item.bidder_id)} ><u>ดาวโหลดเอกสาร</u></td>
+                  {item?.is_winner ? (
+                    <td
+                      className="text-center user-select-none"
+                      onClick={() => OpenEvidence(item.bidder_id)}
+                    >
+                      <u>ดาวโหลดเอกสาร</u>
+                    </td>
+                  ) : (
+                    <td></td>
+                  )}
                 </tr>
               ))}
             </tbody>
@@ -173,28 +186,42 @@ function page() {
 
 export default page;
 
-const CheckWinner = ({ item, index, winner, setWinner }: { item: any, index: number, winner: any, setWinner: React.Dispatch<any> }) => {
+const CheckWinner = ({
+  item,
+  index,
+  winner,
+  setWinner,
+}: {
+  item: any;
+  index: number;
+  winner: any;
+  setWinner: React.Dispatch<any>;
+}) => {
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     if (!winner) {
-      setChecked(item.is_winner)
+      setChecked(item.is_winner);
     } else {
-      setChecked(item.id === winner?.asset_bid_offer_id)
+      setChecked(item.id === winner?.asset_bid_offer_id);
     }
-  }, [winner])
+  }, [winner]);
 
   const handleCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
     setWinner({
       bidder_id: item.bidder_id,
       asset_bid_offer_id: item.id,
-    })
-  }
-  return <><FormCheck
-    onChange={handleCheck}
-    checked={checked}
-    name="bidder"
-    id={`bidder-${index}`}
-    type="radio"
-  /></>
-}
+    });
+  };
+  return (
+    <>
+      <FormCheck
+        onChange={handleCheck}
+        checked={checked}
+        name="bidder"
+        id={`bidder-${index}`}
+        type="radio"
+      />
+    </>
+  );
+};
