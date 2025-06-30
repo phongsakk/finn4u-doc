@@ -82,34 +82,34 @@ func Register(c *gin.Context) {
 	user.SubDistrictID = nil
 	user.Email = request.Email
 
-	var otp models.OTP
-	if err := db.Transaction(func(tx *gorm.DB) error {
-		if err := db.Create(&user).Error; err != nil {
-			return err
-		}
+	// var otp models.OTP
+	// if err := db.Transaction(func(tx *gorm.DB) error {
+	// 	if err := db.Create(&user).Error; err != nil {
+	// 		return err
+	// 	}
 
-		otp.UserID = user.ID
-		otp.Ref = utils.RandomString(6)
-		otp.UserType = "General User"
-		otp.Code = utils.RandomNumber(6)
-		otp.ExpiredAt = time.Now().Add(time.Minute * 10)
-		if err := db.Create(&otp).Error; err != nil {
-			return err
-		}
+	// 	otp.UserID = user.ID
+	// 	otp.Ref = utils.RandomString(6)
+	// 	otp.UserType = "General User"
+	// 	otp.Code = utils.RandomNumber(6)
+	// 	otp.ExpiredAt = time.Now().Add(time.Minute * 10)
+	// 	if err := db.Create(&otp).Error; err != nil {
+	// 		return err
+	// 	}
 
-		// send OTP here
-		utils.SendEmail(user.Email, "OTP Verification", fmt.Sprintf("Your OTP (REF: %s) is %s. Please use it to verify your account.", otp.Ref, otp.Code))
-		fmt.Println("OTP sent to", user.Email)
+	// 	// send OTP here
+	// 	utils.SendEmail(user.Email, "OTP Verification", fmt.Sprintf("Your OTP (REF: %s) is %s. Please use it to verify your account.", otp.Ref, otp.Code))
+	// 	fmt.Println("OTP sent to", user.Email)
 
-		return nil
-	}); err != nil {
-		c.JSON(http.StatusInternalServerError, types.Response{
-			Code:    http.StatusInternalServerError,
-			Error:   utils.NullableString(err.Error()),
-			Message: utils.NullableString(err.Error()),
-		})
-		return
-	}
+	// 	return nil
+	// }); err != nil {
+	// 	c.JSON(http.StatusInternalServerError, types.Response{
+	// 		Code:    http.StatusInternalServerError,
+	// 		Error:   utils.NullableString(err.Error()),
+	// 		Message: utils.NullableString(err.Error()),
+	// 	})
+	// 	return
+	// }
 
 	c.JSON(http.StatusCreated, types.Response{
 		Code:    http.StatusCreated,
@@ -117,7 +117,7 @@ func Register(c *gin.Context) {
 		Message: utils.NullableString("User registered successfully"),
 		Data: map[string]any{
 			"user": user,
-			"ref":  otp.Ref,
+			// "ref":  otp.Ref,
 		},
 	})
 }
