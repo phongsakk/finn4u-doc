@@ -1,4 +1,5 @@
 export const safeNumber = (value: any, defaultValue = 0): number => {
+  if (!value) return defaultValue;
   if (typeof value === "number") return value;
   if (typeof value === "bigint") return parseInt(value.toString());
   if (typeof value === "string" && !isNaN(Number(value))) return Number(value);

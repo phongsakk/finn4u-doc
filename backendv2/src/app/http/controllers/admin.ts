@@ -1,6 +1,6 @@
 import { CustomError } from "../../../types/exception";
-import { CustomHandler } from "../../../types/http";
-import { safeNumber, serializeBigInt } from "../../../utils/data";
+import { CustomHandler, CustomPagingHandler } from "../../../types/http";
+import { safeNumber, safeString, serializeBigInt } from "../../../utils/data";
 import prisma from "../../../utils/prisma";
 
 export const getMatchingByAssetID: CustomHandler<{ assetID: string }> = async (
@@ -47,7 +47,7 @@ export const updateAssetByID: CustomHandler<{ assetID: string }> = async (
   const asset = await prisma.asset.findUnique({
     where: {
       id: safeNumber(req.params.assetID),
-    }
+    },
   });
   if (!asset) {
     throw new CustomError("Asset not found", 404);
@@ -83,6 +83,60 @@ export const updateAssetByID: CustomHandler<{ assetID: string }> = async (
       // view_count             BigInt                   @default(0)
       // bid_count              BigInt                   @default(0)
       // recommended_at         DateTime?                @db.Timestamptz(6)
-    }
-  })
+    },
+  });
+};
+
+export const getConsignorList: CustomPagingHandler = async (req, res) => {
+  if (req.auth?.type !== "admin") {
+    throw new CustomError("permission denied");
+  }
+
+  const page = safeNumber(req.query.page, 1);
+  const take = safeNumber(req.query.take, 12);
+  const skip = (page - 1) * take;
+
+  const totalRecord = await prisma.consignor.count();
+  const consignors = await prisma.consignor.findMany({
+    omit: {
+      password: true,
+      provider: true,
+      provider_token: true,
+      user_prefix_id: true,
+      province_id: true,
+      district_id: true,
+      sub_district_id: true,
+    },
+    include: {
+      prefix: true,
+      province: {
+        select: {
+          name: true,
+        },
+      },
+      district: {
+        select: {
+          name: true,
+        },
+      },
+      sub_district: {
+        select: {
+          name: true,
+        },
+      },
+    },
+    skip: skip,
+    take: take,
+  });
+
+  res.status(200).json({
+    status: true,
+    code: 200,
+    message: "Consignor list retrieved successfully",
+    data: serializeBigInt(consignors),
+    total: consignors.length,
+    total_page: safeNumber(Math.ceil(totalRecord / safeNumber(take, 1)), 0),
+    page: page,
+    limit: take,
+  });
 };
