@@ -82,6 +82,7 @@ func Register(c *gin.Context) {
 	user.SubDistrictID = nil
 	user.Email = request.Email
 
+	// ถ้าอยากได้ OTP เปิดตรงนี้เลยจ้า
 	// var otp models.OTP
 	// if err := db.Transaction(func(tx *gorm.DB) error {
 	// 	if err := db.Create(&user).Error; err != nil {
